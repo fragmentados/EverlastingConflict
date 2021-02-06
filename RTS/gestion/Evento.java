@@ -76,7 +76,7 @@ public class Evento extends ElementoCoordenadas {
                 break;
         }
         try {
-            icono = new Image("datar/Eventos/" + nombre + ".png");
+            icono = new Image("media/Eventos/" + nombre + ".png");
             sprite = new Animation(new Image[]{icono}, 300, false);
             anchura = icono.getWidth();
             altura = icono.getHeight();

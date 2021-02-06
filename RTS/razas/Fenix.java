@@ -50,10 +50,10 @@ public class Fenix {
         u.tiempo = Unidad.tiempo_estandar;
         u.vision = Unidad.vision_estandar;
         try {
-            u.arriba = new Animation(new Image[]{new Image("datar/Unidades/SoldadoArr1.png"), new Image("datar/Unidades/SoldadoArr2.png")}, new int[]{300, 300}, false);
-            u.abajo = new Animation(new Image[]{new Image("datar/Unidades/SoldadoAba1.png"), new Image("datar/Unidades/SoldadoAba2.png")}, new int[]{300, 300}, false);
-            u.izquierda = new Animation(new Image[]{new Image("datar/Unidades/SoldadoIzq1.png"), new Image("datar/Unidades/SoldadoIzq2.png")}, new int[]{300, 300}, false);
-            u.derecha = new Animation(new Image[]{new Image("datar/Unidades/SoldadoDer1.png"), new Image("datar/Unidades/SoldadoDer2.png")}, new int[]{300, 300}, false);
+            u.arriba = new Animation(new Image[]{new Image("media/Unidades/SoldadoArr1.png"), new Image("media/Unidades/SoldadoArr2.png")}, new int[]{300, 300}, false);
+            u.abajo = new Animation(new Image[]{new Image("media/Unidades/SoldadoAba1.png"), new Image("media/Unidades/SoldadoAba2.png")}, new int[]{300, 300}, false);
+            u.izquierda = new Animation(new Image[]{new Image("media/Unidades/SoldadoIzq1.png"), new Image("media/Unidades/SoldadoIzq2.png")}, new int[]{300, 300}, false);
+            u.derecha = new Animation(new Image[]{new Image("media/Unidades/SoldadoDer1.png"), new Image("media/Unidades/SoldadoDer2.png")}, new int[]{300, 300}, false);
         } catch (SlickException ex) {
             Logger.getLogger(Fenix.class.getName()).log(Level.SEVERE, null, ex);
         }

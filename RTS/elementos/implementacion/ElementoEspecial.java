@@ -24,8 +24,8 @@ public class ElementoEspecial extends ElementoCoordenadas {
 
     public final void iniciar_imagenes() {
         try {
-            sprite = new Animation(new Image[]{new Image("datar/ElementosEspeciales/" + nombre + ".png")}, new int[]{300}, false);            
-            icono = new Image("datar/Iconos/" + nombre + ".png");            
+            sprite = new Animation(new Image[]{new Image("media/ElementosEspeciales/" + nombre + ".png")}, new int[]{300}, false);
+            icono = new Image("media/Iconos/" + nombre + ".png");
             anchura = sprite.getWidth();
             altura = sprite.getHeight();
         } catch (SlickException ex) {

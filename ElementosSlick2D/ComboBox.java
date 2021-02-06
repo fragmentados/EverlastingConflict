@@ -36,7 +36,7 @@ public class ComboBox {
         }
         desplegado = false;
         try {
-            desplegar = new BotonSimple(new Image("datar/Desplegar.png")) {
+            desplegar = new BotonSimple(new Image("media/Desplegar.png")) {
                 @Override
                 public void efecto() {
                     desplegado = !desplegado;

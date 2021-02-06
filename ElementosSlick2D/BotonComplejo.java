@@ -58,7 +58,7 @@ public class BotonComplejo extends BotonSimple {
         //Boton que posee sólo texto
         super(t);
         try {
-            sprite = new Image("datar/Iconos/" + t + ".png");
+            sprite = new Image("media/Iconos/" + t + ".png");
         } catch (SlickException ex) {
             Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -410,7 +410,7 @@ public class BotonComplejo extends BotonSimple {
                         case "Reanudar":
                             texto = "Detener";
                             try {
-                                sprite = new Image("datar/Iconos/Detener.png");
+                                sprite = new Image("media/Iconos/Detener.png");
                             } catch (SlickException ex) {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -419,7 +419,7 @@ public class BotonComplejo extends BotonSimple {
                         case "Detener":
                             texto = "Reanudar";
                             try {
-                                sprite = new Image("datar/Iconos/Reanudar.png");
+                                sprite = new Image("media/Iconos/Reanudar.png");
                             } catch (SlickException ex) {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }

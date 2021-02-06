@@ -165,14 +165,14 @@ public class MapaCampo extends Mapa {
         //partida.j1.unidades.add(new Unidad("Soldado", 350, 300));
         //partida.j2.unidades.add(new Unidad("Soldado", 500, 300));
         partida.iniciar_elementos(2000, 2000, 1);
-        atacar = new Image("datar/Cursores/atacar.png");
-        construccion = new Image("datar/Edificios/construccion.png");
+        atacar = new Image("media/Cursores/atacar.png");
+        construccion = new Image("media/Edificios/construccion.png");
         chat_texto = new TextField(container, container.getDefaultFont(), (int) x_chat, (int) y_chat, 300, 20);
         mensajes = new ArrayList<>();
         mensajes_chat = new ArrayList<>();
         //reloj.detener_reloj(1000);
-        detencion = new Image("datar/Unidades/Detención.png");
-        muerte = new Image("datar/Unidades/Muerte.png");
+        detencion = new Image("media/Unidades/Detención.png");
+        muerte = new Image("media/Unidades/Muerte.png");
     }
 
     public void deseleccion() {
@@ -556,12 +556,16 @@ public class MapaCampo extends Mapa {
         gestion_movimiento_camara(delta);
         if (!(partida instanceof Tutorial)) {
             if (partida.check_victory_player_1() && victoria == null) {
-                victoria = new Animation(new Image[]{new Image("datar/Victoria1.png"), new Image("datar/Victoria2.png")}, new int[]{300, 300}, true);
+                this.playerX = 0;
+                this.playerY = 0;
+                victoria = new Animation(new Image[]{new Image("media/Victoria1.png"), new Image("media/Victoria2.png")}, new int[]{300, 300}, true);
                 continuar.x = 650;
                 continuar.y = 400;
             }
             if (partida.check_victory_player_2() && derrota == null) {
-                derrota = new Animation(new Image[]{new Image("datar/Derrota1.png"), new Image("datar/Derrota2.png")}, new int[]{300, 300}, true);
+                this.playerX = 0;
+                this.playerY = 0;
+                derrota = new Animation(new Image[]{new Image("media/Derrota1.png"), new Image("media/Derrota2.png")}, new int[]{300, 300}, true);
                 continuar.x = 650;
                 continuar.y = 400;
             }

@@ -47,9 +47,9 @@ public class TODO {
     //Implementar IA                                //En proceso
 
     /*                          SEGUNDA ETAPA                                                  */
-    // Permitir no pintar recursos del jugador 2    //Done
-    // Arreglar chat    //Done?
-    // Terminar Implementacion de Razas
+    // Permitir no pintar recursos del jugador 2                                            //Done
+    // Arreglar chat                                                                        //Done?
+    // Terminar Implementacion de Razas                                                     //Doing
         // Fenix
             // Descripciones unidades del cuartel                                           //Done
             // Descripcion resurreccion                                                     //Done
@@ -59,9 +59,12 @@ public class TODO {
             // Mostrar botones deshabilitados si su coste es mayor a los recursos           //Done
             // Las ciudades capturadas deben dar vision al jugador fenix                    //Done
             // Animaciones Edificios                                                        //Done
-    // Animacion de victoria / derrota no debe depender de donde está la vista
-    // Animacion de Edificios
+        // Eternium
+            // Animaciones Edificios
+    // Animacion de victoria / derrota no debe depender de donde está la vista              //Done
+    // Animacion de Edificios                                                               //Done
+    // Investigar por qué se crean elementos de razas que no estan en la partida            //Done
     // Crear Menu Versus IA
-    // Investigar por qué se crean elementos de razas que no estan en la partida
     // Corregir ZOOM -> Trastoca todos los elementos visuales
+    // Hacer el UI responsive
 }

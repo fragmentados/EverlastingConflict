@@ -203,13 +203,13 @@ public class Manipulador extends Unidad {
 
     public final void iniciar_imagenes_manipulador() {
         try {
-            sprite = new Animation(new Image[]{new Image("datar/Manipulador/" + nombre + nivel + ".png")}, new int[]{300}, false);
-            icono = new Image("datar/Manipulador/" + nombre + nivel + "_icono.png");
-            miniatura = new Image("datar/Miniaturas/Prueba.png");
+            sprite = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")}, new int[]{300}, false);
+            icono = new Image("media/Manipulador/" + nombre + nivel + "_icono.png");
+            miniatura = new Image("media/Miniaturas/Prueba.png");
             anchura = sprite.getWidth();
             altura = sprite.getHeight();
             anchura_barra_vida = anchura;
-            //miniatura = new Image("datar/Miniaturas/" + nombre + ".png");
+            //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
 
         }

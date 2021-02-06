@@ -18,6 +18,9 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Elías
@@ -29,15 +32,22 @@ public class Recurso extends ElementoVulnerable {
     public static int vida_civiles = 100;
     public static int tiempo_captura = 10;
 
-    public final void iniciarimagenes() {
+    public final void initImages() {
+        Integer contador = 1;
+        List<Image> imageList = new ArrayList<>();
         try {
-            sprite = new Animation(new Image[]{new Image("datar/Recursos/" + nombre + ".png")}, new int[]{300}, false);
-            anchura = sprite.getWidth();
-            altura = sprite.getHeight();
-            anchura_barra_vida = anchura;
-        } catch (SlickException e) {
-            e.printStackTrace();
+            do {
+                imageList.add(new Image("media/Recursos/" + nombre + contador + ".png"));
+                contador++;
+            } while (contador < 3);
+        } catch (Exception e) {
         }
+        Image[] images = new Image[imageList.size()];
+        imageList.toArray(images);
+        sprite = new Animation(images, 450, false);
+        anchura = sprite.getWidth();
+        altura = sprite.getHeight();
+        anchura_barra_vida = anchura;
     }
 
     public Recurso(String n, float x, float y) {
@@ -49,7 +59,7 @@ public class Recurso extends ElementoVulnerable {
         this.y = y;
         this.ocupado = false;
         this.capturador = "";
-        iniciarimagenes();
+        initImages();
 
     }
 
@@ -64,6 +74,7 @@ public class Recurso extends ElementoVulnerable {
                 capturador = "";
             }
             vida = 0;
+            this.sprite.setAutoUpdate(false);
         }
     }
 
@@ -71,6 +82,7 @@ public class Recurso extends ElementoVulnerable {
         j.recursos += 10;
         capturador = j.nombre;
         j.visiones.add(new Vision(this.x, this.y, 450, 450, 0));
+        this.sprite.setAutoUpdate(true);
     }
 
     @Override

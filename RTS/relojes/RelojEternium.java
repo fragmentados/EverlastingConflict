@@ -35,7 +35,7 @@ public class RelojEternium extends Reloj {
         ndivision = 1;
         detener = detener_contador = 0;
         try {
-            sprite = new Image("datar/Iconos/Reloj.png");
+            sprite = new Image("media/Iconos/Reloj.png");
         } catch (SlickException ex) {
             Logger.getLogger(Reloj.class.getName()).log(Level.SEVERE, null, ex);
         }

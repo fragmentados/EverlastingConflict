@@ -40,8 +40,8 @@ public class Habilidad extends ElementoSimple {
         descripcion = "";
         inicializar_datos();
         try {
-            sprite = new Animation(new Image[]{new Image("datar/Iconos/" + nombre + ".png")}, new int[]{300}, false);
-            icono = new Image("datar/Iconos/" + nombre + ".png");
+            sprite = new Animation(new Image[]{new Image("media/Iconos/" + nombre + ".png")}, new int[]{300}, false);
+            icono = new Image("media/Iconos/" + nombre + ".png");
         } catch (SlickException ex) {
             Logger.getLogger(Habilidad.class.getName()).log(Level.SEVERE, null, ex);
         }

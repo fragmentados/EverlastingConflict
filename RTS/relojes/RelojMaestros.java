@@ -35,7 +35,7 @@ public class RelojMaestros extends Reloj {
         ndivision = 1;
         detener = detener_contador = 0;
         try {
-            sprite = new Image("datar/Iconos/Sol.png");
+            sprite = new Image("media/Iconos/Sol.png");
         } catch (SlickException ex) {
             Logger.getLogger(Reloj.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,7 +78,7 @@ public class RelojMaestros extends Reloj {
                 ndivision = 1;
                 cambio_temporal(j, RelojMaestros.nombre_dia);
                 try {
-                    sprite = new Image("datar/Iconos/Sol.png");
+                    sprite = new Image("media/Iconos/Sol.png");
                 } catch (SlickException ex) {
                     Logger.getLogger(RelojMaestros.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -87,7 +87,7 @@ public class RelojMaestros extends Reloj {
                 ndivision = 2;
                 cambio_temporal(j, RelojMaestros.nombre_noche);
                 try {
-                    sprite = new Image("datar/Iconos/Luna.png");
+                    sprite = new Image("media/Iconos/Luna.png");
                 } catch (SlickException ex) {
                     Logger.getLogger(RelojMaestros.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -84,7 +84,7 @@ public class Unidad extends ElementoMovil {
             this.iniciar_imagenes();
             if (ataque > 0) {
                 try {
-                    sonido_combate = new Sound("datar/Sonidos/" + nombre + ".ogg");
+                    sonido_combate = new Sound("media/Sonidos/" + nombre + ".ogg");
                 } catch (SlickException ex) {
                     Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -104,10 +104,10 @@ public class Unidad extends ElementoMovil {
 
     public final void iniciar_imagenes() {
         try {
-            sprite = new Animation(new Image[]{new Image("datar/Unidades/" + nombre + ".png")}, new int[]{300}, false);
-            icono = new Image("datar/Iconos/" + nombre + ".png");
-            miniatura = new Image("datar/Miniaturas/Prueba.png");
-            //miniatura = new Image("datar/Miniaturas/" + nombre + ".png");
+            sprite = new Animation(new Image[]{new Image("media/Unidades/" + nombre + ".png")}, new int[]{300}, false);
+            icono = new Image("media/Iconos/" + nombre + ".png");
+            miniatura = new Image("media/Miniaturas/Prueba.png");
+            //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
 
         }
@@ -490,8 +490,8 @@ public class Unidad extends ElementoMovil {
                 break;
         }
         try {
-            torreta.sprite = new Animation(new Image[]{new Image("datar/Torretas/" + torreta.nombre + ".png")}, 300, true);
-            torreta.icono = new Image("datar/Torretas/" + torreta.nombre + "_icono.png");
+            torreta.sprite = new Animation(new Image[]{new Image("media/Torretas/" + torreta.nombre + ".png")}, 300, true);
+            torreta.icono = new Image("media/Torretas/" + torreta.nombre + "_icono.png");
         } catch (SlickException ex) {
             Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -71,17 +71,19 @@ public class Edificio extends ElementoAtacante {
     public final void initImages() {
         try {
             Integer contador = 1;
-            Image[] images = new Image[10];
+            List<Image> imageList = new ArrayList<>();
             try {
                 do {
-                    images[contador - 1] = new Image("datar/Edificios/" + nombre + contador + ".png");
+                    imageList.add(new Image("media/Edificios/" + nombre + contador + ".png"));
                     contador++;
                 } while (contador < 3);
             } catch (Exception e) {
             }
-            sprite = new Animation(images, 300, false);
-            icono = new Image("datar/Iconos/" + nombre + ".png");
-            miniatura = new Image("datar/Miniaturas/Prueba.png");
+            Image[] images = new Image[imageList.size()];
+            imageList.toArray(images);
+            sprite = new Animation(images, 450, false);
+            icono = new Image("media/Iconos/" + nombre + ".png");
+            miniatura = new Image("media/Miniaturas/Prueba.png");
         } catch (SlickException e) {
 
         }
@@ -333,6 +335,7 @@ public class Edificio extends ElementoAtacante {
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         super.dibujar(p, c, input, g);
+        this.sprite.setAutoUpdate(barra.isActive());
         barra.dibujar(g);
         if (MapaCampo.iu.elementos.indexOf(this) != -1) {
             dibujar_fin_movimiento(g);

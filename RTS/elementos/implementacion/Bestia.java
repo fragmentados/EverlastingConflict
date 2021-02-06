@@ -35,11 +35,11 @@ public class Bestia extends Unidad {
 
     public final void iniciar_imagenes_bestias() {
         try {
-            icono = new Image("datar/Iconos/" + nombre + ".png");
-            sprite = new Animation(new Image[]{new Image("datar/Unidades/" + nombre + ".png")}, new int[]{300}, false);
-            sonido_combate = new Sound("datar/Sonidos/" + nombre + ".ogg");
-            miniatura = new Image("datar/Miniaturas/Prueba.png");
-            //miniatura = new Image("datar/Miniaturas/" + nombre + ".png");
+            icono = new Image("media/Iconos/" + nombre + ".png");
+            sprite = new Animation(new Image[]{new Image("media/Unidades/" + nombre + ".png")}, new int[]{300}, false);
+            sonido_combate = new Sound("media/Sonidos/" + nombre + ".ogg");
+            miniatura = new Image("media/Miniaturas/Prueba.png");
+            //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
 
         }
