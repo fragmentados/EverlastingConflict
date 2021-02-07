@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RTS:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RTS_jar</output-path>
+    <root id="archive" name="RTS.jar">
+      <element id="module-output" name="RTS" />
+      <element id="library" level="project" name="lwjgl" />
+      <element id="library" level="project" name="jogg-0.0.7" />
+      <element id="library" level="project" name="lwjgl_util_applet" />
+      <element id="library" level="project" name="slick" />
+      <element id="library" level="project" name="TWLEffects" />
+      <element id="library" level="project" name="lwjgl_util" />
+      <element id="library" level="project" name="jorbis-0.0.15" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jinput.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jogg-0.0.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jorbis-0.0.15.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl-natives-windows-x86.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl_util.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl_util_applet.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slick.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/TWL.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/TWLEffects.jar" path-in-jar="/" />
+      <element id="library" level="project" name="jinput" />
+      <element id="library" level="project" name="TWL" />
+    </root>
+  </artifact>
+</component>
