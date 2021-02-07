@@ -23,6 +23,7 @@ public class Eternium {
     public static String nombre_raza = "Eternium";
     public static int ataque_guerrero = Unidad.ataque_estandar + 14;
     public static int ataque_ancestro = Unidad.ataque_estandar + 34;
+    public static final int MAX_UNIT_PER_QUEUE = 5;
 
     public static void dibujar_detencion(Unidad u, Color c, Graphics g) {
         MapaCampo.detencion.draw(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
@@ -89,7 +90,7 @@ public class Eternium {
     }
 
     public static void Protector(Unidad u) {
-        if (MapaCampo.reloj_eternium.ndivision == 4) {
+        if (MapaCampo.relojEternium().ndivision == 4) {
             u.ataque = Unidad.ataque_estandar + 30;
         }else{
             u.ataque = 0;

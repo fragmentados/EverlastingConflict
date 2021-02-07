@@ -25,12 +25,14 @@ public class RelojEternium extends Reloj {
     //Segundo cuarto    Capacidades ofensivas y defensivas al 100%
     //Tercer cuarto     Capacidades ofensivas y defensivas al 150%
     //Cuarto cuarto     Capacidades ofensivas al 0% Capacidades defensivas al 500%
-    public float inicio_primer_cuarto = 720f;
-    public float fin_primer_cuarto = 540f;
-    public float fin_segundo_cuarto = 360f;
-    public float fin_tercer_cuarto = 180f;        
+    private int minsPerQuarter = 1;
+    public float inicio_primer_cuarto = 4 * minsPerQuarter * 60;
+    public float fin_primer_cuarto = 3 * minsPerQuarter * 60;
+    public float fin_segundo_cuarto = 2 * minsPerQuarter * 60;
+    public float fin_tercer_cuarto = 1 * minsPerQuarter * 60;
     
-    public RelojEternium() {
+    public RelojEternium(Jugador jugadorAsociado) {
+        this.jugadorAsociado = jugadorAsociado;
         contador_reloj = inicio_primer_cuarto;
         ndivision = 1;
         detener = detener_contador = 0;
@@ -59,7 +61,7 @@ public class RelojEternium extends Reloj {
     }
 
     @Override
-    public void avanzar_reloj(Jugador j, int delta) {
+    public void avanzar_reloj(int delta) {
         if (detener > 0) {
             if ((detener_contador - Reloj.velocidad_reloj * delta) <= 0) {
                 detener = 0;
@@ -69,15 +71,14 @@ public class RelojEternium extends Reloj {
             }
         } else {
             contador_reloj -= Reloj.velocidad_reloj * delta;
-            //System.out.println("Contador_reloj = " + contador_reloj + ".");
             if ((ndivision == 4) && (contador_reloj <= 0)) {
                 contador_reloj = inicio_primer_cuarto;
                 ndivision = 1;
-                liberacion_temporal(j);
+                liberacion_temporal();
             } else if ((ndivision == 3) && (contador_reloj <= fin_tercer_cuarto)) {
                 contador_reloj = fin_tercer_cuarto;
                 ndivision = 4;
-                detencion_temporal(j);
+                detencion_temporal();
             } else if ((ndivision == 2) && (contador_reloj <= fin_segundo_cuarto)) {
                 contador_reloj = fin_segundo_cuarto;
                 ndivision = 3;
@@ -161,8 +162,8 @@ public class RelojEternium extends Reloj {
         g.setColor(Color.white);
     }
 
-    public void liberacion_temporal(Jugador j) {
-        for (Unidad u : j.unidades) {
+    public void liberacion_temporal() {
+        for (Unidad u : this.jugadorAsociado.unidades) {
             if (u.nombre.equals("Protector")) {
                 u.ataque = 0;
             } else {
@@ -172,8 +173,8 @@ public class RelojEternium extends Reloj {
         }
     }
 
-    public void detencion_temporal(Jugador j) {
-        for (Unidad u : j.unidades) {
+    public void detencion_temporal() {
+        for (Unidad u : this.jugadorAsociado.unidades) {
             if (u.nombre.equals("Protector")) {
                 u.ataque = Unidad.ataque_estandar + 30;
             } else {

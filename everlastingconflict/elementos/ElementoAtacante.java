@@ -5,6 +5,7 @@
  */
 package everlastingconflict.elementos;
 
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estados.Estado;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
@@ -121,7 +122,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public int ataque_eternium() {
-        switch (MapaCampo.reloj_eternium.ndivision) {
+        switch (MapaCampo.relojEternium().ndivision) {
             case 1:
                 return (int) (this.ataque * (75f / 100f));
             case 2:
@@ -148,19 +149,9 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public void ataque(Partida p) {
         if (puede_atacar()) {
             if (cadencia_contador == 0) {
-                if (Partida.sonidos) {
-                    if (sonido_combate != null) {
-                        sonido_combate.play();
-                    }
+                if (sonido_combate != null) {
+                    sonido_combate.playAt(1.0f, 0.5f, x, y, 0f);
                 }
-                //System.out.println("Dano. Atacante = " + this.nombre + ".Atacada = " + objetivo.nombre + ".");
-                //System.out.println("Dano. Atacante = " + this.nombre + ".Atacada = " + objetivo.nombre + ".");
-                //System.out.println("Atacada.vida = " + objetivo.vida + ".");
-                if (objetivo.nombre.equals("Primarca")) {
-                    //    System.out.println("Dano. Atacante = " + this.nombre + ".Atacada = " + objetivo.nombre + ".");
-                }
-                //System.out.println("Atacante.x = " + this.x + ". Atacada.x = " + objetivo.x + ".");
-                //System.out.println("Atacante.y = " + this.y + ". Atacada.y = " + objetivo.y + ".");
                 int ataque_contador;
                 if (!(this instanceof Bestia) && (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza))) {
                     ataque_contador = this.ataque_eternium();
@@ -192,7 +183,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     }
                 }
                 disparar_proyectil(p, ataque_contador);
-                //return dano(p, "Físico", ataque_contador, objetivo);
             }
         }
     }
@@ -206,7 +196,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
             } else {
                 defensa_contador = e.defensa;
             }
-            //System.out.println("Atacada.vida 2 = " + e.vida + ".");
             if (p.jugador_aliado(this).raza.equals(Maestros.nombre_raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
@@ -275,7 +264,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     }
                 }
             }
-        //System.out.println("Nuevo valor de vida de la atacada = " + e.vida + ".");
             //cadencia_contador = cadencia;
             if (e.vida <= 0) {
                 //Destruir e
@@ -379,6 +367,8 @@ public abstract class ElementoAtacante extends ElementoEstado {
     @Override
     public abstract void destruir(Partida p, ElementoAtacante atacante);
 
-    public abstract void construir(Partida p, Edificio edificio, float x, float y);
+    public void construir(Partida p, Edificio edificio, float x, float y) {
+        ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+    }
 
 }

@@ -10,7 +10,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
 import everlastingconflict.mapas.MapaCampo;
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoSimple;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import everlastingconflict.relojes.RelojMaestros;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -347,8 +348,8 @@ public class Habilidad extends ElementoSimple {
             if (alcance == 0) {
                 resolucion(p, origen, origen);
             } else {
-                MapaEjemplo.mapac.elemento_habilidad = origen;
-                MapaEjemplo.mapac.habilidad = this;
+                MapaPrincipal.mapac.elemento_habilidad = origen;
+                MapaPrincipal.mapac.habilidad = this;
             }
         } else {
 
@@ -403,35 +404,35 @@ public class Habilidad extends ElementoSimple {
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Pugnator"));
                     }
-                    MapaEjemplo.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    MapaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar sagittarius":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Sagittarius"));
                     }
-                    MapaEjemplo.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    MapaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar medicum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Medicum"));
                     }
-                    MapaEjemplo.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    MapaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar magum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Magum"));
                     }
-                    MapaEjemplo.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    MapaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar exterminatore":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Exterminatore"));
                     }
-                    MapaEjemplo.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    MapaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Deflagración":
@@ -528,7 +529,7 @@ public class Habilidad extends ElementoSimple {
                     ((Unidad) objetivo).provocar(origen, 3000);
                     break;
                 case "Parálisis temporal":
-                    MapaCampo.reloj_eternium.detener_reloj(60);
+                    MapaCampo.relojEternium().detener_reloj(60);
                     break;
                 case "Alentar":
                     elementos_area = area(p, origen, objetivo.x, objetivo.y, "UnidadAliada");
@@ -549,10 +550,11 @@ public class Habilidad extends ElementoSimple {
                     ((Unidad) origen).estados.anadir_estado(new Estado(Estado.nombre_supervivencia, 10));
                     break;
                 case "Eclipse Amanecer":
-                    if (MapaCampo.reloj_maestros.ndivision == 1) {
-                        MapaCampo.reloj_maestros.contador_reloj = MapaCampo.reloj_maestros.fin_primera_mitad;
+                    RelojMaestros relojMaestros = MapaCampo.relojMaestros();
+                    if (relojMaestros.ndivision == 1) {
+                        relojMaestros.contador_reloj = relojMaestros.fin_primera_mitad;
                     } else {
-                        MapaCampo.reloj_maestros.contador_reloj = 0;
+                        relojMaestros.contador_reloj = 0;
                     }
                     break;
                 case "Meditar":
@@ -595,8 +597,8 @@ public class Habilidad extends ElementoSimple {
                     break;
             }
         }
-        MapaEjemplo.mapac.elemento_habilidad = null;
-        MapaEjemplo.mapac.habilidad = null;
+        MapaPrincipal.mapac.elemento_habilidad = null;
+        MapaPrincipal.mapac.habilidad = null;
         for (BotonComplejo b : origen.botones) {
             if (b.elemento_nombre != null && b.elemento_nombre.equals(nombre)) {
                 b.activar_cooldown(origen);

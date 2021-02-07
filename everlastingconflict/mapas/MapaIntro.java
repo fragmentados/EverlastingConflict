@@ -11,10 +11,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-/**
- *
- * @author Elías
- */
 public class MapaIntro extends Mapa{
 
     public Partida partida;

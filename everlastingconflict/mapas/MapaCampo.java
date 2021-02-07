@@ -5,6 +5,7 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.Control;
@@ -18,6 +19,7 @@ import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
 import everlastingconflict.razas.Guardianes;
+import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.ElementoAtacante;
@@ -42,13 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.gui.TextField;
 
@@ -90,8 +86,7 @@ public class MapaCampo extends Mapa {
     //Mensajes
     private List<Mensaje> mensajes;
     //RTS.Relojes
-    public static RelojEternium reloj_eternium;
-    public static RelojMaestros reloj_maestros;
+    private static List<Reloj> relojes = new ArrayList<>();
     public static Image detencion;
     //Muerte Bestias
     public static Image muerte;
@@ -115,6 +110,28 @@ public class MapaCampo extends Mapa {
     public float x_chat = 200, y_chat = 500;
     //Cliente
     public Client client = new Client("server", 8080, "elias");
+    //Music
+    public Sound ambientMusic;
+
+    public static void crearReloj(Reloj r) {
+        relojes.add(r);
+    }
+
+    public static RelojEternium relojEternium() {
+        Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojEternium).findFirst().orElse(null);
+        if (relojEncontrado != null) {
+           return (RelojEternium) relojEncontrado;
+        }
+        return null;
+    }
+
+    public static RelojMaestros relojMaestros() {
+        Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojMaestros).findFirst().orElse(null);
+        if (relojEncontrado != null) {
+            return (RelojMaestros) relojEncontrado;
+        }
+        return null;
+    }
 
     public Vector2f getMousePos(Input input) {
         return new Vector2f(playerX + input.getMouseX(), playerY + input.getMouseY());
@@ -176,6 +193,8 @@ public class MapaCampo extends Mapa {
         //reloj.detener_reloj(1000);
         detencion = new Image("media/Unidades/Detención.png");
         muerte = new Image("media/Unidades/Muerte.png");
+        //this.ambientMusic = new Sound("/media/Sonidos/AdeptoAtaque.ogg");
+        //this.ambientMusic.loop();
     }
 
     public void deseleccion() {
@@ -561,6 +580,7 @@ public class MapaCampo extends Mapa {
             if (partida.check_victory_player_1() && victoria == null) {
                 this.playerX = 0;
                 this.playerY = 0;
+                ElementosComunes.VICTORY_SOUND.playAt(0f, 0f, 0f);
                 victoria = new Animation(new Image[]{new Image("media/Victoria1.png"), new Image("media/Victoria2.png")}, new int[]{300, 300}, true);
                 continuar.x = 650;
                 continuar.y = 400;
@@ -573,22 +593,8 @@ public class MapaCampo extends Mapa {
                 continuar.y = 400;
             }
         }
-        if (reloj_maestros != null) {
-            if (partida.j1.raza.equals("Maestros")) {
-                reloj_maestros.avanzar_reloj(partida.j1, delta);
-            } else {
-                reloj_maestros.avanzar_reloj(partida.j2, delta);
-            }
-
-        }
-        if (reloj_eternium != null) {
-            if (partida.j1.raza.equals("Eternium")) {
-                reloj_eternium.avanzar_reloj(partida.j1, delta);
-            } else {
-                reloj_eternium.avanzar_reloj(partida.j2, delta);
-            }
-
-        }
+        //Relojes
+        relojes.stream().forEach(r -> r.avanzar_reloj(delta));
         //Comprobar fusiones                
         for (int j = 0; j < Clark.fusiones.size(); j++) {
             Fusion f = Clark.fusiones.get(j);
@@ -1107,12 +1113,7 @@ public class MapaCampo extends Mapa {
                 me.dibujar(partida, g);
             }
             //RTS.Relojes
-            if (reloj_eternium != null) {
-                reloj_eternium.dibujar(g);
-            }
-            if (reloj_maestros != null) {
-                reloj_maestros.dibujar(g);
-            }
+            relojes.stream().forEach(r -> r.dibujar(g));
             //Boton seleccionado
             BotonComplejo boton_seleccionado = iu.obtener_boton_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
             if (boton_seleccionado != null) {

@@ -24,7 +24,7 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public float experiencia_al_morir;    
     
     public int defensa_eternium() {
-        switch (MapaCampo.reloj_eternium.ndivision) {
+        switch (MapaCampo.relojEternium().ndivision) {
             case 1:
                 return (int) (this.defensa * (75f / 100f));
             case 2:

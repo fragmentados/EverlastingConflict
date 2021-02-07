@@ -18,7 +18,7 @@ import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
 import static everlastingconflict.mapas.MapaCampo.playerX;
 import static everlastingconflict.mapas.MapaCampo.playerY;
 
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -78,7 +78,7 @@ public class ClarkTutorial extends Tutorial {
         pasos.add(new Paso("La siguiente peculiaridad de la raza Clark es su forma de obtener recursos. Los Clark no necesitan materiales para construir grandes armas o vehículos, sólo necesitan masa y para conseguirla deben acabar con la fauna local.") {
             @Override
             public void efecto(Partida p) {
-                MapaEjemplo.mapac.movimiento_pantalla(200, 0);
+                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
                 MapaCampo.continuar.activado = false;
             }
         });

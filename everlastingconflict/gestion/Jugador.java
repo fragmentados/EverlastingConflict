@@ -77,9 +77,9 @@ public class Jugador {
 
     }
 
-    public Jugador(String n, String r) {
-        nombre = n;
-        raza = r;
+    public Jugador(String nombre, String raza) {
+        this.nombre = nombre;
+        this.raza = raza;
         unidades = new ArrayList<>();
         edificios = new ArrayList<>();
         lista_recursos = new ArrayList<>();
@@ -94,7 +94,7 @@ public class Jugador {
         List<String> resultado = new ArrayList<>();
         for (Edificio e : edificios) {
             if ((e.nombre.equals("Cámara de asimilación") || (e.nombre.equals("Teletransportador")))) {
-                if (resultado.indexOf(e) == -1) {
+                if (resultado.indexOf(e.nombre) == -1) {
                     resultado.add(e.nombre);
                 }
             }
@@ -123,11 +123,7 @@ public class Jugador {
             case "Guardianes":
                 return comprobacion_recursos_guardianes(e);
             default:
-                if (recursos >= e.coste) {                    
-                    return true;
-                } else {
-                    return false;
-                }
+                return recursos >= e.coste;
         }
     }
 
@@ -219,7 +215,7 @@ public class Jugador {
                 m.dibujar_mana(g);
             }
         }
-        if (this.raza.equals(Eternium.nombre_raza) && (MapaCampo.reloj_eternium.ndivision == 4)) {
+        if (this.raza.equals(Eternium.nombre_raza) && (MapaCampo.relojEternium().ndivision == 4)) {
             for (Unidad u : unidades) {
                 if (u.nombre.equals("Protector")) {
                     u.dibujar(p, color, input, g);

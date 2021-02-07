@@ -117,7 +117,7 @@ public class MaestrosTutorial extends Tutorial {
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar"), "Cualquiera"));
         j1.unidades.get(0).inicializar_teclas_botones(j1.unidades.get(0).botones);
         bestias.add(new Bestias("Grupo1", 500, 200));
-        MapaCampo.reloj_maestros = new RelojMaestros();
+        MapaCampo.crearReloj(new RelojMaestros(j1));
     }
 
     public MaestrosTutorial() {

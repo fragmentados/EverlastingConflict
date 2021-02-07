@@ -9,11 +9,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-/**
- *
- * @author Elías
- */
-public abstract class Mapa {            
+public abstract class Mapa {
 
     public abstract void init(GameContainer container) throws SlickException;
 

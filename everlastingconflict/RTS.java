@@ -5,7 +5,8 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.elementos.util.ElementosComunes;
+import everlastingconflict.mapas.MapaPrincipal;
 import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -19,12 +20,14 @@ import org.newdawn.slick.SlickException;
 public class RTS {
 
     public static CanvasGameContainer canvas;
-    public static MapaEjemplo mapa_ejemplo;
+    public static MapaPrincipal mapa_ejemplo;
     public static JFrame ventana_mapa; 
     
-    public static void main(String[] args) { 
-        mapa_ejemplo = new MapaEjemplo();   
+    public static void main(String[] args) {
+
+        mapa_ejemplo = new MapaPrincipal();
         try {
+            ElementosComunes.init();
             canvas = new CanvasGameContainer(mapa_ejemplo);
             canvas.getContainer().setShowFPS(false);
             ventana_mapa = new JFrame();
@@ -35,7 +38,6 @@ public class RTS {
             canvas.start();
             ventana_mapa.setExtendedState(Frame.MAXIMIZED_BOTH);
             ventana_mapa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         } catch (SlickException e) {
         }
     }

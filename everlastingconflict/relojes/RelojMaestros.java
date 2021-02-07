@@ -30,7 +30,8 @@ public class RelojMaestros extends Reloj {
     public static final String nombre_noche = "Noche";
     public static String tiempo = nombre_dia;
 
-    public RelojMaestros() {
+    public RelojMaestros(Jugador jugadorAsociado) {
+        this.jugadorAsociado = jugadorAsociado;
         contador_reloj = inicio_primera_mitad;
         ndivision = 1;
         detener = detener_contador = 0;
@@ -41,9 +42,9 @@ public class RelojMaestros extends Reloj {
         }
     }
 
-    public void cambio_temporal(Jugador j, String t) {
+    public void cambio_temporal(String t) {
         RelojMaestros.tiempo = t;
-        for (Unidad u : j.unidades) {
+        for (Unidad u : this.jugadorAsociado.unidades) {
             if (u.nombre.equals("Manipulador")) {
                 for (BotonComplejo b : u.botones) {
                     if (b instanceof BotonManipulador) {
@@ -63,7 +64,7 @@ public class RelojMaestros extends Reloj {
     }
 
     @Override
-    public void avanzar_reloj(Jugador j, int delta) {
+    public void avanzar_reloj(int delta) {
         if (detener > 0) {
             if ((detener_contador - Reloj.velocidad_reloj * delta) <= 0) {
                 detener = 0;
@@ -76,7 +77,7 @@ public class RelojMaestros extends Reloj {
             if ((ndivision == 2) && (contador_reloj <= 0)) {
                 contador_reloj = inicio_primera_mitad;
                 ndivision = 1;
-                cambio_temporal(j, RelojMaestros.nombre_dia);
+                cambio_temporal(RelojMaestros.nombre_dia);
                 try {
                     sprite = new Image("media/Iconos/Sol.png");
                 } catch (SlickException ex) {
@@ -85,7 +86,7 @@ public class RelojMaestros extends Reloj {
             }
             if ((ndivision == 1) && (contador_reloj <= fin_primera_mitad)) {
                 ndivision = 2;
-                cambio_temporal(j, RelojMaestros.nombre_noche);
+                cambio_temporal(RelojMaestros.nombre_noche);
                 try {
                     sprite = new Image("media/Iconos/Luna.png");
                 } catch (SlickException ex) {

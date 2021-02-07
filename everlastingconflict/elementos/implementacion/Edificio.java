@@ -5,13 +5,14 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estados.Estado;
 import everlastingconflict.estados.Estados;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.ProgressBar;
 import everlastingconflict.mapas.MapaCampo;
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.razas.Eternium;
 import everlastingconflict.razas.Fenix;
@@ -36,7 +37,9 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-/**
+import static everlastingconflict.razas.Eternium.MAX_UNIT_PER_QUEUE;
+
+ /**
  *
  * @author Elías
  */
@@ -89,6 +92,7 @@ public class Edificio extends ElementoAtacante {
 
     public Edificio(String n) {
         this.nombre = n;
+        initImages();
         this.estado = "Parado";
         this.descripcion = "";
         this.estados = new Estados();
@@ -99,7 +103,6 @@ public class Edificio extends ElementoAtacante {
         if (nombre.equals("Mando Central")) {
             cantidad_produccion = new ArrayList<>();
         }
-        initImages();
         this.anchura = this.sprite.getWidth();
         this.altura = this.sprite.getHeight();
         this.anchura_barra_vida = this.anchura;
@@ -145,20 +148,10 @@ public class Edificio extends ElementoAtacante {
         }
     }
 
-    public boolean existe_elemento_en_cola(String n) {
-        //n representa el nombre de la unidad que se quiere comprobar
-        for (ElementoSimple e : cola_construccion) {
-            if (e.nombre.equals(n)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public int obtener_indice_elemento(String n) {
         //n representa el nombre de la unidad cuyo indice se quiere obtener
         for (int i = 0; i < cola_construccion.size(); i++) {
-            if (cola_construccion.get(i).nombre.equals(n)) {
+            if (cola_construccion.get(i).nombre.equals(n) && cantidad_produccion.get(i) < Eternium.MAX_UNIT_PER_QUEUE) {
                 return i;
             }
         }
@@ -212,37 +205,36 @@ public class Edificio extends ElementoAtacante {
         }
     }
 
-    public void crear_unidad(Partida p, Jugador j, Unidad u) {
-        if (j.comprobacion_recursos(u)) {
-            if ((j.poblacion + u.coste_poblacion) <= j.poblacion_max) {
-                if (!j.raza.equals(Fenix.nombre_raza) || !u.constructor || (j.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
-                    //Cálculo de coordenadas iniciales de la unidad                
-//                    Point2D resultado = obtener_punto_salida();
-//                    u.x = (int) resultado.getX();
-//                    u.y = (int) resultado.getY();
-                    u.x = this.x;
-                    u.y = this.y;
-                    //Añadir la unidad a la cola                    
-                    j.poblacion += u.coste_poblacion;
+    public void crear_unidad(Partida partida, Jugador jugador, Unidad unidadACrear) {
+        if (jugador.comprobacion_recursos(unidadACrear)) {
+            if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
+                if (!jugador.raza.equals(Fenix.nombre_raza) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
+                    unidadACrear.x = this.x;
+                    unidadACrear.y = this.y;
+                    jugador.poblacion += unidadACrear.coste_poblacion;
                     if (cola_construccion.isEmpty()) {
-                        barra.activar(u.tiempo);
+                        barra.activar(unidadACrear.tiempo);
                     }
                     if (this.nombre.equals("Mando Central")) {
-                        if (existe_elemento_en_cola(u.nombre)) {
-                            int indice = obtener_indice_elemento(u.nombre);
-                            int contador = cantidad_produccion.get(indice).intValue();
-                            contador++;
-                            cantidad_produccion.set(indice, new Integer(contador));
-                        } else {
-                            cola_construccion.add(u);
-                            cantidad_produccion.add(new Integer(1));
-                        }
+                        mandoCentralCrearUnidad(jugador, unidadACrear);
                     } else {
-                        cola_construccion.add(u);
+                        //Añadir la unidad a la cola
+                        cola_construccion.add(unidadACrear);
                     }
                 }
             }
         }
+    }
+
+    private void mandoCentralCrearUnidad(Jugador jugador, Unidad unidadACrear) {
+        int indice = obtener_indice_elemento(unidadACrear.nombre);
+        if (indice == -1) {
+            cola_construccion.add(unidadACrear);
+            cantidad_produccion.add(new Integer(1));
+        } else {
+            cantidad_produccion.set(indice, cantidad_produccion.get(indice) + 1);
+        }
+        jugador.recursos -= unidadACrear.coste;
     }
 
     public void detener_produccion() {
@@ -332,17 +324,29 @@ public class Edificio extends ElementoAtacante {
 
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
+        this.chechAnimationStatus(p);
         super.dibujar(p, c, input, g);
-        this.sprite.setAutoUpdate(barra.isActive());
         barra.dibujar(g);
         if (MapaCampo.iu.elementos.indexOf(this) != -1) {
             dibujar_fin_movimiento(g);
         }
     }
 
+    private void chechAnimationStatus(Partida p) {
+        // Cant be under construction
+        if (!"Construyendose".equals(estado)) {
+            // Eternium collecting buildings only animate when they all work
+            if (this.nombre.equals("Cámara de asimilación") || this.nombre.equals("Teletransportador") || this.nombre.equals("Refinería")) {
+                this.sprite.setAutoUpdate(p.jugador_aliado(this).perforacion);
+            } else {
+                // Other buildings animate when they are creating something
+                this.sprite.setAutoUpdate(barra.isActive());
+            }
+        }
+    }
+
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        //System.out.println("Destruyendo la unidad = " + atacada.nombre);
         if (this.seleccionada()) {
             this.deseleccionar();
         }
@@ -354,12 +358,15 @@ public class Edificio extends ElementoAtacante {
             Manipulador m = (Manipulador) atacante;
             m.aumentar_experiencia(experiencia_al_morir);
         }
+        ElementosComunes.BUILDING_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
     }
 
     @Override
     public void construir(Partida p, Edificio edificio, float x, float y) {
+        super.construir(p, edificio, x, y);
         estado = "Construyendo";
         p.jugador_aliado(this).resta_recursos(edificio.coste);
+        edificio.estado = "Construyendose";
         edificio_construccion = edificio;
         edificio_construccion.cambiar_coordenadas(x, y);
     }
@@ -396,9 +403,10 @@ public class Edificio extends ElementoAtacante {
                 //Acaba la construcción
                 edificio_construccion.vida = edificio_construccion.vida_max;
                 edificio_construccion.iniciarbotones(p);
+                edificio_construccion.estado = "Parado";
+                estado = "Parado";
                 edificio_construccion = null;
                 aliado.comprobacion_perforacion();
-                estado = "Parado";
             }
         }
         switch (nombre) {
@@ -412,12 +420,12 @@ public class Edificio extends ElementoAtacante {
                 }
                 break;
             case "Refinería":
-                if (aliado.perforacion) {
+                if (aliado.perforacion && !"Construyendose".equals(estado)) {
                     if (recurso_int > 0) {
                         if (recurso_int - Reloj.velocidad_reloj * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;
                             aliado.recursos += Edificio.recursos_refineria;
-                            MapaEjemplo.mapac.anadir_mensaje(new Mensaje("+" + Integer.toString(Edificio.recursos_refineria), Color.green, x, y - altura / 2 - 20, 2f));
+                            MapaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
                         } else {
                             recurso_int -= Reloj.velocidad_reloj * delta;
                         }
@@ -460,7 +468,7 @@ public class Edificio extends ElementoAtacante {
                 if (r.nombre.equals("Hierro")) {
                     Rectangle2D r2 = new Rectangle2D.Float(r.x - r.anchura / 2, r.y - r.altura / 2, r.anchura, r.altura);
                     if (r2.intersects(re)) {
-                        Jugador aliado = partida.jugador_aliado(MapaEjemplo.mapac.constructor);
+                        Jugador aliado = partida.jugador_aliado(MapaPrincipal.mapac.constructor);
                         for (Edificio e : aliado.edificios) {
                             if (e.nombre.equals("Refinería") && e.hitbox(r.x, r.y)) {
                                 return new ArrayList<>();

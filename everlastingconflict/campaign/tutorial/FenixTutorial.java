@@ -17,7 +17,7 @@ import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
 import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
 import static everlastingconflict.mapas.MapaCampo.playerX;
 import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -36,7 +36,7 @@ public class FenixTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 p.j1.unidades.get(1).seleccionar();
-                MapaEjemplo.mapac.movimiento_pantalla(200, 0);
+                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
                 MapaCampo.continuar.activado = false;
             }
         });
@@ -64,7 +64,7 @@ public class FenixTutorial extends Tutorial {
             public void efecto(Partida p) {
                 MapaCampo.continuar.activado = false;
                 p.j1.edificios.get(1).seleccionar();
-                MapaEjemplo.mapac.movimiento_pantalla(0, 400);
+                MapaPrincipal.mapac.movimiento_pantalla(0, 400);
             }
         });
         pasos.add(new Paso("Como ejemplo, hemos creado ya un Cuartel y hemos desbloqueado las dos primeras unidades Fénix: el Tigre y el Halcón. Por ahora, el Cuartel no produce ninguna unidad. Haz click en el boton de Tigre para que empiece a producir esta unidad. Debes saber que, en una partida real, además de construir el cuartel deberías desbloquear las unidades en la academia antes de poder entrenarlas.") {

@@ -12,7 +12,7 @@ package everlastingconflict.Experimento_Multiplayer_Real;
 /*
  * The Client that can be run both as a console or a GUI
  */
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import everlastingconflict.mapas.MensajeChat;
 import everlastingconflict.razas.Fenix;
 
@@ -40,7 +40,7 @@ public class Client {
     public String server, username;
     private int port;
     public static CanvasGameContainer canvas;
-    public static MapaEjemplo mapa_ejemplo;
+    public static MapaPrincipal mapa_ejemplo;
     public static JFrame ventana_mapa;
     /*
      *  Constructor called by console mode
@@ -187,7 +187,7 @@ public class Client {
     public static void main(String[] args) {
         // default values        
 
-        mapa_ejemplo = new MapaEjemplo();
+        mapa_ejemplo = new MapaPrincipal();
         try {
             canvas = new CanvasGameContainer(mapa_ejemplo);
             canvas.getContainer().setShowFPS(false);
@@ -217,21 +217,21 @@ public class Client {
                     Message msg = (Message) sInput.readObject();
                     switch (msg.type) {
                         case Message.elimination_type:
-                            MapaEjemplo.mapam.otro_usuario = "Libre";
-                            MapaEjemplo.mapam.otro_usuario_raza = "-";
+                            MapaPrincipal.mapam.otro_usuario = "Libre";
+                            MapaPrincipal.mapam.otro_usuario_raza = "-";
                             break;
                         case Message.user_type:
-                            MapaEjemplo.mapam.otro_usuario = msg.text;
-                            MapaEjemplo.mapam.otro_usuario_raza = Fenix.nombre_raza;
+                            MapaPrincipal.mapam.otro_usuario = msg.text;
+                            MapaPrincipal.mapam.otro_usuario_raza = Fenix.nombre_raza;
                             break;
                         case Message.raze_type:
-                            MapaEjemplo.mapam.otro_usuario_raza = msg.text;
+                            MapaPrincipal.mapam.otro_usuario_raza = msg.text;
                             break;
                         case Message.start_type:
-                            MapaEjemplo.mapam.start = true;
+                            MapaPrincipal.mapam.start = true;
                             break;
                         case Message.text_type:                            
-                            MapaEjemplo.mapac.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
+                            MapaPrincipal.mapac.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
                             break;
                     }
                     // if console mode print the message and add back the prompt

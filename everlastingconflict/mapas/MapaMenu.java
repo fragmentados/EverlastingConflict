@@ -82,7 +82,7 @@ public class MapaMenu extends Mapa {
 
     public void start() {
         try {
-            MapaEjemplo.mapac.client = client;
+            MapaPrincipal.mapac.client = client;
             Client.mapa_ejemplo.cambio_de_mapa(Client.canvas.getContainer(), new Partida(new Jugador(usuario.getText(), r1.opcion_seleccionada), new Jugador(otro_usuario, otro_usuario_raza)), "Campo");
         } catch (SlickException ex) {
             Logger.getLogger(MapaMenu.class.getName()).log(Level.SEVERE, null, ex);

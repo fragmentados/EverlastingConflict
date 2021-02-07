@@ -17,7 +17,7 @@ import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
 import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
 import static everlastingconflict.mapas.MapaCampo.playerX;
 import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 
 import java.util.ArrayList;
 
@@ -42,27 +42,27 @@ public class EterniumTutorial extends Tutorial {
         pasos.add(new Paso("En la primera fase, las capacidades ofensivas y defensivas de las unidades y de los edificios Eternium se encuentran al 75%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.reloj_eternium.ndivision = 2;
+                MapaCampo.relojEternium().ndivision = 2;
             }
         });
         pasos.add(new Paso("En la segunda fase, se encuentran al 100%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.reloj_eternium.ndivision = 3;
+                MapaCampo.relojEternium().ndivision = 3;
             }
         });
         pasos.add(new Paso("En la tercera fase, alcanzan su máximo ya que se encuentran al 150%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.reloj_eternium.ndivision = 4;
-                MapaCampo.reloj_eternium.detencion_temporal(j1);
+                MapaCampo.relojEternium().ndivision = 4;
+                MapaCampo.relojEternium().detencion_temporal();
             }
         });
         pasos.add(new Paso("La cuarta fase es la más peligrosa ya que, en ella, las unidades Eternium son incapaces de moverse y de atacar. La única ventaja de esta fase, es que las capacidades defensivas aumentan hasta el 500% de su valor base.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.reloj_eternium.ndivision = 1;
-                MapaCampo.reloj_eternium.liberacion_temporal(j1);
+                MapaCampo.relojEternium().ndivision = 1;
+                MapaCampo.relojEternium().liberacion_temporal();
             }
         });
         pasos.add(new Paso("El sistema de recolección de recursos Eternium sigue el mismo patrón de alta inversión, alto beneficio. La recolección de hierro y transformación del mismo en energía sigue tres pasos.") {
@@ -70,7 +70,7 @@ public class EterniumTutorial extends Tutorial {
             public void efecto(Partida p) {
                 MapaCampo.continuar.activado = false;
                 j1.unidades.get(0).seleccionar();
-                MapaEjemplo.mapac.movimiento_pantalla(200, 0);
+                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
             }
         });
         pasos.add(new Paso("Primero, el hierro se extrae de vetas mediante refinerías. Cualquier unidad militar Eternium puede construir refinerías sobre una veta de hierro. Prueba a hacerlo ahora") {
@@ -121,8 +121,8 @@ public class EterniumTutorial extends Tutorial {
         j1.y_inicial = 200;
         j1.iniciar_elementos(this);
         recursos.add(new Recurso("Hierro", 600, 200));
-        MapaCampo.reloj_eternium = new RelojEternium();
-        MapaCampo.reloj_eternium.detener_reloj(1000);
+        MapaCampo.crearReloj(new RelojEternium(j1));
+        MapaCampo.relojEternium().detener_reloj(1000);
     }
 
     public EterniumTutorial() {

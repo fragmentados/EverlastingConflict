@@ -24,7 +24,7 @@ import everlastingconflict.mapas.Mensaje;
 import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
 import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
 import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaEjemplo;
+import everlastingconflict.mapas.MapaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
@@ -378,9 +378,9 @@ public class BotonComplejo extends BotonSimple {
                                                 t.construir_anexo(partida);
                                             }
                                         } else {
-                                            MapaEjemplo.mapac.edificio = contador_edificio;
-                                            MapaEjemplo.mapac.edificio.vida = 0;
-                                            MapaEjemplo.mapac.constructor = (ElementoAtacante) e;
+                                            MapaPrincipal.mapac.edificio = contador_edificio;
+                                            MapaPrincipal.mapac.edificio.vida = 0;
+                                            MapaPrincipal.mapac.constructor = (ElementoAtacante) e;
                                         }
                                     }
                                 }
@@ -450,13 +450,13 @@ public class BotonComplejo extends BotonSimple {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < Fenix.limite_cuarteles)) {
                                                     if (partida.jugador_aliado(e).comprobacion_recursos(contador_edificio)) {
-                                                        MapaEjemplo.mapac.edificio = contador_edificio;
-                                                        MapaEjemplo.mapac.edificio.vida = 0;
-                                                        MapaEjemplo.mapac.constructor = contador;
+                                                        MapaPrincipal.mapac.edificio = contador_edificio;
+                                                        MapaPrincipal.mapac.edificio.vida = 0;
+                                                        MapaPrincipal.mapac.constructor = contador;
                                                         break;
                                                     }
                                                 } else {
-                                                    MapaEjemplo.mapac.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
+                                                    MapaPrincipal.mapac.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
                                                 }
                                             }
                                         }

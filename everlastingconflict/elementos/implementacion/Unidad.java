@@ -5,6 +5,7 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estados.Estado;
 import everlastingconflict.estados.Estados;
 import everlastingconflict.gestion.Evento;
@@ -86,7 +87,7 @@ public class Unidad extends ElementoMovil {
             this.iniciar_imagenes();
             if (ataque > 0) {
                 try {
-                    sonido_combate = new Sound("media/Sonidos/" + nombre + ".ogg");
+                    sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
                 } catch (SlickException ex) {
                     Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -188,6 +189,7 @@ public class Unidad extends ElementoMovil {
                             //Acaba la construccion
                             edificio_construccion.vida = edificio_construccion.vida_max;
                             edificio_construccion.iniciarbotones(p);
+                            edificio_construccion.estado = "Parado";
                             this.movil = true;
                             this.mover(p, edificio_construccion.reunion_x, edificio_construccion.reunion_y);
                             edificio_construccion = null;
@@ -267,7 +269,6 @@ public class Unidad extends ElementoMovil {
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
         //Atacante representa la unidad que mató a esta unidad
-        //System.out.println("Destruyendo la unidad = " + atacada.nombre);
         //La unidad no ha sido destruida previamente
         if (p.jugador_aliado(this).unidades.indexOf(this) != -1) {
             if (this.seleccionada()) {
@@ -290,6 +291,7 @@ public class Unidad extends ElementoMovil {
                 Manipulador m = (Manipulador) atacante;
                 m.aumentar_experiencia(experiencia_al_morir);
             }
+            ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
         }
     }
 
@@ -384,9 +386,11 @@ public class Unidad extends ElementoMovil {
 
     @Override
     public void construir(Partida p, Edificio edificio, float x, float y) {
+        super.construir(p, edificio, x, y);
         estado = "Construyendo";
         p.jugador_aliado(this).resta_recursos(edificio.coste);
         edificio_construccion = edificio;
+        edificio.estado = "Construyendose";
         edificio_construccion.cambiar_coordenadas(x, y);
         anadir_movimiento(x, y);
 

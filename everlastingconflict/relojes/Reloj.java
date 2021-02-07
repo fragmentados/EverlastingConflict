@@ -19,11 +19,9 @@ public abstract class Reloj {
     public int ndivision;
     public float contador_reloj;
     public float detener, detener_contador;
-
-    
     public static float velocidad_reloj = 0.001f;
-
     public Image sprite;
+    public Jugador jugadorAsociado;
 
     public void detener_reloj(float d) {
         detener_contador = detener = d;
@@ -43,7 +41,7 @@ public abstract class Reloj {
 
     public abstract float tiempo_restante();
     
-    public abstract void avanzar_reloj(Jugador j, int delta);
+    public abstract void avanzar_reloj(int delta);
     
     public abstract void dibujar(Graphics g);
     

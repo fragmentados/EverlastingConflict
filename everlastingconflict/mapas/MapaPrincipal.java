@@ -5,6 +5,7 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.ai.AIFenix;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.ai.AIEternium;
@@ -17,7 +18,7 @@ import org.newdawn.slick.SlickException;
  *
  * @author Elías
  */
-public class MapaEjemplo extends BasicGame {
+public class MapaPrincipal extends BasicGame {
 
     public static MapaCampo mapac = new MapaCampo();
     public static MapaIntro mapai = new MapaIntro();
@@ -47,7 +48,7 @@ public class MapaEjemplo extends BasicGame {
 
     }
 
-    public MapaEjemplo() {
+    public MapaPrincipal() {
         super("MapaEjemplo");
         //mapac = new MapaCampo(p);
         //mapai = new MapaIntro(p);
@@ -57,11 +58,11 @@ public class MapaEjemplo extends BasicGame {
     @Override
     public void init(GameContainer container) throws SlickException {
         //cambio_de_mapa(container, new Partida(), "Menu");
-        cambio_de_mapa(container, new Partida(new Jugador("H", "Fénix"), new AIEternium()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("H", "Clark"), new AIFenix()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("H", Maestros.nombre_raza), new AIFenix()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("H", "Eternium"), new Jugador("H", "Clark")), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("H", Guardianes.nombre_raza), new AIFenix()), "Campo");
+        cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new AIEternium()), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", Maestros.nombre_raza), new AIFenix()), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", Guardianes.nombre_raza), new AIFenix()), "Campo");
 
     }
 

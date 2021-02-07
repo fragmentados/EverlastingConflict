@@ -37,10 +37,7 @@ public class Partida {
     public List<Bestias> bestias;
     public List<Proyectil> proyectiles;
 
-    public static boolean sonidos = false;
-
     public static String anadir_saltos_de_linea(String texto, float anchura) {
-        //System.out.println("Antes:" +texto);
         String resultado = "";
         String contador = texto;
         String a, b;
@@ -61,7 +58,6 @@ public class Partida {
             }
         }
         return resultado;
-        //System.out.println("Despues:" +texto);
     }
 
     public Recurso recurso_mas_cercano(Recurso recurso, String nombre_jugador, String nombre, float x, float y) {
@@ -216,7 +212,6 @@ public class Partida {
 //            }
         }
         if (j1.raza.equals("Eternium") || j2.raza.equals("Eternium")) {
-            MapaCampo.reloj_eternium = new RelojEternium();
             recursos.add(new Recurso("Hierro", sextox * 2, sextoy));
             recursos.add(new Recurso("Hierro", sextox * 4, sextoy));
             recursos.add(new Recurso("Hierro", sextox, sextoy * 2));
@@ -249,8 +244,19 @@ public class Partida {
                 //}
             }
         }
-        if (j1.raza.equals("Maestros") || j2.raza.equals("Maestros")) {
-            MapaCampo.reloj_maestros = new RelojMaestros();
+        // Inicializar relojes
+        if (j1.raza.equals("Maestros")) {
+            MapaCampo.crearReloj(new RelojMaestros(j1));
+        }
+        if (j2.raza.equals("Maestros")) {
+            MapaCampo.crearReloj(new RelojMaestros(j2));
+        }
+
+        if (j1.raza.equals("Eternium")) {
+            MapaCampo.crearReloj(new RelojEternium(j1));
+        }
+        if (j2.raza.equals("Eternium")) {
+            MapaCampo.crearReloj(new RelojEternium(j2));
         }
 //        for (Recurso r : recursos) {
 //            r.x -= 200;
