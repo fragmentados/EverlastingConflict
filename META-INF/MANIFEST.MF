@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: everlastingconflict.RTS
-Class-Path: jinput.jar jogg-0.0.7.jar jorbis-0.0.15.jar lwjgl-natives-wi
- ndows-x86.jar lwjgl-natives-windows.jar lwjgl.jar lwjgl_util.jar lwjgl_
- util_applet.jar slick.jar TWL.jar TWLEffects.jar
-
