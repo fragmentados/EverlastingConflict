@@ -7,14 +7,12 @@ package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoAtacante;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
+import org.newdawn.slick.*;
 
 /**
  *
@@ -37,9 +35,8 @@ public class Bestia extends Unidad {
         try {
             icono = new Image("media/Iconos/" + nombre + ".png");
             sprite = new Animation(new Image[]{new Image("media/Unidades/" + nombre + ".png")}, new int[]{300}, false);
-            sonido_combate = new Sound("media/Sonidos/" + nombre + ".ogg");
+            sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
             miniatura = new Image("media/Miniaturas/Prueba.png");
-            //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
 
         }
@@ -77,24 +74,28 @@ public class Bestia extends Unidad {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        Jugador aliado = p.jugador_aliado(atacante);
-        if (aliado.raza.equals("Clark")) {
-            aliado.recursos += this.recompensa;
-        }
-        if (this.seleccionada()) {
-            this.deseleccionar();
-        }
-        for (Bestias b : p.bestias) {
-            if (b.contenido.indexOf(this) != -1) {
-                b.contenido.remove(this);
-                if (b.contenido.isEmpty()) {
-                    b.muerte = true;
-                }
-                break;
+        // We use this check in case of several concurrent destructions
+        if (p.bestias.stream().filter(b -> b.contenido.contains(this)).findFirst().isPresent()) {
+            Jugador aliado = p.jugador_aliado(atacante);
+            if (aliado.raza.equals("Clark")) {
+                MapaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
+                aliado.recursos += this.recompensa;
             }
-        }
-        if (atacante instanceof Manipulador) {
-            ((Manipulador) atacante).aumentar_experiencia(experiencia_al_morir);
+            if (this.seleccionada()) {
+                this.deseleccionar();
+            }
+            for (Bestias b : p.bestias) {
+                if (b.contenido.indexOf(this) != -1) {
+                    b.contenido.remove(this);
+                    if (b.contenido.isEmpty()) {
+                        b.muerte = true;
+                    }
+                    break;
+                }
+            }
+            if (atacante instanceof Manipulador) {
+                ((Manipulador) atacante).aumentar_experiencia(experiencia_al_morir);
+            }
         }
     }
 

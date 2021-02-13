@@ -5,10 +5,8 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Fenix;
-import everlastingconflict.razas.Guardianes;
-import everlastingconflict.razas.Maestros;
+import everlastingconflict.elementos.util.ElementosComunes;
+import everlastingconflict.razas.*;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.implementacion.Edificio;
@@ -27,6 +25,7 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 
 /**
@@ -47,6 +46,7 @@ public class Jugador {
     public List<ElementoEspecial> elementos_especiales;           
     //Recursos
     public float recursos;
+    public Image resourceImage;
     public float recursos_alternativos;
     public float recursos_alternativos_dos;
     public int poblacion, poblacion_max;
@@ -88,6 +88,7 @@ public class Jugador {
         recursos = obtener_recursos();
         poblacion = 0;
         poblacion_max = 200;
+        this.resourceImage = Raza.getResourceImage(raza);
     }
 
     public void comprobacion_perforacion() {
@@ -239,23 +240,30 @@ public class Jugador {
     public void dibujar_recursos(Graphics g, float x, float y) {
         switch (raza) {
             case "Fénix":
+                this.resourceImage.draw(x - 120, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos) + "%", x - 100, y);
+                ElementosComunes.FENIX_UNIDADES_NO_CONSTRUCTORAS.draw(x - 70, y, 20, 20);
                 g.drawString(Integer.toString(cantidad_no_militar()) + "/" + Integer.toString(Fenix.limite_unidades_no_militares), x - 50, y);
+                ElementosComunes.FENIX_CUARTEL.draw(x - 20, y, 20, 20);
                 g.drawString(Integer.toString(cantidad_edificio("Cuartel Fénix")) + "/" + Integer.toString(Fenix.limite_cuarteles), x, y);
-                g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
-                break;
-            case "Eternium":
-                g.drawString(Integer.toString((int) recursos), x, y);
+                ElementosComunes.POPULATION_IMAGE.draw(x + 30, y, 20, 20);
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
                 break;
             case "Clark":
-                g.drawString(Integer.toString((int) recursos), x, y);
-                g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
+            case "Eternium":
+                this.resourceImage.draw(x, y, 20, 20);
+                g.drawString(Integer.toString((int) recursos), x + 20, y);
+                ElementosComunes.POPULATION_IMAGE.draw(x + 70, y, 20, 20);
+                g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 90, y);
+
                 break;
             case "Guardianes":
+                ElementosComunes.ICONO_DINERO.draw(x - 120, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos), x - 100, y);
+                this.resourceImage.draw(x - 70, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos_alternativos) + "%", x - 50, y);
                 g.drawString(Integer.toString((int) recursos_alternativos_dos), x, y);
+                ElementosComunes.POPULATION_IMAGE.draw(x + 30, y, 20, 20);
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
                 break;
         }

@@ -6,8 +6,12 @@
 package everlastingconflict.relojes;
 
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.gestion.Partida;
+import everlastingconflict.mapas.MapaCampo;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 
 /**
  *
@@ -22,6 +26,13 @@ public abstract class Reloj {
     public static float velocidad_reloj = 0.001f;
     public Image sprite;
     public Jugador jugadorAsociado;
+    public float anchura = 80;
+    public float altura = 80;
+    public float x;
+    public float y;
+    float hintBoxWidth = 565;
+    float hintBoxHeight = 200;
+    protected String hintBoxText;
 
     public void detener_reloj(float d) {
         detener_contador = detener = d;
@@ -43,6 +54,22 @@ public abstract class Reloj {
     
     public abstract void avanzar_reloj(int delta);
     
-    public abstract void dibujar(Graphics g);
-    
+    public abstract void dibujar(Input input, Graphics g);
+
+    public void drawHint(Graphics g) {
+        g.setColor(MapaCampo.iu.color);
+        g.fillRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);
+        g.setColor(Color.white);
+        g.drawRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);
+        g.drawString(this.hintBoxText, this.x + this.anchura + 10 + 1, this.y);
+    }
+
+    public boolean hitbox(float x, float y) {
+        if ((x >= (this.x - (anchura / 2) + 30)) && (x <= (this.x + anchura))) {
+            if ((y >= (this.y - altura / 2)) && (y <= (this.y + altura))) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

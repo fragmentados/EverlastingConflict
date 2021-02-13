@@ -17,7 +17,7 @@ public class BotonSimple {
 
     public Image sprite;
     public float x, y, altura, anchura;
-    public boolean activado;
+    public boolean activado = true;
     public String texto;
 
     public BotonSimple() {
@@ -28,26 +28,18 @@ public class BotonSimple {
         sprite = im;
         anchura = im.getWidth();
         altura = im.getHeight();
-        activado = true;
     }
 
     public BotonSimple(String t) {
         texto = t;
         anchura = t.length() * 10;
         altura = 20;
-        activado = true;
     }
 
     public BotonSimple(String t, float x, float y) {
         this(t);
         this.x = x;
         this.y = y;
-    }
-
-    public BotonSimple(String t, float x, float y, float anchura, float altura) {
-        this(t, x, y);
-        this.anchura = anchura;
-        this.altura = altura;
     }
 
     public boolean presionado(float x, float y) {

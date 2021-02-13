@@ -11,12 +11,15 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementosvisuales.BotonComplejo;
+import org.newdawn.slick.Image;
 
 /**
  *
  * @author Elías
  */
 public class Raza {
+
+
 
     public static void obtener_experiencia_bestia(Bestia b) {
         b.experiencia_al_morir = b.recompensa;
@@ -211,9 +214,6 @@ public class Raza {
     public static void edificio(Edificio e) {
         switch (e.nombre) {
             //Fénix
-            case "Cuartel":
-                Fenix.Cuartel(e);
-                break;
             case "Centro de restauración":
                 Fenix.Centro(e);
                 break;
@@ -321,5 +321,14 @@ public class Raza {
                 break;
         }
         u.inicializar_teclas_botones(u.botones);
+    }
+
+    public static Image getResourceImage(String raceName) {
+        Image image = null;
+        try {
+            image = new Image("media/Recursos/" + raceName + ".png");
+        } catch (Exception e) {
+        }
+        return image;
     }
 }

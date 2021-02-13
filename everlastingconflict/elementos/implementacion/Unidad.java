@@ -193,6 +193,7 @@ public class Unidad extends ElementoMovil {
                             this.movil = true;
                             this.mover(p, edificio_construccion.reunion_x, edificio_construccion.reunion_y);
                             edificio_construccion = null;
+                            this.enableBuildingButtons();
                         } else {
                             edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.velocidad_reloj * delta;
                         }
@@ -393,7 +394,6 @@ public class Unidad extends ElementoMovil {
         edificio.estado = "Construyendose";
         edificio_construccion.cambiar_coordenadas(x, y);
         anadir_movimiento(x, y);
-
     }
 
     public void efecto_piloto(Partida p, Unidad v) {

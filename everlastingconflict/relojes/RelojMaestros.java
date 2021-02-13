@@ -9,13 +9,12 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaCampo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+
+import org.newdawn.slick.*;
 
 /**
  *
@@ -40,6 +39,10 @@ public class RelojMaestros extends Reloj {
         } catch (SlickException ex) {
             Logger.getLogger(Reloj.class.getName()).log(Level.SEVERE, null, ex);
         }
+        hintBoxText = "Este reloj representa el tiempo que tarda en pasar del día a la noche."
+                + " El Manipulador tendrá habilidades diferentes en cuanto cambie el reloj."
+                + " También hay unidades que son más fuertes en el día o en la noche.";
+        hintBoxText = Partida.anadir_saltos_de_linea(this.hintBoxText, hintBoxWidth);
     }
 
     public void cambio_temporal(String t) {
@@ -109,7 +112,7 @@ public class RelojMaestros extends Reloj {
     }
 
     @Override
-    public void dibujar(Graphics g) {
+    public void dibujar(Input input, Graphics g) {
         float anchurag = 80, alturag = 80;
         float xg = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 - 100, yg = MapaCampo.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
@@ -155,5 +158,9 @@ public class RelojMaestros extends Reloj {
         g.setColor(Color.black);
         g.drawString(tiempo, xg + 65 - tiempo.length() * 10, yg + 30);
         g.setColor(Color.white);
+        if (this.hitbox(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY())) {
+            drawHint(g);
+        }
     }
+
 }

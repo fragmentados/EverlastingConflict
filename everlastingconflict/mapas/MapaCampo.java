@@ -14,7 +14,6 @@ import everlastingconflict.campaign.tutorial.Tutorial;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.gestion.Vision;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
@@ -47,6 +46,9 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.gui.TextField;
+
+import static everlastingconflict.elementos.util.ElementosComunes.FULL_VISIBLE_COLOR;
+import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_COLOR;
 
 /**
  *
@@ -173,6 +175,7 @@ public class MapaCampo extends Mapa {
 
     @Override
     public void init(GameContainer container) throws SlickException {
+        ElementosComunes.init();
         container.setShowFPS(false);
         container.setVSync(true);
         continuar = new BotonSimple("Continuar");
@@ -181,16 +184,12 @@ public class MapaCampo extends Mapa {
         }
         ctrl = atacar_boolean = mayus = click = false;
         deseleccionar = true;
-        //partida.j1.unidades.add(new Unidad("Soldado", 1200, 1200));
-        //partida.j1.unidades.add(new Unidad("Soldado", 350, 300));
-        //partida.j2.unidades.add(new Unidad("Soldado", 500, 300));
         partida.iniciar_elementos(2000, 2000, 1);
         atacar = new Image("media/Cursores/atacar.png");
         construccion = new Image("media/Edificios/construccion.png");
         chat_texto = new TextField(container, container.getDefaultFont(), (int) x_chat, (int) y_chat, 300, 20);
         mensajes = new ArrayList<>();
         mensajes_chat = new ArrayList<>();
-        //reloj.detener_reloj(1000);
         detencion = new Image("media/Unidades/Detención.png");
         muerte = new Image("media/Unidades/Muerte.png");
         //this.ambientMusic = new Sound("/media/Sonidos/AdeptoAtaque.ogg");
@@ -322,7 +321,6 @@ public class MapaCampo extends Mapa {
 //        return new Point(-1, -1);
 //    }
     public void dibujar_visibilidad(Graphics g, Color c, int desplazamiento) {
-        //Modo 1: Ovalos
         g.setColor(c);
         for (Unidad u : partida.j1.unidades) {
             int alcance = u.vision + desplazamiento;
@@ -332,10 +330,7 @@ public class MapaCampo extends Mapa {
             int alcance = u.vision + desplazamiento;
             g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
         }
-        for (Vision v : partida.j1.visiones) {
-            float alcance = (float) (v.forma.getWidth() + desplazamiento);
-            g.fillOval((float) (v.forma.getX() - alcance / 2), (float) (v.forma.getY() - alcance / 2), alcance, alcance);
-        }
+        partida.j1.visiones.stream().forEach(v -> v.dibujar(g, desplazamiento));
     }
 
     public void pathing_prueba(boolean movimiento, List<Unidad> unidades, float x, float y) {
@@ -600,10 +595,9 @@ public class MapaCampo extends Mapa {
             Fusion f = Clark.fusiones.get(j);
             if (f.comprobacion()) {
                 if (f.resultado == null) {
-                    f.resultado = Clark.fusion_b(partida, f);
+                    f.resultado = Clark.resolverFusion(partida, f);
                 } else {
                     if (f.comportamiento(delta)) {
-                        Clark.fusion_c(f);
                         Clark.fusiones.remove(f);
                         j--;
                     }
@@ -997,7 +991,6 @@ public class MapaCampo extends Mapa {
         g.setBackground(new Color(0.1f, 0.1f, 0.05f, 1f));
         g.scale(zoomLevel, zoomLevel);
         g.translate(-playerX, -playerY);
-        //mapa.render(0, 0);   
         if (victoria != null || derrota != null) {
             if (victoria != null) {
                 victoria.draw(250, 200);
@@ -1006,9 +999,9 @@ public class MapaCampo extends Mapa {
             }
         } else {
             //Gris
-            dibujar_visibilidad(g, new Color(0.2f, 0.2f, 0.05f, 1f), 100);
+            dibujar_visibilidad(g, HALF_VISIBLE_COLOR, 100);
             //Verde
-            dibujar_visibilidad(g, new Color(0.3f, 0.3f, 0.1f, 1f), 0);
+            dibujar_visibilidad(g, FULL_VISIBLE_COLOR, 0);
             partida.dibujar_elementos(g, input);
             partida.j1.dibujar_elementos(partida, g, input);
             for (Recurso r : partida.j2.lista_recursos) {
@@ -1113,7 +1106,7 @@ public class MapaCampo extends Mapa {
                 me.dibujar(partida, g);
             }
             //RTS.Relojes
-            relojes.stream().forEach(r -> r.dibujar(g));
+            relojes.stream().forEach(r -> r.dibujar(input, g));
             //Boton seleccionado
             BotonComplejo boton_seleccionado = iu.obtener_boton_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
             if (boton_seleccionado != null) {

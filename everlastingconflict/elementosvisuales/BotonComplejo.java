@@ -95,7 +95,6 @@ public class BotonComplejo extends BotonSimple {
         sprite = e.icono;
         altura = e.icono.getWidth();
         anchura = e.icono.getHeight();
-        activado = true;
         descripcion = e.descripcion;
     }
 
@@ -173,6 +172,9 @@ public class BotonComplejo extends BotonSimple {
                 descripcion = "El cuartel creará de forma constante Fenixes, la unidad definitiva.\n";
                 descripcion += "Tiene una gran vida y ataque e incluso puede mejorarse para poder resucitar.";
                 break;
+            case "AyudaFusion":
+                descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.\n";
+                break;
         }
     }
 
@@ -214,7 +216,6 @@ public class BotonComplejo extends BotonSimple {
         if (activado) {
             if (resolucion_contador > 0) {
                 g.setColor(new Color(0f, 0.3f, 0.4f, 0.5f));
-                //resolucion = false;
             } else {
                 g.setColor(new Color(0f, 0.6f, 0.8f, 0.5f));
             }
@@ -426,6 +427,9 @@ public class BotonComplejo extends BotonSimple {
                             edificio.detener_produccion();
                             edificio.estado = "Detenido";
                             break;
+                        case "AyudaFusion":
+                            edificio.mostrarAyudaFusion = !edificio.mostrarAyudaFusion;
+                            break;
                     }
                 }
             } else {
@@ -481,7 +485,7 @@ public class BotonComplejo extends BotonSimple {
                                     contador.add((Unidad) e2);
                                 }
                             }
-                            Clark.fusion_a(partida, new Fusion(contador));
+                            Clark.iniciarFusion(partida, new Fusion(contador));
                             break;
                         case "Detener":
                             unidad.parar();

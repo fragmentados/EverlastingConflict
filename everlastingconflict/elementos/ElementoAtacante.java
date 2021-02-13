@@ -150,7 +150,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
         if (puede_atacar()) {
             if (cadencia_contador == 0) {
                 if (sonido_combate != null) {
-                    sonido_combate.playAt(1.0f, 0.5f, x, y, 0f);
+                    sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
                 }
                 int ataque_contador;
                 if (!(this instanceof Bestia) && (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza))) {
@@ -369,6 +369,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
 
     public void construir(Partida p, Edificio edificio, float x, float y) {
         ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+        this.disableBuildingButtons();
     }
 
 }

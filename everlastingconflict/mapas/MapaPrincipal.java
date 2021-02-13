@@ -9,6 +9,8 @@ import everlastingconflict.ai.AIFenix;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.ai.AIEternium;
+import everlastingconflict.razas.Guardianes;
+import everlastingconflict.razas.Maestros;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -57,8 +59,8 @@ public class MapaPrincipal extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
+        cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
         //cambio_de_mapa(container, new Partida(), "Menu");
-        cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new AIEternium()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", Maestros.nombre_raza), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");

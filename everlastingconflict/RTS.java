@@ -27,7 +27,6 @@ public class RTS {
 
         mapa_ejemplo = new MapaPrincipal();
         try {
-            ElementosComunes.init();
             canvas = new CanvasGameContainer(mapa_ejemplo);
             canvas.getContainer().setShowFPS(false);
             ventana_mapa = new JFrame();

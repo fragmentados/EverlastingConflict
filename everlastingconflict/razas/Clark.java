@@ -45,23 +45,10 @@ public class Clark {
         return new Point2D.Float(x_contador, y_contador);
     }
 
-    public static void fusion_c(Fusion f) {
-        f.resultado.estado = "Parado";
-    }
-
-    public static Unidad fusion_b(Partida p, Fusion f) {
-        int ndepredador = 0, ndevorador = 0, ncazador = 0;
-        for (Unidad e2 : f.contenido) {
-            if (e2.nombre.equals("Depredador")) {
-                ndepredador++;
-            }
-            if (e2.nombre.equals("Devorador")) {
-                ndevorador++;
-            }
-            if (e2.nombre.equals("Cazador")) {
-                ncazador++;
-            }
-        }
+    public static Unidad resolverFusion(Partida p, Fusion f) {
+        int ndepredador = (int) f.contenido.stream().filter(u -> "Depredador".equals(u.nombre)).count();
+        int ndevorador = (int) f.contenido.stream().filter(u -> "Devorador".equals(u.nombre)).count();
+        int ncazador = (int) f.contenido.stream().filter(u -> "Cazador".equals(u.nombre)).count();
         float x = f.contenido.get(0).x, y = f.contenido.get(0).y;
         Jugador aliado = p.jugador_aliado(f.contenido.get(0));
         int tamano = f.contenido.size();
@@ -142,17 +129,15 @@ public class Clark {
         return resultado;
     }
 
-    public static void fusion_a(Partida p, Fusion f) {
+    public static void iniciarFusion(Partida p, Fusion f) {
         if (f.contenido.size() > 1) {
             Point2D.Float punto = calcular_punto_medio(f.contenido);
             for (Unidad u : f.contenido) {
                 u.mover(p, punto.x, punto.y);
             }
             Clark.fusiones.add(new Fusion(f.contenido));
-        } else {
-            if (f.contenido.size() == 1) {
-                Clark.fusion_b(p, f);
-            }
+        } else if (f.contenido.size() == 1) {
+            Clark.resolverFusion(p, f);
         }
     }
 
@@ -308,6 +293,7 @@ public class Clark {
                 e.botones.add(new BotonComplejo(new Tecnologia("Asimilación mejorada")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Instintos primarios")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Bioacero reforzado")));
+                e.botones.add(new BotonComplejo("AyudaFusion"));
                 break;
         }
     }

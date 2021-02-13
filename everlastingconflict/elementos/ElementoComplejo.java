@@ -84,6 +84,14 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
         }
     }
 
+    public void disableBuildingButtons() {
+        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.activado = false);
+    }
+
+    public void enableBuildingButtons() {
+        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.activado = true);
+    }
+
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         super.dibujar(p, c, input, g);        

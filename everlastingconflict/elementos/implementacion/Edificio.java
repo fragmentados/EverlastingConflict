@@ -54,6 +54,8 @@ public class Edificio extends ElementoAtacante {
     //Atributos para Mando Central
     public Edificio edificio_construccion;
     public float ed_x, ed_y;
+    //Atributo para el primarca
+    public boolean mostrarAyudaFusion = false;
     public List<Integer> cantidad_produccion;
     public float radio_construccion;
     public boolean activo;
@@ -133,8 +135,6 @@ public class Edificio extends ElementoAtacante {
 
     public void investigar_tecnologia(Partida p, Jugador j, Tecnologia t) {
         if (j.comprobacion_recursos(t)) {
-            //System.out.println("resultado.x = " + resultado.getX() + ".");
-            //System.out.println("resultado.y = " + resultado.getY() + ".");                                    
             for (BotonComplejo b : botones) {
                 if (b.elemento_nombre.equals(t.nombre)) {
                     b.activado = false;
@@ -221,6 +221,7 @@ public class Edificio extends ElementoAtacante {
                         //Añadir la unidad a la cola
                         cola_construccion.add(unidadACrear);
                     }
+                    jugador.recursos -= unidadACrear.coste;
                 }
             }
         }
@@ -234,7 +235,6 @@ public class Edificio extends ElementoAtacante {
         } else {
             cantidad_produccion.set(indice, cantidad_produccion.get(indice) + 1);
         }
-        jugador.recursos -= unidadACrear.coste;
     }
 
     public void detener_produccion() {
@@ -407,6 +407,7 @@ public class Edificio extends ElementoAtacante {
                 estado = "Parado";
                 edificio_construccion = null;
                 aliado.comprobacion_perforacion();
+                this.enableBuildingButtons();
             }
         }
         switch (nombre) {

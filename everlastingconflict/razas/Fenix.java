@@ -213,12 +213,6 @@ public class Fenix {
 
     public static void iniciar_botones_edificio(Edificio e) {
         switch (e.nombre) {
-            case "Cuartel":
-                e.botones.add(new BotonComplejo(new Unidad("Soldado")));
-                e.botones.add(new BotonComplejo(new Unidad("Minero")));
-                e.botones.add(new BotonComplejo(new Unidad("Sniper")));
-                e.botones.add(new BotonComplejo(new Unidad("Fénix")));
-                break;
             case "Cuartel Fénix":
                 e.botones.add(new BotonComplejo("Detener"));
                 e.botones.add(new BotonComplejo("Tigre"));
