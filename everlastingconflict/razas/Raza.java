@@ -13,6 +13,10 @@ import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import org.newdawn.slick.Image;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author Elías
@@ -330,5 +334,9 @@ public class Raza {
         } catch (Exception e) {
         }
         return image;
+    }
+
+    public static List<String> getAllRaceNames() {
+        return Arrays.asList(Fenix.nombre_raza, Clark.nombre_raza, Eternium.nombre_raza, Maestros.nombre_raza, Guardianes.nombre_raza);
     }
 }

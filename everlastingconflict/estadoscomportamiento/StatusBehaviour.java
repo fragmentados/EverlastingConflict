@@ -14,7 +14,8 @@ public enum StatusBehaviour {
     RECOLECTANDO,
     ATACANDO,
     DETENIDO,
-    PROYECTIL;
+    PROYECTIL,
+    DESTRUIDO;
 
     public static boolean allowsAttack(StatusBehaviour status) {
         return !StatusBehaviour.EMERGIENDO.equals(status);

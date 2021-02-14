@@ -5,13 +5,12 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.mapas.MapaPrincipal;
-import java.awt.Frame;
-import javax.swing.JFrame;
-import javax.swing.JRootPane;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
+
+import javax.swing.*;
+import java.awt.*;
  
 /**
  *
@@ -20,14 +19,14 @@ import org.newdawn.slick.SlickException;
 public class RTS {
 
     public static CanvasGameContainer canvas;
-    public static MapaPrincipal mapa_ejemplo;
+    public static MapaPrincipal map;
     public static JFrame ventana_mapa; 
     
     public static void main(String[] args) {
 
-        mapa_ejemplo = new MapaPrincipal();
+        map = new MapaPrincipal();
         try {
-            canvas = new CanvasGameContainer(mapa_ejemplo);
+            canvas = new CanvasGameContainer(map);
             canvas.getContainer().setShowFPS(false);
             ventana_mapa = new JFrame();
             ventana_mapa.setUndecorated(true);

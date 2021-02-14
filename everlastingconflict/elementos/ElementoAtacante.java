@@ -117,6 +117,23 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
             }
         }
+        // Atacar a las bestias hostiles cercanas
+        for (Bestias be : p.bestias) {
+            for (Bestia b : be.contenido) {
+                if (b.statusBehaviour.equals(StatusBehaviour.ATACANDO)) {
+                    if (distancia == -1 || this.obtener_distancia(b) < distancia) {
+                        distancia = this.obtener_distancia(b);
+                        if (provocado_tiempo == 0 || b.nombre.equals(nombre_provocador)) {
+                            if (alcance(this.alcance, b)) {
+                                this.objetivo = b;
+                                this.ataque(p);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -146,7 +163,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public void ataque(Partida p) {
-        if (canAttack()) {
+        if (canAttack() && !StatusBehaviour.DESTRUIDO.equals(objetivo)) {
             if (cadencia_contador == 0) {
                 if (sonido_combate != null) {
                     sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
@@ -291,10 +308,10 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public boolean canAttack() {
-        return !hostil
+        return hostil
                 && statusEffectCollection.allowsAttack()
                 && StatusBehaviour.allowsAttack(statusBehaviour)
-                && ataque <= 0;
+                && ataque > 0;
     }
 
     @Override

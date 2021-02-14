@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class Clark {
 
-    public static String nombre_raza = "Clark";
+    public static final String nombre_raza = "Clark";
     public static int ataque_depredador = Unidad.ataque_estandar + 5;
     public static int ataque_destructor = Unidad.ataque_estandar + 40;
     public static int defensa_defensor = Unidad.defensa_estandar + 4;

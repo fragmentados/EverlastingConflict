@@ -45,7 +45,7 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     public boolean canMove() {
-        return !movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour);
+        return movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour);
     }
 
     public void anadir_recoleccion(Partida partida, float x,float y){

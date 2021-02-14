@@ -27,7 +27,7 @@ public class MapaPrincipal extends BasicGame {
     public static MapaMenu mapam = new MapaMenu();
     public static Mapa mapa_actual;
 
-    public void cambio_de_mapa(GameContainer container, Partida p, String t) throws SlickException {
+    public static void cambio_de_mapa(GameContainer container, Partida p, String t) throws SlickException {
         Mapa contador = null;
         switch (t) {
             case "Menu":
@@ -59,8 +59,8 @@ public class MapaPrincipal extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
-        //cambio_de_mapa(container, new Partida(), "Menu");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
+        cambio_de_mapa(container, new Partida(), "Menu");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", Maestros.nombre_raza), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");

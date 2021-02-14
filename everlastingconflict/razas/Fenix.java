@@ -25,7 +25,7 @@ import org.newdawn.slick.SlickException;
  */
 public class Fenix {
 
-    public static String nombre_raza = "Fénix";
+    public static final String nombre_raza = "Fénix";
     public static int ataque_tigre = Unidad.ataque_estandar;
     public static int alcance_halcon = Unidad.alcance_estandar + 100;
     public static int limite_cuarteles = 2;

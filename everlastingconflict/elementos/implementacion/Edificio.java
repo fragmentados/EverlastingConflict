@@ -347,18 +347,22 @@ public class Edificio extends ElementoAtacante {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        if (this.seleccionada()) {
-            this.deseleccionar();
+        if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
+                && p.jugador_aliado(this).edificios.indexOf(this) != -1) {
+            this.statusBehaviour = StatusBehaviour.DESTRUIDO;
+            if (this.seleccionada()) {
+                this.deseleccionar();
+            }
+            p.jugador_aliado(this).edificios.remove(this);
+            if (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza)) {
+                p.jugador_aliado(this).comprobacion_perforacion();
+            }
+            if (atacante instanceof Manipulador) {
+                Manipulador m = (Manipulador) atacante;
+                m.aumentar_experiencia(experiencia_al_morir);
+            }
+            ElementosComunes.BUILDING_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
         }
-        p.jugador_aliado(this).edificios.remove(this);
-        if (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza)) {
-            p.jugador_aliado(this).comprobacion_perforacion();
-        }
-        if (atacante instanceof Manipulador) {
-            Manipulador m = (Manipulador) atacante;
-            m.aumentar_experiencia(experiencia_al_morir);
-        }
-        ElementosComunes.BUILDING_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
     }
 
     @Override

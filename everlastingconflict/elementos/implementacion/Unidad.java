@@ -270,9 +270,10 @@ public class Unidad extends ElementoMovil {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        //Atacante representa la unidad que mató a esta unidad
         //La unidad no ha sido destruida previamente
-        if (p.jugador_aliado(this).unidades.indexOf(this) != -1) {
+        if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
+                && p.jugador_aliado(this).unidades.indexOf(this) != -1) {
+            this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             if (this.seleccionada()) {
                 this.deseleccionar();
             }

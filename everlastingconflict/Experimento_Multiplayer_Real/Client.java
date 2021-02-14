@@ -40,7 +40,6 @@ public class Client {
     public String server, username;
     private int port;
     public static CanvasGameContainer canvas;
-    public static MapaPrincipal mapa_ejemplo;
     public static JFrame ventana_mapa;
     /*
      *  Constructor called by console mode
@@ -164,44 +163,6 @@ public class Client {
         } // not much else I can do
 
         // inform the GUI       
-    }
-    /*
-     * To start the Client in console mode use one of the following command
-     * > java Client
-     * > java Client username
-     * > java Client username portNumber
-     * > java Client username portNumber serverAddress
-     * at the console prompt
-     * If the portNumber is not specified 1500 is used
-     * If the serverAddress is not specified "localHost" is used
-     * If the username is not specified "Anonymous" is used
-     * > java Client 
-     * is equivalent to
-     * > java Client Anonymous 1500 localhost 
-     * are eqquivalent
-     * 
-     * In console mode, if an error occurs the program simply stops
-     * when a GUI id used, the GUI is informed of the disconnection
-     */
-
-    public static void main(String[] args) {
-        // default values        
-
-        mapa_ejemplo = new MapaPrincipal();
-        try {
-            canvas = new CanvasGameContainer(mapa_ejemplo);
-            canvas.getContainer().setShowFPS(false);
-            ventana_mapa = new JFrame();
-            //ventana_mapa.setUndecorated(true);
-            ventana_mapa.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-            ventana_mapa.setVisible(true);
-            ventana_mapa.add(canvas);
-            canvas.start();
-            ventana_mapa.setExtendedState(Frame.MAXIMIZED_BOTH);
-            ventana_mapa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        } catch (SlickException e) {
-        }
     }
 
     /*

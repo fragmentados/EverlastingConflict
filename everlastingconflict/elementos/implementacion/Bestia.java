@@ -76,7 +76,9 @@ public class Bestia extends Unidad {
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
         // We use this check in case of several concurrent destructions
-        if (p.bestias.stream().filter(b -> b.contenido.contains(this)).findFirst().isPresent()) {
+        if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
+                && p.bestias.stream().filter(b -> b.contenido.contains(this)).findFirst().isPresent()) {
+            this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             Jugador aliado = p.jugador_aliado(atacante);
             if (aliado.raza.equals("Clark")) {
                 MapaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));

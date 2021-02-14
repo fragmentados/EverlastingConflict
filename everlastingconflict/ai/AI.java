@@ -13,6 +13,9 @@ import everlastingconflict.elementos.implementacion.Unidad;
 
 import java.util.List;
 
+import everlastingconflict.razas.Clark;
+import everlastingconflict.razas.Eternium;
+import everlastingconflict.razas.Fenix;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -25,6 +28,18 @@ public class AI extends Jugador {
     
     public AI(String n, String r) {
         super(n, r);
+    }
+
+    public static AI crearAI(String r) {
+        switch(r) {
+            case Clark.nombre_raza:
+                return new AIClark();
+            case Eternium.nombre_raza:
+                return new AIEternium();
+            case Fenix.nombre_raza:
+                return new AIFenix();
+        }
+        return null;
     }
 
     public void pushear(Partida p) {

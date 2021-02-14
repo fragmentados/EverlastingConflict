@@ -711,7 +711,7 @@ public class MapaCampo extends Mapa {
             y_click = (int) playerY + input.getMouseY();
             if (!(partida instanceof Tutorial)) {
                 if (continuar.presionado(x_click, y_click)) {
-                    RTS.mapa_ejemplo.cambio_de_mapa(container, new Partida(), "Menu");
+                    RTS.map.cambio_de_mapa(container, new Partida(), "Menu");
                 }
             }
             click = true;
@@ -725,7 +725,7 @@ public class MapaCampo extends Mapa {
                     t.pasos.remove(0);
                     click = false;
                     if (t.pasos.isEmpty()) {
-                        RTS.mapa_ejemplo.cambio_de_mapa(container, partida, "Menu");
+                        RTS.map.cambio_de_mapa(container, partida, "Menu");
                     }
                 }
             }
@@ -851,7 +851,7 @@ public class MapaCampo extends Mapa {
                     t.pasos.get(0).efecto(partida);
                     t.pasos.remove(0);
                     if (t.pasos.isEmpty()) {
-                        RTS.mapa_ejemplo.cambio_de_mapa(container, partida, "Menu");
+                        RTS.map.cambio_de_mapa(container, partida, "Menu");
                     }
                 }
             }

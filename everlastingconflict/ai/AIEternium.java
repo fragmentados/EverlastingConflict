@@ -47,7 +47,6 @@ public class AIEternium extends AI {
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
         super.comportamiento_unidades(p, g, delta);
-        /*
         pushear(p);
         for (Unidad u : unidades) {
             switch (u.nombre) {
@@ -55,13 +54,13 @@ public class AIEternium extends AI {
                     comportamiento_adepto(p, u);
                     break;
             }
-        }*/
+        }
     }
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
         super.comportamiento_edificios(p, g, delta);
-        /*
+
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 case "Mando Central":
@@ -71,7 +70,7 @@ public class AIEternium extends AI {
                     comportamiento_altar(p, e);
                     break;
             }
-        }*/
+        }
     }
 
     public void comportamiento_adepto(Partida p, Unidad u) {

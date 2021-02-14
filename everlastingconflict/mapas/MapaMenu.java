@@ -5,33 +5,19 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.Experimento_Multiplayer_Real.Client;
+import everlastingconflict.Experimento_Multiplayer_Real.Message;
+import everlastingconflict.ai.AI;
+import everlastingconflict.campaign.tutorial.*;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.campaign.tutorial.ClarkTutorial;
-import everlastingconflict.campaign.tutorial.EterniumTutorial;
-import everlastingconflict.campaign.tutorial.FenixTutorial;
-import everlastingconflict.campaign.tutorial.GuardianesTutorial;
-import everlastingconflict.campaign.tutorial.MaestrosTutorial;
-import everlastingconflict.Experimento_Multiplayer_Real.Client;
-import everlastingconflict.Experimento_Multiplayer_Real.Message;
-import everlastingconflict.razas.Clark;
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Fenix;
-import everlastingconflict.razas.Guardianes;
-import everlastingconflict.razas.Maestros;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import everlastingconflict.razas.Raza;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
+
+import java.util.Arrays;
 
 /**
  *
@@ -44,7 +30,9 @@ public class MapaMenu extends Mapa {
     public String otro_usuario, otro_usuario_raza;
     private Client client;
     private final String titulo = "THE EVERLASTING CONFLICT";
-    private ComboBox r1;
+    private ComboBox racePlayer1;
+    private ComboBox racePlayer2;
+    private ComboBox player2Type;
     private TextField usuario;
     private boolean seleccion;
     public boolean start;
@@ -68,32 +56,33 @@ public class MapaMenu extends Mapa {
         guardianes = new BotonSimple("Tutorial Guardianes", 600, 500);
         volver = new BotonSimple("Volver", 600, 600);
         aceptar = new BotonSimple("Aceptar", 700, 600);
-        List<String> l = new ArrayList<>();
-        l.add(Fenix.nombre_raza);
-        l.add(Clark.nombre_raza);
-        l.add(Eternium.nombre_raza);
-        l.add(Maestros.nombre_raza);
-        l.add(Guardianes.nombre_raza);
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
-        r1 = new ComboBox(l, 700, 400);
+        racePlayer1 = new ComboBox(Raza.getAllRaceNames(), 700, 400);
+        player2Type = new ComboBox(Arrays.asList("AI", "Jugador"), 200, 500);
+        racePlayer2 = new ComboBox(Raza.getAllRaceNames(), 700, 500);
         seleccion = aceptar.activado = volver.activado = maestros.activado = fenix.activado = eternium.activado = clark.activado = guardianes.activado = false;
     }
 
-    public void start() {
+    public void start(GameContainer container) {
         try {
             MapaPrincipal.mapac.client = client;
-            Client.mapa_ejemplo.cambio_de_mapa(Client.canvas.getContainer(), new Partida(new Jugador(usuario.getText(), r1.opcion_seleccionada), new Jugador(otro_usuario, otro_usuario_raza)), "Campo");
-        } catch (SlickException ex) {
-            Logger.getLogger(MapaMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            Jugador secondPlayer;
+            if ("AI".equals(player2Type.opcion_seleccionada)) {
+                secondPlayer = AI.crearAI(racePlayer2.opcion_seleccionada);
+            } else {
+                secondPlayer = new Jugador(otro_usuario, otro_usuario_raza);
+            }
+            MapaPrincipal.cambio_de_mapa(container, new Partida(new Jugador(usuario.getText(), racePlayer1.opcion_seleccionada), secondPlayer), "Campo");
+        } catch (SlickException ex) { }
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         Input input = container.getInput();
         if (start) {
-            start();
+            start(container);
+            start = false;
         }
         //Boton izquierdo
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
@@ -105,7 +94,7 @@ public class MapaMenu extends Mapa {
                     return;
                 }
             } else if (aceptar.presionado(input.getMouseX(), input.getMouseY())) {
-                client.send_start();
+                //client.send_start();
                 start = true;
             } else if (multijugador.presionado(input.getMouseX(), input.getMouseY())) {
 
@@ -113,15 +102,15 @@ public class MapaMenu extends Mapa {
                 volver.activado = guardianes.activado = fenix.activado = eternium.activado = clark.activado = maestros.activado = true;
                 opciones.activado = combate.activado = tutorial.activado = false;
             } else if (fenix.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.mapa_ejemplo.cambio_de_mapa(container, new FenixTutorial(), "Campo");
+                MapaPrincipal.cambio_de_mapa(container, new FenixTutorial(), "Campo");
             } else if (clark.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.mapa_ejemplo.cambio_de_mapa(container, new ClarkTutorial(), "Campo");
+                MapaPrincipal.cambio_de_mapa(container, new ClarkTutorial(), "Campo");
             } else if (eternium.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.mapa_ejemplo.cambio_de_mapa(container, new EterniumTutorial(), "Campo");
+                MapaPrincipal.cambio_de_mapa(container, new EterniumTutorial(), "Campo");
             } else if (maestros.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.mapa_ejemplo.cambio_de_mapa(container, new MaestrosTutorial(), "Campo");
+                MapaPrincipal.cambio_de_mapa(container, new MaestrosTutorial(), "Campo");
             } else if (guardianes.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.mapa_ejemplo.cambio_de_mapa(container, new GuardianesTutorial(), "Campo");
+                MapaPrincipal.cambio_de_mapa(container, new GuardianesTutorial(), "Campo");
             } else if (volver.presionado(input.getMouseX(), input.getMouseY())) {
                 if (seleccion) {
                     aceptar.activado = seleccion = false;
@@ -135,11 +124,19 @@ public class MapaMenu extends Mapa {
             } else if (salir.presionado(input.getMouseX(), input.getMouseY())) {
                 Client.ventana_mapa.dispose();
                 System.exit(0);
-            } else if (r1.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
-                r1.desplegar.efecto();
+            } else if (racePlayer1.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
+                racePlayer1.desplegar.efecto();
+            } else  if (player2Type.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
+                player2Type.desplegar.efecto();
+            } else  if (racePlayer2.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
+                racePlayer2.desplegar.efecto();
             }
-            if (r1.elegir_opcion(input.getMouseX(), input.getMouseY())) {
-                client.send_message(new Message(Message.raze_type, r1.opcion_seleccionada));
+            if (racePlayer1.elegir_opcion(input.getMouseX(), input.getMouseY())) {
+                client.send_message(new Message(Message.raze_type, racePlayer1.opcion_seleccionada));
+            }
+            if (player2Type.elegir_opcion(input.getMouseX(), input.getMouseY())) {
+            } else if (racePlayer2.elegir_opcion(input.getMouseX(), input.getMouseY())) {
+
             }
         }
     }
@@ -166,11 +163,11 @@ public class MapaMenu extends Mapa {
             g.drawString("Jugador nº 1: ", 200, 400);
             g.drawString(usuario.getText(), 450, 400);
             g.drawString("Raza: ", 600, 400);
-            g.drawString("Jugador nº 2: ", 200, 500);
+            racePlayer1.dibujar(g);
+            player2Type.dibujar(g);
             g.drawString(otro_usuario, 450, 500);
             g.drawString("Raza: ", 600, 500);
-            g.drawString(otro_usuario_raza, 700, 500);
-            r1.dibujar(g);
+            racePlayer2.dibujar(g);
         }
     }
 
