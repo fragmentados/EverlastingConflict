@@ -12,11 +12,11 @@ import java.util.List;
  *
  * @author Elías
  */
-public class Estados {
+public class StatusEffectCollection {
 
-    public List<Estado> contenido;
+    public List<StatusEffect> contenido;
 
-    public Estados() {
+    public StatusEffectCollection() {
         contenido = new ArrayList<>();
     }
 
@@ -29,27 +29,19 @@ public class Estados {
         }
     }
 
-    public Estado obtener_estado(String t) {
-        for (Estado e : contenido) {
-            if (e.tipo.equals(t)) {
-                return e;
-            }
-        }
-        return null;
+    public StatusEffect obtener_estado(StatusEffectName status) {
+        return contenido.stream()
+                .filter(s -> status.equals(s.tipo))
+                .findFirst().orElse(null);
     }
 
-    public boolean existe_estado(String t) {
-        for (Estado e : contenido) {
-            if (e.tipo.equals(t)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean existe_estado(StatusEffectName status) {
+        return contenido.stream().anyMatch(s -> status.equals(s.tipo));
     }
 
-    public void anadir_estado(Estado e) {
+    public void anadir_estado(StatusEffect e) {
         boolean anadir = true;
-        for (Estado es : contenido) {
+        for (StatusEffect es : contenido) {
             if (es.tipo.equals(e.tipo)) {
                 if (e.contador >= es.contador) {
                     contenido.remove(es);                                        
@@ -64,12 +56,15 @@ public class Estados {
         }
     }
 
-    public void eliminar_estado(String t) {
-        for (Estado es : contenido) {
-            if (es.tipo.equals(t)) {
-                contenido.remove(es);
-                break;
-            }
-        }
+    public void eliminar_estado(StatusEffectName status) {
+        contenido.removeIf(s -> status.equals(s.tipo));
+    }
+
+    public boolean allowsAttack() {
+        return contenido.stream().allMatch(s -> StatusEffectName.allowsAttack(s.tipo));
+    }
+
+    public boolean allowsMove() {
+        return contenido.stream().allMatch(s -> StatusEffectName.allowsMove(s.tipo));
     }
 }

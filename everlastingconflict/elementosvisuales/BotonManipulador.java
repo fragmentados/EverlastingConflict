@@ -9,7 +9,8 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Maestros;
 import java.util.List;
@@ -73,7 +74,7 @@ public class BotonManipulador extends BotonComplejo {
                             m.disminuir_nmejora("Habilidades", this);
                             break;
                         case "Cauterización automática":
-                            m.estados.anadir_estado(new Estado(Estado.nombre_regeneracion));
+                            m.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.REGENERACION));
                             m.disminuir_nmejora("Habilidades", this);
                             break;
                         case "Entrenamiento avanzado":

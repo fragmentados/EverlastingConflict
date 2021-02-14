@@ -5,7 +5,8 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
@@ -439,7 +440,7 @@ public class Habilidad extends ElementoSimple {
                     m.dano(p, "Mágico", 200 + (int) m.poder_magico, objetivo);
                     break;
                 case "Pesadilla":
-                    ((Unidad) objetivo).estados.anadir_estado(new Estado(Estado.nombre_stun, 10));
+                    ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.STUN, 10));
                     break;
                 case "Protección":
                     ((Unidad) objetivo).escudo += 100 + (int) (m.poder_magico * 1.2f);
@@ -463,19 +464,19 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Regeneración":
-                    ((Unidad) objetivo).estados.anadir_estado(new Estado(Estado.nombre_regeneracion, 10f));
+                    ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.REGENERACION, 10f));
                     break;
                 case "Teletransporte":
                     m.x = objetivo.x;
                     m.y = objetivo.y;
                     break;
                 case "Erosión":
-                    ((Unidad) objetivo).estados.anadir_estado(new Estado(Estado.nombre_erosion));
+                    ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.EROSION));
                     break;
                 case "Trampa solar":
                     elementos_area = area(p, origen, objetivo.x, objetivo.y, "UnidadEnemiga");
                     for (ElementoComplejo e : elementos_area) {
-                        ((Unidad) e).estados.anadir_estado(new Estado(Estado.nombre_snare, 10));
+                        ((Unidad) e).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.SNARE, 10));
                     }
                     break;
                 case "Sacrificio":
@@ -544,10 +545,10 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Tiempos de necesidad":
-                    ((Unidad) origen).estados.anadir_estado(new Estado(Estado.nombre_necesidad, 10));
+                    ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.NECESIDAD, 10));
                     break;
                 case "Ansia de supervivencia":
-                    ((Unidad) origen).estados.anadir_estado(new Estado(Estado.nombre_supervivencia, 10));
+                    ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.SUPERVIVENCIA, 10));
                     break;
                 case "Eclipse Amanecer":
                     RelojMaestros relojMaestros = MapaCampo.relojMaestros();
@@ -558,31 +559,31 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Meditar":
-                    if (((Unidad) origen).estados.existe_estado(Estado.nombre_meditacion)) {
-                        ((Unidad) origen).estados.eliminar_estado(Estado.nombre_meditacion);
+                    if (((Unidad) origen).statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
+                        ((Unidad) origen).statusEffectCollection.eliminar_estado(StatusEffectName.MEDITACION);
                     } else {
-                        ((Unidad) origen).estados.anadir_estado(new Estado(Estado.nombre_meditacion));
+                        ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.MEDITACION));
                     }
                     break;
                 case "Impactos drenantes":
-                    ((Unidad) origen).estados.anadir_estado(new Estado(Estado.nombre_drenantes, 10f));
+                    ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.DRENANTES, 10f));
                     break;
                 case "Pacifismo":
-                    ((Unidad) objetivo).estados.anadir_estado(new Estado(Estado.nombre_pacifismo, 10f));
+                    ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.PACIFISMO, 10f));
                     break;
                 case "Silencio":
-                    ((Unidad) objetivo).estados.anadir_estado(new Estado(Estado.nombre_silencio, 10f));
+                    ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.SILENCIO, 10f));
                     break;
                 case "Defensa férrea":
                     Unidad objetivo_u = (Unidad) objetivo;
-                    if (objetivo_u.estados.existe_estado(Estado.nombre_defensa)) {
+                    if (objetivo_u.statusEffectCollection.existe_estado(StatusEffectName.DEFENSA)) {
                         objetivo_u.defensa /= 2;
                         objetivo_u.velocidad *= 2;
-                        objetivo_u.estados.eliminar_estado(Estado.nombre_defensa);
+                        objetivo_u.statusEffectCollection.eliminar_estado(StatusEffectName.DEFENSA);
                     } else {
                         objetivo_u.defensa *= 2;
                         objetivo_u.velocidad /= 2;
-                        objetivo_u.estados.anadir_estado(new Estado(Estado.nombre_defensa));
+                        objetivo_u.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.DEFENSA));
                     }
                     break;
                 case "Intervención divina":
@@ -608,7 +609,7 @@ public class Habilidad extends ElementoSimple {
         if (origen instanceof Manipulador) {
             Manipulador mani = (Manipulador) origen;
             if (mani.fuerzas_mixtas) {
-                mani.estados.anadir_estado(new Estado(Estado.nombre_ataque_potenciado, 15f, 10));
+                mani.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.ATAQUE_POTENCIADO, 15f, 10));
             }
         }
     }

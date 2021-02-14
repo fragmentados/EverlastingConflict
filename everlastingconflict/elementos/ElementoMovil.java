@@ -7,7 +7,7 @@ package everlastingconflict.elementos;
 
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaCampo;
 import everlastingconflict.movimientos.Mover;
@@ -39,28 +39,13 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     public void parar() {
-        estado = "Parado";
+        statusBehaviour = StatusBehaviour.PARADO;
         movimiento = null;
         objetivo = null;
     }
 
-    public boolean puede_mover() {
-        if (!movil) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_stun)) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_snare)) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_meditacion)) {
-            return false;
-        }
-        if (estado.equals("Emergiendo")) {
-            return false;
-        }
-        return true;
+    public boolean canMove() {
+        return !movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour);
     }
 
     public void anadir_recoleccion(Partida partida, float x,float y){
@@ -80,8 +65,8 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     public void mover(Partida p, float x, float y) {        
-        if (puede_mover()) {            
-            estado = "Mover";
+        if (canMove()) {
+            statusBehaviour = StatusBehaviour.MOVER;
             anadir_movimiento(x, y);
         }
     }
@@ -91,7 +76,7 @@ public class ElementoMovil extends ElementoAtacante {
             mover(p, x, y);
         } else {
             if (movil && hostil) {
-                estado = "AtacarMover";
+                statusBehaviour = StatusBehaviour.ATACAR_MOVER;
                 x_atmov = x;
                 y_atmov = y;
             }
@@ -103,7 +88,7 @@ public class ElementoMovil extends ElementoAtacante {
         super.comportamiento(p, g, delta);
         if (movimiento != null) {
             if (movimiento.resolucion(p, delta)) {
-                if (this.estado.equals("Mover") || this.estado.equals("AtacarMover")) {
+                if (this.statusBehaviour.equals(StatusBehaviour.MOVER) || this.statusBehaviour.equals(StatusBehaviour.ATACAR_MOVER)) {
                     parar();
                 } else {
                     movimiento = null;

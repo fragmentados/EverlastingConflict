@@ -6,8 +6,9 @@
 package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.Estado;
-import everlastingconflict.estados.Estados;
+import everlastingconflict.estados.StatusEffectCollection;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
@@ -71,7 +72,7 @@ public class Unidad extends ElementoMovil {
     public Unidad(String n) {
         nombre = n;
         descripcion = "";
-        estados = new Estados();
+        statusEffectCollection = new StatusEffectCollection();
         botones = new ArrayList<>();
         //habilidades = new ArrayList<>();
         hostil = true;
@@ -79,7 +80,7 @@ public class Unidad extends ElementoMovil {
         vida = vida_max;
         coste_poblacion = 1;
         cadencia_contador = 0;
-        estado = "Parado";
+        statusBehaviour = StatusBehaviour.PARADO;
         x = 0;
         y = 0;
         recurso_int = 0;
@@ -137,12 +138,12 @@ public class Unidad extends ElementoMovil {
         super.comportamiento(p, g, delta);
         Jugador aliado = p.jugador_aliado(this);
         Jugador enemigo = p.jugador_enemigo(this);
-        if (estados.existe_estado(Estado.nombre_regeneracion)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.REGENERACION)) {
             if (this.vida < this.vida_max) {
                 aumentar_vida(Reloj.velocidad_reloj * delta);
             }
         }
-        if (estados.existe_estado(Estado.nombre_erosion)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.EROSION)) {
             disminuir_vida(p, Reloj.velocidad_reloj * delta * vida_max / 5);
         }
         for (ElementoEspecial e : enemigo.elementos_especiales) {
@@ -152,8 +153,8 @@ public class Unidad extends ElementoMovil {
                 }
             }
         }
-        switch (estado) {
-            case "Embarcando":
+        switch (statusBehaviour) {
+            case EMBARCANDO:
                 if (this.hitbox(objetivo.x, objetivo.y)) {
                     if (objetivo instanceof Edificio) {
                         if (((Edificio) objetivo).activo) {
@@ -170,7 +171,7 @@ public class Unidad extends ElementoMovil {
                     anadir_movimiento(objetivo.x, objetivo.y);
                 }
                 break;
-            case "Construyendo":
+            case CONSTRUYENDO:
                 if ((x == edificio_construccion.x) && (y == edificio_construccion.y)) {
                     if (edificio_construccion.vida == 0) {
                         this.movil = false;
@@ -189,7 +190,7 @@ public class Unidad extends ElementoMovil {
                             //Acaba la construccion
                             edificio_construccion.vida = edificio_construccion.vida_max;
                             edificio_construccion.iniciarbotones(p);
-                            edificio_construccion.estado = "Parado";
+                            edificio_construccion.statusBehaviour = StatusBehaviour.PARADO;
                             this.movil = true;
                             this.mover(p, edificio_construccion.reunion_x, edificio_construccion.reunion_y);
                             edificio_construccion = null;
@@ -200,7 +201,7 @@ public class Unidad extends ElementoMovil {
                     }
                 }
                 break;
-            case "AtacarMover":
+            case ATACAR_MOVER:
                 boolean atacar = atacar_cercanos(p);
                 if (!atacar) {
                     if ((movimiento == null) || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov)) {
@@ -210,7 +211,7 @@ public class Unidad extends ElementoMovil {
                     movimiento = null;
                 }
                 break;
-            case "Recolectando":
+            case RECOLECTANDO:
                 if ((this.x == recurso.x) && (this.y == recurso.y)) {
                     if (recurso.vida < Recurso.vida_civiles) {
                         if ((recurso.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.velocidad_reloj * delta) >= Recurso.vida_civiles) {
@@ -229,7 +230,7 @@ public class Unidad extends ElementoMovil {
                     }
                 }
                 break;
-            case "Parado":
+            case PARADO:
                 for (ElementoEspecial e : enemigo.elementos_especiales) {
                     if (e.nombre.equals("Agujero negro")) {
                         if (this.alcance(300, e)) {
@@ -238,7 +239,7 @@ public class Unidad extends ElementoMovil {
                     }
                 }
                 break;
-            case "Atacando":
+            case ATACANDO:
                 if (alcance(this.alcance, objetivo)) {
                     movimiento = null;
                     ataque(p);
@@ -246,7 +247,7 @@ public class Unidad extends ElementoMovil {
                     anadir_movimiento(objetivo.x, objetivo.y);
                 }
                 break;
-            case "Habilidad":
+            case HABILIDAD:
                 if (alcance(habilidad_seleccionada.alcance, objetivo)) {
                     movimiento = null;
                     habilidad_seleccionada.resolucion(p, this, objetivo);
@@ -298,7 +299,7 @@ public class Unidad extends ElementoMovil {
 
     /*Inicio de Métodos Cambiantes de Estado */
     public void habilidad(Habilidad habilidad, ElementoComplejo elemento) {
-        estado = "Habilidad";
+        statusBehaviour = StatusBehaviour.HABILIDAD;
         objetivo = elemento;
         habilidad_seleccionada = habilidad;
     }
@@ -306,7 +307,7 @@ public class Unidad extends ElementoMovil {
     @Override
     public void mover(Partida p, float x, float y) {
         super.mover(p, x, y);
-        if (puede_mover()) {
+        if (canMove()) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
                 if (!p.jugador_aliado(this).raza.equals(Fenix.nombre_raza)) {
@@ -324,14 +325,14 @@ public class Unidad extends ElementoMovil {
     }
 
     public void recolectar(Partida p, Recurso r) {
-        estado = "Recolectando";
+        statusBehaviour = StatusBehaviour.RECOLECTANDO;
         recurso = r;
         anadir_recoleccion(p, recurso.x, recurso.y);
     }
 
     public void atacar(ElementoVulnerable atacada) {
-        if (puede_atacar()) {
-            estado = "Atacando";
+        if (canAttack()) {
+            statusBehaviour = StatusBehaviour.ATACANDO;
             objetivo = atacada;
         }
     }
@@ -341,7 +342,7 @@ public class Unidad extends ElementoMovil {
         //o para que las unidades embarquen el Ayuntamiento para solu-
         //cionen eventos
         objetivo = e;
-        estado = "Embarcando";
+        statusBehaviour = StatusBehaviour.EMBARCANDO;
     }
 
     /*Fin de Métodos Cambiantes de Estado */
@@ -353,33 +354,33 @@ public class Unidad extends ElementoMovil {
     public void provocar(ElementoSimple provocador, float t) {
         if (this.objetivo != null) {
             this.objetivo = null;
-            this.estado = "Parado";
+            this.statusBehaviour = StatusBehaviour.PARADO;
         }
         this.nombre_provocador = provocador.nombre;
         this.provocado_tiempo_contador = this.provocado_tiempo = t;
     }
 
     public boolean puede_usar_habilidad() {
-        if (estados.existe_estado(Estado.nombre_stun)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.STUN)) {
             return false;
         }
-        if (estados.existe_estado(Estado.nombre_silencio)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.SILENCIO)) {
             return false;
         }
-        if (estados.existe_estado(Estado.nombre_necesidad)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.NECESIDAD)) {
             return false;
         }
-        if (estado.equals("Emergiendo")) {
+        if (statusBehaviour.equals(StatusBehaviour.EMERGIENDO)) {
             return false;
         }
         return true;
     }
 
     public boolean puede_ser_danado() {
-        if (estados.existe_estado(Estado.nombre_necesidad)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.NECESIDAD)) {
             return false;
         }
-        if (estados.existe_estado(Estado.nombre_supervivencia)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.SUPERVIVENCIA)) {
             return false;
         }
         return true;
@@ -388,10 +389,10 @@ public class Unidad extends ElementoMovil {
     @Override
     public void construir(Partida p, Edificio edificio, float x, float y) {
         super.construir(p, edificio, x, y);
-        estado = "Construyendo";
+        statusBehaviour = StatusBehaviour.CONSTRUYENDO;
         p.jugador_aliado(this).resta_recursos(edificio.coste);
         edificio_construccion = edificio;
-        edificio.estado = "Construyendose";
+        edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
         edificio_construccion.cambiar_coordenadas(x, y);
         anadir_movimiento(x, y);
     }

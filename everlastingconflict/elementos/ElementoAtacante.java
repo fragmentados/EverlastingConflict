@@ -6,7 +6,9 @@
 package everlastingconflict.elementos;
 
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaCampo;
@@ -77,9 +79,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public boolean atacar_cercanos(Partida p) {
         Jugador enemigo = p.jugador_enemigo(this);
         float distancia = -1;
-        if (this instanceof Edificio) {
-            System.out.println();
-        }
         for (Unidad u : enemigo.unidades) {
             if (distancia == -1 || this.obtener_distancia(u) < distancia) {
                 distancia = this.obtener_distancia(u);
@@ -147,7 +146,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public void ataque(Partida p) {
-        if (puede_atacar()) {
+        if (canAttack()) {
             if (cadencia_contador == 0) {
                 if (sonido_combate != null) {
                     sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
@@ -211,16 +210,16 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     }
                 }
             }
-            if (this.estados.existe_estado(Estado.nombre_drenantes)) {
+            if (this.statusEffectCollection.existe_estado(StatusEffectName.DRENANTES)) {
                 Manipulador m = (Manipulador) this;
                 if (m.mana >= 10) {
                     ataque_contador += 15;
                     m.mana -= 10;
                 }
             }
-            if (this.estados.existe_estado(Estado.nombre_ataque_potenciado)) {
-                ataque_contador += this.estados.obtener_estado(Estado.nombre_ataque_potenciado).contador;
-                this.estados.eliminar_estado(Estado.nombre_ataque_potenciado);
+            if (this.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
+                ataque_contador += this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
+                this.statusEffectCollection.eliminar_estado(StatusEffectName.ATAQUE_POTENCIADO);
             }
             float cantidad_dano = (ataque_contador - defensa_contador);
             if (!(e instanceof Unidad) || ((Unidad) e).puede_ser_danado()) {
@@ -251,7 +250,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
                 if (m.disparo_helado && e instanceof Unidad) {
                     Unidad unidad = (Unidad) e;
-                    unidad.estados.anadir_estado(new Estado(Estado.nombre_ralentizacion, 5f, 35f));
+                    unidad.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 5f, 35f));
                 }
             }
             if (e instanceof Manipulador) {
@@ -291,29 +290,11 @@ public abstract class ElementoAtacante extends ElementoEstado {
         return false;
     }
 
-    public boolean puede_atacar() {
-        if (!hostil) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_stun)) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_pacifismo)) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_meditacion)) {
-            return false;
-        }
-        if (estados.existe_estado(Estado.nombre_supervivencia)) {
-            return false;
-        }
-        if (ataque <= 0) {
-            return false;
-        }
-        if (estado.equals("Emergiendo")) {
-            return false;
-        }
-        return true;
+    public boolean canAttack() {
+        return !hostil
+                && statusEffectCollection.allowsAttack()
+                && StatusBehaviour.allowsAttack(statusBehaviour)
+                && ataque <= 0;
     }
 
     @Override
@@ -355,8 +336,8 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 cadencia_contador -= (Reloj.velocidad_reloj * delta);
             }
         }
-        switch (estado) {
-            case "Parado":
+        switch (statusBehaviour) {
+            case PARADO:
                 if (hostil) {
                     atacar_cercanos(p);
                 }

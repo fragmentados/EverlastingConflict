@@ -7,7 +7,8 @@ package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaCampo;
@@ -188,7 +189,7 @@ public class Manipulador extends Unidad {
         if (experiencia + e >= experiencia_max) {
             experiencia = ((experiencia + e) - experiencia_max);
             if (nivel == 1) {
-                estados.eliminar_estado(Estado.nombre_meditacion);
+                statusEffectCollection.eliminar_estado(StatusEffectName.MEDITACION);
                 for (BotonComplejo b : botones) {
                     if (b.elemento_nombre != null && b.elemento_nombre.equals("Meditar")) {
                         botones.remove(b);
@@ -276,13 +277,13 @@ public class Manipulador extends Unidad {
         if (this.mana < this.mana_max) {
             aumentar_mana(Reloj.velocidad_reloj * regeneracion_mana * delta);
         }
-        if (estados.existe_estado(Estado.nombre_meditacion)) {
+        if (statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
             this.aumentar_experiencia(Reloj.velocidad_reloj * 2 * delta);
         }
         if (Manipulador.alentar) {
             for (Unidad u : aliado.unidades) {
                 if (!u.nombre.equals("Manipulador") && u.alcance(200, this)) {
-                    u.estados.anadir_estado(new Estado(Estado.nombre_ataque_potenciado, 0, 1));
+                    u.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.ATAQUE_POTENCIADO, 0, 1));
                 }
             }
         }

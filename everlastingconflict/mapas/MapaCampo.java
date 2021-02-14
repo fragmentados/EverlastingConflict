@@ -5,6 +5,7 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.elementos.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
@@ -21,13 +22,9 @@ import everlastingconflict.razas.Guardianes;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
-import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.implementacion.Bestia;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Recurso;
@@ -646,73 +643,19 @@ public class MapaCampo extends Mapa {
             }
         }
         //Grupos de Control
-        for (int i = Input.KEY_1; i <= Input.KEY_0; i++) {
-            if (input.isKeyPressed(i)) {
+        for (int numberKey = Input.KEY_1; numberKey <= Input.KEY_0; numberKey++) {
+            if (input.isKeyPressed(numberKey)) {
                 if (input.isKeyDown(Input.KEY_LCONTROL)) {
                     //Asignar grupo de control
                     for (Control c : control) {
-                        if (c.tecla == i) {
+                        if (c.tecla == numberKey) {
                             control.remove(c);
                             break;
                         }
                     }
-                    control.add(new Control(iu.elementos, i));
+                    control.add(new Control(iu.elementos, numberKey));
                 } else {
-                    //Seleccionar grupo de control                    
-                    for (Control c : control) {
-                        if (c.tecla == i) {
-                            boolean cambiar_perspectiva = true;
-                            if (iu.elementos.isEmpty()) {
-                                cambiar_perspectiva = false;
-                            }
-                            for (int j = 0; j < iu.elementos.size(); j++) {
-                                if (iu.elementos.get(j) != c.contenido.get(j)) {
-                                    cambiar_perspectiva = false;
-                                    break;
-                                }
-                            }
-                            if (cambiar_perspectiva) {
-                                //El grupo de control ya está seleccionado: Se cambia a la perspectiva del g.c.
-                                //Obtener coordenadas mínimas y máximas
-                                float x_min = -1, y_min = -1;
-                                float x_max = -1, y_max = -1;
-                                for (ElementoComplejo e : c.contenido) {
-                                    if (x_min == -1 || e.x < x_min) {
-                                        x_min = e.x;
-                                    }
-                                    if (y_min == -1 || e.y < y_min) {
-                                        y_min = e.y;
-                                    }
-                                    if (x_max == -1 || e.x > x_max) {
-                                        x_max = e.x;
-                                    }
-                                    if (y_max == -1 || e.y > y_max) {
-                                        y_max = e.y;
-                                    }
-                                }
-                                //Obtener coordenadas medias
-                                float x_medio = (x_max + x_min) / 2;
-                                float y_medio = (y_max + y_min) / 2;
-                                if (x_medio - MapaCampo.VIEWPORT_SIZE_X / 2 <= 0) {
-                                    MapaCampo.playerX = 0;
-                                } else {
-                                    MapaCampo.playerX = x_medio - MapaCampo.VIEWPORT_SIZE_X / 2;
-                                }
-                                if (y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2 <= 0) {
-                                    MapaCampo.playerY = 0;
-                                } else {
-                                    MapaCampo.playerY = y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2;
-                                }
-                            } else {
-                                //El grupo de control no está seleccionado: Se selecciona.
-                                deseleccion();
-                                for (ElementoComplejo e : c.contenido) {
-                                    e.seleccionar();
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    handleControlGroupSelection(numberKey);
                 }
             }
         }
@@ -817,57 +760,10 @@ public class MapaCampo extends Mapa {
                     click = false;
                 }
             } else if (atacar_boolean) {
-                //Atacar - Mover
-                List<Unidad> seleccionadas = new ArrayList<>();
-                for (ElementoSimple e : iu.elementos) {
-                    if (e instanceof Unidad) {
-                        seleccionadas.add((Unidad) e);
-                    }
-                }
-                obtener_ataque_mover(seleccionadas, (int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
-                atacar_boolean = false;
-                container.setDefaultMouseCursor();
-                deseleccionar = false;
+                handleAttackMove(input, container);
             } else {
-                //Seleccionar un Elemento
-                List<ElementoComplejo> contador = new ArrayList<>();
-                contador.addAll(partida.j1.unidades);
-                contador.addAll(partida.j1.edificios);
-                for (ElementoComplejo e : contador) {
-                    if (e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
-                        deseleccion();
-                        e.seleccionar();
-                        break;
-                    }
-                }
-                for (Bestias be : partida.bestias) {
-                    for (Bestia b : be.contenido) {
-                        if (b.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
-                            deseleccion();
-                            b.seleccionar();
-                            click = false;
-                            break;
-                        }
-                    }
-                }
-                for (Unidad u : partida.j2.unidades) {
-                    if (u.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
-                        deseleccion();
-                        u.seleccionar();
-                        click = false;
-                        break;
-                    }
-                }
-                for (Edificio e : partida.j2.edificios) {
-                    if (e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
-                        deseleccion();
-                        e.seleccionar();
-                        click = false;
-                        break;
-                    }
-                }
+                checkSelections(input);
             }
-
         }
 
         if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
@@ -915,7 +811,6 @@ public class MapaCampo extends Mapa {
                                 }
                             }
                         }
-
                         u.seleccionar();
                     }
                 }
@@ -981,6 +876,99 @@ public class MapaCampo extends Mapa {
                 gestionar_click_derecho(x_click, y_click);
             }
         }
+    }
+
+    private void handleControlGroupSelection(Integer numberKey) {
+        //Seleccionar grupo de control
+        for (Control c : control) {
+            if (c.tecla == numberKey) {
+                boolean cambiar_perspectiva = true;
+                if (iu.elementos.isEmpty()) {
+                    cambiar_perspectiva = false;
+                }
+                for (int j = 0; j < iu.elementos.size(); j++) {
+                    if (iu.elementos.get(j) != c.contenido.get(j)) {
+                        cambiar_perspectiva = false;
+                        break;
+                    }
+                }
+                if (cambiar_perspectiva) {
+                    //El grupo de control ya está seleccionado: Se cambia a la perspectiva del g.c.
+                    //Obtener coordenadas mínimas y máximas
+                    float x_min = -1, y_min = -1;
+                    float x_max = -1, y_max = -1;
+                    for (ElementoComplejo e : c.contenido) {
+                        if (x_min == -1 || e.x < x_min) {
+                            x_min = e.x;
+                        }
+                        if (y_min == -1 || e.y < y_min) {
+                            y_min = e.y;
+                        }
+                        if (x_max == -1 || e.x > x_max) {
+                            x_max = e.x;
+                        }
+                        if (y_max == -1 || e.y > y_max) {
+                            y_max = e.y;
+                        }
+                    }
+                    //Obtener coordenadas medias
+                    float x_medio = (x_max + x_min) / 2;
+                    float y_medio = (y_max + y_min) / 2;
+                    if (x_medio - MapaCampo.VIEWPORT_SIZE_X / 2 <= 0) {
+                        MapaCampo.playerX = 0;
+                    } else {
+                        MapaCampo.playerX = x_medio - MapaCampo.VIEWPORT_SIZE_X / 2;
+                    }
+                    if (y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2 <= 0) {
+                        MapaCampo.playerY = 0;
+                    } else {
+                        MapaCampo.playerY = y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2;
+                    }
+                } else {
+                    //El grupo de control no está seleccionado: Se selecciona.
+                    deseleccion();
+                    for (ElementoComplejo e : c.contenido) {
+                        e.seleccionar();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private void handleAttackMove(Input input, GameContainer container) {
+        //Atacar - Mover
+        List<Unidad> seleccionadas = new ArrayList<>();
+        for (ElementoSimple e : iu.elementos) {
+            if (e instanceof Unidad) {
+                seleccionadas.add((Unidad) e);
+            }
+        }
+        obtener_ataque_mover(seleccionadas, (int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+        atacar_boolean = false;
+        container.setDefaultMouseCursor();
+        deseleccionar = false;
+    }
+
+    private void checkSelections(Input input) {
+        //Seleccionar un Elemento
+        List<ElementoComplejo> contador = new ArrayList<>();
+        contador.addAll(partida.j1.unidades);
+        contador.addAll(partida.j1.edificios);
+        contador.addAll(partida.j2.unidades);
+        contador.addAll(partida.j2.edificios);
+        partida.bestias.stream().map(bs -> bs.contenido).forEach(b -> contador.addAll(b));
+        contador.stream()
+                .filter(e -> e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY()))
+                .findFirst().ifPresent(e -> handleSelection(e));
+    }
+
+    private void handleSelection(ElementoComplejo e) {
+        if (!mayus) {
+            deseleccion();
+        }
+        e.seleccionar(mayus);
+        click = false;
     }
 
     @Override

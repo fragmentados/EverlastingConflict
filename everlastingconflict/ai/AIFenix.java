@@ -5,6 +5,7 @@
  */
 package everlastingconflict.ai;
 
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.elementos.implementacion.Edificio;
@@ -84,7 +85,7 @@ public class AIFenix extends AI {
     }
 
     public void comportamiento_constructor(Partida p, Unidad u) {
-        if (u.estado.equals("Parado")) {
+        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
             if (this.cantidad_edificio("Cuartel Fénix") < Fenix.limite_cuarteles) {
                 Edificio contador = new Edificio("Cuartel Fénix");
                 contador.vida = 0;
@@ -107,7 +108,7 @@ public class AIFenix extends AI {
     }
 
     public void comportamiento_recolector(Partida p, Unidad u) {
-        if (u.estado.equals("Parado")) {
+        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
             Recurso r = p.recurso_mas_cercano(null, this.nombre, "Civiles", u.x, u.y);
             if (r != null) {
                 u.recolectar(p, r);

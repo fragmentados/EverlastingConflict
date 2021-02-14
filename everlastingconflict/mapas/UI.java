@@ -8,7 +8,8 @@ package everlastingconflict.mapas;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Maestros;
 import everlastingconflict.elementos.implementacion.Bestia;
@@ -113,6 +114,19 @@ public class UI {
             this.elementos.add(e);
             Collections.sort(elementos, new Comparador());
             iniciar_seleccion();
+            if (fin < 32) {
+                fin++;
+            }
+        }
+    }
+
+    public void seleccionar(ElementoComplejo e, boolean mayus) {
+        if (elementos.indexOf(e) == -1) {
+            this.elementos.add(e);
+            if (!mayus) {
+                Collections.sort(elementos, new Comparador());
+                iniciar_seleccion();
+            }
             if (fin < 32) {
                 fin++;
             }
@@ -297,8 +311,8 @@ public class UI {
                         ataque = unidad.ataque;
                         defensa = unidad.defensa;
                     }
-                    if (unidad.estados.existe_estado(Estado.nombre_ataque_potenciado)) {
-                        ataque += unidad.estados.obtener_estado(Estado.nombre_ataque_potenciado).contador;
+                    if (unidad.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
+                        ataque += unidad.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
                     }
                     if (p.jugador_aliado(unidad).raza.equals(Maestros.nombre_raza)) {
                         if (Manipulador.alentar) {
@@ -360,8 +374,8 @@ public class UI {
                     g.drawString("Defensa:", defensatx, linea1y);
                     g.drawString(Integer.toString(defensa), defensax, linea1y);
                     float velocidad;
-                    if (unidad.estados.existe_estado(Estado.nombre_ralentizacion)) {
-                        velocidad = unidad.velocidad * (100 - unidad.estados.obtener_estado(Estado.nombre_ralentizacion).contador) / 100;
+                    if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
+                        velocidad = unidad.velocidad * (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
                     } else {
                         velocidad = unidad.velocidad;
                     }
@@ -398,7 +412,7 @@ public class UI {
                     }
                     if (e instanceof Bestia) {
                         Bestia b = (Bestia) e;
-                        float recompensatx = ataquetx + 40;
+                        float recompensatx = defensatx;
                         float recompensax = recompensatx + 110;
                         g.drawString("Recompensa:", recompensatx, linea3y);
                         g.drawString(Integer.toString(b.recompensa), recompensax, linea3y);
@@ -495,9 +509,9 @@ public class UI {
 
     private void dibujarEstadosUnidad(Unidad unidad, Graphics g, float x, float y) {
         float x_estados = x + 10;
-        for (Estado es : unidad.estados.contenido) {
-            g.drawString(es.tipo, x_estados, y + 50 + unidad.icono.getHeight() + 55);
-            x_estados += es.tipo.length() * 10;
+        for (StatusEffect es : unidad.statusEffectCollection.contenido) {
+            g.drawString(es.tipo.getName(), x_estados, y + 50 + unidad.icono.getHeight() + 55);
+            x_estados += es.tipo.getName().length() * 10;
             if (es.tiempo > 0) {
                 g.drawString(Integer.toString((int) es.tiempo_contador), x_estados, y + 50 + unidad.icono.getHeight() + 55);
                 x_estados += Integer.toString((int) es.tiempo_contador).length() * 10;

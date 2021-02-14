@@ -5,6 +5,7 @@
  */
 package everlastingconflict.ai;
 
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.ElementoAtacante;
@@ -30,7 +31,7 @@ public class AI extends Jugador {
         List<Unidad> militares = cantidad_militar();
         if (militares.size() >= npushear) {
             for (Unidad u : militares) {
-                if (u.estado.equals("Parado")) {
+                if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
                     Jugador enemigo = p.jugador_enemigo(this);
                     u.atacarmover(p, enemigo.x_inicial, enemigo.y_inicial);
                 }
@@ -60,7 +61,7 @@ public class AI extends Jugador {
     public void avisar_ataque(Partida p, ElementoAtacante atacante) {
         List<Unidad> militares = cantidad_militar();        
         for (Unidad u : militares) {
-            if(u.estado.equals("Parado")){
+            if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
                 u.atacarmover(p, atacante.x, atacante.y);
             }
         }

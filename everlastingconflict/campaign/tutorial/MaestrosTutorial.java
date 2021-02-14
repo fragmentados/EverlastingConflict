@@ -6,11 +6,12 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.elementosvisuales.BotonManipulador;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaCampo;
@@ -66,7 +67,7 @@ public class MaestrosTutorial extends Tutorial {
 
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.get(0).estados.existe_estado(Estado.nombre_meditacion);
+                return p.j1.unidades.get(0).statusEffectCollection.existe_estado(StatusEffectName.MEDITACION);
             }
         });
         pasos.add(new Paso("Como podrás comprobar, tu Manipulador es ahora incapaz de moverse, pero su experiencia aumenta continuamente hasta subir al nivel dos. Espera hasta que ocurra esto.") {
@@ -77,7 +78,7 @@ public class MaestrosTutorial extends Tutorial {
 
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.get(0).estados.contenido.isEmpty();
+                return p.j1.unidades.get(0).statusEffectCollection.contenido.isEmpty();
             }
         });
         pasos.add(new Paso("Enhorabuena! Tu Manipulador ha subido de nivel. Como habrás observado, la habilidad Meditación ha desaparecido ya que solo se puede usar en el nivel 1. Pero, además, han aparecido dos botones nuevos: Habilidades y Atributos. Prueba a pulsar Habilidades ahora.") {

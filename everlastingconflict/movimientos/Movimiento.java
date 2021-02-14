@@ -5,7 +5,8 @@
  */
 package everlastingconflict.movimientos;
 
-import everlastingconflict.estados.Estado;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoMovil;
@@ -31,8 +32,8 @@ public abstract class Movimiento {
         float x_final = puntos.get(0).x;
         float y_final = puntos.get(0).y;
         float movimiento = 100 * Reloj.velocidad_reloj * unidad.velocidad * delta;
-        if (unidad.estados.existe_estado(Estado.nombre_ralentizacion)) {
-            movimiento *= (100 - unidad.estados.obtener_estado(Estado.nombre_ralentizacion).contador) / 100;
+        if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
+            movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
         }
         float distancia_x = Math.abs(x_final - unidad.x);
         float distancia_y = Math.abs(y_final - unidad.y);
@@ -104,7 +105,7 @@ public abstract class Movimiento {
     }
 
     public void dibujar_fin_movimiento(Graphics g) {
-        if (unidad.estado.equals("AtacarMover")) {
+        if (unidad.statusBehaviour.equals(StatusBehaviour.ATACAR_MOVER)) {
             g.setColor(Color.red);
         } else {
             g.setColor(Color.green);

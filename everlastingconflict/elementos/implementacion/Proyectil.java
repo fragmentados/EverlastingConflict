@@ -5,7 +5,8 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.estados.Estados;
+import everlastingconflict.estados.StatusEffectCollection;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoMovil;
@@ -48,9 +49,9 @@ public class Proyectil extends ElementoMovil {
         this.objetivo = objetivo;
         this.origen = origen;
         this.ataque = ataque;
-        estados = new Estados();
+        statusEffectCollection = new StatusEffectCollection();
         origen.nombre = "Proyectil";
-        estado = "";
+        statusBehaviour = StatusBehaviour.PROYECTIL;
         this.x = this.origen.x;
         this.y = this.origen.y;
         this.velocidad = 3.0f;

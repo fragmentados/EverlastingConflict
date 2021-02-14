@@ -5,6 +5,7 @@
  */
 package everlastingconflict.razas;
 
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.implementacion.Unidad;
 
@@ -49,6 +50,7 @@ public class Fusion {
         if (resultado.vida + (resultado.vida_max / resultado.tiempo) * Reloj.velocidad_reloj * delta >= resultado.vida_max) {
             //Acaba la construccion
             resultado.vida = resultado.vida_max;
+            resultado.statusBehaviour = StatusBehaviour.PARADO;
             return true;
         } else {
             resultado.vida += (resultado.vida_max / resultado.tiempo) * Reloj.velocidad_reloj * delta;

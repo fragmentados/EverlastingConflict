@@ -6,6 +6,8 @@
 package everlastingconflict.elementosvisuales;
 
 import everlastingconflict.elementos.ElementoAtacante;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.ElementoComplejo;
@@ -15,7 +17,6 @@ import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Taller;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.estados.Estado;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.mapas.MapaCampo;
@@ -369,7 +370,7 @@ public class BotonComplejo extends BotonSimple {
                     } else {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio
-                            if (!edificio.estado.equals("Construyendo")) {
+                            if (!edificio.statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                 if (edificio.constructor) {
                                     if (aliado.comprobacion_recursos(contador_edificio)) {
@@ -415,7 +416,7 @@ public class BotonComplejo extends BotonSimple {
                             } catch (SlickException ex) {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            edificio.estado = "Construyendo";
+                            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
                             break;
                         case "Detener":
                             texto = "Reanudar";
@@ -425,7 +426,7 @@ public class BotonComplejo extends BotonSimple {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             edificio.detener_produccion();
-                            edificio.estado = "Detenido";
+                            edificio.statusBehaviour = StatusBehaviour.DETENIDO;
                             break;
                         case "AyudaFusion":
                             edificio.mostrarAyudaFusion = !edificio.mostrarAyudaFusion;
@@ -449,8 +450,8 @@ public class BotonComplejo extends BotonSimple {
                                 if (e2 instanceof Unidad) {
                                     Unidad contador = (Unidad) e2;
                                     if (contador.constructor) {
-                                        if (!contador.estado.equals("Construyendo")) {
-                                            if (!contador.estados.existe_estado(Estado.nombre_amnesia)) {
+                                        if (!contador.statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
+                                            if (!contador.statusEffectCollection.existe_estado(StatusEffectName.AMNESIA)) {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < Fenix.limite_cuarteles)) {
                                                     if (partida.jugador_aliado(e).comprobacion_recursos(contador_edificio)) {

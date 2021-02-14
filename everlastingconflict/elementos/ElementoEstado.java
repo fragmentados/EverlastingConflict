@@ -5,7 +5,8 @@
  */
 package everlastingconflict.elementos;
 
-import everlastingconflict.estados.Estados;
+import everlastingconflict.estados.StatusEffectCollection;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -17,14 +18,14 @@ import org.newdawn.slick.Input;
  */
 public abstract class ElementoEstado extends ElementoComplejo {
 
-    public String estado;
-    public Estados estados;
+    public StatusBehaviour statusBehaviour;
+    public StatusEffectCollection statusEffectCollection;
 
     @Override
     public abstract void destruir(Partida p, ElementoAtacante atacante);
 
     public void comportamiento(Partida p, Graphics g, int delta) {
-        estados.comportamiento(delta);        
+        statusEffectCollection.comportamiento(delta);
     }
 
     @Override

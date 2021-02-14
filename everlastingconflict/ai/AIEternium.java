@@ -6,6 +6,7 @@
 package everlastingconflict.ai;
 
 import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
@@ -74,7 +75,7 @@ public class AIEternium extends AI {
     }
 
     public void comportamiento_adepto(Partida p, Unidad u) {
-        if (u.estado.equals("Parado")) {
+        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
             Recurso r = p.recurso_mas_cercano(null, this.nombre, "Hierro", u.x, u.y);
             if (r != null) {
                 Edificio contador = new Edificio("Refinería");

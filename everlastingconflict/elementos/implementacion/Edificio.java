@@ -6,8 +6,10 @@
 package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.Estado;
-import everlastingconflict.estados.Estados;
+import everlastingconflict.estados.StatusEffect;
+import everlastingconflict.estados.StatusEffectCollection;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.ProgressBar;
@@ -36,8 +38,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-
-import static everlastingconflict.razas.Eternium.MAX_UNIT_PER_QUEUE;
 
  /**
  *
@@ -95,9 +95,9 @@ public class Edificio extends ElementoAtacante {
     public Edificio(String n) {
         this.nombre = n;
         initImages();
-        this.estado = "Parado";
+        this.statusBehaviour = StatusBehaviour.PARADO;
         this.descripcion = "";
-        this.estados = new Estados();
+        this.statusEffectCollection = new StatusEffectCollection();
         Raza.edificio(this);
         vida = vida_max;
         this.botones = new ArrayList<>();
@@ -334,7 +334,7 @@ public class Edificio extends ElementoAtacante {
 
     private void chechAnimationStatus(Partida p) {
         // Cant be under construction
-        if (!"Construyendose".equals(estado)) {
+        if (!statusBehaviour.equals(StatusBehaviour.CONSTRUYENDOSE)) {
             // Eternium collecting buildings only animate when they all work
             if (this.nombre.equals("Cámara de asimilación") || this.nombre.equals("Teletransportador") || this.nombre.equals("Refinería")) {
                 this.sprite.setAutoUpdate(p.jugador_aliado(this).perforacion);
@@ -364,9 +364,9 @@ public class Edificio extends ElementoAtacante {
     @Override
     public void construir(Partida p, Edificio edificio, float x, float y) {
         super.construir(p, edificio, x, y);
-        estado = "Construyendo";
+        statusBehaviour = StatusBehaviour.CONSTRUYENDO;
         p.jugador_aliado(this).resta_recursos(edificio.coste);
-        edificio.estado = "Construyendose";
+        edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
         edificio_construccion = edificio;
         edificio_construccion.cambiar_coordenadas(x, y);
     }
@@ -388,11 +388,11 @@ public class Edificio extends ElementoAtacante {
         if (nombre.equals("Distorsionador temporal")) {
             for (Unidad u : enemigo.unidades) {
                 if (this.alcance(200, u)) {
-                    u.estados.anadir_estado(new Estado(Estado.nombre_ralentizacion, 1f, 40f));
+                    u.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 1f, 40f));
                 }
             }
         }
-        if (constructor && estado.equals("Construyendo")) {
+        if (constructor && statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
             if (edificio_construccion.vida == 0) {
                 aliado.edificios.add(edificio_construccion);
             }
@@ -403,8 +403,8 @@ public class Edificio extends ElementoAtacante {
                 //Acaba la construcción
                 edificio_construccion.vida = edificio_construccion.vida_max;
                 edificio_construccion.iniciarbotones(p);
-                edificio_construccion.estado = "Parado";
-                estado = "Parado";
+                edificio_construccion.statusBehaviour = StatusBehaviour.PARADO;
+                statusBehaviour = StatusBehaviour.PARADO;
                 edificio_construccion = null;
                 aliado.comprobacion_perforacion();
                 this.enableBuildingButtons();
@@ -412,7 +412,7 @@ public class Edificio extends ElementoAtacante {
         }
         switch (nombre) {
             case "Cuartel Fénix":
-                if (estado.equals("Construyendo")) {
+                if (statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
                     if (unidad_actual != null) {
                         if (!barra.isActive()) {
                             this.crear_unidad(p, aliado, new Unidad(unidad_actual));
@@ -421,7 +421,7 @@ public class Edificio extends ElementoAtacante {
                 }
                 break;
             case "Refinería":
-                if (aliado.perforacion && !"Construyendose".equals(estado)) {
+                if (aliado.perforacion && !statusBehaviour.equals(StatusBehaviour.CONSTRUYENDOSE)) {
                     if (recurso_int > 0) {
                         if (recurso_int - Reloj.velocidad_reloj * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;

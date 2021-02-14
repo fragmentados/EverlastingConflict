@@ -5,6 +5,7 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.MapaPrincipal;
@@ -103,7 +104,7 @@ public class Bestia extends Unidad {
     public void comportamiento(Partida p, Graphics g, int delta) {
         if (movimiento != null) {
             if (movimiento.resolucion(p, delta)) {
-                if (this.estado.equals("Mover")) {
+                if (statusBehaviour.equals(StatusBehaviour.MOVER)) {
                     parar();
                 } else {
                     movimiento = null;
@@ -117,8 +118,8 @@ public class Bestia extends Unidad {
                 cadencia_contador -= (Reloj.velocidad_reloj * delta);
             }
         }
-        switch (estado) {
-            case "Atacando":
+        switch (statusBehaviour) {
+            case ATACANDO:
                 float distancia = calcular_distancia();
                 if (distancia >= Bestia.distancia_maxima) {
                     this.mover(p, x_inicial, y_inicial);
@@ -131,7 +132,7 @@ public class Bestia extends Unidad {
                     }
                 }
                 break;
-            case "Parado":
+            case PARADO:
                 if ((x != x_inicial) || (y != y_inicial)) {
                     this.mover(p, x_inicial, y_inicial);
                 } else {

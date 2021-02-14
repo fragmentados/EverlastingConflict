@@ -33,6 +33,10 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
         MapaCampo.iu.seleccionar(this);
     }
 
+    public void seleccionar(boolean mayus) {
+        MapaCampo.iu.seleccionar(this, mayus);
+    }
+
     public void deseleccionar() {
         MapaCampo.iu.deseleccionar(this);
     }

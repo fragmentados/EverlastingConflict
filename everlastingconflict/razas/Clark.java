@@ -9,6 +9,7 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementosvisuales.BotonComplejo;
@@ -120,7 +121,7 @@ public class Clark {
                 f.contenido.get(0).destruir(p, null);
                 f.contenido.remove(0);
             }
-            resultado.estado = "Emergiendo";
+            resultado.statusBehaviour = StatusBehaviour.EMERGIENDO;
             resultado.vida = 0;
             aliado.unidades.add(resultado);
             aliado.unidades.get(aliado.unidades.size() - 1).iniciarbotones(p);

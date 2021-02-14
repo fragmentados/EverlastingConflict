@@ -13,6 +13,7 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
@@ -191,7 +192,7 @@ public class Fenix {
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;
         e.tiempo = Edificio.tiempo_estandar;
-        e.estado = "Construyendo";
+        e.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
         e.descripcion = "Edificio encargado de la producción de las unidades Fénix.";
     }
 
