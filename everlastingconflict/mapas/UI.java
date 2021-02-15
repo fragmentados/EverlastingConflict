@@ -5,6 +5,7 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.ControlGroup;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
@@ -22,17 +23,16 @@ import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Unidad;
 
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.iu;
-import static everlastingconflict.mapas.MapaCampo.playerX;
-import static everlastingconflict.mapas.MapaCampo.playerY;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.iu;
+import static everlastingconflict.mapas.VentanaCombate.playerX;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.newdawn.slick.Color;
@@ -40,40 +40,17 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 
-/**
- *
- * @author Elías
- */
-class Comparador implements Comparator<ElementoSimple> {
-
-    Comparador() {
-    }
-
-    // Overriding the compare method to sort the age 
-    @Override
-    public int compare(ElementoSimple e1, ElementoSimple e2) {
-        if (e1.nombre.equals(e2.nombre)) {
-            return 0;
-        } else {
-            if ((int) e1.nombre.charAt(0) < (int) e2.nombre.charAt(0)) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
-    }
-}
-
 public class UI {
 
     public List<ElementoComplejo> elementos;
     public List<ElementoComplejo> seleccion_actual;
     public BotonSimple sig, ant;
     public int inicio, fin, npagina;
-
     public float x_mini, y_mini, anchura_mini = 250, altura_mini = 200;
     public float x_minim, y_minim, anchura_minim, altura_minim;
-    public float anchura_miniatura = 200, anchura_seleccion = 730, anchura_botones = MapaCampo.VIEWPORT_SIZE_X - 1180;
+    public float anchura_miniatura = 200, anchura_seleccion = 730, anchura_botones = VentanaCombate.VIEWPORT_SIZE_X - 1180;
+    public static final float UI_HEIGHT = 200;
+    private static final Color UI_COLOR = new Color(0f, 0f, 0.6f, 1f);
 
     public Color color;
 
@@ -112,7 +89,7 @@ public class UI {
     public void seleccionar(ElementoComplejo e) {
         if (elementos.indexOf(e) == -1) {
             this.elementos.add(e);
-            Collections.sort(elementos, new Comparador());
+            Collections.sort(elementos, new UnitSorter());
             iniciar_seleccion();
             if (fin < 32) {
                 fin++;
@@ -124,7 +101,7 @@ public class UI {
         if (elementos.indexOf(e) == -1) {
             this.elementos.add(e);
             if (!mayus) {
-                Collections.sort(elementos, new Comparador());
+                Collections.sort(elementos, new UnitSorter());
                 iniciar_seleccion();
             }
             if (fin < 32) {
@@ -139,7 +116,7 @@ public class UI {
             if (seleccion_actual.indexOf(e) != -1) {
                 this.seleccion_actual.remove(e);
             }
-            Collections.sort(elementos, new Comparador());
+            Collections.sort(elementos, new UnitSorter());
             if (!elementos.isEmpty()) {
                 iniciar_seleccion();
             }
@@ -189,10 +166,10 @@ public class UI {
     }
 
     public void dibujar_punto(Graphics g, ElementoCoordenadas e) {
-        float anchura = anchura_mini * (e.anchura / MapaCampo.WORLD_SIZE_X);
-        float altura = altura_mini * (e.altura / MapaCampo.WORLD_SIZE_Y);
-        float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / MapaCampo.WORLD_SIZE_X);
-        float y = y_mini + (altura_mini - altura) * ((e.y - e.altura / 2) / MapaCampo.WORLD_SIZE_Y);
+        float anchura = anchura_mini * (e.anchura / VentanaCombate.WORLD_SIZE_X);
+        float altura = altura_mini * (e.altura / VentanaCombate.WORLD_SIZE_Y);
+        float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / VentanaCombate.WORLD_SIZE_X);
+        float y = y_mini + (altura_mini - altura) * ((e.y - e.altura / 2) / VentanaCombate.WORLD_SIZE_Y);
         g.fillRect(x, y, anchura, altura);
     }
 
@@ -221,11 +198,11 @@ public class UI {
         g.setColor(Color.gray);
         for (Bestias be : p.bestias) {
             if (be.muerte) {
-                anchura = anchura_mini * (MapaCampo.muerte.getWidth() / MapaCampo.WORLD_SIZE_X);
-                altura = altura_mini * (MapaCampo.muerte.getHeight() / MapaCampo.WORLD_SIZE_Y);
-                x = x_mini + (200 - anchura) * (be.x / MapaCampo.WORLD_SIZE_X);
-                y = y_mini + (200 - altura) * (be.y / MapaCampo.WORLD_SIZE_Y);
-                MapaCampo.muerte.draw(x, y, anchura, altura);
+                anchura = anchura_mini * (VentanaCombate.muerte.getWidth() / VentanaCombate.WORLD_SIZE_X);
+                altura = altura_mini * (VentanaCombate.muerte.getHeight() / VentanaCombate.WORLD_SIZE_Y);
+                x = x_mini + (200 - anchura) * (be.x / VentanaCombate.WORLD_SIZE_X);
+                y = y_mini + (200 - altura) * (be.y / VentanaCombate.WORLD_SIZE_Y);
+                VentanaCombate.muerte.draw(x, y, anchura, altura);
             } else {
                 for (Bestia b : be.contenido) {
                     if (b.visible(p)) {
@@ -252,21 +229,21 @@ public class UI {
         g.setColor(Color.white);
     }
 
-    public void dibujar_minimapa(Partida p, Graphics g) {
+    public void renderMinimap(Partida p, Graphics g, float initialY) {
         //Rectángulo grande     
-        x_mini = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X - anchura_mini;
-        y_mini = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y;
+        x_mini = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X - anchura_mini;
+        y_mini = initialY;
         dibujar_puntos(p, g);
-        g.drawRect(x_mini, y_mini, anchura_mini, altura_mini);
+        g.drawRect(x_mini, y_mini, anchura_mini - 1, altura_mini);
         //Rectángulo pequeño                
-        anchura_minim = anchura_mini * (MapaCampo.VIEWPORT_SIZE_X / MapaCampo.WORLD_SIZE_X);
-        altura_minim = altura_mini * (MapaCampo.VIEWPORT_SIZE_Y / MapaCampo.WORLD_SIZE_Y);
-        x_minim = x_mini + (anchura_mini - anchura_minim) * (MapaCampo.playerX / MapaCampo.offsetMaxX);
-        y_minim = y_mini + (altura_mini - altura_minim) * (MapaCampo.playerY / MapaCampo.offsetMaxY);
+        anchura_minim = anchura_mini * (VentanaCombate.VIEWPORT_SIZE_X / VentanaCombate.WORLD_SIZE_X);
+        altura_minim = altura_mini * (VentanaCombate.VIEWPORT_SIZE_Y / VentanaCombate.WORLD_SIZE_Y);
+        x_minim = x_mini + (anchura_mini - anchura_minim) * (VentanaCombate.playerX / VentanaCombate.offsetMaxX);
+        y_minim = y_mini + (altura_mini - altura_minim) * (VentanaCombate.playerY / VentanaCombate.offsetMaxY);
         g.drawRect(x_minim, y_minim, anchura_minim, altura_minim);
     }
 
-    public void dibujar_elemento_complejo(Partida p, Graphics g, float x, float y, float anchura, float altura) {
+    public void renderComplexElement(Partida p, Graphics g, float x, float y, float anchura, float altura) {
         //x,y,anchura,altura representan la información del rectángulo donde
         //se escribira el elemento
         ElementoComplejo e = elementos.get(0);
@@ -289,7 +266,7 @@ public class UI {
                 //Cola de construcción
                 Edificio ed = (Edificio) e;
                 if (!ed.cola_construccion.isEmpty()) {
-                    dibujarColaConstruccion(ed, g);
+                    renderConstructionQueue(ed, y, g);
                 } else {
                     dibujarStatsEdificio(ed, g, x, y);
                 }
@@ -458,29 +435,29 @@ public class UI {
         }
     }
 
-    private void dibujarColaConstruccion(Edificio ed, Graphics g) {
-        ed.cola_construccion.get(0).icono.draw(playerX + 230, playerY + VIEWPORT_SIZE_Y + 50);
+    private void renderConstructionQueue(Edificio ed, float initialY, Graphics g) {
+        ed.cola_construccion.get(0).icono.draw(playerX + 230, initialY + 50);
         g.setColor(Color.black);
-        g.drawRect(playerX + 230, playerY + VIEWPORT_SIZE_Y + 50, ed.cola_construccion.get(0).icono.getWidth(), ed.cola_construccion.get(0).icono.getHeight());
+        g.drawRect(playerX + 230, initialY + 50, ed.cola_construccion.get(0).icono.getWidth(), ed.cola_construccion.get(0).icono.getHeight());
         g.setColor(Color.white);
         if (ed.cantidad_produccion != null) {
             g.setColor(Color.green);
-            g.drawString(ed.cantidad_produccion.get(0).toString(), playerX + 230, playerY + VIEWPORT_SIZE_Y + 50);
+            g.drawString(ed.cantidad_produccion.get(0).toString(), playerX + 230, initialY + 50);
             g.setColor(Color.white);
         }
-        g.drawRect(playerX + 280, playerY + VIEWPORT_SIZE_Y + 70, ed.barra.anchura, ed.barra.altura);
+        g.drawRect(playerX + 280, initialY + 70, ed.barra.anchura, ed.barra.altura);
         g.setColor(Color.green);
-        g.fillRect(playerX + 280, playerY + VIEWPORT_SIZE_Y + 70, ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo()), ed.barra.altura);
+        g.fillRect(playerX + 280, initialY + 70, ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo()), ed.barra.altura);
         g.setColor(Color.white);
-        g.fillRect(playerX + 280 + ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo()), playerY + VIEWPORT_SIZE_Y + 70, ed.barra.anchura - (ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo())), ed.barra.altura);
+        g.fillRect(playerX + 280 + ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo()), initialY + 70, ed.barra.anchura - (ed.barra.anchura * (ed.barra.progreso / ed.barra.getMaximo())), ed.barra.altura);
         for (int i = 1; i < ed.cola_construccion.size(); i++) {
-            ed.cola_construccion.get(i).icono.draw(playerX + 230 + (i - 1) * 50, playerY + VIEWPORT_SIZE_Y + 100);
+            ed.cola_construccion.get(i).icono.draw(playerX + 230 + (i - 1) * 50, initialY + 100);
             g.setColor(Color.black);
-            g.drawRect(playerX + 230 + (i - 1) * 50, playerY + VIEWPORT_SIZE_Y + 100, ed.cola_construccion.get(i).icono.getWidth(), ed.cola_construccion.get(i).icono.getHeight());
+            g.drawRect(playerX + 230 + (i - 1) * 50, initialY + 100, ed.cola_construccion.get(i).icono.getWidth(), ed.cola_construccion.get(i).icono.getHeight());
             g.setColor(Color.white);
             if (ed.cantidad_produccion != null) {
                 g.setColor(Color.green);
-                g.drawString(ed.cantidad_produccion.get(i).toString(), playerX + 230 + (i - 1) * 50, playerY + VIEWPORT_SIZE_Y + 100);
+                g.drawString(ed.cantidad_produccion.get(i).toString(), playerX + 230 + (i - 1) * 50, initialY + 100);
                 g.setColor(Color.white);
             }
         }
@@ -519,45 +496,45 @@ public class UI {
         }
     }
 
-    public void dibujar_UI(Partida p, Graphics g) {
-        float altura = 200;
-        g.setColor(new Color(0f, 0f, 0.6f, 1f));
-        g.fillRect(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, MapaCampo.VIEWPORT_SIZE_X, altura);
+    public void renderUI(Partida p, Graphics g, List<ControlGroup> controlGroupGroups) {
+        float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI_HEIGHT - 1;
+        g.setColor(UI_COLOR);
+        g.fillRect(VentanaCombate.playerX, initialY, VentanaCombate.VIEWPORT_SIZE_X - 1, UI_HEIGHT);
         //Primer Rectángulo: Miniatura.        
         if (!elementos.isEmpty()) {
             Image miniatura = seleccion_actual.get(0).miniatura;
             //g.setColor(new Color(0.1f, 0.1f, 0.1f, 0.7f));
-            //g.fillRect(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_miniatura, altura);
-            miniatura.draw(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y);
+            //g.fillRect(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_miniatura, UI_HEIGHT);
+            miniatura.draw(VentanaCombate.playerX, initialY);
         }
         g.setColor(Color.white);
-        g.drawRect(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_miniatura, altura);
+        g.drawRect(VentanaCombate.playerX, initialY, anchura_miniatura, UI_HEIGHT);
         //Segundo Rectángulo: Seleccion.        
-        g.drawRect(MapaCampo.playerX + anchura_miniatura, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_seleccion, altura);
+        g.drawRect(VentanaCombate.playerX + anchura_miniatura, initialY, anchura_seleccion, UI_HEIGHT);
         if (!elementos.isEmpty()) {
             if (elementos.size() == 1) {
-                dibujar_elemento_complejo(p, g, MapaCampo.playerX + anchura_miniatura, MapaCampo.playerY + +MapaCampo.VIEWPORT_SIZE_Y, anchura_seleccion, altura);
+                renderComplexElement(p, g, VentanaCombate.playerX + anchura_miniatura, initialY, anchura_seleccion, UI_HEIGHT);
             } else {
-                ant.x = sig.x = MapaCampo.playerX + anchura_miniatura + 5;
-                ant.y = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 5;
-                sig.y = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 50;
+                ant.x = sig.x = VentanaCombate.playerX + anchura_miniatura + 5;
+                ant.y = initialY + 5;
+                sig.y = initialY + 50;
                 ant.dibujar(g);
-                g.drawString(Integer.toString(npagina), MapaCampo.playerX + anchura_miniatura + 15, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 30);
+                g.drawString(Integer.toString(npagina), VentanaCombate.playerX + anchura_miniatura + 15, initialY + 30);
                 sig.dibujar(g);
                 g.setColor(Color.green);
                 for (int i = inicio; i < fin; i++) {
                     ElementoComplejo e = elementos.get(i);
                     if (seleccion_actual.indexOf(e) != -1) {
-                        g.drawRect(MapaCampo.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5) - 1, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) - 1, 41, 41);
+                        g.drawRect(VentanaCombate.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5) - 1, initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) - 1, 41, 41);
                     }
-                    e.icono.draw(MapaCampo.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5), MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5));
-                    e.dibujar_mini_barra(g, MapaCampo.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5), MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) + e.icono.getHeight() + 5, Color.green);
+                    e.icono.draw(VentanaCombate.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5), initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5));
+                    e.dibujar_mini_barra(g, VentanaCombate.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5), initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) + e.icono.getHeight() + 5, Color.green);
                 }
                 g.setColor(Color.white);
             }
         }
         //Tercer Rectángulo: Botones
-        g.drawRect(MapaCampo.playerX + anchura_miniatura + anchura_seleccion, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_botones, altura);
+        g.drawRect(VentanaCombate.playerX + anchura_miniatura + anchura_seleccion, initialY, anchura_botones, UI_HEIGHT);
         if (!seleccion_actual.isEmpty()) {
             ElementoComplejo e = seleccion_actual.get(0);
             List<BotonComplejo> botones;
@@ -569,8 +546,8 @@ public class UI {
             for (int i = 0; i < botones.size(); i++) {
                 BotonComplejo boton = botones.get(i);
                 //Las coordenadas de los botones tienen que cambiarse en este bucle para se tenga en cuenta playerX y playerY
-                boton.x = MapaCampo.playerX + anchura_miniatura + anchura_seleccion + 5 + (i % 4) * (boton.sprite.getWidth() + 5);
-                boton.y = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 5 + ((i % 16) / 4) * (boton.sprite.getHeight() + 5);
+                boton.x = VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5 + (i % 4) * (boton.sprite.getWidth() + 5);
+                boton.y = initialY + 5 + ((i % 16) / 4) * (boton.sprite.getHeight() + 5);
                 boton.dibujar(g);
                 if (e instanceof Edificio) {
                     Edificio edificio = (Edificio) e;
@@ -582,62 +559,84 @@ public class UI {
                 }
             }
         }
-        dibujar_minimapa(p, g);
+        renderMinimap(p, g, initialY);
+        renderControlGroups(g, controlGroupGroups, initialY);
+    }
+
+    public void renderControlGroups(Graphics g, List<ControlGroup> controlGroups, float initialY) {
+        float initialX = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X - anchura_mini - 12 * 22;
+        //Grupos de control
+        for (int i = Input.KEY_1; i <= Input.KEY_0; i++) {
+            int numero;
+            if (i == 11) {
+                numero = 0;
+            } else {
+                numero = i - 1;
+            }
+            g.drawRect(initialX + i * 22, initialY - 40, 20, 20);
+            g.drawString(Integer.toString(numero), initialX + i * 22, initialY - 40);
+            g.drawRect(initialX + i * 22, initialY - 20, 20, 20);
+            for (ControlGroup c : controlGroups) {
+                if (c.tecla == i) {
+                    g.drawString(Integer.toString(c.contenido.size()), initialX + i * 22, initialY - 20);
+                    break;
+                }
+            }
+        }
     }
 
     public Point2D obtener_coordenadas_minimapa(float x_click, float y_click) {
-        float x = x_click - (MapaCampo.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
+        float x = x_click - (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
         float y = y_click - ((int) playerY + VIEWPORT_SIZE_Y);
-        float resultado_x = (x / anchura_mini) * MapaCampo.WORLD_SIZE_X;
-        float resultado_y = (y / altura_mini) * MapaCampo.WORLD_SIZE_Y;
+        float resultado_x = (x / anchura_mini) * VentanaCombate.WORLD_SIZE_X;
+        float resultado_y = (y / altura_mini) * VentanaCombate.WORLD_SIZE_Y;
         return new Point2D.Float(resultado_x, resultado_y);
     }
 
-    public void mover_perspectiva(float x_click, float y_click) {
+    public void movePlayerPerspective(float x_click, float y_click) {
         //Obtengo el x relativo dentro del minimapa
-        float x = x_click - (MapaCampo.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
-        float y = y_click - (MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y);
+        float x = x_click - (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
+        float y = y_click - (VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI.UI_HEIGHT);
         //Transformación a las coordenadas del mapa
-        x *= (MapaCampo.WORLD_SIZE_X / anchura_mini);
-        y *= (MapaCampo.WORLD_SIZE_Y / altura_mini);
-        //System.out.println("x = " + x + ".");
-        //System.out.println("y = " + y + ".");
+        x *= (VentanaCombate.WORLD_SIZE_X / anchura_mini);
+        y *= (VentanaCombate.WORLD_SIZE_Y / altura_mini);
         //Centramos las coordenadas en el minimapa
-        x -= (anchura_minim * (MapaCampo.WORLD_SIZE_X / anchura_mini)) / 2;
-        y -= (altura_minim * (MapaCampo.WORLD_SIZE_Y / altura_mini)) / 2;
-        if (x < MapaCampo.offsetMinX) {
-            x = MapaCampo.offsetMinX;
+        x -= (anchura_minim * (VentanaCombate.WORLD_SIZE_X / anchura_mini)) / 2;
+        y -= (altura_minim * (VentanaCombate.WORLD_SIZE_Y / altura_mini)) / 2;
+        if (x < VentanaCombate.offsetMinX) {
+            x = VentanaCombate.offsetMinX;
         }
-        if (y < MapaCampo.offsetMinY) {
-            y = MapaCampo.offsetMinY;
+        if (y < VentanaCombate.offsetMinY) {
+            y = VentanaCombate.offsetMinY;
         }
-        if (x > MapaCampo.offsetMaxX) {
-            x = MapaCampo.offsetMaxX;
+        if (x > VentanaCombate.offsetMaxX) {
+            x = VentanaCombate.offsetMaxX;
         }
-        if (y > MapaCampo.offsetMaxY) {
-            y = MapaCampo.offsetMaxY;
+        if (y > VentanaCombate.offsetMaxY) {
+            y = VentanaCombate.offsetMaxY;
         }
-        MapaCampo.playerX = x;
-        MapaCampo.playerY = y;
+        VentanaCombate.playerX = x;
+        VentanaCombate.playerY = y;
     }
 
-    public void gestionar_click_izquierdo(Input input, Partida p, int x_click, int y_click, boolean mayus) {
-        if ((x_click >= (MapaCampo.playerX + anchura_miniatura)) && (x_click <= (MapaCampo.playerX + anchura_seleccion + anchura_miniatura))) {
+    public void handleLeftClick(Input input, Partida p, int x_click, int y_click, boolean mayus) {
+        if ((x_click >= (VentanaCombate.playerX + anchura_miniatura)) && (x_click <= (VentanaCombate.playerX + anchura_seleccion + anchura_miniatura))) {
+            float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI.UI_HEIGHT;
             //Segundo cuadrado: Selección actual de unidades
             if (elementos.size() == 1 && seleccion_actual.get(0) instanceof Edificio) {
                 //Cancelar producción
                 Edificio ed = (Edificio) seleccion_actual.get(0);
                 if (ed.cola_construccion.size() > 0) {
-                    float x_e = MapaCampo.playerX + 230;
-                    float y_e = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 50;
+                    float x_e = VentanaCombate.playerX + 230;
+                    float y_e = initialY + 50;
                     if ((x_click >= x_e) && (x_click <= x_e + 40)) {
                         if ((y_click >= y_e) && (y_click <= y_e + 40)) {
                             ed.cancelar_produccion(p, ed.cola_construccion.get(0));
                         }
                     }
                     for (int i = 1; i < ed.cola_construccion.size(); i++) {
-                        x_e = MapaCampo.playerX + 230 + (i - 1) * 50;
-                        y_e = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y + 100;
+                        x_e = VentanaCombate.playerX + 230 + (i - 1) * 50;
+                        y_e = initialY + 100;
                         if ((x_click >= x_e) && (x_click <= x_e + 40)) {
                             if ((y_click >= y_e) && (y_click <= y_e + 40)) {
                                 ed.cancelar_produccion(p, ed.cola_construccion.get(i));
@@ -689,7 +688,7 @@ public class UI {
             }
         } else {
             //Tercero cuadrado: Botones
-            if ((x_click >= (MapaCampo.playerX + anchura_miniatura + anchura_seleccion)) && (x_click <= (MapaCampo.playerX + anchura_miniatura + anchura_seleccion + anchura_botones))) {
+            if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion)) && (x_click <= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones))) {
                 for (ElementoComplejo e : iu.seleccion_actual) {
                     List<BotonComplejo> botones;
                     if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
@@ -705,14 +704,14 @@ public class UI {
                 }
             }
             //Minimapa
-            if ((x_click >= (MapaCampo.playerX + anchura_miniatura + anchura_seleccion + anchura_botones)) && (x_click <= (MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X))) {
+            if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
                 //Mover la perspectiva
-                iu.mover_perspectiva(x_click, y_click);
+                iu.movePlayerPerspective(x_click, y_click);
             }
         }
     }
 
-    public BotonComplejo obtener_boton_seleccionado(float x, float y) {
+    public BotonComplejo obtainHoveredButton(float x, float y) {
         if (!iu.seleccion_actual.isEmpty()) {
             List<BotonComplejo> botones;
             ElementoComplejo e = iu.seleccion_actual.get(0);

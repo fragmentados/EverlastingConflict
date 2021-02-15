@@ -9,7 +9,7 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.movimientos.Mover;
 import everlastingconflict.movimientos.Movimiento;
 import everlastingconflict.movimientos.Recolectar;
@@ -53,7 +53,7 @@ public class ElementoMovil extends ElementoAtacante {
     }
     
     public void anadir_movimiento(float x, float y) {
-        if (!MapaCampo.mayus) {
+        if (!VentanaCombate.mayus) {
             movimiento = new Mover(this, x, y);
         } else {
             if (movimiento != null) {
@@ -99,7 +99,9 @@ public class ElementoMovil extends ElementoAtacante {
 
     @Override
     public void construir(Partida p, Edificio edificio, float x, float y) {
-        ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+        if (p.belongsToMainPlayer(this)) {
+            ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+        }
         this.disableBuildingButtons();
     }
 

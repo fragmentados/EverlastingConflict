@@ -11,14 +11,13 @@ import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
+import everlastingconflict.mapas.VentanaCombate;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
 
 import everlastingconflict.razas.Eternium;
 import everlastingconflict.razas.Maestros;
@@ -43,7 +42,7 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Esto puede parecer un handicap muy fuerte frente al resto de razas que pueden producir gran cantidad de unidades pero como, pronto verás, el Manipulador puede utilizar poderosas habilidades que compensan esta debilidad.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Intentémoslo. Selecciona la habilidad Deflagración y luego haz objetivo al Alpha que acaba de aparecer y mira lo que ocurre.") {
@@ -56,13 +55,13 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Generalmente, sólo obtienes experiencia destruyendo unidades y edificios. Sin embargo, el nivel uno es especial ya que el Manipulador posee la habilidad Meditación.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Prueba a utilizarla habilidad Meditación ahora.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
 
             @Override
@@ -73,7 +72,7 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Como podrás comprobar, tu Manipulador es ahora incapaz de moverse, pero su experiencia aumenta continuamente hasta subir al nivel dos. Espera hasta que ocurra esto.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
 
             @Override
@@ -89,7 +88,7 @@ public class MaestrosTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Ahora podrás elegir hasta dos habildiades para que tu Manipulador las aprenda. Prueba a hacerlo ahora.") {
@@ -105,11 +104,11 @@ public class MaestrosTutorial extends Tutorial {
     }
 
     @Override
-    public void iniciar_elementos(float anchura, float altura, int njugador) {
-        MapaCampo.WORLD_SIZE_X = anchura;
-        MapaCampo.WORLD_SIZE_Y = altura;
-        MapaCampo.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        MapaCampo.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+    public void initElements(int njugador) {
+        VentanaCombate.WORLD_SIZE_X = map.getWidth();
+        VentanaCombate.WORLD_SIZE_Y = map.getHeight();
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
         j1.iniciar_elementos(this);
@@ -118,7 +117,7 @@ public class MaestrosTutorial extends Tutorial {
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar"), "Cualquiera"));
         j1.unidades.get(0).inicializar_teclas_botones(j1.unidades.get(0).botones);
         bestias.add(new Bestias("Grupo1", 500, 200));
-        MapaCampo.crearReloj(new RelojMaestros(j1));
+        VentanaCombate.crearReloj(new RelojMaestros(j1));
     }
 
     public MaestrosTutorial() {

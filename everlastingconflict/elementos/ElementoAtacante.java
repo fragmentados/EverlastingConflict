@@ -11,7 +11,7 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Eternium;
 import everlastingconflict.razas.Maestros;
 import everlastingconflict.relojes.Reloj;
@@ -138,7 +138,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public int ataque_eternium() {
-        switch (MapaCampo.relojEternium().ndivision) {
+        switch (VentanaCombate.relojEternium().ndivision) {
             case 1:
                 return (int) (this.ataque * (75f / 100f));
             case 2:
@@ -366,7 +366,9 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public abstract void destruir(Partida p, ElementoAtacante atacante);
 
     public void construir(Partida p, Edificio edificio, float x, float y) {
-        ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+        if (p.belongsToMainPlayer(this)) {
+            ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+        }
         this.disableBuildingButtons();
     }
 

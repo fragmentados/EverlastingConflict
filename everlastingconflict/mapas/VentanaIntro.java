@@ -11,11 +11,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-public class MapaIntro extends Mapa{
+public class VentanaIntro extends Ventana {
 
     public Partida partida;
     
-    public MapaIntro(){        
+    public VentanaIntro(){
     }
     
     @Override

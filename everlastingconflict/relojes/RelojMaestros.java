@@ -10,7 +10,7 @@ import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -114,7 +114,7 @@ public class RelojMaestros extends Reloj {
     @Override
     public void dibujar(Input input, Graphics g) {
         float anchurag = 80, alturag = 80;
-        float xg = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 - 100, yg = MapaCampo.playerY + 5;
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - 100, yg = VentanaCombate.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
         g.fillOval(xg, yg, anchurag, alturag);
         if (detener > 0) {
@@ -158,7 +158,7 @@ public class RelojMaestros extends Reloj {
         g.setColor(Color.black);
         g.drawString(tiempo, xg + 65 - tiempo.length() * 10, yg + 30);
         g.setColor(Color.white);
-        if (this.hitbox(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY())) {
+        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
             drawHint(g);
         }
     }

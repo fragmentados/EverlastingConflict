@@ -49,7 +49,7 @@ public class ComboBox {
         }
     }
 
-    public boolean elegir_opcion(float x, float y) {
+    public boolean checkOptionSelected(float x, float y) {
         if (desplegado) {
             int i = 1;
             for (String t : opciones) {

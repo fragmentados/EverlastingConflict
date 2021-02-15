@@ -23,7 +23,7 @@ import java.util.Arrays;
  *
  * @author Elías
  */
-public class MapaMenu extends Mapa {
+public class VentanaMenu extends Ventana {
 
     public Partida partida;
     public BotonSimple combate, multijugador, tutorial, clark, eternium, fenix, maestros, guardianes, volver, aceptar, salir, opciones;
@@ -33,11 +33,12 @@ public class MapaMenu extends Mapa {
     private ComboBox racePlayer1;
     private ComboBox racePlayer2;
     private ComboBox player2Type;
+    private ComboBox mapType;
     private TextField usuario;
     private boolean seleccion;
     public boolean start;
 
-    public MapaMenu() {
+    public VentanaMenu() {
     }
 
     @Override
@@ -54,27 +55,30 @@ public class MapaMenu extends Mapa {
         fenix = new BotonSimple("Tutorial Fénix", 600, 300);
         maestros = new BotonSimple("Tutorial Maestros", 600, 400);
         guardianes = new BotonSimple("Tutorial Guardianes", 600, 500);
-        volver = new BotonSimple("Volver", 600, 600);
-        aceptar = new BotonSimple("Aceptar", 700, 600);
+        volver = new BotonSimple("Volver", 600, 700);
+        aceptar = new BotonSimple("Aceptar", 700, 700);
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
         racePlayer1 = new ComboBox(Raza.getAllRaceNames(), 700, 400);
         player2Type = new ComboBox(Arrays.asList("AI", "Jugador"), 200, 500);
         racePlayer2 = new ComboBox(Raza.getAllRaceNames(), 700, 500);
+        mapType = new ComboBox(MapEnum.getAllNames(), 300, 600);
         seleccion = aceptar.activado = volver.activado = maestros.activado = fenix.activado = eternium.activado = clark.activado = guardianes.activado = false;
     }
 
     public void start(GameContainer container) {
         try {
-            MapaPrincipal.mapac.client = client;
+            VentanaPrincipal.mapac.client = client;
             Jugador secondPlayer;
             if ("AI".equals(player2Type.opcion_seleccionada)) {
                 secondPlayer = AI.crearAI(racePlayer2.opcion_seleccionada);
             } else {
                 secondPlayer = new Jugador(otro_usuario, otro_usuario_raza);
             }
-            MapaPrincipal.cambio_de_mapa(container, new Partida(new Jugador(usuario.getText(), racePlayer1.opcion_seleccionada), secondPlayer), "Campo");
-        } catch (SlickException ex) { }
+            Partida partida = new Partida(new Jugador(usuario.getText(), racePlayer1.opcion_seleccionada), secondPlayer, MapEnum.findByName(mapType.opcion_seleccionada));
+            VentanaPrincipal.cambio_de_mapa(container, partida, "Campo");
+        } catch (SlickException ex) {
+        }
     }
 
     @Override
@@ -89,10 +93,10 @@ public class MapaMenu extends Mapa {
             if (combate.presionado(input.getMouseX(), input.getMouseY())) {
                 multijugador.activado = opciones.activado = tutorial.activado = combate.activado = false;
                 aceptar.activado = volver.activado = seleccion = true;
-                client = new Client("localhost", 1500, usuario.getText());
+                /*client = new Client("localhost", 1500, usuario.getText());
                 if (!client.start()) {
                     return;
-                }
+                }*/
             } else if (aceptar.presionado(input.getMouseX(), input.getMouseY())) {
                 //client.send_start();
                 start = true;
@@ -102,15 +106,15 @@ public class MapaMenu extends Mapa {
                 volver.activado = guardianes.activado = fenix.activado = eternium.activado = clark.activado = maestros.activado = true;
                 opciones.activado = combate.activado = tutorial.activado = false;
             } else if (fenix.presionado(input.getMouseX(), input.getMouseY())) {
-                MapaPrincipal.cambio_de_mapa(container, new FenixTutorial(), "Campo");
+                VentanaPrincipal.cambio_de_mapa(container, new FenixTutorial(), "Campo");
             } else if (clark.presionado(input.getMouseX(), input.getMouseY())) {
-                MapaPrincipal.cambio_de_mapa(container, new ClarkTutorial(), "Campo");
+                VentanaPrincipal.cambio_de_mapa(container, new ClarkTutorial(), "Campo");
             } else if (eternium.presionado(input.getMouseX(), input.getMouseY())) {
-                MapaPrincipal.cambio_de_mapa(container, new EterniumTutorial(), "Campo");
+                VentanaPrincipal.cambio_de_mapa(container, new EterniumTutorial(), "Campo");
             } else if (maestros.presionado(input.getMouseX(), input.getMouseY())) {
-                MapaPrincipal.cambio_de_mapa(container, new MaestrosTutorial(), "Campo");
+                VentanaPrincipal.cambio_de_mapa(container, new MaestrosTutorial(), "Campo");
             } else if (guardianes.presionado(input.getMouseX(), input.getMouseY())) {
-                MapaPrincipal.cambio_de_mapa(container, new GuardianesTutorial(), "Campo");
+                VentanaPrincipal.cambio_de_mapa(container, new GuardianesTutorial(), "Campo");
             } else if (volver.presionado(input.getMouseX(), input.getMouseY())) {
                 if (seleccion) {
                     aceptar.activado = seleccion = false;
@@ -122,7 +126,8 @@ public class MapaMenu extends Mapa {
             } else if (opciones.presionado(input.getMouseX(), input.getMouseY())) {
 
             } else if (salir.presionado(input.getMouseX(), input.getMouseY())) {
-                Client.ventana_mapa.dispose();
+                container.exit();
+                //Client.ventana_mapa.dispose();
                 System.exit(0);
             } else if (racePlayer1.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
                 racePlayer1.desplegar.efecto();
@@ -130,14 +135,15 @@ public class MapaMenu extends Mapa {
                 player2Type.desplegar.efecto();
             } else  if (racePlayer2.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
                 racePlayer2.desplegar.efecto();
+            } else  if (mapType.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
+                mapType.desplegar.efecto();
             }
-            if (racePlayer1.elegir_opcion(input.getMouseX(), input.getMouseY())) {
+            if (racePlayer1.checkOptionSelected(input.getMouseX(), input.getMouseY())) {
                 client.send_message(new Message(Message.raze_type, racePlayer1.opcion_seleccionada));
             }
-            if (player2Type.elegir_opcion(input.getMouseX(), input.getMouseY())) {
-            } else if (racePlayer2.elegir_opcion(input.getMouseX(), input.getMouseY())) {
-
-            }
+            player2Type.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            racePlayer2.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            mapType.checkOptionSelected(input.getMouseX(), input.getMouseY());
         }
     }
 
@@ -168,6 +174,8 @@ public class MapaMenu extends Mapa {
             g.drawString(otro_usuario, 450, 500);
             g.drawString("Raza: ", 600, 500);
             racePlayer2.dibujar(g);
+            g.drawString("Mapa: ", 200, 600);
+            mapType.dibujar(g);
         }
     }
 

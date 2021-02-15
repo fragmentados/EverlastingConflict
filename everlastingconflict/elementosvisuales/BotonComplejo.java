@@ -19,13 +19,14 @@ import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.UI;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.mapas.Mensaje;
 
 import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaPrincipal;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
+import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
@@ -184,7 +185,7 @@ public class BotonComplejo extends BotonSimple {
             return true;
         } else {
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-                return presionado((int) MapaCampo.playerX + input.getMouseX(), (int) MapaCampo.playerY + input.getMouseY());
+                return presionado((int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
             } else {
                 return false;
             }
@@ -234,16 +235,16 @@ public class BotonComplejo extends BotonSimple {
         }
     }
 
-    public void dibujar_extendido(Jugador aliado, Graphics g, ElementoComplejo origen) {
+    public void renderExtendedInfo(Jugador aliado, Graphics g, ElementoComplejo origen) {
         //Origen solo es necesario para botones del Manipulador
-        float xbotones = MapaCampo.playerX + 600;
-        float ybotones = playerY + VIEWPORT_SIZE_Y;
+        float xbotones = VentanaCombate.playerX + 600;
+        float ybotones = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 1;
         float anchura_contador = 565;
         float altura_contador = 200;
         float espacio_lineas = 20;
         float xcontador = xbotones + 1;
         float ycontador = ybotones - altura_contador;
-        g.setColor(MapaCampo.iu.color);
+        g.setColor(VentanaCombate.iu.color);
         g.fillRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
         g.setColor(Color.white);
         g.drawRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
@@ -380,9 +381,9 @@ public class BotonComplejo extends BotonSimple {
                                                 t.construir_anexo(partida);
                                             }
                                         } else {
-                                            MapaPrincipal.mapac.edificio = contador_edificio;
-                                            MapaPrincipal.mapac.edificio.vida = 0;
-                                            MapaPrincipal.mapac.constructor = (ElementoAtacante) e;
+                                            VentanaPrincipal.mapac.edificio = contador_edificio;
+                                            VentanaPrincipal.mapac.edificio.vida = 0;
+                                            VentanaPrincipal.mapac.constructor = (ElementoAtacante) e;
                                         }
                                     }
                                 }
@@ -455,13 +456,13 @@ public class BotonComplejo extends BotonSimple {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < Fenix.limite_cuarteles)) {
                                                     if (partida.jugador_aliado(e).comprobacion_recursos(contador_edificio)) {
-                                                        MapaPrincipal.mapac.edificio = contador_edificio;
-                                                        MapaPrincipal.mapac.edificio.vida = 0;
-                                                        MapaPrincipal.mapac.constructor = contador;
+                                                        VentanaPrincipal.mapac.edificio = contador_edificio;
+                                                        VentanaPrincipal.mapac.edificio.vida = 0;
+                                                        VentanaPrincipal.mapac.constructor = contador;
                                                         break;
                                                     }
                                                 } else {
-                                                    MapaPrincipal.mapac.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
+                                                    VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
                                                 }
                                             }
                                         }

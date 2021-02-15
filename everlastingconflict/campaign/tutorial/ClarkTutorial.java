@@ -10,15 +10,15 @@ import everlastingconflict.elementos.implementacion.Bestia;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.playerX;
-import static everlastingconflict.mapas.MapaCampo.playerY;
+import everlastingconflict.mapas.VentanaCombate;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerX;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
 
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaPrincipal;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -64,22 +64,22 @@ public class ClarkTutorial extends Tutorial {
             public void efecto(Partida p) {
                 p.j1.unidades.get(0).seleccionar();
                 p.j1.unidades.get(1).seleccionar();
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Veamos un ejemplo: Prueba a fusionar ahora el depredador y el devorador") {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                return MapaCampo.iu.seleccion_actual.get(0).botones.get(1).presionado(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY());
+                return VentanaCombate.iu.seleccion_actual.get(0).botones.get(1).presionado(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
             }
         });
         pasos.add(new Paso("Como has podido observar, las dos unidades han desaparecido, y, en su lugar ha aparecido una nueva unidad más poderosa. El Moldeador es una unidad capaz de cambiar entre ataque cuerpo a cuerpo y ataque a distancia."));
         pasos.add(new Paso("La siguiente peculiaridad de la raza Clark es su forma de obtener recursos. Los Clark no necesitan materiales para construir grandes armas o vehículos, sólo necesitan masa y para conseguirla deben acabar con la fauna local.") {
             @Override
             public void efecto(Partida p) {
-                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
-                MapaCampo.continuar.activado = false;
+                VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Aquí tenemos un grupo de bestias. Éstas en concreto son las denominadas Alphas, las bestias más inofensivas con lo que tu recién creado Moldeador podrá encargarse de ellas sin problema. Ordénale que acabe con esos seres inferiores.") {
@@ -99,7 +99,7 @@ public class ClarkTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Como puedes ver, cada vez que un Alpha muere, tus recursos aumentan. En una partida normal de Everlasting Conflict, hay varios tipos de bestias por todo el mapa y cada una da un número distinto de recursos. Sin embargo, a mayor recompensa, mayor será la capacidad ofensiva de la bestia.") {
@@ -113,11 +113,11 @@ public class ClarkTutorial extends Tutorial {
     }
 
     @Override
-    public void iniciar_elementos(float anchura, float altura, int njugador) {
-        MapaCampo.WORLD_SIZE_X = anchura;
-        MapaCampo.WORLD_SIZE_Y = altura;
-        MapaCampo.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        MapaCampo.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+    public void initElements(int njugador) {
+        VentanaCombate.WORLD_SIZE_X = map.getWidth();
+        VentanaCombate.WORLD_SIZE_Y = map.getHeight();
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
         j1.iniciar_elementos(this);

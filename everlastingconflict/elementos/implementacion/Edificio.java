@@ -13,8 +13,8 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.ProgressBar;
-import everlastingconflict.mapas.MapaCampo;
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.razas.Eternium;
 import everlastingconflict.razas.Fenix;
@@ -327,7 +327,7 @@ public class Edificio extends ElementoAtacante {
         this.chechAnimationStatus(p);
         super.dibujar(p, c, input, g);
         barra.dibujar(g);
-        if (MapaCampo.iu.elementos.indexOf(this) != -1) {
+        if (VentanaCombate.iu.elementos.indexOf(this) != -1) {
             dibujar_fin_movimiento(g);
         }
     }
@@ -430,7 +430,7 @@ public class Edificio extends ElementoAtacante {
                         if (recurso_int - Reloj.velocidad_reloj * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;
                             aliado.recursos += Edificio.recursos_refineria;
-                            MapaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
+                            VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
                         } else {
                             recurso_int -= Reloj.velocidad_reloj * delta;
                         }
@@ -464,8 +464,8 @@ public class Edificio extends ElementoAtacante {
         int anchura_contador = this.sprite.getWidth();
         int altura_contador = this.sprite.getHeight();
         float posx, posy;
-        posx = MapaCampo.playerX + input.getMouseX() - anchura_contador / 2;
-        posy = MapaCampo.playerY + input.getMouseY() - altura_contador / 2;
+        posx = VentanaCombate.playerX + input.getMouseX() - anchura_contador / 2;
+        posy = VentanaCombate.playerY + input.getMouseY() - altura_contador / 2;
         Rectangle re = new Rectangle((int) posx, (int) posy, anchura_contador, altura_contador);
         if ((nombre.equals("Refinería")) || (nombre.equals("Centro de restauración"))) {
             for (int i = 0; i < partida.recursos.size(); i++) {
@@ -473,7 +473,7 @@ public class Edificio extends ElementoAtacante {
                 if (r.nombre.equals("Hierro")) {
                     Rectangle2D r2 = new Rectangle2D.Float(r.x - r.anchura / 2, r.y - r.altura / 2, r.anchura, r.altura);
                     if (r2.intersects(re)) {
-                        Jugador aliado = partida.jugador_aliado(MapaPrincipal.mapac.constructor);
+                        Jugador aliado = partida.jugador_aliado(VentanaPrincipal.mapac.constructor);
                         for (Edificio e : aliado.edificios) {
                             if (e.nombre.equals("Refinería") && e.hitbox(r.x, r.y)) {
                                 return new ArrayList<>();
@@ -534,8 +534,8 @@ public class Edificio extends ElementoAtacante {
             Ellipse2D circulo = new Ellipse2D.Float(constructor.x - ((Edificio) constructor).radio_construccion / 2, constructor.y - ((Edificio) constructor).radio_construccion / 2, ((Edificio) constructor).radio_construccion, ((Edificio) constructor).radio_construccion);
             int anchura_contador = this.sprite.getWidth();
             int altura_contador = this.sprite.getHeight();
-            float posx = MapaCampo.playerX + input.getMouseX() - anchura_contador / 2;
-            float posy = MapaCampo.playerY + input.getMouseY() - altura_contador / 2;
+            float posx = VentanaCombate.playerX + input.getMouseX() - anchura_contador / 2;
+            float posy = VentanaCombate.playerY + input.getMouseY() - altura_contador / 2;
             Rectangle re = new Rectangle((int) posx, (int) posy, anchura_contador, altura_contador);
             if (!circulo.contains(re)) {
                 return false;

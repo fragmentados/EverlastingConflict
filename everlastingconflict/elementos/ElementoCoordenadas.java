@@ -10,7 +10,7 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 
 import java.awt.geom.Rectangle2D;
 
@@ -174,10 +174,10 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
         g.setColor(Color.black);
         g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         g.setColor(Color.white);
-        if (MapaCampo.iu.elementos.indexOf(this) != -1)  {
+        if (VentanaCombate.iu.elementos.indexOf(this) != -1)  {
             circulo(g, c);
         }
-        if(this.hitbox(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY())){
+        if(this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())){
             circulo_extendido(g,c);
         }
     }

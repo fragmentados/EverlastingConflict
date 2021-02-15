@@ -6,8 +6,7 @@
 package everlastingconflict.relojes;
 
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -57,7 +56,7 @@ public abstract class Reloj {
     public abstract void dibujar(Input input, Graphics g);
 
     public void drawHint(Graphics g) {
-        g.setColor(MapaCampo.iu.color);
+        g.setColor(VentanaCombate.iu.color);
         g.fillRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);
         g.setColor(Color.white);
         g.drawRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);

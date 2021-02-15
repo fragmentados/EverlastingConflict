@@ -5,21 +5,14 @@
  */
 package everlastingconflict.relojes;
 
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
 import everlastingconflict.elementos.implementacion.*;
-import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.newdawn.slick.*;
-
-import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.playerY;
 
 /**
  *
@@ -103,8 +96,8 @@ public class RelojEternium extends Reloj {
 
     @Override
     public void dibujar(Input input, Graphics g) {
-        this.x = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 - 100;
-        this.y = MapaCampo.playerY + 5;
+        this.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - 100;
+        this.y = VentanaCombate.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
         g.fillOval(this.x, this.y, this.anchura, this.altura);
         if (detener > 0) {
@@ -172,7 +165,7 @@ public class RelojEternium extends Reloj {
         g.setColor(Color.black);
         g.drawString(tiempo, this.x + 65 - tiempo.length() * 10, this.y + 30);
         g.setColor(Color.white);
-        if (this.hitbox(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY())) {
+        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
             drawHint(g);
         }
     }

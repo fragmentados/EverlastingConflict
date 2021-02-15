@@ -8,7 +8,7 @@ package everlastingconflict.elementos.implementacion;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
@@ -81,7 +81,7 @@ public class Bestia extends Unidad {
             this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             Jugador aliado = p.jugador_aliado(atacante);
             if (aliado.raza.equals("Clark")) {
-                MapaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
+                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
                 aliado.recursos += this.recompensa;
             }
             if (this.seleccionada()) {

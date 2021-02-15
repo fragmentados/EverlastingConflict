@@ -9,7 +9,7 @@ import everlastingconflict.elementos.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
-import everlastingconflict.Control;
+import everlastingconflict.ControlGroup;
 import everlastingconflict.RTS;
 import everlastingconflict.campaign.tutorial.Tutorial;
 import everlastingconflict.gestion.Evento;
@@ -51,7 +51,7 @@ import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_C
  *
  * @author Elías
  */
-public class MapaCampo extends Mapa {
+public class VentanaCombate extends Ventana {
 
     public Partida partida;
     public static UI iu = new UI();
@@ -70,8 +70,8 @@ public class MapaCampo extends Mapa {
     public static float playerY = 0;
     public static float WORLD_SIZE_X;
     public static float WORLD_SIZE_Y;
-    public static final float VIEWPORT_SIZE_X = 1365;
-    public static final float VIEWPORT_SIZE_Y = 567;
+    public static final float VIEWPORT_SIZE_X = 1920;
+    public static final float VIEWPORT_SIZE_Y = 1080;
     public static float offsetMinX = 0;
     public static float offsetMinY = 0;
     public static float offsetMaxX;
@@ -81,7 +81,7 @@ public class MapaCampo extends Mapa {
     public boolean click;
     public int x_click, y_click;
     //Grupos de control
-    public List<Control> control = new ArrayList<>();
+    public List<ControlGroup> controlGroupGroups = new ArrayList<>();
     //Mensajes
     private List<Mensaje> mensajes;
     //RTS.Relojes
@@ -181,7 +181,7 @@ public class MapaCampo extends Mapa {
         }
         ctrl = atacar_boolean = mayus = click = false;
         deseleccionar = true;
-        partida.iniciar_elementos(2000, 2000, 1);
+        partida.initElements(1);
         atacar = new Image("media/Cursores/atacar.png");
         construccion = new Image("media/Edificios/construccion.png");
         chat_texto = new TextField(container, container.getDefaultFont(), (int) x_chat, (int) y_chat, 300, 20);
@@ -226,8 +226,8 @@ public class MapaCampo extends Mapa {
     public void coordenadas_errores() {
         for (int i = (mensajes.size() - 1); i >= 0; i--) {
             if (mensajes.get(i).error) {
-                mensajes.get(i).x = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 - (mensajes.get(i).mensaje.length() * 10) / 2;
-                mensajes.get(i).y = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y - 20 * (mensajes.size() - i);
+                mensajes.get(i).x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - (mensajes.get(i).mensaje.length() * 10) / 2;
+                mensajes.get(i).y = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - 20 * (mensajes.size() - i);
             }
         }
     }
@@ -507,10 +507,10 @@ public class MapaCampo extends Mapa {
         }
     }
 
-    public MapaCampo() {
+    public VentanaCombate() {
     }
 
-    public void gestion_movimiento_camara(int delta) {
+    public void handleCameraMovement(int delta) {
         if (x_movimiento != -1 || y_movimiento != -1) {
             if (x_movimiento != -1) {
                 if (playerX < x_movimiento) {
@@ -567,7 +567,7 @@ public class MapaCampo extends Mapa {
             }
         }
         mensajes.removeAll(messagesToBeRemoved);
-        gestion_movimiento_camara(delta);
+        handleCameraMovement(delta);
         if (!(partida instanceof Tutorial)) {
             if (partida.check_victory_player_1() && victoria == null) {
                 this.playerX = 0;
@@ -621,12 +621,12 @@ public class MapaCampo extends Mapa {
         partida.comportamiento_elementos(container.getGraphics(), delta);
         //Mover la pantalla
         if (x_movimiento == -1 && y_movimiento == -1) {
-            if ((input.getMouseX() >= 1360) || (input.isKeyDown(Input.KEY_RIGHT))) {
+            if ((input.getMouseX() >= VentanaCombate.VIEWPORT_SIZE_X - 20) || (input.isKeyDown(Input.KEY_RIGHT))) {
                 if (playerX < offsetMaxX) {
                     playerX += scrollspeed * delta;
                 }
             }
-            if ((input.getMouseY() >= 760) || (input.isKeyDown(Input.KEY_DOWN))) {
+            if ((input.getMouseY() >= VentanaCombate.VIEWPORT_SIZE_Y) || (input.isKeyDown(Input.KEY_DOWN))) {
                 if (playerY < offsetMaxY) {
                     playerY += scrollspeed * delta;
                 }
@@ -647,13 +647,13 @@ public class MapaCampo extends Mapa {
             if (input.isKeyPressed(numberKey)) {
                 if (input.isKeyDown(Input.KEY_LCONTROL)) {
                     //Asignar grupo de control
-                    for (Control c : control) {
+                    for (ControlGroup c : controlGroupGroups) {
                         if (c.tecla == numberKey) {
-                            control.remove(c);
+                            controlGroupGroups.remove(c);
                             break;
                         }
                     }
-                    control.add(new Control(iu.elementos, numberKey));
+                    controlGroupGroups.add(new ControlGroup(iu.elementos, numberKey));
                 } else {
                     handleControlGroupSelection(numberKey);
                 }
@@ -729,15 +729,15 @@ public class MapaCampo extends Mapa {
                     }
                 }
             }
-            if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                iu.gestionar_click_izquierdo(input, partida, x_click, y_click, mayus);
+            if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT)) {
+                iu.handleLeftClick(input, partida, x_click, y_click, mayus);
                 click = false;
             } else if ((edificio != null)) {
                 //Decidir la localización de un edificio
                 if (!constructor.nombre.equals("No hay")) {
                     if (edificio.construible(constructor, partida, input, x_click, y_click)) {
                         if (edificio.nombre.equals("Refinería") || edificio.nombre.equals("Centro de restauración")) {
-                            Recurso r = partida.recurso_mas_cercano(null, null, "Hierro", (int) MapaCampo.playerX + input.getMouseX(), (int) MapaCampo.playerY + input.getMouseY());
+                            Recurso r = partida.recurso_mas_cercano(null, null, "Hierro", (int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
                             if (r != null) {
                                 constructor.construir(partida, edificio, r.x, r.y);
                             }
@@ -771,8 +771,8 @@ public class MapaCampo extends Mapa {
                 x_click = (int) playerX + input.getMouseX();
                 y_click = (int) playerY + input.getMouseY();
                 if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                    if ((x_click >= (MapaCampo.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X))) {
-                        iu.mover_perspectiva(x_click, y_click);
+                    if ((x_click >= (VentanaCombate.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+                        iu.movePlayerPerspective(x_click, y_click);
                     }
                 }
             }
@@ -858,7 +858,7 @@ public class MapaCampo extends Mapa {
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
             if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                if ((x_click >= (MapaCampo.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X))) {
+                if ((x_click >= (VentanaCombate.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
                     Point2D resultado = iu.obtener_coordenadas_minimapa(x_click, y_click);
                     gestionar_click_derecho((float) resultado.getX(), (float) resultado.getY());
                 }
@@ -880,7 +880,7 @@ public class MapaCampo extends Mapa {
 
     private void handleControlGroupSelection(Integer numberKey) {
         //Seleccionar grupo de control
-        for (Control c : control) {
+        for (ControlGroup c : controlGroupGroups) {
             if (c.tecla == numberKey) {
                 boolean cambiar_perspectiva = true;
                 if (iu.elementos.isEmpty()) {
@@ -914,15 +914,15 @@ public class MapaCampo extends Mapa {
                     //Obtener coordenadas medias
                     float x_medio = (x_max + x_min) / 2;
                     float y_medio = (y_max + y_min) / 2;
-                    if (x_medio - MapaCampo.VIEWPORT_SIZE_X / 2 <= 0) {
-                        MapaCampo.playerX = 0;
+                    if (x_medio - VentanaCombate.VIEWPORT_SIZE_X / 2 <= 0) {
+                        VentanaCombate.playerX = 0;
                     } else {
-                        MapaCampo.playerX = x_medio - MapaCampo.VIEWPORT_SIZE_X / 2;
+                        VentanaCombate.playerX = x_medio - VentanaCombate.VIEWPORT_SIZE_X / 2;
                     }
-                    if (y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2 <= 0) {
-                        MapaCampo.playerY = 0;
+                    if (y_medio - VentanaCombate.VIEWPORT_SIZE_Y / 2 <= 0) {
+                        VentanaCombate.playerY = 0;
                     } else {
-                        MapaCampo.playerY = y_medio - MapaCampo.VIEWPORT_SIZE_Y / 2;
+                        VentanaCombate.playerY = y_medio - VentanaCombate.VIEWPORT_SIZE_Y / 2;
                     }
                 } else {
                     //El grupo de control no está seleccionado: Se selecciona.
@@ -1054,25 +1054,7 @@ public class MapaCampo extends Mapa {
                 }
                 g.setColor(Color.white);
             }
-            iu.dibujar_UI(partida, g);
-            //Grupos de control
-            for (int i = Input.KEY_1; i <= Input.KEY_0; i++) {
-                int numero;
-                if (i == 11) {
-                    numero = 0;
-                } else {
-                    numero = i - 1;
-                }
-                g.drawRect(playerX + 1100 + i * 22, playerY + VIEWPORT_SIZE_Y - 40, 20, 20);
-                g.drawString(Integer.toString(numero), playerX + 1100 + i * 22, playerY + VIEWPORT_SIZE_Y - 40);
-                g.drawRect(playerX + 1100 + i * 22, playerY + VIEWPORT_SIZE_Y - 20, 20, 20);
-                for (Control c : control) {
-                    if (c.tecla == i) {
-                        g.drawString(Integer.toString(c.contenido.size()), playerX + 1100 + i * 22, playerY + VIEWPORT_SIZE_Y - 20);
-                        break;
-                    }
-                }
-            }
+            iu.renderUI(partida, g, controlGroupGroups);
             if (atacar_boolean) {
                 g.setColor(Color.red);
                 if (iu.seleccion_actual.get(0) instanceof Unidad) {
@@ -1096,21 +1078,21 @@ public class MapaCampo extends Mapa {
             //RTS.Relojes
             relojes.stream().forEach(r -> r.dibujar(input, g));
             //Boton seleccionado
-            BotonComplejo boton_seleccionado = iu.obtener_boton_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
-            if (boton_seleccionado != null) {
-                boton_seleccionado.dibujar_extendido(null, g, iu.seleccion_actual.get(0));
+            BotonComplejo hoveredButton = iu.obtainHoveredButton(playerX + input.getMouseX(), playerY + input.getMouseY());
+            if (hoveredButton != null) {
+                hoveredButton.renderExtendedInfo(null, g, iu.seleccion_actual.get(0));
             }
             //Evento seleccionado Guardián
             if (partida.j1.raza.equals(Guardianes.nombre_raza)) {
                 Evento evento_seleccionado = partida.j1.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
                 if (evento_seleccionado != null) {
-                    new BotonComplejo(evento_seleccionado).dibujar_extendido(partida.j1, g, null);
+                    new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j1, g, null);
                 }
             } else {
                 if (partida.j2.raza.equals(Guardianes.nombre_raza)) {
                     Evento evento_seleccionado = partida.j2.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
                     if (evento_seleccionado != null) {
-                        new BotonComplejo(evento_seleccionado).dibujar_extendido(partida.j2, g, null);
+                        new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j2, g, null);
                     }
                 }
             }
@@ -1118,10 +1100,10 @@ public class MapaCampo extends Mapa {
             if (partida instanceof Tutorial) {
                 Tutorial t = (Tutorial) partida;
                 g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-                g.fillRect(playerX, playerY, MapaCampo.VIEWPORT_SIZE_X, 100);
+                g.fillRect(playerX, playerY, VentanaCombate.VIEWPORT_SIZE_X, 100);
                 g.setColor(Color.white);
                 g.drawString(t.pasos.get(0).texto, playerX, playerY);
-                continuar.x = playerX + MapaCampo.VIEWPORT_SIZE_X - continuar.anchura;
+                continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_X - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
                 partida.j1.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
             } else {

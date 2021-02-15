@@ -8,7 +8,7 @@ package everlastingconflict.elementos.implementacion;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoVulnerable;
 import org.newdawn.slick.Animation;
@@ -90,7 +90,7 @@ public class Recurso extends ElementoVulnerable {
         g.setColor(Color.black);
         g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         g.setColor(Color.white);
-        if (this.hitbox(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY())) {
+        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
             circulo(g, c);
         }
     }

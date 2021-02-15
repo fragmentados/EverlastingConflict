@@ -5,7 +5,7 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaPrincipal;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -19,12 +19,12 @@ import java.awt.*;
 public class RTS {
 
     public static CanvasGameContainer canvas;
-    public static MapaPrincipal map;
+    public static VentanaPrincipal map;
     public static JFrame ventana_mapa; 
     
     public static void main(String[] args) {
 
-        map = new MapaPrincipal();
+        map = new VentanaPrincipal();
         try {
             canvas = new CanvasGameContainer(map);
             canvas.getContainer().setShowFPS(false);
@@ -36,6 +36,7 @@ public class RTS {
             canvas.start();
             ventana_mapa.setExtendedState(Frame.MAXIMIZED_BOTH);
             ventana_mapa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            canvas.getContainer().setFullscreen(true);
         } catch (SlickException e) {
         }
     }

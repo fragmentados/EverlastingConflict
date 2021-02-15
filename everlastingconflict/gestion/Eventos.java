@@ -6,7 +6,7 @@
 package everlastingconflict.gestion;
 
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,13 +170,13 @@ public class Eventos {
         g.setColor(Color.black);
         if (!desactivacion_permanente) {
             if (activo) {
-                g.drawString(Reloj.tiempo_a_string(tiempo_contador), MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2, MapaCampo.playerY + 5);
+                g.drawString(Reloj.tiempo_a_string(tiempo_contador), VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2, VentanaCombate.playerY + 5);
             }
         }
         for (int i = 0; i < contenido.size(); i++) {
             Evento e = contenido.get(i);
-            e.x = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 + 100 + (e.sprite.getWidth() + 10) * i;
-            e.y = MapaCampo.playerY + 5;
+            e.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 100 + (e.sprite.getWidth() + 10) * i;
+            e.y = VentanaCombate.playerY + 5;
             e.dibujar(g);
         }
     }

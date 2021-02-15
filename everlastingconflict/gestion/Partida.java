@@ -5,6 +5,7 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.mapas.MapEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.implementacion.Proyectil;
@@ -13,11 +14,11 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.mapas.MapaCampo;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
+import everlastingconflict.mapas.VentanaCombate;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Partida {
     public List<Recurso> recursos;
     public List<Bestias> bestias;
     public List<Proyectil> proyectiles;
+    public MapEnum map;
 
     public static String anadir_saltos_de_linea(String texto, float anchura) {
         String resultado = "";
@@ -85,19 +87,21 @@ public class Partida {
         return resultado;
     }
 
-    public Jugador jugador_por_nombre(String n) {
-        if (j1.nombre.equals(n)) {
-            return j1;
-        } else {
-            return j2;
-        }
-    }
-
     public Jugador jugador_enemigo(Jugador j) {
         if (j == j1) {
             return j2;
         } else {
             return j1;
+        }
+    }
+
+    public boolean belongsToMainPlayer(ElementoCoordenadas e) {
+        if (e instanceof Unidad) {
+            return j1.unidades.indexOf(e) != -1;
+        } else if (e instanceof Edificio) {
+            return j1.edificios.indexOf(e) != -1;
+        } else {
+            return j1.lista_recursos.indexOf(e) != -1;
         }
     }
 
@@ -166,25 +170,27 @@ public class Partida {
 
     }
 
-    public void iniciar_elementos(float anchura, float altura, int njugador) {
+    public void initElements(int njugador) {
         //Representan la altura y anchura del mapa
-        MapaCampo.WORLD_SIZE_X = anchura;
-        MapaCampo.WORLD_SIZE_Y = altura;
-        MapaCampo.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        MapaCampo.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+        float width = map.getWidth();
+        float height = map.getHeight();
+        VentanaCombate.WORLD_SIZE_X = width;
+        VentanaCombate.WORLD_SIZE_Y = height;
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         if (njugador == 1) {
             j1.x_inicial = 200;
             j1.y_inicial = 200;
-            j2.x_inicial = anchura - 200;
-            j2.y_inicial = altura - 200;
+            j2.x_inicial = width - 200;
+            j2.y_inicial = height - 200;
         } else {
             j2.x_inicial = 200;
             j2.y_inicial = 200;
-            j1.x_inicial = anchura - 200;
-            j1.y_inicial = altura - 200;
+            j1.x_inicial = width - 200;
+            j1.y_inicial = height - 200;
         }
-        float sextox = anchura / 6;
-        float sextoy = altura / 6;
+        float sextox = width / 6;
+        float sextoy = height / 6;
         if (j1.raza.equals("Clark") || j2.raza.equals("Clark")) {
             //Alphas
             bestias.add(new Bestias("Grupo1", sextox, sextoy));
@@ -246,17 +252,17 @@ public class Partida {
         }
         // Inicializar relojes
         if (j1.raza.equals("Maestros")) {
-            MapaCampo.crearReloj(new RelojMaestros(j1));
+            VentanaCombate.crearReloj(new RelojMaestros(j1));
         }
         if (j2.raza.equals("Maestros")) {
-            MapaCampo.crearReloj(new RelojMaestros(j2));
+            VentanaCombate.crearReloj(new RelojMaestros(j2));
         }
 
         if (j1.raza.equals("Eternium")) {
-            MapaCampo.crearReloj(new RelojEternium(j1));
+            VentanaCombate.crearReloj(new RelojEternium(j1));
         }
         if (j2.raza.equals("Eternium")) {
-            MapaCampo.crearReloj(new RelojEternium(j2));
+            VentanaCombate.crearReloj(new RelojEternium(j2));
         }
 //        for (Recurso r : recursos) {
 //            r.x -= 200;
@@ -317,12 +323,13 @@ public class Partida {
         proyectiles = new ArrayList<>();
     }
 
-    public Partida(Jugador j, Jugador j2) {
+    public Partida(Jugador j, Jugador j2, MapEnum map) {
         this();
         this.j1 = j;
         this.j2 = j2;
         j1.color = Color.green;
         j2.color = Color.red;
+        this.map = map;
     }
 
 }

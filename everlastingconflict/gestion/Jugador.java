@@ -16,7 +16,7 @@ import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Taller;
 import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -216,7 +216,7 @@ public class Jugador {
                 m.dibujar_mana(g);
             }
         }
-        if (this.raza.equals(Eternium.nombre_raza) && (MapaCampo.relojEternium().ndivision == 4)) {
+        if (this.raza.equals(Eternium.nombre_raza) && (VentanaCombate.relojEternium().ndivision == 4)) {
             for (Unidad u : unidades) {
                 if (u.nombre.equals("Protector")) {
                     u.dibujar(p, color, input, g);

@@ -10,14 +10,14 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.playerX;
-import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaCombate;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerX;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
+import everlastingconflict.mapas.VentanaPrincipal;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -36,8 +36,8 @@ public class FenixTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 p.j1.unidades.get(1).seleccionar();
-                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
-                MapaCampo.continuar.activado = false;
+                VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Prueba a hacerlo ahora.") {
@@ -49,7 +49,7 @@ public class FenixTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("Como puedes ver, mientras el recolector captura la ciudad, no puede moverse por lo que debes evaluar con cuidado si es seguro o no capturar una ciudad antes de intentar hacerlo.") {
@@ -62,15 +62,15 @@ public class FenixTutorial extends Tutorial {
         pasos.add(new Paso("Su última peculiaridad es a la hora de crear unidades. En vez de especificar cada unidad que se quiere producir, el cuartel Fénix crea un tipo de unidad constantemente. El jugador puede seleccionar que unidad crea cada cuartel.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
                 p.j1.edificios.get(1).seleccionar();
-                MapaPrincipal.mapac.movimiento_pantalla(0, 400);
+                VentanaPrincipal.mapac.movimiento_pantalla(0, 400);
             }
         });
         pasos.add(new Paso("Como ejemplo, hemos creado ya un Cuartel y hemos desbloqueado las dos primeras unidades Fénix: el Tigre y el Halcón. Por ahora, el Cuartel no produce ninguna unidad. Haz click en el boton de Tigre para que empiece a producir esta unidad. Debes saber que, en una partida real, además de construir el cuartel deberías desbloquear las unidades en la academia antes de poder entrenarlas.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
 
             @Override
@@ -82,7 +82,7 @@ public class FenixTutorial extends Tutorial {
         pasos.add(new Paso("A partir de este momento, el Cuartel creará Tigres hasta que se le indique que cree otra unidad o hasta que se llegue a la poblacion máxima. Prueba a ordenarle que cree Halcones ahora.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
 
             @Override
@@ -102,11 +102,11 @@ public class FenixTutorial extends Tutorial {
     }
 
     @Override
-    public void iniciar_elementos(float anchura, float altura, int njugador) {
-        MapaCampo.WORLD_SIZE_X = anchura;
-        MapaCampo.WORLD_SIZE_Y = altura;
-        MapaCampo.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        MapaCampo.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+    public void initElements(int njugador) {
+        VentanaCombate.WORLD_SIZE_X = map.getWidth();
+        VentanaCombate.WORLD_SIZE_Y = map.getHeight();
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
         j1.iniciar_elementos(this);

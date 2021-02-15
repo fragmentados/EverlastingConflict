@@ -7,7 +7,7 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import org.newdawn.slick.Input;
 
 /**
@@ -20,12 +20,12 @@ public class Paso {
 
     public Paso(String t) {
         texto = t;
-        this.texto = Partida.anadir_saltos_de_linea(this.texto, MapaCampo.VIEWPORT_SIZE_X);
+        this.texto = Partida.anadir_saltos_de_linea(this.texto, VentanaCombate.VIEWPORT_SIZE_X);
     }
 
     public boolean comprobacion(Partida p) {
         Input input = RTS.canvas.getContainer().getInput();
-        return MapaCampo.continuar.presionado(MapaCampo.playerX + input.getMouseX(), MapaCampo.playerY + input.getMouseY());
+        return VentanaCombate.continuar.presionado(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
     }
 
     public void efecto(Partida p) {

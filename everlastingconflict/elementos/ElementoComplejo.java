@@ -8,7 +8,7 @@ package everlastingconflict.elementos;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 
@@ -30,19 +30,19 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     public List<BotonComplejo> botones;
 
     public void seleccionar() {
-        MapaCampo.iu.seleccionar(this);
+        VentanaCombate.iu.seleccionar(this);
     }
 
     public void seleccionar(boolean mayus) {
-        MapaCampo.iu.seleccionar(this, mayus);
+        VentanaCombate.iu.seleccionar(this, mayus);
     }
 
     public void deseleccionar() {
-        MapaCampo.iu.deseleccionar(this);
+        VentanaCombate.iu.deseleccionar(this);
     }
 
     public boolean seleccionada() {
-        return (MapaCampo.iu.elementos.indexOf(this) != -1);
+        return (VentanaCombate.iu.elementos.indexOf(this) != -1);
     }
 
     public void iniciarbotones(Partida p) {

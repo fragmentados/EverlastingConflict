@@ -25,8 +25,8 @@ public class Mensaje {
         //Constructor de error
         this.mensaje = m;
         this.color = Color.red;
-        this.x = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 - (mensaje.length() * 10) / 2;
-        this.y = MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y - 20;
+        this.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - (mensaje.length() * 10) / 2;
+        this.y = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - 20;
         tiempo = 5;
         error = true;
     }

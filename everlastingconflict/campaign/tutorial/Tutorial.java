@@ -18,6 +18,5 @@ public abstract class Tutorial extends Partida {
 
     public abstract void iniciar_pasos();
 
-    @Override
-    public abstract void iniciar_elementos(float anchura, float altura, int njugador);
+    public abstract void initElements(int njugador);
 }

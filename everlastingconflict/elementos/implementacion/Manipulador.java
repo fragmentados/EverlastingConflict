@@ -11,7 +11,7 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojMaestros;
@@ -290,8 +290,8 @@ public class Manipulador extends Unidad {
     }
 
     public void dibujar_mana(Graphics g) {
-        float xg = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 + 200;
-        float yg = MapaCampo.playerY + 5;
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 200;
+        float yg = VentanaCombate.playerY + 5;
         //Círculo exterior
         g.setColor(new Color(0f, 0f, 0.8f, 1f));
         g.fillOval(xg, yg, 80, 80);
@@ -313,8 +313,8 @@ public class Manipulador extends Unidad {
     }
 
     public void dibujar_vida(Graphics g) {
-        float xg = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2 + 100;
-        float yg = MapaCampo.playerY + 5;
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 100;
+        float yg = VentanaCombate.playerY + 5;
         //Círculo exterior
         g.setColor(new Color(0.8f, 0f, 0f, 1f));
         g.fillOval(xg, yg, 80, 80);
@@ -336,8 +336,8 @@ public class Manipulador extends Unidad {
     }
 
     public void dibujar_nivel(Graphics g) {
-        float xg = MapaCampo.playerX + MapaCampo.VIEWPORT_SIZE_X / 2;
-        float yg = MapaCampo.playerY + 5;
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2;
+        float yg = VentanaCombate.playerY + 5;
         //Círculo exterior
         g.setColor(new Color(0f, 0.8f, 0f, 1f));
         g.fillOval(xg, yg, 80, 80);

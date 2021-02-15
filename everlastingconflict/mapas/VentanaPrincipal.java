@@ -5,12 +5,7 @@
  */
 package everlastingconflict.mapas;
 
-import everlastingconflict.ai.AIFenix;
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.ai.AIEternium;
-import everlastingconflict.razas.Guardianes;
-import everlastingconflict.razas.Maestros;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -20,15 +15,15 @@ import org.newdawn.slick.SlickException;
  *
  * @author Elías
  */
-public class MapaPrincipal extends BasicGame {
+public class VentanaPrincipal extends BasicGame {
 
-    public static MapaCampo mapac = new MapaCampo();
-    public static MapaIntro mapai = new MapaIntro();
-    public static MapaMenu mapam = new MapaMenu();
-    public static Mapa mapa_actual;
+    public static VentanaCombate mapac = new VentanaCombate();
+    public static VentanaIntro mapai = new VentanaIntro();
+    public static VentanaMenu mapam = new VentanaMenu();
+    public static Ventana ventanaActual;
 
     public static void cambio_de_mapa(GameContainer container, Partida p, String t) throws SlickException {
-        Mapa contador = null;
+        Ventana contador = null;
         switch (t) {
             case "Menu":
                 mapam.partida = p;
@@ -45,13 +40,13 @@ public class MapaPrincipal extends BasicGame {
         }
         if (contador != null) {
             contador.init(container);
-            mapa_actual = contador;
+            ventanaActual = contador;
         }
 
     }
 
-    public MapaPrincipal() {
-        super("MapaEjemplo");
+    public VentanaPrincipal() {
+        super("VentanaPrincipal");
         //mapac = new MapaCampo(p);
         //mapai = new MapaIntro(p);
         //mapam = new MapaMenu(p);
@@ -59,8 +54,8 @@ public class MapaPrincipal extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
         cambio_de_mapa(container, new Partida(), "Menu");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", Maestros.nombre_raza), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");
@@ -70,11 +65,11 @@ public class MapaPrincipal extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-        mapa_actual.update(container, delta);
+        ventanaActual.update(container, delta);
     }
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
-        mapa_actual.render(container, g);
+        ventanaActual.render(container, g);
     }
 }

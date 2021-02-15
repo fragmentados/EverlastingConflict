@@ -10,7 +10,7 @@ import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -26,7 +26,7 @@ public class Eternium {
     public static final int MAX_UNIT_PER_QUEUE = 5;
 
     public static void dibujar_detencion(Unidad u, Color c, Graphics g) {
-        MapaCampo.detencion.draw(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
+        VentanaCombate.detencion.draw(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
         g.setColor(Color.black);
         g.drawRect(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
         g.setColor(Color.white);
@@ -38,7 +38,7 @@ public class Eternium {
         g.setColor(Color.white);
         //g.setColor(Color.red);
         //g.fillRect(x + anchura_barra_vida * (vida / vida_max), y + altura, anchura_barra_vida - (anchura_barra_vida * (vida / vida_max)), altura_barra_vida);            
-        if (MapaCampo.iu.elementos.indexOf(u) != -1) {
+        if (VentanaCombate.iu.elementos.indexOf(u) != -1) {
             u.circulo(g, c);
         }
     }
@@ -90,7 +90,7 @@ public class Eternium {
     }
 
     public static void Protector(Unidad u) {
-        if (MapaCampo.relojEternium().ndivision == 4) {
+        if (VentanaCombate.relojEternium().ndivision == 4) {
             u.ataque = Unidad.ataque_estandar + 30;
         }else{
             u.ataque = 0;

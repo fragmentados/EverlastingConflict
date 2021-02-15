@@ -6,7 +6,7 @@
 package everlastingconflict.elementos;
 
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
+import everlastingconflict.mapas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -24,7 +24,7 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public float experiencia_al_morir;    
     
     public int defensa_eternium() {
-        switch (MapaCampo.relojEternium().ndivision) {
+        switch (VentanaCombate.relojEternium().ndivision) {
             case 1:
                 return (int) (this.defensa * (75f / 100f));
             case 2:

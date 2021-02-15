@@ -14,14 +14,14 @@ import java.util.List;
  *
  * @author Elías
  */
-public class Control {
+public class ControlGroup {
 
     public List<ElementoComplejo> contenido;
     public int tecla;    
 
 
 
-    public Control(List<ElementoComplejo> c, int t) {
+    public ControlGroup(List<ElementoComplejo> c, int t) {
         contenido = new ArrayList<>();
         for(ElementoComplejo e: c){
             contenido.add(e);

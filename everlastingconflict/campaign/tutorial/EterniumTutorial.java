@@ -10,14 +10,14 @@ import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapaCampo;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_X;
-import static everlastingconflict.mapas.MapaCampo.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.MapaCampo.playerX;
-import static everlastingconflict.mapas.MapaCampo.playerY;
-import everlastingconflict.mapas.MapaPrincipal;
+import everlastingconflict.mapas.VentanaCombate;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
+import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerX;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
+import everlastingconflict.mapas.VentanaPrincipal;
 
 import java.util.ArrayList;
 
@@ -42,35 +42,35 @@ public class EterniumTutorial extends Tutorial {
         pasos.add(new Paso("En la primera fase, las capacidades ofensivas y defensivas de las unidades y de los edificios Eternium se encuentran al 75%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.relojEternium().ndivision = 2;
+                VentanaCombate.relojEternium().ndivision = 2;
             }
         });
         pasos.add(new Paso("En la segunda fase, se encuentran al 100%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.relojEternium().ndivision = 3;
+                VentanaCombate.relojEternium().ndivision = 3;
             }
         });
         pasos.add(new Paso("En la tercera fase, alcanzan su máximo ya que se encuentran al 150%") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.relojEternium().ndivision = 4;
-                MapaCampo.relojEternium().detencion_temporal();
+                VentanaCombate.relojEternium().ndivision = 4;
+                VentanaCombate.relojEternium().detencion_temporal();
             }
         });
         pasos.add(new Paso("La cuarta fase es la más peligrosa ya que, en ella, las unidades Eternium son incapaces de moverse y de atacar. La única ventaja de esta fase, es que las capacidades defensivas aumentan hasta el 500% de su valor base.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.relojEternium().ndivision = 1;
-                MapaCampo.relojEternium().liberacion_temporal();
+                VentanaCombate.relojEternium().ndivision = 1;
+                VentanaCombate.relojEternium().liberacion_temporal();
             }
         });
         pasos.add(new Paso("El sistema de recolección de recursos Eternium sigue el mismo patrón de alta inversión, alto beneficio. La recolección de hierro y transformación del mismo en energía sigue tres pasos.") {
             @Override
             public void efecto(Partida p) {
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
                 j1.unidades.get(0).seleccionar();
-                MapaPrincipal.mapac.movimiento_pantalla(200, 0);
+                VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
             }
         });
         pasos.add(new Paso("Primero, el hierro se extrae de vetas mediante refinerías. Cualquier unidad militar Eternium puede construir refinerías sobre una veta de hierro. Prueba a hacerlo ahora") {
@@ -84,14 +84,14 @@ public class EterniumTutorial extends Tutorial {
             public void efecto(Partida p) {
                 j1.unidades.get(0).deseleccionar();
                 j1.edificios.get(0).seleccionar();
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
         });
         pasos.add(new Paso("En segundo lugar, el hierro debe ser transformado en la cámara de asimilación. Construye una cámara de asimilación utilizando la sede en cualquier lugar dentro del área permitida.") {
             @Override
             public void efecto(Partida p) {
                 j1.edificios.get(0).seleccionar();
-                MapaCampo.continuar.activado = false;
+                VentanaCombate.continuar.activado = false;
             }
 
             @Override
@@ -112,17 +112,17 @@ public class EterniumTutorial extends Tutorial {
     }
 
     @Override
-    public void iniciar_elementos(float anchura, float altura, int njugador) {
-        MapaCampo.WORLD_SIZE_X = anchura;
-        MapaCampo.WORLD_SIZE_Y = altura;
-        MapaCampo.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        MapaCampo.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+    public void initElements(int njugador) {
+        VentanaCombate.WORLD_SIZE_X = map.getWidth();
+        VentanaCombate.WORLD_SIZE_Y = map.getHeight();
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
         j1.iniciar_elementos(this);
         recursos.add(new Recurso("Hierro", 600, 200));
-        MapaCampo.crearReloj(new RelojEternium(j1));
-        MapaCampo.relojEternium().detener_reloj(1000);
+        VentanaCombate.crearReloj(new RelojEternium(j1));
+        VentanaCombate.relojEternium().detener_reloj(1000);
     }
 
     public EterniumTutorial() {
