@@ -5,6 +5,7 @@
  */
 package everlastingconflict;
 
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.mapas.VentanaPrincipal;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
@@ -23,7 +24,9 @@ public class RTS {
     public static JFrame ventana_mapa; 
     
     public static void main(String[] args) {
-
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        VentanaCombate.VIEWPORT_SIZE_X = screenSize.width;
+        VentanaCombate.VIEWPORT_SIZE_Y = screenSize.height;
         map = new VentanaPrincipal();
         try {
             canvas = new CanvasGameContainer(map);

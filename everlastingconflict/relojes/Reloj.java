@@ -56,7 +56,7 @@ public abstract class Reloj {
     public abstract void dibujar(Input input, Graphics g);
 
     public void drawHint(Graphics g) {
-        g.setColor(VentanaCombate.iu.color);
+        g.setColor(VentanaCombate.ui.color);
         g.fillRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);
         g.setColor(Color.white);
         g.drawRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);

@@ -38,7 +38,7 @@ public class Eternium {
         g.setColor(Color.white);
         //g.setColor(Color.red);
         //g.fillRect(x + anchura_barra_vida * (vida / vida_max), y + altura, anchura_barra_vida - (anchura_barra_vida * (vida / vida_max)), altura_barra_vida);            
-        if (VentanaCombate.iu.elementos.indexOf(u) != -1) {
+        if (VentanaCombate.ui.elementos.indexOf(u) != -1) {
             u.circulo(g, c);
         }
     }

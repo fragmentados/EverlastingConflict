@@ -174,7 +174,7 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
         g.setColor(Color.black);
         g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         g.setColor(Color.white);
-        if (VentanaCombate.iu.elementos.indexOf(this) != -1)  {
+        if (VentanaCombate.ui.elementos.indexOf(this) != -1)  {
             circulo(g, c);
         }
         if(this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())){

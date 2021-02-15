@@ -24,7 +24,7 @@ import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Unidad;
 
 import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.iu;
+import static everlastingconflict.mapas.VentanaCombate.ui;
 import static everlastingconflict.mapas.VentanaCombate.playerX;
 import static everlastingconflict.mapas.VentanaCombate.playerY;
 
@@ -48,7 +48,9 @@ public class UI {
     public int inicio, fin, npagina;
     public float x_mini, y_mini, anchura_mini = 250, altura_mini = 200;
     public float x_minim, y_minim, anchura_minim, altura_minim;
-    public float anchura_miniatura = 200, anchura_seleccion = 730, anchura_botones = VentanaCombate.VIEWPORT_SIZE_X - 1180;
+    public float anchura_miniatura;
+    public float anchura_seleccion;
+    public float anchura_botones;
     public static final float UI_HEIGHT = 200;
     private static final Color UI_COLOR = new Color(0f, 0f, 0.6f, 1f);
 
@@ -62,6 +64,9 @@ public class UI {
         inicio = fin = 0;
         npagina = 1;
         color = new Color(0f, 0f, 0.6f, 1f);
+        anchura_miniatura = 200;
+        anchura_seleccion = 730;
+        anchura_botones = VentanaCombate.VIEWPORT_SIZE_X - 1180;
     }
 
     public void anterior() {
@@ -647,8 +652,8 @@ public class UI {
                 }
             } else {
                 ElementoSimple resultado = null;
-                for (int i = 0; i < iu.elementos.size(); i++) {
-                    ElementoSimple e = iu.elementos.get(i);
+                for (int i = 0; i < ui.elementos.size(); i++) {
+                    ElementoSimple e = ui.elementos.get(i);
                     float x_e = playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5);
                     float y_e = playerY + VIEWPORT_SIZE_Y + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5);
                     if ((x_click >= x_e) && (x_click <= x_e + 40)) {
@@ -661,9 +666,9 @@ public class UI {
                 if (mayus) {
                     //Eliminar la unidad clickada de la selección actual
                     if (resultado != null) {
-                        for (int i = 0; i < iu.elementos.size(); i++) {
-                            if (iu.elementos.get(i) == resultado) {
-                                iu.elementos.get(i).deseleccionar();
+                        for (int i = 0; i < ui.elementos.size(); i++) {
+                            if (ui.elementos.get(i) == resultado) {
+                                ui.elementos.get(i).deseleccionar();
                                 break;
                             }
                         }
@@ -671,9 +676,9 @@ public class UI {
                 } else {
                     //Susbstituir la selección actual por la unidad clickada
                     if (resultado != null) {
-                        for (int i = 0; i < iu.elementos.size(); i++) {
-                            if (iu.elementos.get(i) != resultado) {
-                                iu.elementos.get(i).deseleccionar();
+                        for (int i = 0; i < ui.elementos.size(); i++) {
+                            if (ui.elementos.get(i) != resultado) {
+                                ui.elementos.get(i).deseleccionar();
                                 i = -1;
                             }
                         }
@@ -689,7 +694,7 @@ public class UI {
         } else {
             //Tercero cuadrado: Botones
             if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion)) && (x_click <= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones))) {
-                for (ElementoComplejo e : iu.seleccion_actual) {
+                for (ElementoComplejo e : ui.seleccion_actual) {
                     List<BotonComplejo> botones;
                     if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
                         botones = e.botones;
@@ -706,15 +711,15 @@ public class UI {
             //Minimapa
             if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
                 //Mover la perspectiva
-                iu.movePlayerPerspective(x_click, y_click);
+                ui.movePlayerPerspective(x_click, y_click);
             }
         }
     }
 
     public BotonComplejo obtainHoveredButton(float x, float y) {
-        if (!iu.seleccion_actual.isEmpty()) {
+        if (!ui.seleccion_actual.isEmpty()) {
             List<BotonComplejo> botones;
-            ElementoComplejo e = iu.seleccion_actual.get(0);
+            ElementoComplejo e = ui.seleccion_actual.get(0);
             if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
                 botones = e.botones;
             } else {

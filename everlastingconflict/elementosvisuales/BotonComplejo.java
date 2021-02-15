@@ -244,7 +244,7 @@ public class BotonComplejo extends BotonSimple {
         float espacio_lineas = 20;
         float xcontador = xbotones + 1;
         float ycontador = ybotones - altura_contador;
-        g.setColor(VentanaCombate.iu.color);
+        g.setColor(VentanaCombate.ui.color);
         g.fillRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
         g.setColor(Color.white);
         g.drawRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);

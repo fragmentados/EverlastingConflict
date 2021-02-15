@@ -71,7 +71,7 @@ public class ClarkTutorial extends Tutorial {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                return VentanaCombate.iu.seleccion_actual.get(0).botones.get(1).presionado(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
+                return VentanaCombate.ui.seleccion_actual.get(0).botones.get(1).presionado(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
             }
         });
         pasos.add(new Paso("Como has podido observar, las dos unidades han desaparecido, y, en su lugar ha aparecido una nueva unidad más poderosa. El Moldeador es una unidad capaz de cambiar entre ataque cuerpo a cuerpo y ataque a distancia."));

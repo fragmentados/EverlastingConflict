@@ -30,19 +30,19 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     public List<BotonComplejo> botones;
 
     public void seleccionar() {
-        VentanaCombate.iu.seleccionar(this);
+        VentanaCombate.ui.seleccionar(this);
     }
 
     public void seleccionar(boolean mayus) {
-        VentanaCombate.iu.seleccionar(this, mayus);
+        VentanaCombate.ui.seleccionar(this, mayus);
     }
 
     public void deseleccionar() {
-        VentanaCombate.iu.deseleccionar(this);
+        VentanaCombate.ui.deseleccionar(this);
     }
 
     public boolean seleccionada() {
-        return (VentanaCombate.iu.elementos.indexOf(this) != -1);
+        return (VentanaCombate.ui.elementos.indexOf(this) != -1);
     }
 
     public void iniciarbotones(Partida p) {

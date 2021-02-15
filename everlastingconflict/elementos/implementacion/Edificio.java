@@ -327,7 +327,7 @@ public class Edificio extends ElementoAtacante {
         this.chechAnimationStatus(p);
         super.dibujar(p, c, input, g);
         barra.dibujar(g);
-        if (VentanaCombate.iu.elementos.indexOf(this) != -1) {
+        if (VentanaCombate.ui.elementos.indexOf(this) != -1) {
             dibujar_fin_movimiento(g);
         }
     }

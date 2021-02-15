@@ -54,7 +54,7 @@ import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_C
 public class VentanaCombate extends Ventana {
 
     public Partida partida;
-    public static UI iu = new UI();
+    public static UI ui;
     public boolean ctrl, deseleccionar;
     public static boolean mayus;
     //Atacar
@@ -70,8 +70,8 @@ public class VentanaCombate extends Ventana {
     public static float playerY = 0;
     public static float WORLD_SIZE_X;
     public static float WORLD_SIZE_Y;
-    public static final float VIEWPORT_SIZE_X = 1920;
-    public static final float VIEWPORT_SIZE_Y = 1080;
+    public static float VIEWPORT_SIZE_X;
+    public static float VIEWPORT_SIZE_Y;
     public static float offsetMinX = 0;
     public static float offsetMinY = 0;
     public static float offsetMaxX;
@@ -189,6 +189,7 @@ public class VentanaCombate extends Ventana {
         mensajes_chat = new ArrayList<>();
         detencion = new Image("media/Unidades/Detención.png");
         muerte = new Image("media/Unidades/Muerte.png");
+        ui = new UI();
         //this.ambientMusic = new Sound("/media/Sonidos/AdeptoAtaque.ogg");
         //this.ambientMusic.loop();
     }
@@ -380,7 +381,7 @@ public class VentanaCombate extends Ventana {
     public void gestionar_click_derecho(float x, float y) {
         boolean atacada = false;
         List<Unidad> seleccionadas = new ArrayList<>();
-        for (ElementoSimple e : iu.elementos) {
+        for (ElementoSimple e : ui.elementos) {
             if (e instanceof Edificio) {
                 Edificio contador = (Edificio) e;
                 contador.reunion_x = x;
@@ -447,7 +448,7 @@ public class VentanaCombate extends Ventana {
                 }
             }
         }
-        for (ElementoSimple e : iu.elementos) {
+        for (ElementoSimple e : ui.elementos) {
             if ((e instanceof Unidad) && !(e instanceof Bestia)) {
                 seleccionadas.add((Unidad) e);
             }
@@ -602,7 +603,7 @@ public class VentanaCombate extends Ventana {
             }
         }
         //Controlar que presionen botones mediante teclas
-        for (ElementoComplejo e : iu.seleccion_actual) {
+        for (ElementoComplejo e : ui.seleccion_actual) {
             List<BotonComplejo> botones;
             if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
                 botones = e.botones;
@@ -611,7 +612,7 @@ public class VentanaCombate extends Ventana {
             }
             for (BotonComplejo b : botones) {
                 if (input.isKeyPressed(b.tecla)) {
-                    b.resolucion(iu.elementos, e, partida);
+                    b.resolucion(ui.elementos, e, partida);
                 }
             }
         }
@@ -653,7 +654,7 @@ public class VentanaCombate extends Ventana {
                             break;
                         }
                     }
-                    controlGroupGroups.add(new ControlGroup(iu.elementos, numberKey));
+                    controlGroupGroups.add(new ControlGroup(ui.elementos, numberKey));
                 } else {
                     handleControlGroupSelection(numberKey);
                 }
@@ -675,12 +676,12 @@ public class VentanaCombate extends Ventana {
         mouseWheelZoom(input);
         //Tabulación
         if (input.isKeyPressed(Input.KEY_TAB)) {
-            iu.siguiente_seleccion();
+            ui.siguiente_seleccion();
         }
         //Cambiar a Atacar-Mover
         if (input.isKeyPressed(Input.KEY_A)) {
             boolean contador_boolean = false;
-            for (ElementoSimple e : iu.elementos) {
+            for (ElementoSimple e : ui.elementos) {
                 if (e instanceof Unidad) {
                     contador_boolean = true;
                 }
@@ -730,7 +731,7 @@ public class VentanaCombate extends Ventana {
                 }
             }
             if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT)) {
-                iu.handleLeftClick(input, partida, x_click, y_click, mayus);
+                ui.handleLeftClick(input, partida, x_click, y_click, mayus);
                 click = false;
             } else if ((edificio != null)) {
                 //Decidir la localización de un edificio
@@ -771,8 +772,8 @@ public class VentanaCombate extends Ventana {
                 x_click = (int) playerX + input.getMouseX();
                 y_click = (int) playerY + input.getMouseY();
                 if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                    if ((x_click >= (VentanaCombate.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
-                        iu.movePlayerPerspective(x_click, y_click);
+                    if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+                        ui.movePlayerPerspective(x_click, y_click);
                     }
                 }
             }
@@ -815,7 +816,7 @@ public class VentanaCombate extends Ventana {
                     }
                 }
                 boolean seleccionar_edificios = true;
-                for (ElementoComplejo e : iu.elementos) {
+                for (ElementoComplejo e : ui.elementos) {
                     if (e instanceof Unidad) {
                         seleccionar_edificios = false;
                         break;
@@ -858,8 +859,8 @@ public class VentanaCombate extends Ventana {
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
             if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                if ((x_click >= (VentanaCombate.playerX + iu.anchura_miniatura + iu.anchura_seleccion + iu.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
-                    Point2D resultado = iu.obtener_coordenadas_minimapa(x_click, y_click);
+                if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+                    Point2D resultado = ui.obtener_coordenadas_minimapa(x_click, y_click);
                     gestionar_click_derecho((float) resultado.getX(), (float) resultado.getY());
                 }
                 click = false;
@@ -883,11 +884,11 @@ public class VentanaCombate extends Ventana {
         for (ControlGroup c : controlGroupGroups) {
             if (c.tecla == numberKey) {
                 boolean cambiar_perspectiva = true;
-                if (iu.elementos.isEmpty()) {
+                if (ui.elementos.isEmpty()) {
                     cambiar_perspectiva = false;
                 }
-                for (int j = 0; j < iu.elementos.size(); j++) {
-                    if (iu.elementos.get(j) != c.contenido.get(j)) {
+                for (int j = 0; j < ui.elementos.size(); j++) {
+                    if (ui.elementos.get(j) != c.contenido.get(j)) {
                         cambiar_perspectiva = false;
                         break;
                     }
@@ -939,7 +940,7 @@ public class VentanaCombate extends Ventana {
     private void handleAttackMove(Input input, GameContainer container) {
         //Atacar - Mover
         List<Unidad> seleccionadas = new ArrayList<>();
-        for (ElementoSimple e : iu.elementos) {
+        for (ElementoSimple e : ui.elementos) {
             if (e instanceof Unidad) {
                 seleccionadas.add((Unidad) e);
             }
@@ -1054,12 +1055,12 @@ public class VentanaCombate extends Ventana {
                 }
                 g.setColor(Color.white);
             }
-            iu.renderUI(partida, g, controlGroupGroups);
+            ui.renderUI(partida, g, controlGroupGroups);
             if (atacar_boolean) {
                 g.setColor(Color.red);
-                if (iu.seleccion_actual.get(0) instanceof Unidad) {
-                    if (((Unidad) iu.seleccion_actual.get(0)).area > 0) {
-                        Unidad unidad = (Unidad) iu.seleccion_actual.get(0);
+                if (ui.seleccion_actual.get(0) instanceof Unidad) {
+                    if (((Unidad) ui.seleccion_actual.get(0)).area > 0) {
+                        Unidad unidad = (Unidad) ui.seleccion_actual.get(0);
                         g.drawOval(playerX + input.getMouseX() - unidad.area, playerY + input.getMouseY() - unidad.area, unidad.area * 2, unidad.area * 2);
                     }
                 }
@@ -1078,9 +1079,9 @@ public class VentanaCombate extends Ventana {
             //RTS.Relojes
             relojes.stream().forEach(r -> r.dibujar(input, g));
             //Boton seleccionado
-            BotonComplejo hoveredButton = iu.obtainHoveredButton(playerX + input.getMouseX(), playerY + input.getMouseY());
+            BotonComplejo hoveredButton = ui.obtainHoveredButton(playerX + input.getMouseX(), playerY + input.getMouseY());
             if (hoveredButton != null) {
-                hoveredButton.renderExtendedInfo(null, g, iu.seleccion_actual.get(0));
+                hoveredButton.renderExtendedInfo(null, g, ui.seleccion_actual.get(0));
             }
             //Evento seleccionado Guardián
             if (partida.j1.raza.equals(Guardianes.nombre_raza)) {
