@@ -37,7 +37,7 @@ public class Taller extends Edificio {
     }
 
     @Override
-    public void crear_unidad(Partida partida, Jugador jugador, Unidad unidadACrear) {
+    public void createUnit(Partida partida, Jugador jugador, Unidad unidadACrear) {
         if(jugador.comprobacion_recursos(unidadACrear)){
             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
                 if (unidades_creadas.size() < anexos.size()) {

@@ -205,9 +205,12 @@ public class Edificio extends ElementoAtacante {
         }
     }
 
-    public void crear_unidad(Partida partida, Jugador jugador, Unidad unidadACrear) {
+    public void createUnit(Partida partida, Jugador jugador, Unidad unidadACrear) {
         if (jugador.comprobacion_recursos(unidadACrear)) {
             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
+                if (!jugador.raza.equals(Fenix.nombre_raza)) {
+                    jugador.recursos -= unidadACrear.coste;
+                }
                 if (!jugador.raza.equals(Fenix.nombre_raza) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
                     unidadACrear.x = this.x;
                     unidadACrear.y = this.y;
@@ -218,10 +221,8 @@ public class Edificio extends ElementoAtacante {
                     if (this.nombre.equals("Mando Central")) {
                         mandoCentralCrearUnidad(jugador, unidadACrear);
                     } else {
-                        //Añadir la unidad a la cola
                         cola_construccion.add(unidadACrear);
                     }
-                    jugador.recursos -= unidadACrear.coste;
                 }
             }
         }
@@ -419,7 +420,7 @@ public class Edificio extends ElementoAtacante {
                 if (statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
                     if (unidad_actual != null) {
                         if (!barra.isActive()) {
-                            this.crear_unidad(p, aliado, new Unidad(unidad_actual));
+                            this.createUnit(p, aliado, new Unidad(unidad_actual));
                         }
                     }
                 }

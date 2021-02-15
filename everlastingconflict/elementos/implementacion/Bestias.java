@@ -27,6 +27,10 @@ public class Bestias {
     public float x, y;
     public boolean muerte;
 
+    public List<Bestia> getContenido() {
+        return contenido;
+    }
+
     public void cambiar_coordenadas(float x, float y) {
         float distancia_x = x - this.x;
         float distancia_y = y - this.y;

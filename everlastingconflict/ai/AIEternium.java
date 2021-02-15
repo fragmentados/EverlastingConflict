@@ -127,15 +127,15 @@ public class AIEternium extends AI {
             //Reclutamiento de Unidades
             Unidad u = new Unidad("Ancestro");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.crear_unidad(p, this, u);
+                e.createUnit(p, this, u);
             }
             u = new Unidad("Guerrero");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.crear_unidad(p, this, u);
+                e.createUnit(p, this, u);
             }
             u = new Unidad("Adepto");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.crear_unidad(p, this, u);
+                e.createUnit(p, this, u);
             }
         }
     }

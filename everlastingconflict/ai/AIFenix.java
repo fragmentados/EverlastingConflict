@@ -167,14 +167,14 @@ public class AIFenix extends AI {
                 if (b.elemento_nombre.equals("Recolector")) {
                     if (cantidad_unidad("Recolector") < 3) {
                         Unidad u = new Unidad(b.elemento_nombre);
-                        e.crear_unidad(p, this, u);
+                        e.createUnit(p, this, u);
                         break;
                     }
                 }
                 if (b.elemento_nombre.equals("Constructor")) {
                     if (cantidad_unidad("Constructor") < 2) {
                         Unidad u = new Unidad(b.elemento_nombre);
-                        e.crear_unidad(p, this, u);
+                        e.createUnit(p, this, u);
                         break;
                     }
                 }

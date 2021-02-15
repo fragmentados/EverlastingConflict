@@ -38,6 +38,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
@@ -58,7 +59,7 @@ public class VentanaCombate extends Ventana {
     public boolean ctrl, deseleccionar;
     public static boolean mayus;
     //Atacar
-    public boolean atacar_boolean;
+    public boolean attackMoveModeEnabled;
     public Image atacar;
     //Construccion
     public Edificio edificio;
@@ -179,7 +180,7 @@ public class VentanaCombate extends Ventana {
         if (!(partida instanceof Tutorial)) {
             continuar.activado = false;
         }
-        ctrl = atacar_boolean = mayus = click = false;
+        ctrl = attackMoveModeEnabled = mayus = click = false;
         deseleccionar = true;
         partida.initElements(1);
         atacar = new Image("media/Cursores/atacar.png");
@@ -358,7 +359,7 @@ public class VentanaCombate extends Ventana {
         }
     }
 
-    public void obtener_ataque_mover(List<Unidad> unidades, float x, float y) {
+    public void getAttackMove(List<Unidad> unidades, float x, float y) {
         float distancia_x = x - unidades.get(0).x;
         float distancia_y = y - unidades.get(0).y;
         unidades.get(0).atacarmover(partida, x, y);
@@ -379,8 +380,6 @@ public class VentanaCombate extends Ventana {
     }
 
     public void gestionar_click_derecho(float x, float y) {
-        boolean atacada = false;
-        List<Unidad> seleccionadas = new ArrayList<>();
         for (ElementoSimple e : ui.elementos) {
             if (e instanceof Edificio) {
                 Edificio contador = (Edificio) e;
@@ -393,8 +392,7 @@ public class VentanaCombate extends Ventana {
                         for (Recurso r : partida.recursos) {
                             if (r.hitbox(x, y)) {
                                 u.recolectar(partida, r);
-                                atacada = true;
-                                break;
+                                return;
                             }
                         }
                     }
@@ -448,67 +446,15 @@ public class VentanaCombate extends Ventana {
                 }
             }
         }
-        for (ElementoSimple e : ui.elementos) {
-            if ((e instanceof Unidad) && !(e instanceof Bestia)) {
-                seleccionadas.add((Unidad) e);
+        List<Unidad> unitsSelected = ui.elementos.stream()
+                .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
+                .map(e -> (Unidad)e).collect(Collectors.toList());
+        elemento_atacado = partida.getElementAttackedAtPosition(x, y, unitsSelected);
+        if (elemento_atacado == null) {
+            if (!unitsSelected.isEmpty()) {
+                pathing_prueba(true, unitsSelected, x, y);
             }
         }
-        for (Unidad u : partida.j2.unidades) {
-            if (u.visible(partida)) {
-                if (u.hitbox(x, y)) {
-                    atacada = true;
-                    for (Unidad u2 : seleccionadas) {
-                        u2.atacar(u);
-                        elemento_atacado = u;
-                    }
-                }
-            }
-        }
-        for (Edificio e : partida.j2.edificios) {
-            if (e.visible(partida)) {
-                if (e.hitbox(x, y)) {
-                    atacada = true;
-                    for (Unidad u2 : seleccionadas) {
-                        u2.atacar(e);
-                        elemento_atacado = e;
-                    }
-                }
-            }
-        }
-        for (Recurso r : partida.j2.lista_recursos) {
-            if (r.visible(partida)) {
-                if (r.hitbox(x, y)) {
-                    atacada = true;
-                    for (Unidad u2 : seleccionadas) {
-                        u2.atacar(r);
-                        elemento_atacado = r;
-                    }
-                }
-            }
-        }
-        for (Bestias be : partida.bestias) {
-            for (Bestia b : be.contenido) {
-                if (b.visible(partida)) {
-                    if (b.hitbox(x, y)) {
-                        atacada = true;
-                        for (Unidad u2 : seleccionadas) {
-                            u2.atacar(b);
-                            elemento_atacado = b;
-                        }
-                    }
-                }
-            }
-        }
-        if (!atacada) {
-            if (!seleccionadas.isEmpty()) {
-                //Mover unidades
-                //pathing(seleccionadas, (int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
-                pathing_prueba(true, seleccionadas, x, y);
-            }
-        }
-    }
-
-    public VentanaCombate() {
     }
 
     public void handleCameraMovement(int delta) {
@@ -680,14 +626,9 @@ public class VentanaCombate extends Ventana {
         }
         //Cambiar a Atacar-Mover
         if (input.isKeyPressed(Input.KEY_A)) {
-            boolean contador_boolean = false;
-            for (ElementoSimple e : ui.elementos) {
-                if (e instanceof Unidad) {
-                    contador_boolean = true;
-                }
-            }
-            if (contador_boolean) {
-                atacar_boolean = true;
+            boolean unitSelected = ui.elementos.stream().anyMatch(e -> e instanceof Unidad);
+            if (unitSelected) {
+                attackMoveModeEnabled = true;
                 container.setMouseCursor(atacar, 10, 10);
             }
         }
@@ -760,7 +701,7 @@ public class VentanaCombate extends Ventana {
                     habilidad = null;
                     click = false;
                 }
-            } else if (atacar_boolean) {
+            } else if (attackMoveModeEnabled) {
                 handleAttackMove(input, container);
             } else {
                 checkSelections(input);
@@ -864,9 +805,9 @@ public class VentanaCombate extends Ventana {
                     gestionar_click_derecho((float) resultado.getX(), (float) resultado.getY());
                 }
                 click = false;
-            } else if (atacar_boolean) {
+            } else if (attackMoveModeEnabled) {
                 container.setDefaultMouseCursor();
-                atacar_boolean = false;
+                attackMoveModeEnabled = false;
             } else if (edificio != null) {
                 //Cancelar Edificio                                
                 edificio = null;
@@ -938,15 +879,17 @@ public class VentanaCombate extends Ventana {
     }
 
     private void handleAttackMove(Input input, GameContainer container) {
-        //Atacar - Mover
-        List<Unidad> seleccionadas = new ArrayList<>();
-        for (ElementoSimple e : ui.elementos) {
-            if (e instanceof Unidad) {
-                seleccionadas.add((Unidad) e);
-            }
+        List<Unidad> unitsSelected = ui.elementos.stream()
+                .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
+                .map(e -> (Unidad)e).collect(Collectors.toList());
+        // First try to attack the element on the cursor
+        ElementoVulnerable elementAttacked = partida.getElementAttackedAtPosition((int) playerX + input.getMouseX(),
+                (int) playerY + input.getMouseY(), unitsSelected);
+        if (elementAttacked == null) {
+            // If there is no element on the cursor we attack move to the point
+            getAttackMove(unitsSelected, (int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
         }
-        obtener_ataque_mover(seleccionadas, (int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
-        atacar_boolean = false;
+        attackMoveModeEnabled = false;
         container.setDefaultMouseCursor();
         deseleccionar = false;
     }
@@ -1056,7 +999,7 @@ public class VentanaCombate extends Ventana {
                 g.setColor(Color.white);
             }
             ui.renderUI(partida, g, controlGroupGroups);
-            if (atacar_boolean) {
+            if (attackMoveModeEnabled) {
                 g.setColor(Color.red);
                 if (ui.seleccion_actual.get(0) instanceof Unidad) {
                     if (((Unidad) ui.seleccion_actual.get(0)).area > 0) {

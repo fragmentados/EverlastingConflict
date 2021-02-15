@@ -5,15 +5,13 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.ElementoVulnerable;
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.mapas.MapEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
-import everlastingconflict.elementos.implementacion.Proyectil;
-import everlastingconflict.elementos.implementacion.Bestias;
-import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.ElementoCoordenadas;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.mapas.VentanaCombate;
 import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
 import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
@@ -22,6 +20,7 @@ import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -330,6 +329,37 @@ public class Partida {
         j1.color = Color.green;
         j2.color = Color.red;
         this.map = map;
+    }
+
+    public ElementoVulnerable getElementAttackedAtPosition(float x, float y, List<Unidad> seleccionadas) {
+        Optional<Unidad> unitAttackedOp = j2.unidades.stream().filter(u -> u.visible(this) && u.hitbox(x, y)).findFirst();
+        if (!unitAttackedOp.isPresent()) {
+            Optional<Edificio> buildingAttackedOp = j2.edificios.stream().filter(e -> e.visible(this) && e.hitbox(x, y)).findFirst();
+            if (!buildingAttackedOp.isPresent()) {
+                Optional<Recurso> resourceAttackedOp = j2.lista_recursos.stream().filter(r -> r.visible(this) && r.hitbox(x, y)).findFirst();
+                if (!resourceAttackedOp.isPresent()) {
+                    Optional<Bestia> beastAttackedOp = this.bestias.stream().flatMap(be -> be.getContenido().stream()).filter(b -> b.visible(this) && b.hitbox(x, y)).findFirst();
+                    if (beastAttackedOp.isPresent()) {
+                        final ElementoVulnerable beastAttacked = beastAttackedOp.get();
+                        seleccionadas.stream().forEach(s -> s.atacar(beastAttacked));
+                        return beastAttacked;
+                    }
+                } else {
+                    final ElementoVulnerable resourceAttacked = resourceAttackedOp.get();
+                    seleccionadas.stream().forEach(s -> s.atacar(resourceAttacked));
+                    return resourceAttacked;
+                }
+            } else {
+                final ElementoVulnerable buildingAttacked = buildingAttackedOp.get();
+                seleccionadas.stream().forEach(s -> s.atacar(buildingAttacked));
+                return buildingAttacked;
+            }
+        } else {
+            final ElementoVulnerable unitAttacked = unitAttackedOp.get();
+            seleccionadas.stream().forEach(s -> s.atacar(unitAttacked));
+            return unitAttacked;
+        }
+        return null;
     }
 
 }

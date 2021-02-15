@@ -367,7 +367,7 @@ public class BotonComplejo extends BotonSimple {
                 if (texto == null) {
                     if (this.elemento_tipo.equals("Unidad")) {
                         //Crear Unidad  
-                        edificio.crear_unidad(partida, aliado, new Unidad(this.elemento_nombre));
+                        edificio.createUnit(partida, aliado, new Unidad(this.elemento_nombre));
                     } else {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio
@@ -409,6 +409,7 @@ public class BotonComplejo extends BotonSimple {
                         case "Halcón":
                         case "Fénix":
                             edificio.unidad_actual = texto;
+                            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
                             break;
                         case "Reanudar":
                             texto = "Detener";
