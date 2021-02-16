@@ -88,7 +88,7 @@ public class AIEternium extends AI {
         if (e.cola_construccion.isEmpty()) {
             for (BotonComplejo b : e.botones) {
                 Tecnologia t = new Tecnologia(b.elemento_nombre);
-                e.investigar_tecnologia(p, this, t);
+                e.researchTechnology(p, this, t);
                 break;
             }
         }

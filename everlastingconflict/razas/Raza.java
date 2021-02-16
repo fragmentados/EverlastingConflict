@@ -13,7 +13,6 @@ import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import org.newdawn.slick.Image;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -302,6 +301,7 @@ public class Raza {
                 break;
         }
         e.inicializar_teclas_botones(e.botones);
+        e.checkButtonResources(aliado);
     }
 
     public static void iniciar_botones_unidad(Partida p, Unidad u) {
@@ -325,6 +325,7 @@ public class Raza {
                 break;
         }
         u.inicializar_teclas_botones(u.botones);
+        u.checkButtonResources(aliado);
     }
 
     public static Image getResourceImage(String raceName) {

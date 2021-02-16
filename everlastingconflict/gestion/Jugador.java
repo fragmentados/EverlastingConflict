@@ -5,17 +5,13 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.razas.*;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.implementacion.ElementoEspecial;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Taller;
-import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.mapas.VentanaCombate;
 
 import java.awt.geom.Point2D;
@@ -43,17 +39,32 @@ public class Jugador {
     public List<Edificio> edificios;
     public List<Recurso> lista_recursos;
     public List<Vision> visiones;
-    public List<ElementoEspecial> elementos_especiales;           
+    public List<ElementoEspecial> elementos_especiales;
+    public List<Tecnologia> tecnologias = new ArrayList<>();
     //Recursos
-    public float recursos;
+    private float recursos;
     public Image resourceImage;
     public float recursos_alternativos;
     public float recursos_alternativos_dos;
     public int poblacion, poblacion_max;
     public boolean perforacion = false;
-    public Eventos eventos; 
+    public Eventos eventos;
 
-    public final int obtener_recursos() {
+    public float getRecursos() {
+        return recursos;
+    }
+
+    public void addResources(float amount) {
+        recursos += amount;
+        checkButtonResources();
+    }
+
+    public void removeResources(float amount) {
+        recursos -= amount;
+        checkButtonResources();
+    }
+
+    public final int getInitialResources() {
         switch (raza) {
             case "Fénix":
                 return 10;
@@ -85,7 +96,7 @@ public class Jugador {
         lista_recursos = new ArrayList<>();
         visiones = new ArrayList<>();
         elementos_especiales = new ArrayList<>();
-        recursos = obtener_recursos();
+        recursos = getInitialResources();
         poblacion = 0;
         poblacion_max = 200;
         this.resourceImage = Raza.getResourceImage(raza);
@@ -353,5 +364,14 @@ public class Jugador {
             }
         }
         return null;
+    }
+
+    public void checkButtonResources() {
+        edificios.stream().forEach(e -> e.checkButtonResources(this));
+        unidades.stream().forEach(u -> u.checkButtonResources(this));
+    }
+
+    public boolean hasTecnologyResearched(String tecnologyName) {
+        return this.tecnologias.stream().anyMatch(t -> t.nombre.equals(tecnologyName));
     }
 }

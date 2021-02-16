@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.stream.Collectors;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
@@ -133,18 +134,17 @@ public class Edificio extends ElementoAtacante {
         this.reunion_y = this.y + this.altura + this.altura_barra_vida + barra.altura;
     }
 
-    public void investigar_tecnologia(Partida p, Jugador j, Tecnologia t) {
+    public void researchTechnology(Partida p, Jugador j, Tecnologia t) {
         if (j.comprobacion_recursos(t)) {
-            for (BotonComplejo b : botones) {
-                if (b.elemento_nombre.equals(t.nombre)) {
-                    b.activado = false;
-                    break;
-                }
-            }
+            // Disable all buttons that research the tecnology
+            j.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
+                    .flatMap(e -> e.botones.stream())
+                    .filter(b -> b.elemento_nombre.equals(t.nombre)).forEach(b -> b.activado = false);
             if (cola_construccion.isEmpty()) {
                 barra.activar(t.tiempo);
             }
             cola_construccion.add(t);
+            j.tecnologias.add(t);
         }
     }
 
@@ -181,27 +181,26 @@ public class Edificio extends ElementoAtacante {
         return new Point2D.Float(x_contador, y_contador);
     }
 
-    public void cancelar_produccion(Partida p, ElementoSimple e) {
-        if (e instanceof Unidad && cantidad_produccion != null && cantidad_produccion.get(obtener_indice_elemento(e.nombre)) > 1) {
+    public void cancelProduction(Partida p, ElementoSimple elementProduced) {
+        if (elementProduced instanceof Unidad && cantidad_produccion != null && cantidad_produccion.get(obtener_indice_elemento(elementProduced.nombre)) > 1) {
             //El edificio puede crear varias unidades de vez
-            int indice = obtener_indice_elemento(e.nombre);
+            int indice = obtener_indice_elemento(elementProduced.nombre);
             int contador = cantidad_produccion.get(indice).intValue();
             contador--;
             cantidad_produccion.set(indice, new Integer(contador));
         } else {
-            if (e instanceof Tecnologia) {
-                //Reactivar Botón
-                for (BotonComplejo b : botones) {
-                    if (b.elemento_nombre.equals(e.nombre)) {
-                        b.activado = true;
-                        break;
-                    }
-                }
+            if (elementProduced instanceof Tecnologia) {
+                Jugador aliado = p.jugador_aliado(this);
+                // Enable all buttons that research the tecnology
+                aliado.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
+                        .flatMap(e -> e.botones.stream())
+                        .filter(b -> b.elemento_nombre.equals(elementProduced.nombre)).forEach(b -> b.activado = true);
+                aliado.tecnologias.remove(elementProduced);
             }
-            eliminar_cola(e);
+            eliminar_cola(elementProduced);
         }
         if (!p.jugador_aliado(this).raza.equals(Fenix.nombre_raza)) {
-            p.jugador_aliado(this).recursos += e.coste;
+            p.jugador_aliado(this).addResources(elementProduced.coste);
         }
     }
 
@@ -209,7 +208,7 @@ public class Edificio extends ElementoAtacante {
         if (jugador.comprobacion_recursos(unidadACrear)) {
             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
                 if (!jugador.raza.equals(Fenix.nombre_raza)) {
-                    jugador.recursos -= unidadACrear.coste;
+                    jugador.removeResources(unidadACrear.coste);
                 }
                 if (!jugador.raza.equals(Fenix.nombre_raza) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
                     unidadACrear.x = this.x;
@@ -304,12 +303,10 @@ public class Edificio extends ElementoAtacante {
                 } else {
                     Tecnologia t = (Tecnologia) cola_construccion.get(0);
                     t.resolver_efecto(p, j);
-                    for (BotonComplejo b : botones) {
-                        if (b.elemento_nombre.equals(t.nombre)) {
-                            botones.remove(b);
-                            break;
-                        }
-                    }
+                    // Remove technology button from every same building
+                    j.edificios.stream().filter(e -> e.nombre.equals(this.nombre)).forEach(e -> {
+                        e.botones.removeIf(b -> b.elemento_nombre.equals(t.nombre));
+                    });
                 }
                 eliminar_cola(cola_construccion.get(0));
             }
@@ -430,7 +427,7 @@ public class Edificio extends ElementoAtacante {
                     if (recurso_int > 0) {
                         if (recurso_int - Reloj.velocidad_reloj * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;
-                            aliado.recursos += Edificio.recursos_refineria;
+                            aliado.addResources(Edificio.recursos_refineria);
                             VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
                         } else {
                             recurso_int -= Reloj.velocidad_reloj * delta;
@@ -443,7 +440,7 @@ public class Edificio extends ElementoAtacante {
                     recurso_int += delta;
                 } else {
                     recurso_int = 0;
-                    aliado.recursos += Edificio.recursos_centro;
+                    aliado.addResources(Edificio.recursos_centro);
                     for (int i = 0; i < p.recursos.size(); i++) {
                         Recurso r = p.recursos.get(i);
                         if (r.x == x && r.y == y) {

@@ -391,7 +391,7 @@ public class BotonComplejo extends BotonSimple {
                         } else {
                             if (this.elemento_tipo.equals("Tecnología")) {
                                 //Investigar Tecnología
-                                edificio.investigar_tecnologia(partida, aliado, new Tecnologia(this.elemento_nombre));
+                                edificio.researchTechnology(partida, aliado, new Tecnologia(this.elemento_nombre));
                             } else {
                                 //Desbloquear Evento Positivo
                                 Evento evento = new Evento(this.elemento_nombre);
@@ -517,5 +517,17 @@ public class BotonComplejo extends BotonSimple {
                 resolucion_contador -= Reloj.velocidad_reloj * delta;
             }
         }
+    }
+
+    public void checkIfEnabled(Jugador aliado) {
+        boolean enabled = this.activado;
+        if ("Tecnología".equals(elemento_tipo)) {
+            enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
+        } else if ("Cuartel Fénix".equals(elemento_nombre)) {
+            enabled = aliado.cantidad_edificio(elemento_nombre) < Fenix.limite_cuarteles;
+        } else if (elemento_coste > 0) {
+            enabled = aliado.getRecursos() >= this.elemento_coste;
+        }
+        this.activado = enabled;
     }
 }

@@ -7,6 +7,7 @@ package everlastingconflict.elementos;
 
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
@@ -46,11 +47,13 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     }
 
     public void iniciarbotones(Partida p) {
+        Jugador aliado = p.jugador_aliado(this);
         if (this instanceof Edificio) {
             Raza.iniciar_botones_edificio(p, (Edificio) this);
         } else {
             Raza.iniciar_botones_unidad(p, (Unidad) this);
         }
+        removeTechnologyButtonsAlreadyResearched(aliado);
     }
 
     public void inicializar_teclas_botones(List<BotonComplejo> botones) {
@@ -103,4 +106,12 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     
     @Override
     public abstract void destruir(Partida p, ElementoAtacante atacante);
+
+    public void checkButtonResources(Jugador aliado) {
+        botones.stream().filter(b -> b.elemento_coste > 0).forEach(b -> b.checkIfEnabled(aliado));
+    }
+
+    public void removeTechnologyButtonsAlreadyResearched(Jugador aliado) {
+        botones.removeIf(b -> "Tecnología".equals(b.elemento_tipo) && aliado.hasTecnologyResearched(b.elemento_nombre));
+    }
 }

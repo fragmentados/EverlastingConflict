@@ -636,7 +636,7 @@ public class UI {
                     float y_e = initialY + 50;
                     if ((x_click >= x_e) && (x_click <= x_e + 40)) {
                         if ((y_click >= y_e) && (y_click <= y_e + 40)) {
-                            ed.cancelar_produccion(p, ed.cola_construccion.get(0));
+                            ed.cancelProduction(p, ed.cola_construccion.get(0));
                         }
                     }
                     for (int i = 1; i < ed.cola_construccion.size(); i++) {
@@ -644,7 +644,7 @@ public class UI {
                         y_e = initialY + 100;
                         if ((x_click >= x_e) && (x_click <= x_e + 40)) {
                             if ((y_click >= y_e) && (y_click <= y_e + 40)) {
-                                ed.cancelar_produccion(p, ed.cola_construccion.get(i));
+                                ed.cancelProduction(p, ed.cola_construccion.get(i));
                                 break;
                             }
                         }

@@ -312,7 +312,7 @@ public class Unidad extends ElementoMovil {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
                 if (!p.jugador_aliado(this).raza.equals(Fenix.nombre_raza)) {
-                    p.jugador_aliado(this).recursos += edificio_construccion.coste;
+                    p.jugador_aliado(this).addResources(edificio_construccion.coste);
                 }
                 edificio_construccion = null;
             }

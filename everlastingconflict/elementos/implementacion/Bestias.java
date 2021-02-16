@@ -127,7 +127,7 @@ public class Bestias {
         Jugador aliado = p.jugador_aliado(atacante);
         for (int i = 0; i < tamano; i++) {
             if (aliado.raza.equals("Clark")) {
-                aliado.recursos += contenido.get(0).recompensa;
+                aliado.addResources(contenido.get(0).recompensa);
             }
             contenido.get(0).deseleccionar();
             contenido.remove(0);

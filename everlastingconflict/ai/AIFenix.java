@@ -48,7 +48,7 @@ public class AIFenix extends AI {
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
         super.comportamiento_unidades(p, g, delta);
-        pushear(p);
+        /*pushear(p);
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Recolector":
@@ -61,12 +61,12 @@ public class AIFenix extends AI {
                 //Unidad Militar
                 //comportamiento_militar(p, u);
             }
-        }
+        }*/
     }
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
+        /*super.comportamiento_edificios(p, g, delta);
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 case "Cuartel Fénix":
@@ -81,7 +81,7 @@ public class AIFenix extends AI {
                     break;
 
             }
-        }
+        }*/
     }
 
     public void comportamiento_constructor(Partida p, Unidad u) {
@@ -155,7 +155,7 @@ public class AIFenix extends AI {
         if (e.cola_construccion.isEmpty()) {
             for (BotonComplejo b : e.botones) {
                 Tecnologia t = new Tecnologia(b.elemento_nombre);
-                e.investigar_tecnologia(p, this, t);
+                e.researchTechnology(p, this, t);
                 break;
             }
         }

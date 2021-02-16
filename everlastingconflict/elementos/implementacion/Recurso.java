@@ -64,12 +64,11 @@ public class Recurso extends ElementoVulnerable {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        //System.out.println("Destruyendo la unidad = " + atacada.nombre);        
         if (p.jugador_aliado(this).lista_recursos.indexOf(this) != -1) {
             p.jugador_aliado(this).lista_recursos.remove(this);
             p.recursos.add(this);
             if (!this.capturador.equals("")) {
-                p.jugador_aliado(this).recursos -= 10;
+                p.jugador_aliado(this).removeResources(10);
                 capturador = "";
             }
             vida = 0;
@@ -78,7 +77,7 @@ public class Recurso extends ElementoVulnerable {
     }
 
     public void capturar(Jugador j) {
-        j.recursos += 10;
+        j.addResources(10);
         capturador = j.nombre;
         j.visiones.add(new Vision(this.x, this.y, 450, 450, 0));
         this.sprite.setAutoUpdate(true);

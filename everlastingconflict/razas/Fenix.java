@@ -89,7 +89,7 @@ public class Fenix {
         u.cadencia = Unidad.cadencia_estandar;
         u.velocidad = Unidad.velocidad_estandar + 0.1f;
         u.coste = 0;
-        u.tiempo = Unidad.tiempo_estandar + 2;
+        u.tiempo = Unidad.tiempo_estandar - 4;
         u.vision = Unidad.vision_estandar - 100;
         u.constructor = true;
         u.hostil = false;
@@ -103,7 +103,7 @@ public class Fenix {
         u.cadencia = Unidad.cadencia_estandar;
         u.velocidad = Unidad.velocidad_estandar;
         u.coste = 0;
-        u.tiempo = Unidad.tiempo_estandar + 2;
+        u.tiempo = Unidad.tiempo_estandar - 4;
         u.vision = Unidad.vision_estandar - 100;
         u.constructor = true;
         u.hostil = false;
@@ -267,28 +267,4 @@ public class Fenix {
         }
     }
 
-    public static void checkButtonResources(Jugador jugadorFenix) {
-        if (jugadorFenix != null && jugadorFenix.recursos < 100) {
-            for (Edificio e : jugadorFenix.edificios) {
-                for (BotonComplejo b : e.botones) {
-                    if (b.elemento_coste > 0) {
-                        b.activado = checkResources(jugadorFenix.recursos, b.elemento_coste);
-                    }
-                }
-            }
-            for (Unidad u : jugadorFenix.unidades) {
-                for (BotonComplejo b : u.botones) {
-                    if ("Cuartel Fénix".equals(b.elemento_nombre)) {
-                        b.activado = jugadorFenix.cantidad_edificio(b.elemento_nombre) < Fenix.limite_cuarteles;
-                    } else if (b.elemento_coste > 0) {
-                        b.activado = checkResources(jugadorFenix.recursos, b.elemento_coste);
-                    }
-                }
-            }
-        }
-    }
-
-    public static boolean checkResources(Float resources, Float cost) {
-        return resources >= cost;
-    }
 }

@@ -82,7 +82,7 @@ public class Bestia extends Unidad {
             Jugador aliado = p.jugador_aliado(atacante);
             if (aliado.raza.equals("Clark")) {
                 VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
-                aliado.recursos += this.recompensa;
+                aliado.addResources(this.recompensa);
             }
             if (this.seleccionada()) {
                 this.deseleccionar();

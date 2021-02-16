@@ -504,8 +504,6 @@ public class VentanaCombate extends Ventana {
         Input input = container.getInput();
         ctrl = input.isKeyDown(Input.KEY_LCONTROL);
         mayus = input.isKeyDown(Input.KEY_LSHIFT);
-        // Check Fenix Resources
-        Fenix.checkButtonResources(partida.getPlayerByRace(Fenix.nombre_raza));
         // Mensajes
         List<Mensaje> messagesToBeRemoved = new ArrayList<>();
         for (Mensaje m: mensajes) {
