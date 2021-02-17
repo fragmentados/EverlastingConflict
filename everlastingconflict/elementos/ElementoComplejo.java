@@ -13,6 +13,7 @@ import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
@@ -28,7 +29,7 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     
     public Image miniatura;    
     public int vision;
-    public List<BotonComplejo> botones;
+    public List<BotonComplejo> botones = new ArrayList<>();
 
     public void seleccionar() {
         VentanaCombate.ui.seleccionar(this);

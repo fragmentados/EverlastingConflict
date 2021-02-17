@@ -270,6 +270,10 @@ public class Unidad extends ElementoMovil {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
+        this.destruir(p, atacante, true);
+    }
+
+    public void destruir(Partida p, ElementoAtacante atacante, boolean shouldPlaySound) {
         //La unidad no ha sido destruida previamente
         if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
                 && p.jugador_aliado(this).unidades.indexOf(this) != -1) {
@@ -294,7 +298,9 @@ public class Unidad extends ElementoMovil {
                 Manipulador m = (Manipulador) atacante;
                 m.aumentar_experiencia(experiencia_al_morir);
             }
-            ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
+            if (shouldPlaySound) {
+                ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
+            }
         }
     }
 

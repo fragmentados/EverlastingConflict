@@ -118,23 +118,6 @@ public class Bestias {
         }
     }
 
-    public void destruir(Partida p, Unidad atacante) {
-        //En este método no usamos una llamada al método Bestia.destruir()
-        //ya que ese método busca mediante un bucle el conjunto de bestias al 
-        //que pertenece la bestia que se destruye, lo cual aquñi sería innecesario
-        //e ineficiente.
-        int tamano = contenido.size();
-        Jugador aliado = p.jugador_aliado(atacante);
-        for (int i = 0; i < tamano; i++) {
-            if (aliado.raza.equals("Clark")) {
-                aliado.addResources(contenido.get(0).recompensa);
-            }
-            contenido.get(0).deseleccionar();
-            contenido.remove(0);
-        }
-        muerte = true;
-    }
-
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         if (muerte) {
             g.setColor(Color.white);

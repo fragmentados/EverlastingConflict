@@ -548,18 +548,20 @@ public class UI {
             } else {
                 botones = ((Manipulador) e).botones_mejora;
             }
-            for (int i = 0; i < botones.size(); i++) {
-                BotonComplejo boton = botones.get(i);
-                //Las coordenadas de los botones tienen que cambiarse en este bucle para se tenga en cuenta playerX y playerY
-                boton.x = VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5 + (i % 4) * (boton.sprite.getWidth() + 5);
-                boton.y = initialY + 5 + ((i % 16) / 4) * (boton.sprite.getHeight() + 5);
-                boton.dibujar(g);
-                if (e instanceof Edificio) {
-                    Edificio edificio = (Edificio) e;
-                    if ((edificio.unidad_actual != null) && (edificio.unidad_actual.equals(boton.texto))) {
-                        g.setColor(Color.green);
-                        g.fillRect(boton.x, boton.y + boton.altura, boton.anchura, 5);
-                        g.setColor(Color.white);
+            if (botones != null && !botones.isEmpty()) {
+                for (int i = 0; i < botones.size(); i++) {
+                    BotonComplejo boton = botones.get(i);
+                    //Las coordenadas de los botones tienen que cambiarse en este bucle para se tenga en cuenta playerX y playerY
+                    boton.x = VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5 + (i % 4) * (boton.sprite.getWidth() + 5);
+                    boton.y = initialY + 5 + ((i % 16) / 4) * (boton.sprite.getHeight() + 5);
+                    boton.dibujar(g);
+                    if (e instanceof Edificio) {
+                        Edificio edificio = (Edificio) e;
+                        if ((edificio.unidad_actual != null) && (edificio.unidad_actual.equals(boton.texto))) {
+                            g.setColor(Color.green);
+                            g.fillRect(boton.x, boton.y + boton.altura, boton.anchura, 5);
+                            g.setColor(Color.white);
+                        }
                     }
                 }
             }

@@ -79,7 +79,7 @@ public class VentanaCombate extends Ventana {
     public static float offsetMaxY;
     public boolean debugg = false;
     //Click
-    public boolean click;
+    public static boolean click;
     public int x_click, y_click;
     //Grupos de control
     public List<ControlGroup> controlGroupGroups = new ArrayList<>();
@@ -193,36 +193,6 @@ public class VentanaCombate extends Ventana {
         ui = new UI();
         //this.ambientMusic = new Sound("/media/Sonidos/AdeptoAtaque.ogg");
         //this.ambientMusic.loop();
-    }
-
-    public void deseleccion() {
-        for (Unidad u : partida.j1.unidades) {
-            if (u.seleccionada()) {
-                u.deseleccionar();
-            }
-        }
-        for (Unidad u : partida.j2.unidades) {
-            if (u.seleccionada()) {
-                u.deseleccionar();
-            }
-        }
-        for (Edificio e : partida.j1.edificios) {
-            if (e.seleccionada()) {
-                e.deseleccionar();
-            }
-        }
-        for (Edificio e : partida.j2.edificios) {
-            if (e.seleccionada()) {
-                e.deseleccionar();
-            }
-        }
-        for (Bestias be : partida.bestias) {
-            for (Bestia b : be.contenido) {
-                if (b.seleccionada()) {
-                    b.deseleccionar();
-                }
-            }
-        }
     }
 
     public void coordenadas_errores() {
@@ -554,10 +524,10 @@ public class VentanaCombate extends Ventana {
             } else {
                 botones = ((Manipulador) e).botones_mejora;
             }
-            for (BotonComplejo b : botones) {
-                if (input.isKeyPressed(b.tecla)) {
-                    b.resolucion(ui.elementos, e, partida);
-                }
+            if (botones != null) {
+                botones.stream()
+                        .filter(b -> input.isKeyPressed(b.tecla))
+                        .forEach(b -> b.resolucion(ui.elementos, e, partida));
             }
         }
         //Comportamientos
@@ -702,7 +672,7 @@ public class VentanaCombate extends Ventana {
             } else if (attackMoveModeEnabled) {
                 handleAttackMove(input, container);
             } else {
-                checkSelections(input);
+                partida.checkSelections(input);
             }
         }
 
@@ -722,7 +692,7 @@ public class VentanaCombate extends Ventana {
         if (!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
             if (click) {
                 if ((!mayus) && (deseleccionar)) {
-                    deseleccion();
+                    partida.deselectAllElements();
                 } else {
                     deseleccionar = true;
                 }
@@ -866,7 +836,7 @@ public class VentanaCombate extends Ventana {
                     }
                 } else {
                     //El grupo de control no está seleccionado: Se selecciona.
-                    deseleccion();
+                    partida.deselectAllElements();
                     for (ElementoComplejo e : c.contenido) {
                         e.seleccionar();
                     }
@@ -890,27 +860,6 @@ public class VentanaCombate extends Ventana {
         attackMoveModeEnabled = false;
         container.setDefaultMouseCursor();
         deseleccionar = false;
-    }
-
-    private void checkSelections(Input input) {
-        //Seleccionar un Elemento
-        List<ElementoComplejo> contador = new ArrayList<>();
-        contador.addAll(partida.j1.unidades);
-        contador.addAll(partida.j1.edificios);
-        contador.addAll(partida.j2.unidades);
-        contador.addAll(partida.j2.edificios);
-        partida.bestias.stream().map(bs -> bs.contenido).forEach(b -> contador.addAll(b));
-        contador.stream()
-                .filter(e -> e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY()))
-                .findFirst().ifPresent(e -> handleSelection(e));
-    }
-
-    private void handleSelection(ElementoComplejo e) {
-        if (!mayus) {
-            deseleccion();
-        }
-        e.seleccionar(mayus);
-        click = false;
     }
 
     @Override

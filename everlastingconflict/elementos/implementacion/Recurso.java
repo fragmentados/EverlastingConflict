@@ -5,6 +5,7 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Elías
  */
-public class Recurso extends ElementoVulnerable {
+public class Recurso extends ElementoComplejo {
 
     public boolean ocupado;
     public String capturador;
@@ -35,6 +36,8 @@ public class Recurso extends ElementoVulnerable {
         Integer contador = 1;
         List<Image> imageList = new ArrayList<>();
         try {
+            icono = new Image("media/Iconos/" + nombre + ".png");
+            miniatura = new Image("media/Miniaturas/Prueba.png");
             do {
                 imageList.add(new Image("media/Recursos/" + nombre + contador + ".png"));
                 contador++;

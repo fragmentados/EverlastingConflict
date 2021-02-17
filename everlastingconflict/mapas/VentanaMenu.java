@@ -139,7 +139,7 @@ public class VentanaMenu extends Ventana {
                 mapType.desplegar.efecto();
             }
             if (racePlayer1.checkOptionSelected(input.getMouseX(), input.getMouseY())) {
-                client.send_message(new Message(Message.raze_type, racePlayer1.opcion_seleccionada));
+                //client.send_message(new Message(Message.raze_type, racePlayer1.opcion_seleccionada));
             }
             player2Type.checkOptionSelected(input.getMouseX(), input.getMouseY());
             racePlayer2.checkOptionSelected(input.getMouseX(), input.getMouseY());

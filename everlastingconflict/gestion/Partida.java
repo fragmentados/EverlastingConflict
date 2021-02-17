@@ -5,6 +5,7 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoSimple;
 import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.implementacion.*;
@@ -13,10 +14,6 @@ import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.mapas.VentanaCombate;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,8 @@ import java.util.Optional;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 /**
  *
@@ -362,4 +361,39 @@ public class Partida {
         return null;
     }
 
+    private List<ElementoComplejo> getSelectableElements() {
+        //Seleccionar un Elemento
+        List<ElementoComplejo> selectableElements = new ArrayList<>();
+        selectableElements.addAll(j1.unidades);
+        selectableElements.addAll(j1.edificios);
+        selectableElements.addAll(j2.unidades);
+        selectableElements.addAll(j2.edificios);
+        bestias.stream().map(bs -> bs.contenido).forEach(b -> selectableElements.addAll(b));
+        selectableElements.addAll(recursos);
+        return selectableElements;
+    }
+
+    public void deselectAllElements() {
+        //Seleccionar un Elemento
+        List<ElementoComplejo> selectableElements = getSelectableElements();
+        selectableElements.stream()
+                .filter(e -> e.seleccionada())
+                .forEach(e -> e.deseleccionar());
+    }
+
+    public void checkSelections(Input input) {
+        //Seleccionar un Elemento
+        List<ElementoComplejo> selectableElements = getSelectableElements();
+        selectableElements.stream()
+                .filter(e -> e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY()))
+                .findFirst().ifPresent(e -> handleSelection(e));
+    }
+
+    private void handleSelection(ElementoComplejo e) {
+        if (!mayus) {
+            deselectAllElements();
+        }
+        e.seleccionar(mayus);
+        click = false;
+    }
 }

@@ -118,7 +118,7 @@ public class Clark {
         }
         if (resultado != null) {
             for (int i = 0; i < tamano; i++) {
-                f.contenido.get(0).destruir(p, null);
+                f.contenido.get(0).destruir(p, null, false);
                 f.contenido.remove(0);
             }
             resultado.statusBehaviour = StatusBehaviour.EMERGIENDO;

@@ -511,7 +511,9 @@ public class Habilidad extends ElementoSimple {
                     bestia = (Bestia) objetivo;
                     for (Bestias be : p.bestias) {
                         if (be.contenido.indexOf(bestia) != -1) {
-                            be.destruir(p, (Unidad) origen);
+                            List<Bestia> bestias = new ArrayList<>();
+                            bestias.addAll(be.contenido);
+                            bestias.stream().forEach(b -> b.destruir(p, (Unidad) origen));
                             break;
                         }
                     }

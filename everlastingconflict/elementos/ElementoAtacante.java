@@ -203,7 +203,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
         }
     }
 
-    public boolean dano(Partida p, String tipo, int ataque_contador, ElementoVulnerable e) {
+    public boolean  dano(Partida p, String tipo, int ataque_contador, ElementoVulnerable e) {
         //e representa el objetivo del ataque
         if (hostil) {
             int defensa_contador;

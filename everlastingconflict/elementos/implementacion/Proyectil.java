@@ -30,11 +30,11 @@ public class Proyectil extends ElementoMovil {
 
     public final void iniciar_datos(ElementoAtacante origen) {
         try {
-            this.sprite = new Animation(new Image[]{new Image("media/Proyectiles/" + origen.nombre + "_derecha.png")}, 300, false);
-            this.izquierda = new Animation(new Image[]{new Image("media/Proyectiles/" + origen.nombre + "_izquierda.png")}, 300, false);
-            this.derecha = new Animation(new Image[]{new Image("media/Proyectiles/" + origen.nombre + "_derecha.png")}, 300, false);
-            this.arriba = new Animation(new Image[]{new Image("media/Proyectiles/" + origen.nombre + "_arriba.png")}, 300, false);
-            this.abajo = new Animation(new Image[]{new Image("media/Proyectiles/" + origen.nombre + "_abajo.png")}, 300, false);
+            this.sprite = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300, false);
+            this.izquierda = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_izquierda.png")}, 300, false);
+            this.derecha = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300, false);
+            this.arriba = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_arriba.png")}, 300, false);
+            this.abajo = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_abajo.png")}, 300, false);
         } catch (SlickException ex) {
             Logger.getLogger(Proyectil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -46,11 +46,11 @@ public class Proyectil extends ElementoMovil {
     }
 
     public Proyectil(ElementoAtacante origen, ElementoVulnerable objetivo, int ataque) {
+        this.nombre = "Proyectil";
         this.objetivo = objetivo;
         this.origen = origen;
         this.ataque = ataque;
         statusEffectCollection = new StatusEffectCollection();
-        origen.nombre = "Proyectil";
         statusBehaviour = StatusBehaviour.PROYECTIL;
         this.x = this.origen.x;
         this.y = this.origen.y;
