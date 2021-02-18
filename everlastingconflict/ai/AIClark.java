@@ -20,12 +20,12 @@ public class AIClark extends AI {
 
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
 }

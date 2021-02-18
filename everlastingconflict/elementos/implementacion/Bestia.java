@@ -5,14 +5,14 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.mapas.Mensaje;
+import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.ElementoAtacante;
 import org.newdawn.slick.*;
 
 /**
@@ -97,6 +97,7 @@ public class Bestia extends Unidad {
                 }
             }
             if (atacante instanceof Manipulador) {
+                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
                 ((Manipulador) atacante).aumentar_experiencia(experiencia_al_morir);
             }
         }
@@ -114,10 +115,10 @@ public class Bestia extends Unidad {
             }
         }
         if (cadencia_contador > 0) {
-            if (cadencia_contador - (Reloj.velocidad_reloj * delta) <= 0) {
+            if (cadencia_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 cadencia_contador = 0;
             } else {
-                cadencia_contador -= (Reloj.velocidad_reloj * delta);
+                cadencia_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         switch (statusBehaviour) {

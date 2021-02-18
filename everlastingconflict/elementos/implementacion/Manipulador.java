@@ -15,16 +15,10 @@ import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojMaestros;
+import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 
 /**
  *
@@ -260,7 +254,7 @@ public class Manipulador extends Unidad {
         botones_mejora = new ArrayList<>();
         Raza.unidad(this);
         vida = vida_max;
-        nivel = 5;
+        nivel = 0;
         subir_de_nivel();
         regeneracion_mana = 1;
         mana_max = 200;
@@ -275,10 +269,10 @@ public class Manipulador extends Unidad {
         super.comportamiento(p, g, delta);
         Jugador aliado = p.jugador_aliado(this);
         if (this.mana < this.mana_max) {
-            aumentar_mana(Reloj.velocidad_reloj * regeneracion_mana * delta);
+            aumentar_mana(Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
         }
         if (statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
-            this.aumentar_experiencia(Reloj.velocidad_reloj * 2 * delta);
+            this.aumentar_experiencia(Reloj.TIME_REGULAR_SPEED * 2 * delta);
         }
         if (Manipulador.alentar) {
             for (Unidad u : aliado.unidades) {

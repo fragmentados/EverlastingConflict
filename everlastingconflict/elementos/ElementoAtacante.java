@@ -5,6 +5,7 @@
  */
 package everlastingconflict.elementos;
 
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
@@ -12,25 +13,12 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Maestros;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.implementacion.Bestia;
-import everlastingconflict.elementos.implementacion.Bestias;
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Proyectil;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Unidad;
+import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.Sound;
 
 /**
  *
@@ -169,7 +157,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
                 }
                 int ataque_contador;
-                if (!(this instanceof Bestia) && (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza))) {
+                if (!(this instanceof Bestia) && (p.jugador_aliado(this).raza.equals(RaceNameEnum.ETERNIUM.getName()))) {
                     ataque_contador = this.ataque_eternium();
                 } else {
                     ataque_contador = this.ataque;
@@ -212,7 +200,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
             } else {
                 defensa_contador = e.defensa;
             }
-            if (p.jugador_aliado(this).raza.equals(Maestros.nombre_raza)) {
+            if (p.jugador_aliado(this).raza.equals(RaceNameEnum.MAESTROS.getName())) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
                     for (Unidad u : p.jugador_aliado(this).unidades) {
@@ -331,26 +319,26 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public void comportamiento(Partida p, Graphics g, int delta) {
         super.comportamiento(p, g, delta);
         if (ataque_tiempo > 0) {
-            if (ataque_tiempo_contador - (Reloj.velocidad_reloj * delta) <= 0) {
+            if (ataque_tiempo_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 ataque_tiempo = ataque_tiempo_contador = 0;
                 ataque = ataque_contador;
             } else {
-                ataque_tiempo_contador -= (Reloj.velocidad_reloj * delta);
+                ataque_tiempo_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         if (provocado_tiempo > 0) {
-            if (provocado_tiempo_contador - (Reloj.velocidad_reloj * delta) <= 0) {
+            if (provocado_tiempo_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 provocado_tiempo = provocado_tiempo_contador = 0;
                 nombre_provocador = null;
             } else {
-                provocado_tiempo_contador -= (Reloj.velocidad_reloj * delta);
+                provocado_tiempo_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         if (cadencia_contador > 0) {
-            if (cadencia_contador - (Reloj.velocidad_reloj * delta) <= 0) {
+            if (cadencia_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 cadencia_contador = 0;
             } else {
-                cadencia_contador -= (Reloj.velocidad_reloj * delta);
+                cadencia_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         switch (statusBehaviour) {

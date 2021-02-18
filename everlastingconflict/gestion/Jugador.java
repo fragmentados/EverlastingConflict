@@ -7,7 +7,6 @@ package everlastingconflict.gestion;
 
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.razas.*;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoAtacante;
@@ -125,7 +124,7 @@ public class Jugador {
     }
 
     public void resta_recursos(int coste) {
-        if (!raza.equals(Fenix.nombre_raza)) {
+        if (!raza.equals(RaceNameEnum.FENIX.getName())) {
             recursos -= coste;
         }
     }
@@ -175,15 +174,15 @@ public class Jugador {
             u.iniciarbotones(p);
         }
         for (Edificio e : edificios) {
-            if (!this.raza.equals(Guardianes.nombre_raza) || e.nombre.equals("Ayuntamiento")) {
+            if (!this.raza.equals(RaceNameEnum.GUARDIANES.getName()) || e.nombre.equals("Ayuntamiento")) {
                 e.iniciarbotones(p);
             }
         }
     }
 
     public void comportamiento_elementos(Partida p, Graphics g, int delta) {
-        if (this.raza.equals(Guardianes.nombre_raza)) {
-            this.recursos += (this.recursos_alternativos / 100f) * delta * Reloj.velocidad_reloj * Guardianes.recursos_por_segundo;
+        if (this.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
+            this.recursos += (this.recursos_alternativos / 100f) * delta * Reloj.TIME_REGULAR_SPEED * Guardianes.recursos_por_segundo;
             eventos.comportamiento(this, delta);
         }
         comportamiento_unidades(p, g, delta);
@@ -219,7 +218,7 @@ public class Jugador {
         for (Edificio e : edificios) {
             e.dibujar(p, color, input, g);
         }
-        if (this.raza.equals(Maestros.nombre_raza)) {
+        if (this.raza.equals(RaceNameEnum.MAESTROS.getName())) {
             if (this.unidades.get(0) instanceof Manipulador) {
                 Manipulador m = (Manipulador) this.unidades.get(0);
                 m.dibujar_nivel(g);
@@ -227,7 +226,7 @@ public class Jugador {
                 m.dibujar_mana(g);
             }
         }
-        if (this.raza.equals(Eternium.nombre_raza) && (VentanaCombate.relojEternium().ndivision == 4)) {
+        if (this.raza.equals(RaceNameEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
             for (Unidad u : unidades) {
                 if (u.nombre.equals("Protector")) {
                     u.dibujar(p, color, input, g);
@@ -243,7 +242,7 @@ public class Jugador {
         for (ElementoEspecial e : elementos_especiales) {
             e.dibujar(p, color, input, g);
         }
-        if (raza.equals(Guardianes.nombre_raza)) {
+        if (raza.equals(RaceNameEnum.GUARDIANES.getName())) {
             eventos.dibujar(g);
         }
     }

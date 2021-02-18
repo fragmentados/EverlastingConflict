@@ -5,26 +5,21 @@
  */
 package everlastingconflict.campaign.tutorial;
 
-import everlastingconflict.elementosvisuales.BotonManipulador;
-import everlastingconflict.estados.StatusEffectName;
-import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
+import everlastingconflict.elementosvisuales.BotonManipulador;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
-
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Maestros;
+import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.relojes.RelojMaestros;
+import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.Color;
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 /**
  *
@@ -122,8 +117,8 @@ public class MaestrosTutorial extends Tutorial {
 
     public MaestrosTutorial() {
         iniciar_pasos();
-        j1 = new Jugador("Prueba", Maestros.nombre_raza);
-        j2 = new Jugador("Prueba", Eternium.nombre_raza);
+        j1 = new Jugador("Prueba", RaceNameEnum.MAESTROS.getName());
+        j2 = new Jugador("Prueba", RaceNameEnum.ETERNIUM.getName());
         j1.color = Color.green;
         j2.color = Color.red;
     }

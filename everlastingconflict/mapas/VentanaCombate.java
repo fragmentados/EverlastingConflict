@@ -5,34 +5,37 @@
  */
 package everlastingconflict.mapas;
 
-import everlastingconflict.elementos.*;
+import everlastingconflict.ControlGroup;
+import everlastingconflict.Experimento_Multiplayer_Real.Client;
+import everlastingconflict.Experimento_Multiplayer_Real.Message;
+import everlastingconflict.RTS;
+import everlastingconflict.campaign.tutorial.Tutorial;
+import everlastingconflict.elementos.ElementoAtacante;
+import everlastingconflict.elementos.ElementoComplejo;
+import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.ElementoVulnerable;
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
-import everlastingconflict.ControlGroup;
-import everlastingconflict.RTS;
-import everlastingconflict.campaign.tutorial.Tutorial;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Clark;
-import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
-import everlastingconflict.razas.Guardianes;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
-import everlastingconflict.elementos.implementacion.Bestia;
-import everlastingconflict.elementos.implementacion.Bestias;
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Habilidad;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.Experimento_Multiplayer_Real.Client;
-import everlastingconflict.Experimento_Multiplayer_Real.Message;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.*;
+import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.gui.TextField;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -40,13 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.lwjgl.input.Mouse;
-import org.newdawn.slick.*;
-import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.gui.TextField;
-
 import static everlastingconflict.elementos.util.ElementosComunes.FULL_VISIBLE_COLOR;
 import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_COLOR;
+import static everlastingconflict.relojes.Reloj.TIME_REGULAR_SPEED;
 
 /**
  *
@@ -98,7 +97,8 @@ public class VentanaCombate extends Ventana {
     //Movimiento pantalla
     public float x_movimiento = -1, y_movimiento = -1;
     //Animaciones
-    public ElementoVulnerable elemento_atacado = null;
+    public ElementoVulnerable elementCircle = null;
+    private float timeCircle = 1f, timeCircleCounter = 0;
     public Animation victoria, derrota;
     //Zoom
     public float zoomLevel = 1f;
@@ -387,7 +387,7 @@ public class VentanaCombate extends Ventana {
                             }
                         }
                     }
-                    if (aliado.raza.equals(Guardianes.nombre_raza)) {
+                    if (aliado.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
                         if (u.constructor) {
                             //Constructor activa edificio inactivo
                             for (Edificio ed : aliado.edificios) {
@@ -419,11 +419,13 @@ public class VentanaCombate extends Ventana {
         List<Unidad> unitsSelected = ui.elementos.stream()
                 .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
                 .map(e -> (Unidad)e).collect(Collectors.toList());
-        elemento_atacado = partida.getElementAttackedAtPosition(x, y, unitsSelected);
-        if (elemento_atacado == null) {
+        elementCircle = partida.getElementAttackedAtPosition(x, y, unitsSelected);
+        if (elementCircle == null) {
             if (!unitsSelected.isEmpty()) {
                 pathing_prueba(true, unitsSelected, x, y);
             }
+        } else {
+            timeCircleCounter = timeCircle;
         }
     }
 
@@ -786,6 +788,13 @@ public class VentanaCombate extends Ventana {
                 gestionar_click_derecho(x_click, y_click);
             }
         }
+        if (elementCircle != null) {
+            timeCircleCounter -= TIME_REGULAR_SPEED * delta;
+            if (timeCircleCounter <= 0) {
+                timeCircleCounter = 0;
+               elementCircle = null;
+            }
+        }
     }
 
     private void handleControlGroupSelection(Integer numberKey) {
@@ -899,11 +908,11 @@ public class VentanaCombate extends Ventana {
                     u.dibujar(partida, partida.j2.color, input, g);
                 }
             }
-            if (elemento_atacado != null) {
-                if (elemento_atacado instanceof Bestia) {
-                    elemento_atacado.circulo_extendido(g, Color.blue);
+            if (elementCircle != null) {
+                if (elementCircle instanceof Bestia) {
+                    elementCircle.circulo_extendido(g, Color.blue);
                 } else {
-                    elemento_atacado.circulo_extendido(g, partida.jugador_aliado(elemento_atacado).color);
+                    elementCircle.circulo_extendido(g, partida.jugador_aliado(elementCircle).color);
                 }
             }
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
@@ -974,13 +983,13 @@ public class VentanaCombate extends Ventana {
                 hoveredButton.renderExtendedInfo(null, g, ui.seleccion_actual.get(0));
             }
             //Evento seleccionado Guardián
-            if (partida.j1.raza.equals(Guardianes.nombre_raza)) {
+            if (partida.j1.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
                 Evento evento_seleccionado = partida.j1.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
                 if (evento_seleccionado != null) {
                     new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j1, g, null);
                 }
             } else {
-                if (partida.j2.raza.equals(Guardianes.nombre_raza)) {
+                if (partida.j2.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
                     Evento evento_seleccionado = partida.j2.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
                     if (evento_seleccionado != null) {
                         new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j2, g, null);

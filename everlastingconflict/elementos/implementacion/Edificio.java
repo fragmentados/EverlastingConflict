@@ -5,40 +5,37 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.StatusEffect;
-import everlastingconflict.estados.StatusEffectCollection;
-import everlastingconflict.estados.StatusEffectName;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Jugador;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.gestion.ProgressBar;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
-import everlastingconflict.mapas.Mensaje;
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Fenix;
-import everlastingconflict.razas.Raza;
-import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.elementos.ElementoAtacante;
+ import everlastingconflict.elementos.ElementoAtacante;
+ import everlastingconflict.elementos.ElementoComplejo;
+ import everlastingconflict.elementos.ElementoSimple;
+ import everlastingconflict.elementos.util.ElementosComunes;
+ import everlastingconflict.elementosvisuales.BotonComplejo;
+ import everlastingconflict.estados.StatusEffect;
+ import everlastingconflict.estados.StatusEffectCollection;
+ import everlastingconflict.estados.StatusEffectName;
+ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+ import everlastingconflict.gestion.Jugador;
+ import everlastingconflict.gestion.Partida;
+ import everlastingconflict.gestion.ProgressBar;
+ import everlastingconflict.mapas.Mensaje;
+ import everlastingconflict.mapas.VentanaCombate;
+ import everlastingconflict.mapas.VentanaPrincipal;
+ import everlastingconflict.razas.Eternium;
+ import everlastingconflict.razas.Fenix;
+ import everlastingconflict.razas.RaceNameEnum;
+ import everlastingconflict.razas.Raza;
+ import everlastingconflict.relojes.Reloj;
+ import org.newdawn.slick.Color;
+ import org.newdawn.slick.Graphics;
+ import org.newdawn.slick.Image;
+ import org.newdawn.slick.*;
 
-import java.awt.Rectangle;
-import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.stream.Collectors;
-
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+ import java.awt.*;
+ import java.awt.geom.Ellipse2D;
+ import java.awt.geom.Point2D;
+ import java.awt.geom.Rectangle2D;
+ import java.util.ArrayList;
+ import java.util.List;
 
  /**
  *
@@ -199,7 +196,7 @@ public class Edificio extends ElementoAtacante {
             }
             eliminar_cola(elementProduced);
         }
-        if (!p.jugador_aliado(this).raza.equals(Fenix.nombre_raza)) {
+        if (!p.jugador_aliado(this).raza.equals(RaceNameEnum.FENIX.getName())) {
             p.jugador_aliado(this).addResources(elementProduced.coste);
         }
     }
@@ -207,10 +204,10 @@ public class Edificio extends ElementoAtacante {
     public void createUnit(Partida partida, Jugador jugador, Unidad unidadACrear) {
         if (jugador.comprobacion_recursos(unidadACrear)) {
             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
-                if (!jugador.raza.equals(Fenix.nombre_raza)) {
+                if (!jugador.raza.equals(RaceNameEnum.FENIX.getName())) {
                     jugador.removeResources(unidadACrear.coste);
                 }
-                if (!jugador.raza.equals(Fenix.nombre_raza) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
+                if (!jugador.raza.equals(RaceNameEnum.FENIX.getName()) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
                     unidadACrear.x = this.x;
                     unidadACrear.y = this.y;
                     jugador.poblacion += unidadACrear.coste_poblacion;
@@ -352,7 +349,7 @@ public class Edificio extends ElementoAtacante {
                 this.deseleccionar();
             }
             p.jugador_aliado(this).edificios.remove(this);
-            if (p.jugador_aliado(this).raza.equals(Eternium.nombre_raza)) {
+            if (p.jugador_aliado(this).raza.equals(RaceNameEnum.ETERNIUM.getName())) {
                 p.jugador_aliado(this).comprobacion_perforacion();
             }
             if (atacante instanceof Manipulador) {
@@ -382,7 +379,7 @@ public class Edificio extends ElementoAtacante {
             for (Unidad u : aliado.unidades) {
                 if (u.vehiculo) {
                     if (this.alcance(200, u)) {
-                        u.aumentar_vida(Reloj.velocidad_reloj * delta * 5);
+                        u.aumentar_vida(Reloj.TIME_REGULAR_SPEED * delta * 5);
                     }
                 }
             }
@@ -400,7 +397,7 @@ public class Edificio extends ElementoAtacante {
             }
             if (edificio_construccion.vida < edificio_construccion.vida_max) {
                 //Continúa la construcción
-                edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.velocidad_reloj * delta;
+                edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.TIME_REGULAR_SPEED * delta;
             } else {
                 //Acaba la construcción
                 edificio_construccion.vida = edificio_construccion.vida_max;
@@ -425,12 +422,12 @@ public class Edificio extends ElementoAtacante {
             case "Refinería":
                 if (aliado.perforacion && !statusBehaviour.equals(StatusBehaviour.CONSTRUYENDOSE)) {
                     if (recurso_int > 0) {
-                        if (recurso_int - Reloj.velocidad_reloj * delta <= 0) {
+                        if (recurso_int - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;
                             aliado.addResources(Edificio.recursos_refineria);
                             VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
                         } else {
-                            recurso_int -= Reloj.velocidad_reloj * delta;
+                            recurso_int -= Reloj.TIME_REGULAR_SPEED * delta;
                         }
                     }
                 }

@@ -13,13 +13,8 @@ import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Evento;
 
-/**
- *
- * @author Elías
- */
 public class Guardianes {
 
-    public static String nombre_raza = "Guardianes";
     public static boolean ruedas_mejoradas = false;
     public static int maximo_felicidad = 100;
     public static int recursos_por_segundo = 20;

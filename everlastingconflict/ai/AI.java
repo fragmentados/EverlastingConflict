@@ -5,18 +5,15 @@
  */
 package everlastingconflict.ai;
 
+import everlastingconflict.elementos.ElementoAtacante;
+import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.razas.RaceNameEnum;
+import org.newdawn.slick.Graphics;
 
 import java.util.List;
-
-import everlastingconflict.razas.Clark;
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Fenix;
-import org.newdawn.slick.Graphics;
 
 /**
  *
@@ -31,12 +28,11 @@ public class AI extends Jugador {
     }
 
     public static AI crearAI(String r) {
-        switch(r) {
-            case Clark.nombre_raza:
-                return new AIClark();
-            case Eternium.nombre_raza:
-                return new AIEternium();
-            case Fenix.nombre_raza:
+        if (RaceNameEnum.CLARK.getName().equals(r)) {
+            return new AIClark();
+        } else if (RaceNameEnum.ETERNIUM.getName().equals(r)) {
+            return new AIEternium();
+        } else if (RaceNameEnum.FENIX.getName().equals(r)) {
                 return new AIFenix();
         }
         return null;

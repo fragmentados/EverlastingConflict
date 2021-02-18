@@ -22,7 +22,7 @@ public abstract class Reloj {
     public int ndivision;
     public float contador_reloj;
     public float detener, detener_contador;
-    public static float velocidad_reloj = 0.001f;
+    public static final float TIME_REGULAR_SPEED = 0.001f;
     public Image sprite;
     public Jugador jugadorAsociado;
     public float anchura = 80;

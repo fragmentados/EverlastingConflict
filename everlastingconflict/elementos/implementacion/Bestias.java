@@ -5,7 +5,6 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.relojes.Reloj;
 
@@ -103,7 +102,7 @@ public class Bestias {
     public void comportamiento(Partida p, Graphics g, int delta) {
         if (muerte) {
             if (tiempo_contador > 0) {
-                tiempo_contador -= Reloj.velocidad_reloj * delta;
+                tiempo_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             } else {
                 tiempo_contador = tiempo;
                 for (Bestia b : contenido_contador) {

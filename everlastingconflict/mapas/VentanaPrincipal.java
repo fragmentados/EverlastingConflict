@@ -57,9 +57,9 @@ public class VentanaPrincipal extends BasicGame {
         cambio_de_mapa(container, new Partida(), "Menu");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", Maestros.nombre_raza), new AIFenix()), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", RaceNameEnum.MAESTROS.getName()), new AIFenix()), "Campo");
         //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", Guardianes.nombre_raza), new AIFenix()), "Campo");
+        //cambio_de_mapa(container, new Partida(new Jugador("Elias", RaceNameEnum.GUARDIANES.getName()), new AIFenix()), "Campo");
 
     }
 

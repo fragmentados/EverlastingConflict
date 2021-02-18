@@ -69,14 +69,14 @@ public class RelojMaestros extends Reloj {
     @Override
     public void avanzar_reloj(int delta) {
         if (detener > 0) {
-            if ((detener_contador - Reloj.velocidad_reloj * delta) <= 0) {
+            if ((detener_contador - Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 detener = 0;
                 detener_contador = 0;
             } else {
-                detener_contador -= Reloj.velocidad_reloj * delta;
+                detener_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         } else {
-            contador_reloj -= Reloj.velocidad_reloj * delta;
+            contador_reloj -= Reloj.TIME_REGULAR_SPEED * delta;
             if ((ndivision == 2) && (contador_reloj <= 0)) {
                 contador_reloj = inicio_primera_mitad;
                 ndivision = 1;

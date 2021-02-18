@@ -31,7 +31,7 @@ public abstract class Movimiento {
     public boolean comprobar_coordenadas(Partida partida, int delta) {
         float x_final = puntos.get(0).x;
         float y_final = puntos.get(0).y;
-        float movimiento = 100 * Reloj.velocidad_reloj * unidad.velocidad * delta;
+        float movimiento = 100 * Reloj.TIME_REGULAR_SPEED * unidad.velocidad * delta;
         if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
             movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
         }

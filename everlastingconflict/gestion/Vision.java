@@ -6,9 +6,7 @@
 package everlastingconflict.gestion;
 
 import everlastingconflict.relojes.Reloj;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 import java.awt.geom.Ellipse2D;
 
@@ -37,10 +35,10 @@ public class Vision {
 
     public boolean comportamiento(int delta) {
         if (tiempo_contador > 0) {
-            if (tiempo_contador - Reloj.velocidad_reloj * delta <= 0) {
+            if (tiempo_contador - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                 return true;
             } else {
-                tiempo_contador -= Reloj.velocidad_reloj * delta;
+                tiempo_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         }
         return false;

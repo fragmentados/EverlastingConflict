@@ -179,13 +179,13 @@ public class Partida {
         if (njugador == 1) {
             j1.x_inicial = 200;
             j1.y_inicial = 200;
-            j2.x_inicial = width - 200;
-            j2.y_inicial = height - 200;
+            j2.x_inicial = width - 400;
+            j2.y_inicial = height - 400;
         } else {
             j2.x_inicial = 200;
             j2.y_inicial = 200;
-            j1.x_inicial = width - 200;
-            j1.y_inicial = height - 200;
+            j1.x_inicial = width - 400;
+            j1.y_inicial = height - 400;
         }
         float sextox = width / 6;
         float sextoy = height / 6;
@@ -289,12 +289,14 @@ public class Partida {
     }
 
     public void comportamiento_elementos(Graphics g, int delta) {
-        for (Bestias b : bestias) {
-            b.comportamiento(this, g, delta);
-        }
-        for (Proyectil p : proyectiles) {
-            p.comportamiento(this, g, delta);
-        }
+        try {
+            for (Bestias b : bestias) {
+                b.comportamiento(this, g, delta);
+            }
+            for (Proyectil p : proyectiles) {
+                p.comportamiento(this, g, delta);
+            }
+        } catch (Exception e){}
     }
 
     public void dibujar_elementos(Graphics g, Input input) {

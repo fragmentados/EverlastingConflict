@@ -6,27 +6,21 @@
 package everlastingconflict.mapas;
 
 import everlastingconflict.ControlGroup;
+import everlastingconflict.elementos.ElementoComplejo;
+import everlastingconflict.elementos.ElementoCoordenadas;
+import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Maestros;
-import everlastingconflict.elementos.implementacion.Bestia;
-import everlastingconflict.elementos.implementacion.Bestias;
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoCoordenadas;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Unidad;
-
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.ui;
-import static everlastingconflict.mapas.VentanaCombate.playerX;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
+import everlastingconflict.razas.RaceNameEnum;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -35,10 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 public class UI {
 
@@ -296,7 +287,7 @@ public class UI {
                     if (unidad.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
                         ataque += unidad.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
                     }
-                    if (p.jugador_aliado(unidad).raza.equals(Maestros.nombre_raza)) {
+                    if (p.jugador_aliado(unidad).raza.equals(RaceNameEnum.MAESTROS.getName())) {
                         if (Manipulador.alentar) {
                             Manipulador m = null;
                             for (Unidad u : p.jugador_aliado(unidad).unidades) {

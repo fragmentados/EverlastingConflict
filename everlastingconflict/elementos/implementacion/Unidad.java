@@ -5,36 +5,26 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.*;
 import everlastingconflict.elementos.util.ElementosComunes;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estados.StatusEffectCollection;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Fenix;
-import everlastingconflict.razas.Maestros;
+import everlastingconflict.mapas.Mensaje;
+import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.ElementoVulnerable;
-import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.elementos.ElementoMovil;
+import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 
 /**
  *
@@ -140,11 +130,11 @@ public class Unidad extends ElementoMovil {
         Jugador enemigo = p.jugador_enemigo(this);
         if (statusEffectCollection.existe_estado(StatusEffectName.REGENERACION)) {
             if (this.vida < this.vida_max) {
-                aumentar_vida(Reloj.velocidad_reloj * delta);
+                aumentar_vida(Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         if (statusEffectCollection.existe_estado(StatusEffectName.EROSION)) {
-            disminuir_vida(p, Reloj.velocidad_reloj * delta * vida_max / 5);
+            disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
         }
         for (ElementoEspecial e : enemigo.elementos_especiales) {
             if (e.nombre.equals("Agujero negro")) {
@@ -186,7 +176,7 @@ public class Unidad extends ElementoMovil {
                         aliado.edificios.add(edificio_construccion);
                     }
                     if (edificio_construccion.vida < edificio_construccion.vida_max) {
-                        if (edificio_construccion.vida + (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.velocidad_reloj * delta >= edificio_construccion.vida_max) {
+                        if (edificio_construccion.vida + (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.TIME_REGULAR_SPEED * delta >= edificio_construccion.vida_max) {
                             //Acaba la construccion
                             edificio_construccion.vida = edificio_construccion.vida_max;
                             edificio_construccion.iniciarbotones(p);
@@ -196,7 +186,7 @@ public class Unidad extends ElementoMovil {
                             edificio_construccion = null;
                             this.enableBuildingButtons();
                         } else {
-                            edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.velocidad_reloj * delta;
+                            edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.TIME_REGULAR_SPEED * delta;
                         }
                     }
                 }
@@ -214,7 +204,7 @@ public class Unidad extends ElementoMovil {
             case RECOLECTANDO:
                 if ((this.x == recurso.x) && (this.y == recurso.y)) {
                     if (recurso.vida < Recurso.vida_civiles) {
-                        if ((recurso.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.velocidad_reloj * delta) >= Recurso.vida_civiles) {
+                        if ((recurso.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta) >= Recurso.vida_civiles) {
                             this.movil = true;
                             recurso.vida = Recurso.vida_civiles;
                             recurso.capturar(aliado);
@@ -225,7 +215,7 @@ public class Unidad extends ElementoMovil {
                                 p.recursos.remove(recurso);
                                 this.movil = false;
                             }
-                            recurso.vida += (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.velocidad_reloj * delta;
+                            recurso.vida += (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta;
                         }
                     }
                 }
@@ -284,10 +274,11 @@ public class Unidad extends ElementoMovil {
             p.jugador_aliado(this).poblacion -= this.coste_poblacion;
             p.jugador_aliado(this).unidades.remove(this);
             if (Manipulador.lider) {
-                if (p.jugador_aliado(atacante).raza.equals(Maestros.nombre_raza)) {
+                if (p.jugador_aliado(atacante).raza.equals(RaceNameEnum.MAESTROS.getName())) {
                     for (Unidad u : p.jugador_aliado(atacante).unidades) {
                         if (u.nombre.equals("Manipulador")) {
                             Manipulador m = (Manipulador) u;
+                            VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
                             m.aumentar_experiencia(experiencia_al_morir);
                             break;
                         }
@@ -296,6 +287,7 @@ public class Unidad extends ElementoMovil {
             }
             if (atacante instanceof Manipulador) {
                 Manipulador m = (Manipulador) atacante;
+                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
                 m.aumentar_experiencia(experiencia_al_morir);
             }
             if (shouldPlaySound) {
@@ -317,7 +309,7 @@ public class Unidad extends ElementoMovil {
         if (canMove()) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
-                if (!p.jugador_aliado(this).raza.equals(Fenix.nombre_raza)) {
+                if (!p.jugador_aliado(this).raza.equals(RaceNameEnum.FENIX.getName())) {
                     p.jugador_aliado(this).addResources(edificio_construccion.coste);
                 }
                 edificio_construccion = null;

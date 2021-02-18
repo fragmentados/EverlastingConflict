@@ -49,7 +49,7 @@ public class ComboBox {
         }
     }
 
-    public boolean checkOptionSelected(float x, float y) {
+    public String checkOptionSelected(float x, float y) {
         if (desplegado) {
             int i = 1;
             for (String t : opciones) {
@@ -57,8 +57,9 @@ public class ComboBox {
                     if (y >= this.y + i * 20 + 2 && y <= this.y + (i + 1) * 20) {
                         desplegado = false;
                         if (!opcion_seleccionada.equals(t)) {
+                            String previousSelectedOption = opcion_seleccionada;
                             opcion_seleccionada = t;
-                            return true;
+                            return previousSelectedOption;
                         }                        
                         break;
                     }
@@ -66,7 +67,7 @@ public class ComboBox {
                 i++;
             }
         }
-        return false;
+        return null;
     }
 
     public void dibujar_opcion(Graphics g, String o, float x, float y) {

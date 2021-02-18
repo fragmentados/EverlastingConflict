@@ -35,10 +35,10 @@ public class StatusEffect {
 
     public boolean comportamiento(int delta) {
         if (tiempo > 0) {
-            if (tiempo_contador - Reloj.velocidad_reloj * delta <= 0) {
+            if (tiempo_contador - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                 return true;
             } else {
-                tiempo_contador -= Reloj.velocidad_reloj * delta;
+                tiempo_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         }
         return false;

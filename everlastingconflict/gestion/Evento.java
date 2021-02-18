@@ -102,11 +102,11 @@ public class Evento extends ElementoCoordenadas {
 
     public boolean comportamiento(Jugador j, int delta) {
         if (!positivo) {
-            if (tiempo_contador - Reloj.velocidad_reloj * delta <= 0) {
+            if (tiempo_contador - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                 efecto(j);
                 return true;
             } else {
-                tiempo_contador -= Reloj.velocidad_reloj * delta;
+                tiempo_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         }
         return false;

@@ -6,18 +6,19 @@
 package everlastingconflict.mapas;
 
 import everlastingconflict.Experimento_Multiplayer_Real.Client;
-import everlastingconflict.Experimento_Multiplayer_Real.Message;
 import everlastingconflict.ai.AI;
 import everlastingconflict.campaign.tutorial.*;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -55,14 +56,18 @@ public class VentanaMenu extends Ventana {
         fenix = new BotonSimple("Tutorial Fénix", 600, 300);
         maestros = new BotonSimple("Tutorial Maestros", 600, 400);
         guardianes = new BotonSimple("Tutorial Guardianes", 600, 500);
-        volver = new BotonSimple("Volver", 600, 700);
-        aceptar = new BotonSimple("Aceptar", 700, 700);
+        volver = new BotonSimple("Volver", 600, 800);
+        aceptar = new BotonSimple("Aceptar", 700, 800);
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
-        racePlayer1 = new ComboBox(Raza.getAllRaceNames(), 700, 400);
-        player2Type = new ComboBox(Arrays.asList("AI", "Jugador"), 200, 500);
-        racePlayer2 = new ComboBox(Raza.getAllRaceNames(), 700, 500);
-        mapType = new ComboBox(MapEnum.getAllNames(), 300, 600);
+        List<String> racesPlayer1 = Raza.getAllRaceNames();
+        racesPlayer1.remove(RaceNameEnum.CLARK.getName());
+        racePlayer1 = new ComboBox(racesPlayer1, 700, 400);
+        player2Type = new ComboBox(Arrays.asList("AI", "Jugador"), 200, 600);
+        List<String> racesPlayer2 = Raza.getAllRaceNames();
+        racesPlayer2.remove(RaceNameEnum.FENIX.getName());
+        racePlayer2 = new ComboBox(racesPlayer2, 700, 600);
+        mapType = new ComboBox(MapEnum.getAllNames(), 300, 700);
         seleccion = aceptar.activado = volver.activado = maestros.activado = fenix.activado = eternium.activado = clark.activado = guardianes.activado = false;
     }
 
@@ -138,11 +143,25 @@ public class VentanaMenu extends Ventana {
             } else  if (mapType.desplegar.presionado(input.getMouseX(), input.getMouseY())) {
                 mapType.desplegar.efecto();
             }
-            if (racePlayer1.checkOptionSelected(input.getMouseX(), input.getMouseY())) {
-                //client.send_message(new Message(Message.raze_type, racePlayer1.opcion_seleccionada));
+            String previousRacePlayer1 = racePlayer1.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            if (previousRacePlayer1 != null) {
+                racePlayer2.opciones.remove(racePlayer1.opcion_seleccionada);
+                if (racePlayer2.opcion_seleccionada.equals(racePlayer1.opcion_seleccionada)) {
+                    racePlayer2.opcion_seleccionada = racePlayer2.opciones.get(0);
+                }
+                racePlayer2.opciones.add(previousRacePlayer1);
+                racePlayer2.opciones = RaceNameEnum.sortRaceNames(racePlayer2.opciones);
+            }
+            String previousRacePlayer2 = racePlayer2.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            if (previousRacePlayer2 != null) {
+                racePlayer1.opciones.remove(racePlayer2.opcion_seleccionada);
+                if (racePlayer1.opcion_seleccionada.equals(racePlayer2.opcion_seleccionada)) {
+                    racePlayer1.opcion_seleccionada = racePlayer1.opciones.get(0);
+                }
+                racePlayer1.opciones.add(previousRacePlayer2);
+                racePlayer1.opciones = RaceNameEnum.sortRaceNames(racePlayer1.opciones);
             }
             player2Type.checkOptionSelected(input.getMouseX(), input.getMouseY());
-            racePlayer2.checkOptionSelected(input.getMouseX(), input.getMouseY());
             mapType.checkOptionSelected(input.getMouseX(), input.getMouseY());
         }
     }
@@ -152,17 +171,17 @@ public class VentanaMenu extends Ventana {
         g.setBackground(new Color(0.3f, 0.3f, 0.1f, 0f));
         g.drawString(titulo, (1365 - (titulo.length() * 10)) / 2, 0);
         combate.dibujar(g);
-        multijugador.dibujar(g);
+        /*multijugador.dibujar(g);
         tutorial.dibujar(g);
         eternium.dibujar(g);
         clark.dibujar(g);
         fenix.dibujar(g);
         maestros.dibujar(g);
         guardianes.dibujar(g);
+        opciones.dibujar(g);
+        salir.dibujar(g);*/
         volver.dibujar(g);
         aceptar.dibujar(g);
-        opciones.dibujar(g);
-        salir.dibujar(g);
         g.drawString("Usuario: ", 20, 50);
         usuario.render(container, g);
         if (seleccion) {
@@ -171,10 +190,10 @@ public class VentanaMenu extends Ventana {
             g.drawString("Raza: ", 600, 400);
             racePlayer1.dibujar(g);
             player2Type.dibujar(g);
-            g.drawString(otro_usuario, 450, 500);
-            g.drawString("Raza: ", 600, 500);
+            g.drawString(otro_usuario, 450, 600);
+            g.drawString("Raza: ", 600, 600);
             racePlayer2.dibujar(g);
-            g.drawString("Mapa: ", 200, 600);
+            g.drawString("Mapa: ", 200, 700);
             mapType.dibujar(g);
         }
     }

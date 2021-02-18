@@ -13,6 +13,7 @@ import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import org.newdawn.slick.Image;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -338,6 +339,8 @@ public class Raza {
     }
 
     public static List<String> getAllRaceNames() {
-        return Arrays.asList(Fenix.nombre_raza, Clark.nombre_raza, Eternium.nombre_raza, Maestros.nombre_raza, Guardianes.nombre_raza);
+        List<String> raceNames = new ArrayList<>();
+        raceNames.addAll(Arrays.asList(RaceNameEnum.FENIX.getName(), RaceNameEnum.CLARK.getName(), RaceNameEnum.ETERNIUM.getName(), RaceNameEnum.MAESTROS.getName(), RaceNameEnum.GUARDIANES.getName()));
+        return raceNames;
     }
 }

@@ -21,7 +21,7 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public int altura_barra_vida = 5;
     public float vida, vida_max;
     public int defensa;
-    public float experiencia_al_morir;    
+    public float experiencia_al_morir;
     
     public int defensa_eternium() {
         switch (VentanaCombate.relojEternium().ndivision) {

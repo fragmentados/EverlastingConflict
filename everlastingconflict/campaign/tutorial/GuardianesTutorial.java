@@ -10,17 +10,13 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.playerX;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
-import everlastingconflict.razas.Eternium;
-import everlastingconflict.razas.Guardianes;
-import java.util.ArrayList;
+import everlastingconflict.razas.RaceNameEnum;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
+
+import java.util.ArrayList;
+
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 /**
  *
@@ -158,8 +154,8 @@ public class GuardianesTutorial extends Tutorial {
 
     public GuardianesTutorial() {
         iniciar_pasos();
-        j1 = new Jugador("Prueba", Guardianes.nombre_raza);
-        j2 = new Jugador("Prueba", Eternium.nombre_raza);
+        j1 = new Jugador("Prueba", RaceNameEnum.GUARDIANES.getName());
+        j2 = new Jugador("Prueba", RaceNameEnum.ETERNIUM.getName());
         j1.color = Color.green;
         j2.color = Color.red;
     }

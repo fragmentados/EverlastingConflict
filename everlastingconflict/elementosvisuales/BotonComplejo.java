@@ -502,19 +502,19 @@ public class BotonComplejo extends BotonSimple {
     public void comportamiento(int delta) {
         if (cooldown > 0) {
             if (cooldown_contador > 0) {
-                if ((cooldown_contador - (Reloj.velocidad_reloj * delta) <= 0)) {
+                if ((cooldown_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0)) {
                     cooldown_contador = 0;
                     activado = true;
                 } else {
-                    cooldown_contador -= Reloj.velocidad_reloj * delta;
+                    cooldown_contador -= Reloj.TIME_REGULAR_SPEED * delta;
                 }
             }
         }
         if (resolucion_contador > 0) {
-            if ((resolucion_contador - (Reloj.velocidad_reloj * delta) <= 0)) {
+            if ((resolucion_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0)) {
                 resolucion_contador = 0;
             } else {
-                resolucion_contador -= Reloj.velocidad_reloj * delta;
+                resolucion_contador -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         }
     }

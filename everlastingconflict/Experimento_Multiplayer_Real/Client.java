@@ -12,15 +12,17 @@ package everlastingconflict.Experimento_Multiplayer_Real;
 /*
  * The Client that can be run both as a console or a GUI
  */
-import everlastingconflict.mapas.VentanaPrincipal;
+
 import everlastingconflict.mapas.MensajeChat;
-import everlastingconflict.razas.Fenix;
-
-import java.net.*;
-import java.io.*;
-import javax.swing.JFrame;
-
+import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.razas.RaceNameEnum;
 import org.newdawn.slick.CanvasGameContainer;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -180,7 +182,7 @@ public class Client {
                             break;
                         case Message.user_type:
                             VentanaPrincipal.mapam.otro_usuario = msg.text;
-                            VentanaPrincipal.mapam.otro_usuario_raza = Fenix.nombre_raza;
+                            VentanaPrincipal.mapam.otro_usuario_raza = RaceNameEnum.FENIX.getName();
                             break;
                         case Message.raze_type:
                             VentanaPrincipal.mapam.otro_usuario_raza = msg.text;

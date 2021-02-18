@@ -55,11 +55,11 @@ public class ProgressBar {
     public void aumentar_progreso(int delta) {
         if (activo) {
             if (progreso < maximo) {
-                if ((progreso + (Reloj.velocidad_reloj * delta)) >= maximo) {
+                if ((progreso + (Reloj.TIME_REGULAR_SPEED * delta)) >= maximo) {
                     progreso = maximo;
                     activo = false;
                 } else {
-                    progreso += (Reloj.velocidad_reloj * delta);
+                    progreso += (Reloj.TIME_REGULAR_SPEED * delta);
                 }
             }
 

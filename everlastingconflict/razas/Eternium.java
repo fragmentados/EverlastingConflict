@@ -20,7 +20,6 @@ import org.newdawn.slick.Graphics;
  */
 public class Eternium {
 
-    public static final String nombre_raza = "Eternium";
     public static int ataque_guerrero = Unidad.ataque_estandar + 14;
     public static int ataque_ancestro = Unidad.ataque_estandar + 34;
     public static final int MAX_UNIT_PER_QUEUE = 5;

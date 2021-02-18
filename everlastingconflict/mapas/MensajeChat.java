@@ -28,7 +28,7 @@ public class MensajeChat {
     }
 
     public boolean comportamiento(int delta) {
-        tiempo_contador += Reloj.velocidad_reloj * delta;
+        tiempo_contador += Reloj.TIME_REGULAR_SPEED * delta;
         return (tiempo_contador >= tiempo);
     }
 

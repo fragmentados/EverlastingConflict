@@ -13,7 +13,6 @@ import everlastingconflict.elementos.implementacion.Unidad;
  */
 public class Maestros {
 
-    public static String nombre_raza = "Maestros";
     public static float cadencia_pugnator = Unidad.cadencia_estandar - 0.1f;
     public static int ataque_saggitarius = Unidad.ataque_estandar + 5;
     public static float velocidad_exterminatore = Unidad.velocidad_estandar + 0.2f;

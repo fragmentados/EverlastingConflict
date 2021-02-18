@@ -47,13 +47,13 @@ public class Fusion {
     }
 
     public boolean comportamiento(int delta) {
-        if (resultado.vida + (resultado.vida_max / resultado.tiempo) * Reloj.velocidad_reloj * delta >= resultado.vida_max) {
+        if (resultado.vida + (resultado.vida_max / resultado.tiempo) * Reloj.TIME_REGULAR_SPEED * delta >= resultado.vida_max) {
             //Acaba la construccion
             resultado.vida = resultado.vida_max;
             resultado.statusBehaviour = StatusBehaviour.PARADO;
             return true;
         } else {
-            resultado.vida += (resultado.vida_max / resultado.tiempo) * Reloj.velocidad_reloj * delta;
+            resultado.vida += (resultado.vida_max / resultado.tiempo) * Reloj.TIME_REGULAR_SPEED * delta;
         }
         return false;
     }
