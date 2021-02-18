@@ -6,40 +6,32 @@
 package everlastingconflict.elementosvisuales;
 
 import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.estados.StatusEffectName;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.implementacion.Habilidad;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Taller;
-import everlastingconflict.elementos.implementacion.Tecnologia;
-import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementos.implementacion.*;
+import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.gestion.Partida;
+import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.mapas.UI;
 import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.Mensaje;
-
-import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
 import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
 import everlastingconflict.relojes.Reloj;
+import org.newdawn.slick.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+
+import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
 
 /**
  *
@@ -53,8 +45,10 @@ public class BotonComplejo extends BotonSimple {
     public int tecla;
     public String tecla_string;
     public float cooldown, cooldown_contador;
+    public Integer remainingClicks = null;
     private float resolucion_contador;
     private static final float resolucion = 0.2f;
+
 
     public BotonComplejo(String t) {
         //Boton que posee sólo texto
@@ -229,6 +223,10 @@ public class BotonComplejo extends BotonSimple {
         g.setColor(Color.white);
         if (tecla_string != null) {
             g.drawString(tecla_string, x, y);
+        }
+        if (remainingClicks != null) {
+            g.setColor(Color.green);
+            g.drawString(String.valueOf(remainingClicks), x + anchura - 10, y + altura - 13);
         }
         if (cooldown_contador > 0) {
             BotonComplejo.dibujar_aguja(g, this.x, this.y, this.cooldown_contador, this.cooldown);

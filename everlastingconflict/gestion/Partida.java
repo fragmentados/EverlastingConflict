@@ -6,22 +6,21 @@
 package everlastingconflict.gestion;
 
 import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.mapas.MapEnum;
+import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
-import everlastingconflict.elementos.ElementoCoordenadas;
-import everlastingconflict.mapas.VentanaCombate;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 import static everlastingconflict.mapas.VentanaCombate.*;
 
@@ -189,7 +188,8 @@ public class Partida {
         }
         float sextox = width / 6;
         float sextoy = height / 6;
-        if (j1.raza.equals("Clark") || j2.raza.equals("Clark")) {
+        if ((j1.raza.equals(RaceNameEnum.CLARK.getName()) || j2.raza.equals(RaceNameEnum.CLARK.getName()))
+            || (j1.raza.equals(RaceNameEnum.MAESTROS.getName()) || j2.raza.equals(RaceNameEnum.MAESTROS.getName()))) {
             //Alphas
             bestias.add(new Bestias("Grupo1", sextox, sextoy));
             bestias.add(new Bestias("Grupo1", sextox * 3, sextoy));
@@ -368,8 +368,10 @@ public class Partida {
         List<ElementoComplejo> selectableElements = new ArrayList<>();
         selectableElements.addAll(j1.unidades);
         selectableElements.addAll(j1.edificios);
+        selectableElements.addAll(j1.lista_recursos);
         selectableElements.addAll(j2.unidades);
         selectableElements.addAll(j2.edificios);
+        selectableElements.addAll(j2.lista_recursos);
         bestias.stream().map(bs -> bs.contenido).forEach(b -> selectableElements.addAll(b));
         selectableElements.addAll(recursos);
         return selectableElements;

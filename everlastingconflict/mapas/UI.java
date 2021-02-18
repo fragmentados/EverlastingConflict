@@ -315,6 +315,7 @@ public class UI {
                     float linea1y = y + 50;
                     float linea2y = linea1y + 30;
                     float linea3y = linea2y + 30;
+                    float linea4y = linea3y + 30;
                     if (ataquex < velocidadx) {
                         ataquex = velocidadx;
                         defensatx = ataquex + Integer.toString(ataque).length() * 10 + 10;
@@ -368,8 +369,8 @@ public class UI {
                             podertx = defensatx;
                             poderx = podertx + "Poder mágico".length() * 10;
                         }
-                        g.drawString("Enfriamiento:", cdrtx, linea3y);
-                        g.drawString(Float.toString(m.reduccion_enfriamiento) + "%", cdrx, linea3y);
+                        g.drawString("Enfriamiento:", cdrtx, linea4y);
+                        g.drawString(Float.toString(m.reduccion_enfriamiento) + "%", cdrx, linea4y);
                         g.drawString("Poder mágico:", podertx, linea3y);
                         g.drawString(Float.toString(m.poder_magico), poderx, linea3y);
                         g.setColor(Color.cyan);
@@ -537,7 +538,10 @@ public class UI {
             if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
                 botones = e.botones;
             } else {
-                botones = ((Manipulador) e).botones_mejora;
+                Manipulador m =  ((Manipulador) e);
+                botones = m.botones_mejora;
+                g.drawString("Tienes " + m.enhancementsRemaining + " mejora(s) pendiente(s)",
+                        VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5, initialY + 100);
             }
             if (botones != null && !botones.isEmpty()) {
                 for (int i = 0; i < botones.size(); i++) {

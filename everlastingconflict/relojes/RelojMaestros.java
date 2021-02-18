@@ -5,16 +5,16 @@
  */
 package everlastingconflict.relojes;
 
+import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
-import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
+import org.newdawn.slick.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.newdawn.slick.*;
 
 /**
  *
@@ -113,41 +113,41 @@ public class RelojMaestros extends Reloj {
 
     @Override
     public void dibujar(Input input, Graphics g) {
-        float anchurag = 80, alturag = 80;
-        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - 100, yg = VentanaCombate.playerY + 5;
+        this.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - 100; 
+        this.y = VentanaCombate.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
-        g.fillOval(xg, yg, anchurag, alturag);
+        g.fillOval(this.x, this.y, this.anchura, this.altura);
         if (detener > 0) {
             g.setColor(Color.gray);
         } else {
             g.setColor(new Color(0.5f, 0f, 0.5f, 0.5f));
         }
-        g.drawOval(xg, yg, anchurag, alturag);
-        sprite.draw(xg + anchurag / 2 - sprite.getWidth() / 2, yg + alturag / 2 - sprite.getHeight() / 2);
+        g.drawOval(this.x, this.y, this.anchura, this.altura);
+        sprite.draw(this.x + this.anchura / 2 - sprite.getWidth() / 2, this.y + this.altura / 2 - sprite.getHeight() / 2);
         float anchurap = 10, alturap = 10;
         if (ndivision == 1) {
-            g.fillOval(xg + 35, yg - 5, anchurap, alturap);
+            g.fillOval(this.x + 35, this.y - 5, anchurap, alturap);
         } else {
             g.setColor(new Color(1f, 1f, 1f, 0.7f));
-            g.fillOval(xg + 35, yg - 5, anchurap, alturap);
+            g.fillOval(this.x + 35, this.y - 5, anchurap, alturap);
             if (detener > 0) {
                 g.setColor(Color.gray);
             } else {
                 g.setColor(new Color(0.5f, 0f, 0.5f, 0.5f));
             }
-            g.drawOval(xg + 35, yg - 5, anchurap, alturap);
+            g.drawOval(this.x + 35, this.y - 5, anchurap, alturap);
         }
         if (ndivision == 2) {
-            g.fillOval(xg + 35, yg + 75, anchurap, alturap);
+            g.fillOval(this.x + 35, this.y + 75, anchurap, alturap);
         } else {
             g.setColor(new Color(1f, 1f, 1f, 0.7f));
-            g.fillOval(xg + 35, yg + 75, anchurap, alturap);
+            g.fillOval(this.x + 35, this.y + 75, anchurap, alturap);
             if (detener > 0) {
                 g.setColor(Color.gray);
             } else {
                 g.setColor(new Color(0.5f, 0f, 0.5f, 0.5f));
             }
-            g.drawOval(xg + 35, yg + 75, anchurap, alturap);
+            g.drawOval(this.x + 35, this.y + 75, anchurap, alturap);
         }
         String tiempo;
         if (detener > 0) {
@@ -156,7 +156,7 @@ public class RelojMaestros extends Reloj {
             tiempo = Reloj.tiempo_a_string(tiempo_restante());
         }
         g.setColor(Color.black);
-        g.drawString(tiempo, xg + 65 - tiempo.length() * 10, yg + 30);
+        g.drawString(tiempo, this.x + 65 - tiempo.length() * 10, this.y + 30);
         g.setColor(Color.white);
         if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
             drawHint(g);

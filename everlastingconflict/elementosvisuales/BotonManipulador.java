@@ -13,6 +13,7 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Maestros;
+
 import java.util.List;
 
 /**
@@ -24,9 +25,13 @@ public class BotonManipulador extends BotonComplejo {
     public String requisito;
 
     public BotonManipulador(String t) {
-        //Boton que posee sólo texto
         super(t);
         requisito = "Cualquiera";
+    }
+
+    public BotonManipulador(String t, String description) {
+        this(t);
+        this.descripcion = description;
     }
 
     public BotonManipulador(Habilidad h, String r) {
@@ -43,7 +48,7 @@ public class BotonManipulador extends BotonComplejo {
                     if (!m.botones_mejora.isEmpty()) {
                         //El manipulador aprende la habilidad
                         m.aprender_habilidad(this);
-                        m.disminuir_nmejora("Habilidades", this);
+                        m.applyEnhancement("Habilidades", this);
                     } else {
                         if (m.puede_usar_habilidad()) {
                             new Habilidad(this.elemento_nombre).activacion(partida, m);
@@ -52,7 +57,7 @@ public class BotonManipulador extends BotonComplejo {
                 } else {
                     switch (texto) {
                         case "Habilidades":
-                            m.obtener_botones_habilidades();
+                            m.getSkillToUnlockButton(this);
                             break;
                         case "Atributos":
                             m.obtener_botones_atributos();
@@ -60,22 +65,22 @@ public class BotonManipulador extends BotonComplejo {
                         //Pasivas
                         case "Lider de hordas":
                             Manipulador.lider = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Exterminador de masas":
                             m.ataque += 10;
                             m.cadencia -= 0.5f;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Sabiduría arcana":
                             m.mana_max += 150;
                             m.mana += 150;
                             m.regeneracion_mana += 0.3f;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Cauterización automática":
                             m.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.REGENERACION));
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Entrenamiento avanzado":
                             Maestros.cadencia_pugnator -= 0.1f;
@@ -102,58 +107,58 @@ public class BotonManipulador extends BotonComplejo {
                                         break;
                                 }
                             }
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Tirador experto":
                             m.ataque += 10;
                             m.alcance += 100;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Poderío astral":
                             m.poder_magico += 25;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Protección mística":
                             m.vida += 150;
                             m.vida_max += 150;
                             m.defensa += 2;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Invocación eficiente":
                             Manipulador.cantidad_invocacion++;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Incineración ígnea":
                             m.area = 50;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Control temporal":
                             Manipulador.minimo_cooldown = 1;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Entrenamiento supremo":
                             Maestros.habilidades = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Reinversión física":
                             m.robo_vida = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Reinversión mágica":
                             m.succion_hechizo = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Fuerzas mixtas":
                             m.fuerzas_mixtas = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Último recurso":
                             m.ultimo_recurso = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Disparo helado":
                             m.disparo_helado = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Clon":
                             Manipulador m2 = new Manipulador(m.x + m.anchura / 2 + 10, m.y);
@@ -176,46 +181,46 @@ public class BotonManipulador extends BotonComplejo {
                             m2.botones = m.botones;
                             m2.inicializar_teclas_botones(m2.botones);
                             partida.jugador_aliado(m).unidades.add(m2);
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Eficiencia energética":
                             Manipulador.eficiencia = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;
                         case "Inspiración":
                             Manipulador.alentar = true;
-                            m.disminuir_nmejora("Habilidades", this);
+                            m.applyEnhancement("Habilidades", this);
                             break;                        
                         //Atributos    
                         case "Maná":
                             m.mana_max += 50;
                             m.mana += 50;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Vida":
                             m.vida_max += 50;
                             m.vida += 50;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Defensa":
                             m.defensa++;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Regeneración maná":
                             m.regeneracion_mana += 0.1f;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Ataque":
                             m.ataque += 5;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Reducción de enfriamiento":
                             m.aumentar_reduccion(2);
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                         case "Poder mágico":
                             m.poder_magico += 5;
-                            m.disminuir_nmejora("Atributos", null);
+                            m.applyEnhancement("Atributos", null);
                             break;
                     }
                 }

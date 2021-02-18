@@ -20,6 +20,8 @@ import org.newdawn.slick.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static everlastingconflict.RTS.DEBUG_MODE;
+
 /**
  *
  * @author Elías
@@ -306,7 +308,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         super.dibujar(p, c, input, g);
         g.setColor(Color.black);
-        if (hostil) {
+        if (DEBUG_MODE && hostil) {
             if (alcance > 0) {
                 int alcancex = 2 * (alcance + anchura), alcancey = 2 * (alcance + altura);
                 g.drawOval(x - alcancex / 2, y - alcancey / 2, alcancex, alcancey);

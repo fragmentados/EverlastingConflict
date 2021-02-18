@@ -21,7 +21,8 @@ public class RTS {
 
     public static CanvasGameContainer canvas;
     public static VentanaPrincipal map;
-    public static JFrame ventana_mapa; 
+    public static JFrame ventana_mapa;
+    public static final boolean DEBUG_MODE = false;
     
     public static void main(String[] args) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

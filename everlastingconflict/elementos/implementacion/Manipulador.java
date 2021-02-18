@@ -33,7 +33,7 @@ public class Manipulador extends Unidad {
     public int nivel;
     public float poder_magico;
     public List<BotonComplejo> botones_mejora;
-    public int nmejora;
+    public int enhancementsRemaining;
     public boolean robo_vida;
     public boolean succion_hechizo;
     public boolean fuerzas_mixtas;
@@ -46,20 +46,23 @@ public class Manipulador extends Unidad {
     public static int cantidad_invocacion = 2;
     public static float minimo_cooldown = 2;
 
+    private static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos habilidades para que el Manipulador las aprenda");
+    private static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco atributos para que se mejoren");
+
     public final int experiencia_maxima() {
         return 100 + 50 * (nivel - 1);
     }
 
-    public void disminuir_nmejora(String t, BotonComplejo boton) {
-        nmejora--;
-        if (nmejora == 0) {
+    public void applyEnhancement(String t, BotonComplejo boton) {
+        enhancementsRemaining--;
+        if (enhancementsRemaining == 0) {
             botones_mejora = new ArrayList<>();
-            for (BotonComplejo b : botones) {
-                if (b.texto.equals(t)) {
+            botones.stream().filter(b -> t.equals(b.texto)).forEach(b -> {
+                b.remainingClicks--;
+                if (b.remainingClicks == 0) {
                     botones.remove(b);
-                    break;
                 }
-            }
+            });
             this.inicializar_teclas_botones(botones);
         } else {
             if (t.equals("Habilidades")) {
@@ -99,13 +102,14 @@ public class Manipulador extends Unidad {
         botones_mejora.add(new BotonManipulador("Regeneración maná"));
         botones_mejora.add(new BotonManipulador("Reducción de enfriamiento"));
         botones_mejora.add(new BotonManipulador("Poder mágico"));
-        nmejora = 5;
+        enhancementsRemaining = 5;
         this.inicializar_teclas_botones(this.botones_mejora);
     }
 
-    public void obtener_botones_habilidades() {
+    public void getSkillToUnlockButton(BotonManipulador botonHabilidad) {
         botones_mejora = new ArrayList<>();
-        switch (nivel) {
+        int skillSet = nivel - botonHabilidad.remainingClicks + 1;
+        switch (skillSet) {
             case 1:
                 botones_mejora.add(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
                 botones_mejora.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
@@ -161,20 +165,30 @@ public class Manipulador extends Unidad {
                 //botones_mejora.add(new BotonManipulador("Clon"));
                 break;
         }
-        nmejora = 2;
+        enhancementsRemaining = 2;
         this.inicializar_teclas_botones(this.botones_mejora);
     }
 
-    public final void subir_de_nivel() {
+    public final void levelUp() {
         nivel++;
         experiencia = 0;
         experiencia_max = experiencia_maxima();
-        BotonManipulador b = new BotonManipulador("Habilidades");
-        b.descripcion = "Selecciona hasta dos habilidades para que el Manipulador las aprenda";
-        botones.add(b);
-        b = new BotonManipulador("Atributos");
-        b.descripcion = "Selecciona hasta cinco atributos para que se mejoren";
-        botones.add(b);
+        if (SKILL_BUTTON.remainingClicks == null) {
+           SKILL_BUTTON.remainingClicks = 1;
+        } else {
+            SKILL_BUTTON.remainingClicks++;
+        }
+        if (ATTRIBUTES_BUTTON.remainingClicks == null) {
+            ATTRIBUTES_BUTTON.remainingClicks = 1;
+        } else {
+            ATTRIBUTES_BUTTON.remainingClicks++;
+        }
+        if (!botones.contains(SKILL_BUTTON)) {
+            botones.add(SKILL_BUTTON);
+        }
+        if (!botones.contains(ATTRIBUTES_BUTTON)) {
+            botones.add(ATTRIBUTES_BUTTON);
+        }
         this.inicializar_teclas_botones(this.botones);
         iniciar_imagenes_manipulador();
     }
@@ -191,7 +205,7 @@ public class Manipulador extends Unidad {
                     }
                 }
             }
-            subir_de_nivel();
+            levelUp();
         } else {
             experiencia += e;
         }
@@ -218,8 +232,8 @@ public class Manipulador extends Unidad {
         BotonManipulador b = new BotonManipulador(new Habilidad("Meditar"), "Cualquiera");
         b.descripcion = "El Manipulador deja de ser capaz de moverse pero obtiene experiencia regularmente hasta llegar al nivel 2. Pulsa el botón otra vez para cancelar.";
         aprender_habilidad(b);
-        aprender_habilidad(new BotonManipulador(new Habilidad("Deflagración"), "Cualquiera"));
-        aprender_habilidad(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
+        //aprender_habilidad(new BotonManipulador(new Habilidad("Deflagración"), "Cualquiera"));
+        //aprender_habilidad(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
         //aprender_habilidad(new BotonManipulador(new Habilidad("Visión interestelar"), RelojMaestros.nombre_dia));
         //aprender_habilidad(new BotonManipulador(new Habilidad("Pesadilla"), RelojMaestros.nombre_noche));        
 //        aprender_habilidad(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
@@ -229,6 +243,7 @@ public class Manipulador extends Unidad {
 //        aprender_habilidad(new BotonManipulador(new Habilidad("Invocar medicum"), "Cualquiera"));
         inicializar_teclas_botones(botones);
     }
+
 
     @Override
     public void aumentar_vida(float c) {
@@ -255,7 +270,7 @@ public class Manipulador extends Unidad {
         Raza.unidad(this);
         vida = vida_max;
         nivel = 0;
-        subir_de_nivel();
+        levelUp();
         regeneracion_mana = 1;
         mana_max = 200;
         mana = mana_max;
@@ -272,7 +287,7 @@ public class Manipulador extends Unidad {
             aumentar_mana(Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
         }
         if (statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
-            this.aumentar_experiencia(Reloj.TIME_REGULAR_SPEED * 2 * delta);
+            this.aumentar_experiencia(Reloj.TIME_REGULAR_SPEED * 5 * delta);
         }
         if (Manipulador.alentar) {
             for (Unidad u : aliado.unidades) {
@@ -283,8 +298,30 @@ public class Manipulador extends Unidad {
         }
     }
 
-    public void dibujar_mana(Graphics g) {
-        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 200;
+    public void drawLifeCircle(Graphics g) {
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2;
+        float yg = VentanaCombate.playerY + 5;
+        //Círculo exterior
+        g.setColor(Color.green);
+        g.fillOval(xg, yg, 80, 80);
+        //Barra de vida
+        float inicio = -270;
+        float fin;
+        fin = (vida / vida_max) * 360 - 270;
+        g.fillArc(xg, yg, 80, 80, inicio, fin);
+        g.setColor(Color.black);
+        g.drawOval(xg, yg, 80, 80);
+        //Circulo interior
+        g.setColor(new Color(11, 156, 49, 80));
+        g.fillOval(xg + 10, yg + 10, 60, 60);
+        g.setColor(Color.black);
+        g.drawOval(xg + 10, yg + 10, 60, 60);
+        g.setColor(Color.white);
+        g.drawString(Integer.toString((int) vida), xg + 25, yg + 30);
+    }
+
+    public void drawManaCircle(Graphics g) {
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 100;
         float yg = VentanaCombate.playerY + 5;
         //Círculo exterior
         g.setColor(new Color(0f, 0f, 0.8f, 1f));
@@ -306,37 +343,15 @@ public class Manipulador extends Unidad {
         g.drawString(Integer.toString((int) mana), xg + 28, yg + 30);
     }
 
-    public void dibujar_vida(Graphics g) {
-        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 100;
+    public void drawLevelCircle(Graphics g) {
+        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 200;
         float yg = VentanaCombate.playerY + 5;
         //Círculo exterior
-        g.setColor(new Color(0.8f, 0f, 0f, 1f));
-        g.fillOval(xg, yg, 80, 80);
-        //Barra de vida
-        g.setColor(new Color(1f, 0f, 0f, 1f));
-        float inicio = -270;
-        float fin;
-        fin = (vida / vida_max) * 360 - 270;
-        g.fillArc(xg, yg, 80, 80, inicio, fin);
-        g.setColor(Color.black);
-        g.drawOval(xg, yg, 80, 80);
-        //Circulo interior
-        g.setColor(new Color(1f, 0.3f, 0.3f, 1f));
-        g.fillOval(xg + 10, yg + 10, 60, 60);
-        g.setColor(Color.black);
-        g.drawOval(xg + 10, yg + 10, 60, 60);
-        g.setColor(Color.white);
-        g.drawString(Integer.toString((int) vida), xg + 25, yg + 30);
-    }
-
-    public void dibujar_nivel(Graphics g) {
-        float xg = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2;
-        float yg = VentanaCombate.playerY + 5;
-        //Círculo exterior
-        g.setColor(new Color(0f, 0.8f, 0f, 1f));
+        g.setColor(Color.orange);
         g.fillOval(xg, yg, 80, 80);
         //Barra de experiencia
-        g.setColor(new Color(0f, 1f, 0f, 1f));
+        //g.setColor(new Color(0f, 1f, 0f, 1f));
+        g.setColor(new Color(250, 192, 128, 100));
         float inicio = -270;
         float fin;
         fin = (experiencia / experiencia_max) * 360 - 270;
@@ -344,7 +359,7 @@ public class Manipulador extends Unidad {
         g.setColor(Color.black);
         g.drawOval(xg, yg, 80, 80);
         //Círculo con el nivel
-        g.setColor(new Color(0.3f, 1f, 0.3f, 1f));
+        g.setColor(new Color(250, 192, 128, 255));
         g.fillOval(xg + 10, yg + 10, 60, 60);
         g.setColor(Color.black);
         g.drawOval(xg + 10, yg + 10, 60, 60);

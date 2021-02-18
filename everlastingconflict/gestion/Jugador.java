@@ -5,23 +5,22 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.elementos.implementacion.*;
-import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.razas.*;
-import everlastingconflict.relojes.Reloj;
 import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.implementacion.*;
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.razas.*;
+import everlastingconflict.relojes.Reloj;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 
 /**
  *
@@ -221,9 +220,9 @@ public class Jugador {
         if (this.raza.equals(RaceNameEnum.MAESTROS.getName())) {
             if (this.unidades.get(0) instanceof Manipulador) {
                 Manipulador m = (Manipulador) this.unidades.get(0);
-                m.dibujar_nivel(g);
-                m.dibujar_vida(g);
-                m.dibujar_mana(g);
+                m.drawLevelCircle(g);
+                m.drawLifeCircle(g);
+                m.drawManaCircle(g);
             }
         }
         if (this.raza.equals(RaceNameEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {

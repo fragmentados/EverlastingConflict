@@ -5,18 +5,18 @@
  */
 package everlastingconflict.elementos;
 
+import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
 import everlastingconflict.mapas.VentanaCombate;
-
-import java.awt.geom.Rectangle2D;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -172,7 +172,9 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
     public void dibujar(Partida p, Color c, Input input, Graphics g){
         sprite.draw(x - anchura / 2, y - altura / 2);
         g.setColor(Color.black);
-        g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
+        if (RTS.DEBUG_MODE) {
+            g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
+        }
         g.setColor(Color.white);
         if (VentanaCombate.ui.elementos.indexOf(this) != -1)  {
             circulo(g, c);
