@@ -95,6 +95,9 @@ public class Recurso extends ElementoComplejo {
         if (VentanaCombate.ui.elementos.indexOf(this) != -1)  {
             circulo(g, c);
         }
+        if (p.resourceBelongsToPlayer(this)) {
+            drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
+        }
         if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
             circulo(g, c);
         }

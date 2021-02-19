@@ -30,6 +30,9 @@ public class ElementosComunes {
     public static Image MOLDEADOR_IMAGE;
     public static Image DESMEMBRADOR_IMAGE;
     public static Image MATRIARCA_IMAGE;
+    // Day / Night Images
+    public static Image DAY_IMAGE;
+    public static Image NIGHT_IMAGE;
 
 
     public static void init() throws SlickException {
@@ -51,5 +54,7 @@ public class ElementosComunes {
         MOLDEADOR_IMAGE  = new Image("media/Iconos/Moldeador.png");
         DESMEMBRADOR_IMAGE  = new Image("media/Iconos/Desmembrador.png");
         MATRIARCA_IMAGE  = new Image("media/Iconos/Matriarca.png");
+        DAY_IMAGE  = new Image("media/Iconos/Sol.png");
+        NIGHT_IMAGE  = new Image("media/Iconos/Luna.png");
     }
 }

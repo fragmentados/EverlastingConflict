@@ -6,15 +6,15 @@
 package everlastingconflict.relojes;
 
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import org.newdawn.slick.*;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 /**
  *
@@ -34,11 +34,7 @@ public class RelojMaestros extends Reloj {
         contador_reloj = inicio_primera_mitad;
         ndivision = 1;
         detener = detener_contador = 0;
-        try {
-            sprite = new Image("media/Iconos/Sol.png");
-        } catch (SlickException ex) {
-            Logger.getLogger(Reloj.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sprite = ElementosComunes.DAY_IMAGE;
         hintBoxText = "Este reloj representa el tiempo que tarda en pasar del día a la noche."
                 + " El Manipulador tendrá habilidades diferentes en cuanto cambie el reloj."
                 + " También hay unidades que son más fuertes en el día o en la noche.";
@@ -53,10 +49,10 @@ public class RelojMaestros extends Reloj {
                     if (b instanceof BotonManipulador) {
                         BotonManipulador bm = (BotonManipulador) b;
                         if (bm.requisito.equals(t)) {
-                            bm.activado = true;
+                            bm.canBeUsed = true;
                         } else {
                             if (!bm.requisito.equals("Cualquiera")) {
-                                bm.activado = false;
+                                bm.canBeUsed = false;
                             }
                         }
                     }
@@ -81,20 +77,12 @@ public class RelojMaestros extends Reloj {
                 contador_reloj = inicio_primera_mitad;
                 ndivision = 1;
                 cambio_temporal(RelojMaestros.nombre_dia);
-                try {
-                    sprite = new Image("media/Iconos/Sol.png");
-                } catch (SlickException ex) {
-                    Logger.getLogger(RelojMaestros.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                sprite = ElementosComunes.DAY_IMAGE;
             }
             if ((ndivision == 1) && (contador_reloj <= fin_primera_mitad)) {
                 ndivision = 2;
                 cambio_temporal(RelojMaestros.nombre_noche);
-                try {
-                    sprite = new Image("media/Iconos/Luna.png");
-                } catch (SlickException ex) {
-                    Logger.getLogger(RelojMaestros.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                sprite = ElementosComunes.NIGHT_IMAGE;
                 contador_reloj = fin_primera_mitad;
             }
         }

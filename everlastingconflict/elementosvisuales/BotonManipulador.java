@@ -9,12 +9,21 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.mapas.UI;
+import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Maestros;
+import everlastingconflict.relojes.RelojMaestros;
+import org.newdawn.slick.Graphics;
 
 import java.util.List;
+
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.playerY;
 
 /**
  *
@@ -41,13 +50,12 @@ public class BotonManipulador extends BotonComplejo {
 
     @Override
     public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Partida partida) {
-        if (activado) {
+        if (canBeUsed && !isPassiveAbility) {
             if (e instanceof Manipulador) {
                 Manipulador m = (Manipulador) e;
                 if (texto == null) {
-                    if (!m.botones_mejora.isEmpty()) {
+                    if (!m.enhancementButtons.isEmpty()) {
                         //El manipulador aprende la habilidad
-                        m.aprender_habilidad(this);
                         m.applyEnhancement("Habilidades", this);
                     } else {
                         if (m.puede_usar_habilidad()) {
@@ -57,7 +65,7 @@ public class BotonManipulador extends BotonComplejo {
                 } else {
                     switch (texto) {
                         case "Habilidades":
-                            m.getSkillToUnlockButton(this);
+                            m.getSkillsToUnlock();
                             break;
                         case "Atributos":
                             m.obtener_botones_atributos();
@@ -93,6 +101,7 @@ public class BotonManipulador extends BotonComplejo {
                                     case "Pugnator":
                                         u.cadencia -= 0.1f;
                                         break;
+                                    case "Medicum":
                                     case "Saggitarius":
                                         u.ataque += 5;
                                         break;
@@ -101,9 +110,6 @@ public class BotonManipulador extends BotonComplejo {
                                         break;
                                     case "Magum":
                                         u.area += 25;
-                                        break;
-                                    case "Medicum":
-                                        u.ataque += 5;
                                         break;
                                 }
                             }
@@ -179,7 +185,7 @@ public class BotonManipulador extends BotonComplejo {
                             m2.poder_magico = m.poder_magico;
                             m2.reduccion_enfriamiento = m.reduccion_enfriamiento;
                             m2.botones = m.botones;
-                            m2.inicializar_teclas_botones(m2.botones);
+                            m2.initButtonKeys(m2.botones);
                             partida.jugador_aliado(m).unidades.add(m2);
                             m.applyEnhancement("Habilidades", this);
                             break;
@@ -223,6 +229,33 @@ public class BotonManipulador extends BotonComplejo {
                             m.applyEnhancement("Atributos", null);
                             break;
                     }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void renderExtendedInfo(Jugador aliado, Graphics g, ElementoComplejo origen) {
+        if (canBeShown) {
+            super.renderExtendedInfo(aliado, g, origen);
+            if (!requisito.equals("Cualquiera")) {
+                float x = VentanaCombate.playerX + 601;
+                float y = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 201;
+                g.drawString("Esta habilidad sólo se puede utilizar de " + requisito, x, y  + 150);
+            }
+        }
+    }
+
+    @Override
+    public void dibujar(Graphics g) {
+        if (canBeShown) {
+            super.dibujar(g);
+            if (!requisito.equals("Cualquiera")) {
+                g.drawRect(x + anchura / 2, y + altura / 2, 20, 20);
+                if (RelojMaestros.nombre_dia.equals(requisito)) {
+                    ElementosComunes.DAY_IMAGE.draw(x + anchura / 2, y + altura / 2, 20, 20);
+                } else if (RelojMaestros.nombre_noche.equals(requisito)) {
+                    ElementosComunes.NIGHT_IMAGE.draw(x + anchura / 2, y + altura / 2, 20, 20);
                 }
             }
         }

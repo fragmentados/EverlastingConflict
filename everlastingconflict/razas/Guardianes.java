@@ -5,12 +5,8 @@
  */
 package everlastingconflict.razas;
 
+import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Habilidad;
-import everlastingconflict.elementos.implementacion.Taller;
-import everlastingconflict.elementos.implementacion.Tecnologia;
-import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Evento;
 
 public class Guardianes {
@@ -308,7 +304,7 @@ public class Guardianes {
             case "Enviado celeste":
                 u.botones.add(new BotonComplejo(new Habilidad("Intervención divina")));
                 if (!Guardianes.habilidad_enviado) {
-                    u.botones.get(u.botones.size() - 1).activado = false;
+                    u.botones.get(u.botones.size() - 1).canBeUsed = false;
                 }
                 break;
 

@@ -13,13 +13,12 @@ import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.movimientos.Mover;
 import everlastingconflict.movimientos.Movimiento;
 import everlastingconflict.movimientos.Recolectar;
-
-import java.awt.geom.Point2D;
-
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+
+import java.awt.geom.Point2D;
 
 /**
  *
@@ -113,4 +112,7 @@ public class ElementoMovil extends ElementoAtacante {
         }
     }
 
+    public boolean isMoving() {
+        return movimiento != null;
+    }
 }

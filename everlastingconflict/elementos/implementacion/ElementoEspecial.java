@@ -5,18 +5,14 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.ElementoCoordenadas;
+import everlastingconflict.gestion.Partida;
+import org.newdawn.slick.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import static everlastingconflict.RTS.DEBUG_MODE;
 
 /**
  *
@@ -45,8 +41,10 @@ public class ElementoEspecial extends ElementoCoordenadas {
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         sprite.draw(x - anchura / 2, y - altura / 2);
-        g.setColor(Color.black);
-        g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
+        if (DEBUG_MODE) {
+            g.setColor(Color.black);
+            g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
+        }
         g.setColor(Color.white);
     }
 

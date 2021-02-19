@@ -48,6 +48,8 @@ public class BotonComplejo extends BotonSimple {
     public Integer remainingClicks = null;
     private float resolucion_contador;
     private static final float resolucion = 0.2f;
+    public boolean canBeShown = true;
+    public boolean isPassiveAbility = false;
 
 
     public BotonComplejo(String t) {
@@ -201,145 +203,149 @@ public class BotonComplejo extends BotonSimple {
 
     @Override
     public void dibujar(Graphics g) {
-        g.setColor(Color.white);
-        if (sprite != null) {
-            sprite.draw(x, y);
-        } else {
-            if (texto != null) {
-                g.drawString(texto, x, y);
-            }
-        }
-        if (activado) {
-            if (resolucion_contador > 0) {
-                g.setColor(new Color(0f, 0.3f, 0.4f, 0.5f));
+        if (canBeShown) {
+            g.setColor(Color.white);
+            if (sprite != null) {
+                sprite.draw(x, y);
             } else {
-                g.setColor(new Color(0f, 0.6f, 0.8f, 0.5f));
+                if (texto != null) {
+                    g.drawString(texto, x, y);
+                }
             }
-        } else {
-            g.setColor(new Color(0.3f, 0.3f, 0.3f, 0.7f));
-        }
-        g.drawRect(x, y, anchura, altura);
-        g.fillRect(x, y, anchura, altura);
-        g.setColor(Color.white);
-        if (tecla_string != null) {
-            g.drawString(tecla_string, x, y);
-        }
-        if (remainingClicks != null) {
-            g.setColor(Color.green);
-            g.drawString(String.valueOf(remainingClicks), x + anchura - 10, y + altura - 13);
-        }
-        if (cooldown_contador > 0) {
-            BotonComplejo.dibujar_aguja(g, this.x, this.y, this.cooldown_contador, this.cooldown);
+            if (canBeUsed) {
+                if (resolucion_contador > 0) {
+                    g.setColor(new Color(0f, 0.3f, 0.4f, 0.5f));
+                } else {
+                    g.setColor(new Color(0f, 0.6f, 0.8f, 0.5f));
+                }
+            } else {
+                g.setColor(new Color(0.3f, 0.3f, 0.3f, 0.7f));
+            }
+            g.drawRect(x, y, anchura, altura);
+            g.fillRect(x, y, anchura, altura);
+            g.setColor(Color.white);
+            if (tecla_string != null) {
+                g.drawString(tecla_string, x, y);
+            }
+            if (remainingClicks != null) {
+                g.setColor(Color.green);
+                g.drawString(String.valueOf(remainingClicks), x + anchura - 10, y + altura - 13);
+            }
+            if (cooldown_contador > 0) {
+                BotonComplejo.dibujar_aguja(g, this.x, this.y, this.cooldown_contador, this.cooldown);
+            }
         }
     }
 
     public void renderExtendedInfo(Jugador aliado, Graphics g, ElementoComplejo origen) {
-        //Origen solo es necesario para botones del Manipulador
-        float xbotones = VentanaCombate.playerX + 600;
-        float ybotones = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 1;
-        float anchura_contador = 565;
-        float altura_contador = 200;
-        float espacio_lineas = 20;
-        float xcontador = xbotones + 1;
-        float ycontador = ybotones - altura_contador;
-        g.setColor(VentanaCombate.ui.color);
-        g.fillRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
-        g.setColor(Color.white);
-        g.drawRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
-        if (texto != null) {
-            g.drawString(texto, xcontador, ycontador);
-            ycontador += espacio_lineas;
-        } else {
-            if (elemento_nombre != null) {
-                ElementoSimple elemento;
-                switch (elemento_tipo) {
-                    case "Unidad":
-                        elemento = new Unidad(elemento_nombre);
-                        break;
-                    case "Edificio":
-                        if (TALLER_NOMBRE.equals(elemento_nombre)) {
-                            elemento = new Taller(elemento_nombre);
+        if (canBeShown) {
+            //Origen solo es necesario para botones del Manipulador
+            float xbotones = VentanaCombate.playerX + 600;
+            float ybotones = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 1;
+            float anchura_contador = 565;
+            float altura_contador = 200;
+            float espacio_lineas = 20;
+            float xcontador = xbotones + 1;
+            float ycontador = ybotones - altura_contador;
+            g.setColor(VentanaCombate.ui.color);
+            g.fillRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
+            g.setColor(Color.white);
+            g.drawRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
+            if (texto != null) {
+                g.drawString(texto, xcontador, ycontador);
+                ycontador += espacio_lineas;
+            } else {
+                if (elemento_nombre != null) {
+                    ElementoSimple elemento;
+                    switch (elemento_tipo) {
+                        case "Unidad":
+                            elemento = new Unidad(elemento_nombre);
+                            break;
+                        case "Edificio":
+                            if (TALLER_NOMBRE.equals(elemento_nombre)) {
+                                elemento = new Taller(elemento_nombre);
+                            } else {
+                                elemento = new Edificio(elemento_nombre);
+                            }
+                            break;
+                        case "Tecnología":
+                            elemento = new Tecnologia(elemento_nombre);
+                            break;
+                        case "Habilidad":
+                            elemento = new Habilidad(elemento_nombre);
+                            break;
+                        case "Evento":
+                            elemento = new Evento(elemento_nombre);
+                            break;
+                        default:
+                            elemento = null;
+                            break;
+                    }
+                    if (elemento != null) {
+                        if (tecla_string != null) {
+                            g.drawString(elemento.nombre + " (" + tecla_string + ")", xcontador, ycontador);
                         } else {
-                            elemento = new Edificio(elemento_nombre);
+                            g.drawString(elemento.nombre + " (Sin tecla)", xcontador, ycontador);
                         }
-                        break;
-                    case "Tecnología":
-                        elemento = new Tecnologia(elemento_nombre);
-                        break;
-                    case "Habilidad":
-                        elemento = new Habilidad(elemento_nombre);
-                        break;
-                    case "Evento":
-                        elemento = new Evento(elemento_nombre);
-                        break;
-                    default:
-                        elemento = null;
-                        break;
-                }
-                if (elemento != null) {
-                    if (tecla_string != null) {
-                        g.drawString(elemento.nombre + " (" + tecla_string + ")", xcontador, ycontador);
-                    } else {
-                        g.drawString(elemento.nombre + " (Sin tecla)", xcontador, ycontador);
-                    }
-                    ycontador += espacio_lineas;
-                    if (elemento.coste > 0) {
-                        g.drawString("Coste: " + Integer.toString(elemento.coste), xcontador, ycontador);
-                        xcontador += ("Coste: " + Integer.toString(elemento.coste)).length() * 10;
-                    } else {
-                        g.drawString("Sin coste", xcontador, ycontador);
-                        xcontador += "Sin coste".length() * 10;
-                    }
-                    if (elemento.coste_alternativo > 0) {
-                        g.drawString("Nivel: " + elemento.coste_alternativo, xcontador, ycontador);
-                        xcontador += ("Nivel: " + elemento.coste_alternativo).length() * 10;
-                    }
-                    if (cooldown > 0) {
-                        float contador;
-                        if (origen instanceof Manipulador) {
-                            Manipulador m = (Manipulador) origen;
-                            contador = m.obtener_cooldown_reducido(cooldown);
-                        } else {
-                            contador = cooldown;
-                        }
-                        g.drawString("Cooldown: " + Float.toString(contador), xcontador, ycontador);
-                        xcontador += ("Cooldown: " + Float.toString(contador)).length() * 10;
-                    }
-                    if (elemento instanceof Evento) {
-                        Evento evento = (Evento) elemento;
-                        if (evento.positivo) {
-                            g.drawString("Beneficio: +" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
-                        } else {
-                            g.drawString("Efecto: -" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
-                        }
-                        xcontador = xbotones + 1;
                         ycontador += espacio_lineas;
-                        g.drawString("Tropas necesarias: " + Integer.toString(evento.cantidad_elemento) + " " + evento.nombre_elemento, xcontador, ycontador);
-                        xcontador = xbotones + 1;
-                        ycontador += espacio_lineas;
-                        if (!evento.positivo) {
-                            for (Evento e : aliado.eventos.contenido) {
-                                if (e.nombre.equals(evento.nombre)) {
-                                    g.drawString("Tiempo restante: " + Reloj.tiempo_a_string(e.tiempo_contador), xcontador, ycontador);
-                                    break;
+                        if (elemento.coste > 0) {
+                            g.drawString("Coste: " + Integer.toString(elemento.coste), xcontador, ycontador);
+                            xcontador += ("Coste: " + Integer.toString(elemento.coste)).length() * 10;
+                        } else {
+                            g.drawString("Sin coste", xcontador, ycontador);
+                            xcontador += "Sin coste".length() * 10;
+                        }
+                        if (elemento.coste_alternativo > 0) {
+                            g.drawString("Nivel: " + elemento.coste_alternativo, xcontador, ycontador);
+                            xcontador += ("Nivel: " + elemento.coste_alternativo).length() * 10;
+                        }
+                        if (cooldown > 0) {
+                            float contador;
+                            if (origen instanceof Manipulador) {
+                                Manipulador m = (Manipulador) origen;
+                                contador = m.obtener_cooldown_reducido(cooldown);
+                            } else {
+                                contador = cooldown;
+                            }
+                            g.drawString("Cooldown: " + Float.toString(contador), xcontador, ycontador);
+                            xcontador += ("Cooldown: " + Float.toString(contador)).length() * 10;
+                        }
+                        if (elemento instanceof Evento) {
+                            Evento evento = (Evento) elemento;
+                            if (evento.positivo) {
+                                g.drawString("Beneficio: +" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
+                            } else {
+                                g.drawString("Efecto: -" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
+                            }
+                            xcontador = xbotones + 1;
+                            ycontador += espacio_lineas;
+                            g.drawString("Tropas necesarias: " + Integer.toString(evento.cantidad_elemento) + " " + evento.nombre_elemento, xcontador, ycontador);
+                            xcontador = xbotones + 1;
+                            ycontador += espacio_lineas;
+                            if (!evento.positivo) {
+                                for (Evento e : aliado.eventos.contenido) {
+                                    if (e.nombre.equals(evento.nombre)) {
+                                        g.drawString("Tiempo restante: " + Reloj.tiempo_a_string(e.tiempo_contador), xcontador, ycontador);
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        if (elemento instanceof Unidad) {
+                            g.drawString("Población: " + Integer.toString(((Unidad) elemento).coste_poblacion), xcontador, ycontador);
+                        }
+                        xcontador = xbotones + 1;
+                        ycontador += espacio_lineas;
+                        if (elemento.tiempo > 0) {
+                            g.drawString("Tiempo: " + Integer.toString(elemento.tiempo), xcontador, ycontador);
+                        }
+                        ycontador += espacio_lineas;
                     }
-                    if (elemento instanceof Unidad) {
-                        g.drawString("Población: " + Integer.toString(((Unidad) elemento).coste_poblacion), xcontador, ycontador);
-                    }
-                    xcontador = xbotones + 1;
-                    ycontador += espacio_lineas;
-                    if (elemento.tiempo > 0) {
-                        g.drawString("Tiempo: " + Integer.toString(elemento.tiempo), xcontador, ycontador);
-                    }
-                    ycontador += espacio_lineas;
                 }
             }
-        }
-        if (descripcion != null) {
-            g.drawString(Partida.anadir_saltos_de_linea(descripcion, anchura_contador), xcontador, ycontador);
+            if (descripcion != null) {
+                g.drawString(Partida.anadir_saltos_de_linea(descripcion, anchura_contador), xcontador, ycontador);
+            }
         }
     }
 
@@ -351,7 +357,7 @@ public class BotonComplejo extends BotonSimple {
             } else {
                 cooldown_contador = cooldown;
             }
-            activado = false;
+            canBeUsed = false;
         }
     }
 
@@ -359,7 +365,7 @@ public class BotonComplejo extends BotonSimple {
         //e representa el elemento desde el cual se activa el botón          
         Jugador aliado = partida.jugador_aliado(e);
         this.resolucion_contador = BotonComplejo.resolucion;
-        if (activado) {
+        if (canBeUsed) {
             if (e instanceof Edificio) {
                 Edificio edificio = (Edificio) e;
                 if (texto == null) {
@@ -502,7 +508,7 @@ public class BotonComplejo extends BotonSimple {
             if (cooldown_contador > 0) {
                 if ((cooldown_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0)) {
                     cooldown_contador = 0;
-                    activado = true;
+                    canBeUsed = true;
                 } else {
                     cooldown_contador -= Reloj.TIME_REGULAR_SPEED * delta;
                 }
@@ -518,7 +524,7 @@ public class BotonComplejo extends BotonSimple {
     }
 
     public void checkIfEnabled(Jugador aliado) {
-        boolean enabled = this.activado;
+        boolean enabled = this.canBeUsed;
         if ("Tecnología".equals(elemento_tipo)) {
             enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
         } else if ("Cuartel Fénix".equals(elemento_nombre)) {
@@ -526,6 +532,6 @@ public class BotonComplejo extends BotonSimple {
         } else if (elemento_coste > 0) {
             enabled = aliado.getRecursos() >= this.elemento_coste;
         }
-        this.activado = enabled;
+        this.canBeUsed = enabled;
     }
 }

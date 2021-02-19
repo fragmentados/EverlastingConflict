@@ -5,6 +5,8 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
@@ -12,8 +14,6 @@ import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Eternium;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Guardianes;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementosvisuales.BotonComplejo;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -260,7 +260,7 @@ public class Tecnologia extends ElementoSimple {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Tigre")) {
-                                b.activado = true;
+                                b.canBeUsed = true;
                             }
                         }
                     }
@@ -272,7 +272,7 @@ public class Tecnologia extends ElementoSimple {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Halcón")) {
-                                b.activado = true;
+                                b.canBeUsed = true;
                             }
                         }
                     }
@@ -284,7 +284,7 @@ public class Tecnologia extends ElementoSimple {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Fénix")) {
-                                b.activado = true;
+                                b.canBeUsed = true;
                             }
                         }
                     }
@@ -322,7 +322,7 @@ public class Tecnologia extends ElementoSimple {
                     if (u.nombre.equals("Fénix")) {
                         for (BotonComplejo b : u.botones) {
                             if (b.texto.equals("Resurrección")) {
-                                b.activado = true;
+                                b.canBeUsed = true;
                                 break;
                             }
                         }
@@ -333,7 +333,7 @@ public class Tecnologia extends ElementoSimple {
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 2")));
-                        e.inicializar_teclas_botones(e.botones);
+                        e.initButtonKeys(e.botones);
                     }
                 }
                 Fenix.limite_cuarteles++;
@@ -342,7 +342,7 @@ public class Tecnologia extends ElementoSimple {
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 3")));
-                        e.inicializar_teclas_botones(e.botones);
+                        e.initButtonKeys(e.botones);
                     }
                 }
                 Fenix.limite_cuarteles++;
@@ -379,7 +379,7 @@ public class Tecnologia extends ElementoSimple {
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Edificio gubernamental")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar nivel de amenaza2")));
-                        e.inicializar_teclas_botones(e.botones);
+                        e.initButtonKeys(e.botones);
                     }
                 }
                 jugador.recursos_alternativos_dos++;
@@ -393,7 +393,7 @@ public class Tecnologia extends ElementoSimple {
                     if (u.nombre.equals("Enviado celeste")) {
                         for (BotonComplejo b : u.botones) {
                             if (b.elemento_nombre != null && b.elemento_nombre.equals("Intervención divina")) {
-                                b.activado = true;
+                                b.canBeUsed = true;
                             }
                         }
                     }

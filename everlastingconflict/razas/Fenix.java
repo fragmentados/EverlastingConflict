@@ -9,15 +9,13 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Jugador;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -218,9 +216,9 @@ public class Fenix {
                 e.botones.add(new BotonComplejo("Tigre"));
                 e.botones.add(new BotonComplejo("Halcón"));
                 e.botones.add(new BotonComplejo("Fénix"));
-                e.botones.get(1).activado = Fenix.boton_cuartel_tigre;
-                e.botones.get(2).activado = Fenix.boton_cuartel_halcon;
-                e.botones.get(3).activado = Fenix.boton_cuartel_fenix;
+                e.botones.get(1).canBeUsed = Fenix.boton_cuartel_tigre;
+                e.botones.get(2).canBeUsed = Fenix.boton_cuartel_halcon;
+                e.botones.get(3).canBeUsed = Fenix.boton_cuartel_fenix;
                 break;
             case "Centro tecnológico":
                 e.botones.add(new BotonComplejo(new Tecnologia("Rifles de asalto")));
@@ -261,7 +259,7 @@ public class Fenix {
                 break;
             case "Fénix":
                 u.botones.add(new BotonComplejo("Resurrección"));
-                u.botones.get(u.botones.size() - 1).activado = Unidad.activacion_resurreccion;
+                u.botones.get(u.botones.size() - 1).canBeUsed = Unidad.activacion_resurreccion;
                 break;
         }
     }

@@ -7,19 +7,19 @@ package everlastingconflict.elementos;
 
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
-import everlastingconflict.elementosvisuales.BotonComplejo;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -57,47 +57,26 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
         removeTechnologyButtonsAlreadyResearched(aliado);
     }
 
-    public void inicializar_teclas_botones(List<BotonComplejo> botones) {
-        if (botones.size() > 0) {
-            botones.get(0).tecla = Input.KEY_Q;
-            botones.get(0).tecla_string = "Q";
-        }
-        if (botones.size() > 1) {
-            botones.get(1).tecla = Input.KEY_W;
-            botones.get(1).tecla_string = "W";
-        }
-        if (botones.size() > 2) {
-            botones.get(2).tecla = Input.KEY_E;
-            botones.get(2).tecla_string = "E";
-        }
-        if (botones.size() > 3) {
-            botones.get(3).tecla = Input.KEY_R;
-            botones.get(3).tecla_string = "R";
-        }
-        if (botones.size() > 4) {
-            botones.get(4).tecla = Input.KEY_A;
-            botones.get(4).tecla_string = "A";
-        }
-        if (botones.size() > 5) {
-            botones.get(5).tecla = Input.KEY_S;
-            botones.get(5).tecla_string = "S";
-        }
-        if (botones.size() > 6) {
-            botones.get(6).tecla = Input.KEY_D;
-            botones.get(6).tecla_string = "D";
-        }
-        if (botones.size() > 7) {
-            botones.get(7).tecla = Input.KEY_F;
-            botones.get(7).tecla_string = "F";
+    public void initButtonKeys(List<BotonComplejo> botones) {
+        List<Integer> keysNumber = Arrays.asList(Input.KEY_Q, Input.KEY_W, Input.KEY_E, Input.KEY_R,
+                Input.KEY_A, Input.KEY_S, Input.KEY_D, Input.KEY_F, Input.KEY_Z, Input.KEY_X, Input.KEY_C, Input.KEY_V);
+        List<String> keysText = Arrays.asList("Q", "W", "E", "R", "A", "S", "D", "F", "Z", "X", "C", "V");
+        Integer keysIndex = 0;
+        for (int i = 0; i < botones.size(); i++) {
+            if (!botones.get(i).isPassiveAbility) {
+                botones.get(i).tecla = keysNumber.get(keysIndex);
+                botones.get(i).tecla_string = keysText.get(keysIndex);
+                keysIndex++;
+            }
         }
     }
 
     public void disableBuildingButtons() {
-        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.activado = false);
+        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.canBeUsed = false);
     }
 
     public void enableBuildingButtons() {
-        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.activado = true);
+        this.botones.stream().filter(b -> "Edificio".equals(b.elemento_tipo)).forEach(b -> b.canBeUsed = true);
     }
 
     @Override

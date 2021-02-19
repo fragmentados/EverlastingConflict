@@ -136,7 +136,7 @@ public class Edificio extends ElementoAtacante {
             // Disable all buttons that research the tecnology
             j.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
                     .flatMap(e -> e.botones.stream())
-                    .filter(b -> b.elemento_nombre.equals(t.nombre)).forEach(b -> b.activado = false);
+                    .filter(b -> b.elemento_nombre.equals(t.nombre)).forEach(b -> b.canBeUsed = false);
             if (cola_construccion.isEmpty()) {
                 barra.activar(t.tiempo);
             }
@@ -191,7 +191,7 @@ public class Edificio extends ElementoAtacante {
                 // Enable all buttons that research the tecnology
                 aliado.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
                         .flatMap(e -> e.botones.stream())
-                        .filter(b -> b.elemento_nombre.equals(elementProduced.nombre)).forEach(b -> b.activado = true);
+                        .filter(b -> b.elemento_nombre.equals(elementProduced.nombre)).forEach(b -> b.canBeUsed = true);
                 aliado.tecnologias.remove(elementProduced);
             }
             eliminar_cola(elementProduced);
@@ -352,10 +352,7 @@ public class Edificio extends ElementoAtacante {
             if (p.jugador_aliado(this).raza.equals(RaceNameEnum.ETERNIUM.getName())) {
                 p.jugador_aliado(this).comprobacion_perforacion();
             }
-            if (atacante instanceof Manipulador) {
-                Manipulador m = (Manipulador) atacante;
-                m.aumentar_experiencia(experiencia_al_morir);
-            }
+            Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             ElementosComunes.BUILDING_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
         }
     }

@@ -20,12 +20,12 @@ public class AIClark extends AI {
 
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-
+        super.comportamiento_unidades(p, g, delta);
     }
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-
+        super.comportamiento_edificios(p, g, delta);
     }
 
 }

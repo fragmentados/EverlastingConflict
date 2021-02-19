@@ -8,6 +8,7 @@ package everlastingconflict.mapas;
 import everlastingconflict.ControlGroup;
 import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoCoordenadas;
+import everlastingconflict.elementos.ElementoEstado;
 import everlastingconflict.elementos.ElementoSimple;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
@@ -254,6 +255,9 @@ public class UI {
                 g.drawString(Integer.toString((int) e.vida), x + 10, y + 50 + e.icono.getHeight() + 10);
                 g.drawString("/", x + 10 + Integer.toString((int) e.vida).length() * 10, y + 50 + e.icono.getHeight() + 10);
                 g.drawString(Integer.toString((int) e.vida_max), x + 10 + Integer.toString((int) e.vida).length() * 10 + 10, y + 50 + e.icono.getHeight() + 10);
+                if (e instanceof ElementoEstado && ((ElementoEstado)e).statusEffectCollection.existe_estado(StatusEffectName.REGENERACION)) {
+                    g.drawString("(+1)", x + 10 + Integer.toString((int) e.vida).length() * 10 + 10 + Integer.toString((int) e.vida_max).length() * 10, y + 50 + e.icono.getHeight() + 10);
+                }
                 g.setColor(Color.white);
             }
             //Nombre
@@ -535,11 +539,11 @@ public class UI {
         if (!seleccion_actual.isEmpty()) {
             ElementoComplejo e = seleccion_actual.get(0);
             List<BotonComplejo> botones;
-            if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
+            if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
                 botones = e.botones;
             } else {
                 Manipulador m =  ((Manipulador) e);
-                botones = m.botones_mejora;
+                botones = m.enhancementButtons;
                 g.drawString("Tienes " + m.enhancementsRemaining + " mejora(s) pendiente(s)",
                         VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5, initialY + 100);
             }
@@ -693,10 +697,10 @@ public class UI {
             if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion)) && (x_click <= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones))) {
                 for (ElementoComplejo e : ui.seleccion_actual) {
                     List<BotonComplejo> botones;
-                    if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
+                    if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
                         botones = e.botones;
                     } else {
-                        botones = ((Manipulador) e).botones_mejora;
+                        botones = ((Manipulador) e).enhancementButtons;
                     }
                     for (BotonComplejo b : botones) {
                         if (b.presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
@@ -717,10 +721,10 @@ public class UI {
         if (!ui.seleccion_actual.isEmpty()) {
             List<BotonComplejo> botones;
             ElementoComplejo e = ui.seleccion_actual.get(0);
-            if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
+            if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
                 botones = e.botones;
             } else {
-                botones = ((Manipulador) e).botones_mejora;
+                botones = ((Manipulador) e).enhancementButtons;
             }
             for (BotonComplejo b : botones) {
                 if (new Rectangle2D.Float(b.x, b.y, b.anchura, b.altura).contains(new Point2D.Float(x, y))) {

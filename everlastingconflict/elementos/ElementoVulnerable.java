@@ -22,6 +22,7 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public float vida, vida_max;
     public int defensa;
     public float experiencia_al_morir;
+    public float escudo, escudoInicial;
     
     public int defensa_eternium() {
         switch (VentanaCombate.relojEternium().ndivision) {
@@ -79,15 +80,15 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
         g.setColor(Color.white);
     }
 
-    public void dibujar_barra_de_vida(Graphics g, Color c) {
+    public void drawLifeBar(Graphics g, Color c, float initialValue, float maxValue, float y) {
         //Rellenar cuadrados
         float anchura_contador;
         anchura_contador = anchura_barra_vida;
-        float contador = this.vida;
+        float contador = initialValue;
         float n_cuadrados;
         float anchura_mini_cuadrado = 5;
         n_cuadrados = anchura_contador / anchura_mini_cuadrado;
-        float vida_por_cuadrado = this.vida_max / n_cuadrados;
+        float vida_por_cuadrado = maxValue / n_cuadrados;
         n_cuadrados = 0;
         while (contador > 0) {
             n_cuadrados++;
@@ -98,9 +99,9 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y + altura / 2, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y + altura / 2, anchura_mini_cuadrado, altura_barra_vida);
+                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
             }
         }
         g.setColor(Color.black);
@@ -110,9 +111,9 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y + altura / 2, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y + altura / 2, anchura_mini_cuadrado, altura_barra_vida);
+                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
             }
         }
         g.setColor(Color.white);
@@ -121,7 +122,10 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         super.dibujar(p, c, input, g);
-        dibujar_barra_de_vida(g, c);
+        drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
+        if (escudo > 0) {
+            drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial, this.y + this.altura / 2 + this.altura_barra_vida);
+        }
     }
 
     public abstract void destruir(Partida p, ElementoAtacante atacante);

@@ -5,6 +5,10 @@
  */
 package everlastingconflict.elementos.implementacion;
 
+import everlastingconflict.elementos.ElementoComplejo;
+import everlastingconflict.elementos.ElementoSimple;
+import everlastingconflict.elementos.ElementoVulnerable;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
@@ -13,20 +17,15 @@ import everlastingconflict.gestion.Vision;
 import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.ElementoVulnerable;
-import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.relojes.RelojMaestros;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import everlastingconflict.relojes.RelojMaestros;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 /**
  *
@@ -91,7 +90,7 @@ public class Habilidad extends ElementoSimple {
                 break;
             case "Provocar":
                 alcance = 150;
-                tipo_seleccion = "UnidadEnemigaoBestia";
+                tipo_seleccion = "UnidadEnemiga";
                 cooldown = 30;
                 descripcion = "Obliga a la unidad objetivo a atacar al Defensor durante un tiempo.";
                 break;
@@ -183,7 +182,7 @@ public class Habilidad extends ElementoSimple {
                 break;
             case "Deflagración":
                 alcance = 150;
-                tipo_seleccion = "UnidadEnemigaoBestia";
+                tipo_seleccion = "UnidadEnemiga";
                 coste = 60;
                 cooldown = 5;
                 magia = true;
@@ -210,7 +209,7 @@ public class Habilidad extends ElementoSimple {
                 coste = 50;
                 tipo_seleccion = "Coordenadas";
                 cooldown = 6;
-                area = 100;
+                area = 200;
                 magia = true;
                 descripcion = "Inflige 50 puntos de daño más la mitad del poder mágico del manipulador en una gran área.";
                 break;
@@ -219,7 +218,7 @@ public class Habilidad extends ElementoSimple {
                 coste = 50;
                 tipo_seleccion = "Coordenadas";
                 cooldown = 6;
-                area = 50;
+                area = 100;
                 magia = true;
                 descripcion = "Inflige 65 puntos de daño más el 70% del poder de mágico del manipulador en una pequeña área.";
                 break;
@@ -244,7 +243,7 @@ public class Habilidad extends ElementoSimple {
                 coste = 150;
                 tipo_seleccion = "Coordenadas";
                 cooldown = 30;
-                area = 100;
+                area = 200;
                 magia = true;
                 descripcion = "Destruye instantáneamente a todas las unidades enemigas en una gran área.";
                 break;
@@ -259,7 +258,7 @@ public class Habilidad extends ElementoSimple {
             case "Trampa solar":
                 alcance = 200;
                 coste = 80;
-                area = 150;
+                area = 300;
                 tipo_seleccion = "Coordenadas";
                 cooldown = 20;
                 descripcion = "Inmoviliza a las unidades en una gran área durante un tiempo.";
@@ -285,9 +284,13 @@ public class Habilidad extends ElementoSimple {
             case "Agujero negro":
                 cooldown = 300;
                 coste = 150;
-                alcance = 200;
+                alcance = 400;
                 tipo_seleccion = "Coordenadas";
                 descripcion = "Invoca un agujero negro en la situación que atrae a las unidades paradas cercanas y las destruye en el momento en el que entran en contacto con él.";
+                break;
+            case "Ansia de supervivencia":
+                cooldown = 100;
+                descripcion = "Permite al moldeador evitar ser dañado durante un tiempo pero tampoco puede atacar en ese tiempo.\n";
                 break;
         }
         if (magia) {
@@ -312,6 +315,9 @@ public class Habilidad extends ElementoSimple {
                 break;
             case "UnidadEnemiga":
                 contador.addAll(enemigo.unidades);
+                for (Bestias be : p.bestias) {
+                    contador.addAll(be.contenido);
+                }
                 break;
             case "Invocacion":
                 contador.addAll(aliado.unidades);
@@ -323,12 +329,6 @@ public class Habilidad extends ElementoSimple {
                 }
                 break;
             case "Bestia":
-                for (Bestias be : p.bestias) {
-                    contador.addAll(be.contenido);
-                }
-                break;
-            case "UnidadEnemigaoBestia":
-                contador.addAll(enemigo.unidades);
                 for (Bestias be : p.bestias) {
                     contador.addAll(be.contenido);
                 }
@@ -352,8 +352,6 @@ public class Habilidad extends ElementoSimple {
                 VentanaPrincipal.mapac.elemento_habilidad = origen;
                 VentanaPrincipal.mapac.habilidad = this;
             }
-        } else {
-
         }
     }
 
@@ -365,6 +363,13 @@ public class Habilidad extends ElementoSimple {
                 for (Unidad u : enemigo.unidades) {
                     if (u.alcance(x, y, area)) {
                         resultado.add(u);
+                    }
+                }
+                for (Bestias be : p.bestias) {
+                    for (Bestia b : be.contenido) {
+                        if (b.alcance(x, y, area)) {
+                            resultado.add(b);
+                        }
                     }
                 }
                 break;
@@ -379,6 +384,13 @@ public class Habilidad extends ElementoSimple {
                 for (Unidad u : aliado.unidades) {
                     if (u.alcance(x, y, area)) {
                         resultado.add(u);
+                    }
+                }
+                for (Bestias be : p.bestias) {
+                    for (Bestia b : be.contenido) {
+                        if (b.alcance(x, y, area)) {
+                            resultado.add(b);
+                        }
                     }
                 }
                 for (Unidad u : enemigo.unidades) {
@@ -440,10 +452,12 @@ public class Habilidad extends ElementoSimple {
                     m.dano(p, "Mágico", 200 + (int) m.poder_magico, objetivo);
                     break;
                 case "Pesadilla":
+                    ((Unidad) objetivo).parar();
                     ((Unidad) objetivo).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.STUN, 10));
                     break;
                 case "Protección":
                     ((Unidad) objetivo).escudo += 100 + (int) (m.poder_magico * 1.2f);
+                    ((Unidad) objetivo).escudoInicial += 100 + (int) (m.poder_magico * 1.2f);
                     break;
                 case "Lluvia de estrellas":
                     elementos_area = area(p, origen, objetivo.x, objetivo.y, "UnidadEnemiga");
@@ -477,12 +491,15 @@ public class Habilidad extends ElementoSimple {
                     elementos_area = area(p, origen, objetivo.x, objetivo.y, "UnidadEnemiga");
                     for (ElementoComplejo e : elementos_area) {
                         ((Unidad) e).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.SNARE, 10));
+                        if(((Unidad) e).isMoving()) {
+                            ((Unidad) e).parar();
+                        }
                     }
                     break;
                 case "Sacrificio":
                     m.aumentar_vida(((Unidad) objetivo).vida);
                     m.aumentar_mana(((Unidad) objetivo).vida);
-                    ((Unidad) objetivo).destruir(p, m);
+                    objetivo.destruir(p, m);
                     break;
                 case "Visión interestelar":
                     aliado.visiones.add(new Vision(objetivo.x, objetivo.y, area, area, 3f));
@@ -562,8 +579,10 @@ public class Habilidad extends ElementoSimple {
                     break;
                 case "Meditar":
                     if (((Unidad) origen).statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
+                        ((Manipulador) origen).regeneracion_mana -= 2;
                         ((Unidad) origen).statusEffectCollection.eliminar_estado(StatusEffectName.MEDITACION);
                     } else {
+                        ((Manipulador) origen).regeneracion_mana += 2;
                         ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.MEDITACION));
                     }
                     break;

@@ -14,8 +14,6 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.Mensaje;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
@@ -35,7 +33,6 @@ public class Unidad extends ElementoMovil {
     public Recurso recurso;
     public int recurso_int;    
     public int coste_poblacion;
-    public float escudo;
     //Construccion
     public Edificio edificio_construccion;
     public float ed_x, ed_y;
@@ -194,7 +191,7 @@ public class Unidad extends ElementoMovil {
             case ATACAR_MOVER:
                 boolean atacar = atacar_cercanos(p);
                 if (!atacar) {
-                    if ((movimiento == null) || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov)) {
+                    if (canMove() && (movimiento == null) || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov)) {
                         anadir_movimiento(x_atmov, y_atmov);
                     }
                 } else {
@@ -248,10 +245,10 @@ public class Unidad extends ElementoMovil {
                 break;
         }
         List<BotonComplejo> botones_contador;
-        if (!(this instanceof Manipulador) || ((Manipulador) this).botones_mejora.isEmpty()) {
+        if (!(this instanceof Manipulador) || ((Manipulador) this).enhancementButtons.isEmpty()) {
             botones_contador = this.botones;
         } else {
-            botones_contador = ((Manipulador) this).botones_mejora;
+            botones_contador = ((Manipulador) this).enhancementButtons;
         }
         for (BotonComplejo b : botones_contador) {
             b.comportamiento(delta);
@@ -273,23 +270,7 @@ public class Unidad extends ElementoMovil {
             }
             p.jugador_aliado(this).poblacion -= this.coste_poblacion;
             p.jugador_aliado(this).unidades.remove(this);
-            if (Manipulador.lider) {
-                if (p.jugador_aliado(atacante).raza.equals(RaceNameEnum.MAESTROS.getName())) {
-                    for (Unidad u : p.jugador_aliado(atacante).unidades) {
-                        if (u.nombre.equals("Manipulador")) {
-                            Manipulador m = (Manipulador) u;
-                            VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
-                            m.aumentar_experiencia(experiencia_al_morir);
-                            break;
-                        }
-                    }
-                }
-            }
-            if (atacante instanceof Manipulador) {
-                Manipulador m = (Manipulador) atacante;
-                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
-                m.aumentar_experiencia(experiencia_al_morir);
-            }
+            Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             if (shouldPlaySound) {
                 ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
             }

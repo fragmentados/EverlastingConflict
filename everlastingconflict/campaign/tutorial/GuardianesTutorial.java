@@ -31,7 +31,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("La primera característica de los Guardianes es que, a diferencia de otras razas, no tiene que construir edificios sino que empiezan la partida con todos los edificios construidos en una posición predeterminada.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Sin embargo, sólo el edificio Central, el Ayuntamiento, puede ser usado nada más empezar, el resto deben ser activados. Para ello, debemos crear una unidad especial en el Ayuntamiento, el Activador. Prueba a hacerlo ahora.") {
@@ -43,7 +43,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Para activar un edificio, selecciona el Activador recién creado y pulsa el botón derecho sobre el edificio a activar. Prueba a activar el Taller bélico ahora.") {
@@ -55,7 +55,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("La siguiente característica de la raza son los vehíuculos: es un tipo de unidad más potente que el resto pero que requieren de un piloto para poder moverse y atacar. Pero antes de ello, debemos crear un anexo en el taller bélico para que guarde el vehículo.") {
@@ -67,7 +67,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("A continuación, prueba a crear una Patrulla y observa como se moviliza hacia el anexo.") {
@@ -79,7 +79,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
                 p.j1.edificios.get(1).iniciarbotones(p);
             }
 
@@ -93,7 +93,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Para embarcar un vehículo, selecciona el piloto y pulsa el botón derecho sobre el vehículo a embarcar. Prueba a hacerlo ahora.") {
@@ -108,7 +108,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("Para solucionar un evento negativo se deben sacrificar unidades. Para hacerlo debes moverlas al ayuntamiento.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
                 Unidad u = new Unidad("Patrulla", p.j1.unidades.get(0).x - 50, p.j1.unidades.get(0).y);
                 u.movil = true;
                 p.j1.unidades.add(u);
@@ -123,7 +123,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Muy bien. Hazlo una vez más para solucionar el evento negativo.") {
@@ -135,7 +135,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Enhorabuena. Ahora ya sabes todo lo que necesitas saber para llevar a tu ejército a la victoria."));

@@ -74,6 +74,8 @@ public class Maestros {
         u.velocidad = Unidad.velocidad_estandar;
         u.vision = Unidad.vision_estandar + 50;
         u.descripcion = "Unidad de apoyo sin capacidades ofensivas capaz de curar a unidades aliadas.";
+        u.hostil = false;
+        u.healer = true;
     }
 
     public static void Manipulador(Unidad u) {

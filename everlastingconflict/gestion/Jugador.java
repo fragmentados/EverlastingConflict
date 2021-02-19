@@ -212,7 +212,6 @@ public class Jugador {
     public void dibujar_elementos(Partida p, Graphics g, Input input) {
         for (Recurso r : lista_recursos) {
             r.dibujar(p, color, input, g);
-            r.dibujar_barra_de_vida(g, color);
         }
         for (Edificio e : edificios) {
             e.dibujar(p, color, input, g);
@@ -220,7 +219,7 @@ public class Jugador {
         if (this.raza.equals(RaceNameEnum.MAESTROS.getName())) {
             if (this.unidades.get(0) instanceof Manipulador) {
                 Manipulador m = (Manipulador) this.unidades.get(0);
-                m.drawLevelCircle(g);
+                m.drawXpCircle(g);
                 m.drawLifeCircle(g);
                 m.drawManaCircle(g);
             }

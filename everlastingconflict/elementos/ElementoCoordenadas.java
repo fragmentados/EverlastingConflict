@@ -105,7 +105,7 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
             }
         }
 
-        return (distancia_x + distancia_y) <= n;
+        return (distancia_x + distancia_y) <= n / 2;
     }
 
     public boolean alcance(float n, ElementoCoordenadas atacada) {

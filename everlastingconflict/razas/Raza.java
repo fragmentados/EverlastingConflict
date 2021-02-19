@@ -8,9 +8,9 @@ package everlastingconflict.razas;
 import everlastingconflict.elementos.implementacion.Bestia;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.elementosvisuales.BotonComplejo;
 import org.newdawn.slick.Image;
 
 import java.util.ArrayList;
@@ -301,7 +301,7 @@ public class Raza {
                 Guardianes.iniciar_botones_edificio(e);
                 break;
         }
-        e.inicializar_teclas_botones(e.botones);
+        e.initButtonKeys(e.botones);
         e.checkButtonResources(aliado);
     }
 
@@ -325,7 +325,7 @@ public class Raza {
                 Guardianes.iniciar_botones_unidad(u);
                 break;
         }
-        u.inicializar_teclas_botones(u.botones);
+        u.initButtonKeys(u.botones);
         u.checkButtonResources(aliado);
     }
 

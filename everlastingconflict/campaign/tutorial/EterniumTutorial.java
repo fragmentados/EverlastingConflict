@@ -68,7 +68,7 @@ public class EterniumTutorial extends Tutorial {
         pasos.add(new Paso("El sistema de recolección de recursos Eternium sigue el mismo patrón de alta inversión, alto beneficio. La recolección de hierro y transformación del mismo en energía sigue tres pasos.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
                 j1.unidades.get(0).seleccionar();
                 VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
             }
@@ -84,14 +84,14 @@ public class EterniumTutorial extends Tutorial {
             public void efecto(Partida p) {
                 j1.unidades.get(0).deseleccionar();
                 j1.edificios.get(0).seleccionar();
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("En segundo lugar, el hierro debe ser transformado en la cámara de asimilación. Construye una cámara de asimilación utilizando la sede en cualquier lugar dentro del área permitida.") {
             @Override
             public void efecto(Partida p) {
                 j1.edificios.get(0).seleccionar();
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
 
             @Override

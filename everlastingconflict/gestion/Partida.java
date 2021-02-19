@@ -400,4 +400,9 @@ public class Partida {
         e.seleccionar(mayus);
         click = false;
     }
+
+    public boolean resourceBelongsToPlayer(Recurso r) {
+        return j1.lista_recursos.contains(r) || j2.lista_recursos.contains(r);
+    }
+
 }

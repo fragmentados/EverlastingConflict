@@ -64,7 +64,7 @@ public class ClarkTutorial extends Tutorial {
             public void efecto(Partida p) {
                 p.j1.unidades.get(0).seleccionar();
                 p.j1.unidades.get(1).seleccionar();
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Veamos un ejemplo: Prueba a fusionar ahora el depredador y el devorador") {
@@ -79,7 +79,7 @@ public class ClarkTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Aquí tenemos un grupo de bestias. Éstas en concreto son las denominadas Alphas, las bestias más inofensivas con lo que tu recién creado Moldeador podrá encargarse de ellas sin problema. Ordénale que acabe con esos seres inferiores.") {
@@ -99,7 +99,7 @@ public class ClarkTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Como puedes ver, cada vez que un Alpha muere, tus recursos aumentan. En una partida normal de Everlasting Conflict, hay varios tipos de bestias por todo el mapa y cada una da un número distinto de recursos. Sin embargo, a mayor recompensa, mayor será la capacidad ofensiva de la bestia.") {

@@ -5,20 +5,19 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.estados.StatusEffectCollection;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoMovil;
 import everlastingconflict.elementos.ElementoVulnerable;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import everlastingconflict.estados.StatusEffectCollection;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,6 +26,7 @@ import org.newdawn.slick.SlickException;
 public class Proyectil extends ElementoMovil {
 
     public ElementoAtacante origen;
+    public boolean shouldHeal = false;
 
     public final void iniciar_datos(ElementoAtacante origen) {
         try {
@@ -71,7 +71,11 @@ public class Proyectil extends ElementoMovil {
             }
         }
         if (objetivo.hitbox(this.x, this.y)) {
-            if (origen.dano(p, "Físico", ataque, objetivo)) {
+            if (shouldHeal) {
+                if (origen.heal(ataque, objetivo)) {
+                    ((ElementoMovil)origen).parar();
+                }
+            } else if (origen.dano(p, "Físico", ataque, objetivo)) {
                 if (origen instanceof ElementoMovil) {
                     ((ElementoMovil)origen).parar();
                 }

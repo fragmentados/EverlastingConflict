@@ -17,7 +17,7 @@ public class BotonSimple {
 
     public Image sprite;
     public float x, y, altura, anchura;
-    public boolean activado = true;
+    public boolean canBeUsed = true;
     public String texto;
 
     public BotonSimple() {
@@ -43,10 +43,10 @@ public class BotonSimple {
     }
 
     public boolean presionado(float x, float y) {
-        if (activado) {
+        if (canBeUsed) {
             if ((x >= this.x) && (x <= (this.x + anchura))) {
                 if ((y >= this.y) && (y <= (this.y + altura))) {
-                    if (activado) {
+                    if (canBeUsed) {
                         return true;
                     }
                 }
@@ -56,7 +56,7 @@ public class BotonSimple {
     }
 
     public void dibujar(Graphics g) {
-        if (activado) {
+        if (canBeUsed) {
             if (sprite != null) {
                 sprite.draw(x, y, anchura, altura);
             } else {

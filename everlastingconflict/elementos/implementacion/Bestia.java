@@ -6,11 +6,13 @@
 package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.elementos.ElementoAtacante;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.Mensaje;
 import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import org.newdawn.slick.*;
@@ -96,15 +98,22 @@ public class Bestia extends Unidad {
                     break;
                 }
             }
-            if (atacante instanceof Manipulador) {
-                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.experiencia_al_morir, Color.orange, x, y - altura / 2 - 20, 2f));
-                ((Manipulador) atacante).aumentar_experiencia(experiencia_al_morir);
-            }
+            Manipulador.checkToGainExperience(p, atacante, recompensa, x, y, altura);
         }
     }
 
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
+        Jugador mastersPlayer = p.getPlayerByRace(RaceNameEnum.MAESTROS.getName());
+        if (mastersPlayer != null) {
+            for (ElementoEspecial e : mastersPlayer.elementos_especiales) {
+                if (e.nombre.equals("Agujero negro")) {
+                    if (this.alcance(e.x, e.y, e.anchura / 2)) {
+                        this.destruir(p, mastersPlayer.unidades.stream().filter(m -> m.nombre.equals("Manipulador")).findFirst().orElse(null));
+                    }
+                }
+            }
+        }
         if (movimiento != null) {
             if (movimiento.resolucion(p, delta)) {
                 if (statusBehaviour.equals(StatusBehaviour.MOVER)) {
@@ -125,17 +134,34 @@ public class Bestia extends Unidad {
             case ATACANDO:
                 float distancia = calcular_distancia();
                 if (distancia >= Bestia.distancia_maxima) {
-                    this.mover(p, x_inicial, y_inicial);
+                    if (canMove()) {
+                        this.mover(p, x_inicial, y_inicial);
+                    }
                 } else {
                     if (alcance(this.alcance, objetivo)) {
                         movimiento = null;
                         ataque(p);                                                    
                     } else {
-                        anadir_movimiento(objetivo.x, objetivo.y);
+                        if (canMove()) {
+                            anadir_movimiento(objetivo.x, objetivo.y);
+                        }
                     }
                 }
                 break;
             case PARADO:
+                if (mastersPlayer != null) {
+                    for (ElementoEspecial e : p.getPlayerByRace(RaceNameEnum.MAESTROS.getName()).elementos_especiales) {
+                        if (e.nombre.equals("Agujero negro")) {
+                            if (this.alcance(300, e)) {
+                                this.mover(p, e.x, e.y);
+                                break;
+                            }
+                        }
+                    }
+                    if (isMoving()) {
+                        break;
+                    }
+                }
                 if ((x != x_inicial) || (y != y_inicial)) {
                     this.mover(p, x_inicial, y_inicial);
                 } else {
@@ -145,5 +171,9 @@ public class Bestia extends Unidad {
                 }
                 break;
         }
+        if (statusEffectCollection.existe_estado(StatusEffectName.EROSION)) {
+            disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
+        }
+        statusEffectCollection.comportamiento(delta);
     }
 }

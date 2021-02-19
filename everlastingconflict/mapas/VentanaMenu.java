@@ -68,7 +68,7 @@ public class VentanaMenu extends Ventana {
         racesPlayer2.remove(RaceNameEnum.FENIX.getName());
         racePlayer2 = new ComboBox(racesPlayer2, 700, 600);
         mapType = new ComboBox(MapEnum.getAllNames(), 300, 700);
-        seleccion = aceptar.activado = volver.activado = maestros.activado = fenix.activado = eternium.activado = clark.activado = guardianes.activado = false;
+        seleccion = aceptar.canBeUsed = volver.canBeUsed = maestros.canBeUsed = fenix.canBeUsed = eternium.canBeUsed = clark.canBeUsed = guardianes.canBeUsed = false;
     }
 
     public void start(GameContainer container) {
@@ -96,8 +96,8 @@ public class VentanaMenu extends Ventana {
         //Boton izquierdo
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             if (combate.presionado(input.getMouseX(), input.getMouseY())) {
-                multijugador.activado = opciones.activado = tutorial.activado = combate.activado = false;
-                aceptar.activado = volver.activado = seleccion = true;
+                multijugador.canBeUsed = opciones.canBeUsed = tutorial.canBeUsed = combate.canBeUsed = false;
+                aceptar.canBeUsed = volver.canBeUsed = seleccion = true;
                 /*client = new Client("localhost", 1500, usuario.getText());
                 if (!client.start()) {
                     return;
@@ -108,8 +108,8 @@ public class VentanaMenu extends Ventana {
             } else if (multijugador.presionado(input.getMouseX(), input.getMouseY())) {
 
             } else if (tutorial.presionado(input.getMouseX(), input.getMouseY())) {
-                volver.activado = guardianes.activado = fenix.activado = eternium.activado = clark.activado = maestros.activado = true;
-                opciones.activado = combate.activado = tutorial.activado = false;
+                volver.canBeUsed = guardianes.canBeUsed = fenix.canBeUsed = eternium.canBeUsed = clark.canBeUsed = maestros.canBeUsed = true;
+                opciones.canBeUsed = combate.canBeUsed = tutorial.canBeUsed = false;
             } else if (fenix.presionado(input.getMouseX(), input.getMouseY())) {
                 VentanaPrincipal.cambio_de_mapa(container, new FenixTutorial(), "Campo");
             } else if (clark.presionado(input.getMouseX(), input.getMouseY())) {
@@ -122,12 +122,12 @@ public class VentanaMenu extends Ventana {
                 VentanaPrincipal.cambio_de_mapa(container, new GuardianesTutorial(), "Campo");
             } else if (volver.presionado(input.getMouseX(), input.getMouseY())) {
                 if (seleccion) {
-                    aceptar.activado = seleccion = false;
+                    aceptar.canBeUsed = seleccion = false;
                 } else {
-                    maestros.activado = guardianes.activado = fenix.activado = eternium.activado = clark.activado = false;
+                    maestros.canBeUsed = guardianes.canBeUsed = fenix.canBeUsed = eternium.canBeUsed = clark.canBeUsed = false;
                 }
-                multijugador.activado = opciones.activado = combate.activado = tutorial.activado = true;
-                volver.activado = false;
+                multijugador.canBeUsed = opciones.canBeUsed = combate.canBeUsed = tutorial.canBeUsed = true;
+                volver.canBeUsed = false;
             } else if (opciones.presionado(input.getMouseX(), input.getMouseY())) {
 
             } else if (salir.presionado(input.getMouseX(), input.getMouseY())) {

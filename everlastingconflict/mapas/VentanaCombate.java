@@ -178,7 +178,7 @@ public class VentanaCombate extends Ventana {
         container.setVSync(true);
         continuar = new BotonSimple("Continuar");
         if (!(partida instanceof Tutorial)) {
-            continuar.activado = false;
+            continuar.canBeUsed = false;
         }
         ctrl = attackMoveModeEnabled = mayus = click = false;
         deseleccionar = true;
@@ -521,10 +521,10 @@ public class VentanaCombate extends Ventana {
         //Controlar que presionen botones mediante teclas
         for (ElementoComplejo e : ui.seleccion_actual) {
             List<BotonComplejo> botones;
-            if (!(e instanceof Manipulador) || ((Manipulador) e).botones_mejora.isEmpty()) {
+            if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
                 botones = e.botones;
             } else {
-                botones = ((Manipulador) e).botones_mejora;
+                botones = ((Manipulador) e).enhancementButtons;
             }
             if (botones != null) {
                 botones.stream()
@@ -630,8 +630,8 @@ public class VentanaCombate extends Ventana {
             if (partida instanceof Tutorial) {
                 Tutorial t = (Tutorial) partida;
                 if (t.pasos.get(0).comprobacion(partida)) {
-                    if (!continuar.activado) {
-                        continuar.activado = true;
+                    if (!continuar.canBeUsed) {
+                        continuar.canBeUsed = true;
                     }
                     t.pasos.get(0).efecto(partida);
                     t.pasos.remove(0);
@@ -757,8 +757,8 @@ public class VentanaCombate extends Ventana {
             if (partida instanceof Tutorial) {
                 Tutorial t = (Tutorial) partida;
                 if (t.pasos.get(0).comprobacion(partida)) {
-                    if (!continuar.activado) {
-                        continuar.activado = true;
+                    if (!continuar.canBeUsed) {
+                        continuar.canBeUsed = true;
                     }
                     t.pasos.get(0).efecto(partida);
                     t.pasos.remove(0);
@@ -895,7 +895,6 @@ public class VentanaCombate extends Ventana {
             for (Recurso r : partida.j2.lista_recursos) {
                 if (r.visible(partida)) {
                     r.dibujar(partida, partida.j2.color, input, g);
-                    r.dibujar_barra_de_vida(g, partida.j2.color);
                 }
             }
             for (Edificio e : partida.j2.edificios) {
@@ -950,7 +949,7 @@ public class VentanaCombate extends Ventana {
                 float alcance_anchura = 2 * (habilidad.alcance + elemento_habilidad.anchura / 2), alcance_altura = 2 * (habilidad.alcance + elemento_habilidad.altura / 2);
                 g.drawOval(elemento_habilidad.x - alcance_anchura / 2, elemento_habilidad.y - alcance_altura / 2, alcance_anchura, alcance_altura);
                 if (habilidad.area != 0) {
-                    g.drawOval(playerX + input.getMouseX() - habilidad.area, playerY + input.getMouseY() - habilidad.area, habilidad.area * 2, habilidad.area * 2);
+                    g.drawOval(playerX + input.getMouseX() - habilidad.area / 2, playerY + input.getMouseY() - habilidad.area / 2, habilidad.area, habilidad.area);
                 }
                 g.setColor(Color.white);
             }

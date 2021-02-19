@@ -37,7 +37,7 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Esto puede parecer un handicap muy fuerte frente al resto de razas que pueden producir gran cantidad de unidades pero como, pronto verás, el Manipulador puede utilizar poderosas habilidades que compensan esta debilidad.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Intentémoslo. Selecciona la habilidad Deflagración y luego haz objetivo al Alpha que acaba de aparecer y mira lo que ocurre.") {
@@ -50,13 +50,13 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Generalmente, sólo obtienes experiencia destruyendo unidades y edificios. Sin embargo, el nivel uno es especial ya que el Manipulador posee la habilidad Meditación.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Prueba a utilizarla habilidad Meditación ahora.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
 
             @Override
@@ -67,7 +67,7 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Como podrás comprobar, tu Manipulador es ahora incapaz de moverse, pero su experiencia aumenta continuamente hasta subir al nivel dos. Espera hasta que ocurra esto.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
 
             @Override
@@ -78,18 +78,18 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Enhorabuena! Tu Manipulador ha subido de nivel. Como habrás observado, la habilidad Meditación ha desaparecido ya que solo se puede usar en el nivel 1. Pero, además, han aparecido dos botones nuevos: Habilidades y Atributos. Prueba a pulsar Habilidades ahora.") {
             @Override
             public boolean comprobacion(Partida p) {
-                return !((Manipulador) p.j1.unidades.get(0)).botones_mejora.isEmpty();
+                return !((Manipulador) p.j1.unidades.get(0)).enhancementButtons.isEmpty();
             }
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.activado = false;
+                VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Ahora podrás elegir hasta dos habildiades para que tu Manipulador las aprenda. Prueba a hacerlo ahora.") {
             @Override
             public boolean comprobacion(Partida p) {
-                return ((Manipulador) p.j1.unidades.get(0)).botones_mejora.isEmpty();
+                return ((Manipulador) p.j1.unidades.get(0)).enhancementButtons.isEmpty();
             }
         });
         pasos.add(new Paso("El botón atributos funciona más o menos igual salvo que puedes elegir hasta cinco veces y puedes repetir varias veces la misma elección."));
@@ -110,7 +110,7 @@ public class MaestrosTutorial extends Tutorial {
         j1.unidades.get(0).botones = new ArrayList<>();
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar"), "Cualquiera"));
-        j1.unidades.get(0).inicializar_teclas_botones(j1.unidades.get(0).botones);
+        j1.unidades.get(0).initButtonKeys(j1.unidades.get(0).botones);
         bestias.add(new Bestias("Grupo1", 500, 200));
         VentanaCombate.crearReloj(new RelojMaestros(j1));
     }
