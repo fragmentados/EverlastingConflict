@@ -35,12 +35,15 @@ public class BotonManipulador extends BotonComplejo {
 
     public BotonManipulador(String t) {
         super(t);
-        requisito = "Cualquiera";
     }
 
     public BotonManipulador(String t, String description) {
         this(t);
         this.descripcion = description;
+    }
+
+    public BotonManipulador(Habilidad h) {
+        super(h);
     }
 
     public BotonManipulador(Habilidad h, String r) {
@@ -238,7 +241,7 @@ public class BotonManipulador extends BotonComplejo {
     public void renderExtendedInfo(Jugador aliado, Graphics g, ElementoComplejo origen) {
         if (canBeShown) {
             super.renderExtendedInfo(aliado, g, origen);
-            if (!requisito.equals("Cualquiera")) {
+            if (requisito != null) {
                 float x = VentanaCombate.playerX + 601;
                 float y = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 201;
                 g.drawString("Esta habilidad sólo se puede utilizar de " + requisito, x, y  + 150);
@@ -250,7 +253,7 @@ public class BotonManipulador extends BotonComplejo {
     public void dibujar(Graphics g) {
         if (canBeShown) {
             super.dibujar(g);
-            if (!requisito.equals("Cualquiera")) {
+            if (requisito != null) {
                 g.drawRect(x + anchura / 2, y + altura / 2, 20, 20);
                 if (RelojMaestros.nombre_dia.equals(requisito)) {
                     ElementosComunes.DAY_IMAGE.draw(x + anchura / 2, y + altura / 2, 20, 20);
@@ -258,6 +261,14 @@ public class BotonManipulador extends BotonComplejo {
                     ElementosComunes.NIGHT_IMAGE.draw(x + anchura / 2, y + altura / 2, 20, 20);
                 }
             }
+        }
+    }
+
+    @Override
+    public void checkIfEnabled(Jugador aliado) {
+        super.checkIfEnabled(aliado);
+        if (requisito != null && this.canBeUsed && !RelojMaestros.tiempo.equals(requisito)) {
+           this.canBeUsed =  false;
         }
     }
 }

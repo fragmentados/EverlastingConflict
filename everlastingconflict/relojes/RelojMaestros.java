@@ -48,12 +48,8 @@ public class RelojMaestros extends Reloj {
                 for (BotonComplejo b : u.botones) {
                     if (b instanceof BotonManipulador) {
                         BotonManipulador bm = (BotonManipulador) b;
-                        if (bm.requisito.equals(t)) {
-                            bm.canBeUsed = true;
-                        } else {
-                            if (!bm.requisito.equals("Cualquiera")) {
-                                bm.canBeUsed = false;
-                            }
+                        if (bm.requisito != null) {
+                            bm.canBeUsed = bm.requisito.equals(y);
                         }
                     }
                 }

@@ -371,4 +371,8 @@ public class Jugador {
     public boolean hasTecnologyResearched(String tecnologyName) {
         return this.tecnologias.stream().anyMatch(t -> t.nombre.equals(tecnologyName));
     }
+
+    public Manipulador getManipulator() {
+        return (Manipulador) this.unidades.stream().filter(u -> u instanceof Manipulador).findFirst().get();
+    }
 }

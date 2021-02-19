@@ -498,7 +498,7 @@ public class Habilidad extends ElementoSimple {
                     break;
                 case "Sacrificio":
                     m.aumentar_vida(((Unidad) objetivo).vida);
-                    m.aumentar_mana(((Unidad) objetivo).vida);
+                    m.recoverMana(aliado, ((Unidad) objetivo).vida);
                     objetivo.destruir(p, m);
                     break;
                 case "Visión interestelar":

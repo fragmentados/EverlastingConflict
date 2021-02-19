@@ -107,7 +107,7 @@ public class Manipulador extends Unidad {
 
     public void learnSkill(BotonManipulador b) {
         b.canBeShown = true;
-        b.canBeUsed = b.requisito.equals(RelojMaestros.tiempo) || b.requisito.equals("Cualquiera");
+        b.canBeUsed = RelojMaestros.tiempo.equals(b.requisito);
         if (!"Habilidad".equals(b.elemento_tipo)) {
             b.isPassiveAbility = true;
             b.tecla_string = null;
@@ -134,7 +134,7 @@ public class Manipulador extends Unidad {
         int skillSet = nivel - SKILL_BUTTON.remainingClicks + 1;
         switch (skillSet) {
             case 1:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar pugnator")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Pesadilla"), RelojMaestros.nombre_noche));
                 enhancementButtons.add(new BotonManipulador("Lider de hordas"));
@@ -143,7 +143,7 @@ public class Manipulador extends Unidad {
                 enhancementButtons.add(new BotonManipulador("Cauterización automática"));
                 break;
             case 2:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar sagittarius"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar sagittarius")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Protección"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Lluvia de estrellas"), RelojMaestros.nombre_noche));
                 enhancementButtons.add(new BotonManipulador("Entrenamiento avanzado"));
@@ -152,37 +152,37 @@ public class Manipulador extends Unidad {
                 enhancementButtons.add(new BotonManipulador("Protección mística"));
                 break;
             case 3:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar medicum"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar medicum")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Meteoro"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Regeneración"), RelojMaestros.nombre_noche));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Presencia abrumadora"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Presencia abrumadora")));
                 enhancementButtons.add(new BotonManipulador("Invocación eficiente"));
                 enhancementButtons.add(new BotonManipulador("Incineración ígnea"));
                 enhancementButtons.add(new BotonManipulador("Control temporal"));
                 break;
             case 4:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar magum"), "Cualquiera"));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Teletransporte"), "Cualquiera"));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Apocalipsis"), "Cualquiera"));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Tiempos de necesidad"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar magum")));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Teletransporte")));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Apocalipsis")));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Tiempos de necesidad")));
                 enhancementButtons.add(new BotonManipulador("Entrenamiento supremo"));
                 enhancementButtons.add(new BotonManipulador("Reinversión física"));
                 enhancementButtons.add(new BotonManipulador("Reinversión mágica"));
                 break;
             case 5:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar exterminatore"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar exterminatore")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Erosión"), RelojMaestros.nombre_noche));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Trampa solar"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador("Inspiración"));
                 enhancementButtons.add(new BotonManipulador("Disparo helado"));
                 enhancementButtons.add(new BotonManipulador("Eficiencia energética"));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Ansia de supervivencia"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Ansia de supervivencia")));
                 break;
             case 6:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Sacrificio"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Sacrificio")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Visión interestelar"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Agujero negro"), RelojMaestros.nombre_noche));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Impactos drenantes"), "Cualquiera"));
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Impactos drenantes")));
                 enhancementButtons.add(new BotonManipulador("Fuerzas mixtas"));
                 enhancementButtons.add(new BotonManipulador("Último recurso"));
                 enhancementButtons.add(new BotonManipulador("Clon"));
@@ -244,21 +244,21 @@ public class Manipulador extends Unidad {
     @Override
     public void iniciarbotones(Partida p) {
         botones.add(new BotonComplejo("Detener"));
-        learnSkill(new BotonManipulador(new Habilidad("Eclipse Amanecer"), "Cualquiera"));
-        BotonManipulador b = new BotonManipulador(new Habilidad("Meditar"), "Cualquiera");
+        learnSkill(new BotonManipulador(new Habilidad("Eclipse Amanecer")));
+        BotonManipulador b = new BotonManipulador(new Habilidad("Meditar"));
         b.descripcion = "El Manipulador deja de ser capaz de moverse pero obtiene maná a un ritmo mayor. Si está en nivel 1 también obtiene experiencia regularmente. Pulsa el botón otra vez para cancelar.";
         learnSkill(b);
         learnSkill(new BotonManipulador(new Habilidad("Meteoro"), RelojMaestros.nombre_dia));
         //learnSkill(new BotonManipulador(new Habilidad("Protección"), RelojMaestros.nombre_dia));
-        //learnSkill(new BotonManipulador(new Habilidad("Deflagración"), "Cualquiera"));
-        //learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
+        //learnSkill(new BotonManipulador(new Habilidad("Deflagración")));
+        //learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator")));
         //learnSkill(new BotonManipulador(new Habilidad("Visión interestelar"), RelojMaestros.nombre_dia));
         //learnSkill(new BotonManipulador(new Habilidad("Pesadilla"), RelojMaestros.nombre_noche));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator"), "Cualquiera"));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar sagittarius"), "Cualquiera"));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar exterminatore"), "Cualquiera"));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar magum"), "Cualquiera"));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar medicum"), "Cualquiera"));
+//        learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator")));
+//        learnSkill(new BotonManipulador(new Habilidad("Invocar sagittarius")));
+//        learnSkill(new BotonManipulador(new Habilidad("Invocar exterminatore")));
+//        learnSkill(new BotonManipulador(new Habilidad("Invocar magum")));
+//        learnSkill(new BotonManipulador(new Habilidad("Invocar medicum")));
         initButtonKeys(botones);
     }
 
@@ -272,12 +272,13 @@ public class Manipulador extends Unidad {
         }
     }
 
-    public void aumentar_mana(float c) {
+    public void recoverMana(Jugador aliado, float c) {
         if (mana + c >= mana_max) {
             mana = mana_max;
         } else {
             mana += c;
         }
+        this.checkButtonResources(aliado);
     }
 
     public Manipulador(float x, float y) {
@@ -302,7 +303,7 @@ public class Manipulador extends Unidad {
         super.comportamiento(p, g, delta);
         Jugador aliado = p.jugador_aliado(this);
         if (this.mana < this.mana_max) {
-            aumentar_mana(Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
+            recoverMana(aliado, Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
         }
         if (statusEffectCollection.existe_estado(StatusEffectName.MEDITACION) && this.nivel == 1) {
             this.aumentar_experiencia(Reloj.TIME_REGULAR_SPEED * 5 * delta);

@@ -109,7 +109,7 @@ public class MaestrosTutorial extends Tutorial {
         j1.iniciar_elementos(this);
         j1.unidades.get(0).botones = new ArrayList<>();
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
-        j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar"), "Cualquiera"));
+        j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar")));
         j1.unidades.get(0).initButtonKeys(j1.unidades.get(0).botones);
         bestias.add(new Bestias("Grupo1", 500, 200));
         VentanaCombate.crearReloj(new RelojMaestros(j1));

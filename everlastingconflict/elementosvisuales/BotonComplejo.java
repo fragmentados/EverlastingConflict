@@ -21,6 +21,7 @@ import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.Reloj;
 import org.newdawn.slick.*;
 
@@ -530,7 +531,12 @@ public class BotonComplejo extends BotonSimple {
         } else if ("Cuartel Fénix".equals(elemento_nombre)) {
             enabled = aliado.cantidad_edificio(elemento_nombre) < Fenix.limite_cuarteles;
         } else if (elemento_coste > 0) {
-            enabled = aliado.getRecursos() >= this.elemento_coste;
+            if (RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
+                Manipulador m = aliado.getManipulator();
+                enabled = m.mana >= this.elemento_coste;
+            } else {
+                enabled = aliado.getRecursos() >= this.elemento_coste;
+            }
         }
         this.canBeUsed = enabled;
     }
