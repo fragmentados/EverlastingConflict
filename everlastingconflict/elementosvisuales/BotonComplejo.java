@@ -42,6 +42,7 @@ public class BotonComplejo extends BotonSimple {
 
     public String elemento_nombre, elemento_tipo;
     public float elemento_coste;
+    public int elementThreatLevelNeeded;
     public String descripcion;
     public int tecla;
     public String tecla_string;
@@ -70,6 +71,7 @@ public class BotonComplejo extends BotonSimple {
         //Boton usado para crear Elementos
         elemento_nombre = e.nombre;
         elemento_coste = e.coste;
+        elementThreatLevelNeeded = e.guardiansThreatLevelNeeded;
         if (e instanceof Edificio) {
             elemento_tipo = "Edificio";
         } else {
@@ -296,9 +298,9 @@ public class BotonComplejo extends BotonSimple {
                             g.drawString("Sin coste", xcontador, ycontador);
                             xcontador += "Sin coste".length() * 10;
                         }
-                        if (elemento.coste_alternativo > 0) {
-                            g.drawString("Nivel: " + elemento.coste_alternativo, xcontador, ycontador);
-                            xcontador += ("Nivel: " + elemento.coste_alternativo).length() * 10;
+                        if (elemento.guardiansThreatLevelNeeded > 0) {
+                            g.drawString("Nivel: " + elemento.guardiansThreatLevelNeeded, xcontador, ycontador);
+                            xcontador += ("Nivel: " + elemento.guardiansThreatLevelNeeded).length() * 10;
                         }
                         if (cooldown > 0) {
                             float contador;
@@ -525,19 +527,24 @@ public class BotonComplejo extends BotonSimple {
     }
 
     public void checkIfEnabled(Jugador aliado) {
-        boolean enabled = this.canBeUsed;
-        if ("Tecnología".equals(elemento_tipo)) {
-            enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
-        } else if ("Cuartel Fénix".equals(elemento_nombre)) {
-            enabled = aliado.cantidad_edificio(elemento_nombre) < Fenix.limite_cuarteles;
-        } else if (elemento_coste > 0) {
-            if (RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
-                Manipulador m = aliado.getManipulator();
-                enabled = m.mana >= this.elemento_coste;
-            } else {
-                enabled = aliado.getRecursos() >= this.elemento_coste;
+        if (!this.isPassiveAbility) {
+            boolean enabled = this.canBeUsed;
+            if ("Tecnología".equals(elemento_tipo)) {
+                enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
+            } else if ("Cuartel Fénix".equals(elemento_nombre)) {
+                enabled = aliado.cantidad_edificio(elemento_nombre) < Fenix.limite_cuarteles;
+            } else if (elemento_coste > 0) {
+                if (RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
+                    Manipulador m = aliado.getManipulator();
+                    enabled = m.mana >= this.elemento_coste;
+                } else {
+                    enabled = aliado.getRecursos() >= this.elemento_coste;
+                    if (RaceNameEnum.GUARDIANES.getName().equals(aliado.raza)) {
+                        enabled = enabled && aliado.guardiansThreatLevel >= this.elementThreatLevelNeeded;
+                    }
+                }
             }
+            this.canBeUsed = enabled && cooldown_contador == 0;
         }
-        this.canBeUsed = enabled;
     }
 }

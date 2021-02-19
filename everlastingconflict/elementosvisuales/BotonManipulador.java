@@ -188,7 +188,7 @@ public class BotonManipulador extends BotonComplejo {
                             m2.poder_magico = m.poder_magico;
                             m2.reduccion_enfriamiento = m.reduccion_enfriamiento;
                             m2.botones = m.botones;
-                            m2.initButtonKeys(m2.botones);
+                            m2.initButtonKeys();
                             partida.jugador_aliado(m).unidades.add(m2);
                             m.applyEnhancement("Habilidades", this);
                             break;

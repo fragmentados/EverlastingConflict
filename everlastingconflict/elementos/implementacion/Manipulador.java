@@ -23,6 +23,7 @@ import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -74,7 +75,7 @@ public class Manipulador extends Unidad {
             } else {
                 reduceRemainingClicksFromEnhancementButton(ATTRIBUTES_BUTTON);
             }
-            this.initButtonKeys(botones);
+            this.sortSkillButtons();
         }
     }
 
@@ -107,7 +108,7 @@ public class Manipulador extends Unidad {
 
     public void learnSkill(BotonManipulador b) {
         b.canBeShown = true;
-        b.canBeUsed = RelojMaestros.tiempo.equals(b.requisito);
+        b.canBeUsed = b.requisito == null || RelojMaestros.tiempo.equals(b.requisito);
         if (!"Habilidad".equals(b.elemento_tipo)) {
             b.isPassiveAbility = true;
             b.tecla_string = null;
@@ -188,9 +189,7 @@ public class Manipulador extends Unidad {
                 enhancementButtons.add(new BotonManipulador("Clon"));
                 break;
         }
-        enhancementsRemaining = 7;
-        // TODO EFB Remove this number when finishing every test
-        //enhancementsRemaining = 2;
+        enhancementsRemaining = 2;
         this.initButtonKeys(this.enhancementButtons);
     }
 
@@ -214,7 +213,7 @@ public class Manipulador extends Unidad {
         if (!botones.contains(ATTRIBUTES_BUTTON)) {
             botones.add(ATTRIBUTES_BUTTON);
         }
-        this.initButtonKeys(this.botones);
+        this.initButtonKeys();
         iniciar_imagenes_manipulador();
     }
 
@@ -248,18 +247,7 @@ public class Manipulador extends Unidad {
         BotonManipulador b = new BotonManipulador(new Habilidad("Meditar"));
         b.descripcion = "El Manipulador deja de ser capaz de moverse pero obtiene maná a un ritmo mayor. Si está en nivel 1 también obtiene experiencia regularmente. Pulsa el botón otra vez para cancelar.";
         learnSkill(b);
-        learnSkill(new BotonManipulador(new Habilidad("Meteoro"), RelojMaestros.nombre_dia));
-        //learnSkill(new BotonManipulador(new Habilidad("Protección"), RelojMaestros.nombre_dia));
-        //learnSkill(new BotonManipulador(new Habilidad("Deflagración")));
-        //learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator")));
-        //learnSkill(new BotonManipulador(new Habilidad("Visión interestelar"), RelojMaestros.nombre_dia));
-        //learnSkill(new BotonManipulador(new Habilidad("Pesadilla"), RelojMaestros.nombre_noche));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar pugnator")));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar sagittarius")));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar exterminatore")));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar magum")));
-//        learnSkill(new BotonManipulador(new Habilidad("Invocar medicum")));
-        initButtonKeys(botones);
+        initButtonKeys();
     }
 
 
@@ -288,7 +276,7 @@ public class Manipulador extends Unidad {
         enhancementButtons = new ArrayList<>();
         Raza.unidad(this);
         vida = vida_max;
-        nivel = 5;
+        nivel = 0;
         levelUp();
         regeneracion_mana = 1;
         mana_max = 200;
@@ -389,6 +377,13 @@ public class Manipulador extends Unidad {
                 }
             }
         }
+    }
+
+    private void sortSkillButtons() {
+        this.botones = this.botones
+                .stream().sorted((b1, b2) -> !b1.isPassiveAbility && b2.isPassiveAbility ? -1
+                        : b1.isPassiveAbility && !b2.isPassiveAbility? 1 : 0).collect(Collectors.toList());
+        this.initButtonKeys();
     }
 
 }

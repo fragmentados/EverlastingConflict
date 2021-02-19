@@ -56,7 +56,8 @@ public class Edificio extends ElementoAtacante {
     public boolean mostrarAyudaFusion = false;
     public List<Integer> cantidad_produccion;
     public float radio_construccion;
-    public boolean activo;
+    public boolean activo = true;
+    public Image spriteDisabled;
 
     //Valores estáticos
     public static final int tiempo_mineria = 10;
@@ -85,18 +86,21 @@ public class Edificio extends ElementoAtacante {
             sprite = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
             miniatura = new Image("media/Miniaturas/Prueba.png");
-        } catch (SlickException e) {
-
+            if (!activo) {
+                spriteDisabled = new Image("media/Edificios/" + nombre + "Desactivado.png");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public Edificio(String n) {
         this.nombre = n;
-        initImages();
         this.statusBehaviour = StatusBehaviour.PARADO;
         this.descripcion = "";
         this.statusEffectCollection = new StatusEffectCollection();
         Raza.edificio(this);
+        initImages();
         vida = vida_max;
         this.botones = new ArrayList<>();
         cola_construccion = new ArrayList<>();
@@ -321,6 +325,9 @@ public class Edificio extends ElementoAtacante {
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
         this.chechAnimationStatus(p);
         super.dibujar(p, c, input, g);
+        if (!activo) {
+            spriteDisabled.draw(x - anchura / 2, y - altura / 2);
+        }
         barra.dibujar(g);
         if (VentanaCombate.ui.elementos.indexOf(this) != -1) {
             dibujar_fin_movimiento(g);

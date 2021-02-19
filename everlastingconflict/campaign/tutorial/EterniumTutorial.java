@@ -6,23 +6,18 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
-import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.playerX;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
 import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.relojes.RelojEternium;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Input;
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 /**
  *
@@ -119,7 +114,7 @@ public class EterniumTutorial extends Tutorial {
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
-        j1.iniciar_elementos(this);
+        j1.initElements(this);
         recursos.add(new Recurso("Hierro", 600, 200));
         VentanaCombate.crearReloj(new RelojEternium(j1));
         VentanaCombate.relojEternium().detener_reloj(1000);

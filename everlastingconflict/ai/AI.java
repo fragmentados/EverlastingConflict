@@ -54,8 +54,8 @@ public class AI extends Jugador {
     }
     
     @Override
-    public void iniciar_elementos(Partida p) {
-        super.iniciar_elementos(p);
+    public void initElements(Partida p) {
+        super.initElements(p);
     }
 
     @Override

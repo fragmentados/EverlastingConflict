@@ -135,19 +135,19 @@ public class Tecnologia extends ElementoSimple {
                 coste = 100;
                 tiempo = 10;
                 descripcion = "Aumenta la felicidad de la población por cada evento positivo adquirido.";
-                coste_alternativo = 2;
+                guardiansThreatLevelNeeded = 2;
                 break;
             case "Ruedas mejoradas":
                 coste = 150;
                 tiempo = 20;
                 descripcion = "Aumenta la velocidad de los vehículos.";
-                coste_alternativo = 2;
+                guardiansThreatLevelNeeded = 2;
                 break;
             case "Propaganda positiva":
                 coste = 200;
                 tiempo = 20;
                 descripcion = "Aumenta el máximo de felicidad de la población hasta 200%";
-                coste_alternativo = 2;
+                guardiansThreatLevelNeeded = 2;
                 break;
             case "Cobradores de impuestos":
                 coste = 100;
@@ -168,19 +168,19 @@ public class Tecnologia extends ElementoSimple {
                 coste = 100;
                 tiempo = 20;
                 descripcion = "Desbloquea la habilidad del Enviado celeste del mismo nombre.";
-                coste_alternativo = 3;
+                guardiansThreatLevelNeeded = 3;
                 break;
             case "Armas bíblicas":
                 coste = 100;
                 tiempo = 20;
                 descripcion = "Aumenta el ataque de las unidades sagradas.";
-                coste_alternativo = 2;
+                guardiansThreatLevelNeeded = 2;
                 break;
             case "Ley marcial":
                 coste = 100;
                 tiempo = 30;
                 descripcion = "Desactiva los eventos negativos permanentemente.";
-                coste_alternativo = 3;
+                guardiansThreatLevelNeeded = 3;
                 break;
         }
     }
@@ -333,7 +333,7 @@ public class Tecnologia extends ElementoSimple {
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 2")));
-                        e.initButtonKeys(e.botones);
+                        e.initButtonKeys();
                     }
                 }
                 Fenix.limite_cuarteles++;
@@ -342,7 +342,7 @@ public class Tecnologia extends ElementoSimple {
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 3")));
-                        e.initButtonKeys(e.botones);
+                        e.initButtonKeys();
                     }
                 }
                 Fenix.limite_cuarteles++;
@@ -358,7 +358,7 @@ public class Tecnologia extends ElementoSimple {
                         resultado += 15;
                     }
                 }
-                jugador.recursos_alternativos += resultado;
+                jugador.guardiansPeoplePercentage += resultado;
                 break;
             case "Ruedas mejoradas":
                 Guardianes.ruedas_mejoradas = true;
@@ -373,19 +373,19 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Cobradores de impuestos":
                 Guardianes.recursos_por_segundo -= 5;
-                jugador.recursos_alternativos -= 10;
+                jugador.guardiansPeoplePercentage -= 10;
                 break;
             case "Aumentar nivel de amenaza1":
                 for (Edificio e : jugador.edificios) {
                     if (e.nombre.equals("Edificio gubernamental")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar nivel de amenaza2")));
-                        e.initButtonKeys(e.botones);
+                        e.initButtonKeys();
                     }
                 }
-                jugador.recursos_alternativos_dos++;
+                jugador.guardiansThreatLevel++;
                 break;
             case "Aumentar nivel de amenaza2":
-                jugador.recursos_alternativos_dos++;
+                jugador.guardiansThreatLevel++;
                 break;
             case "Intervención divina":
                 Guardianes.habilidad_enviado = true;

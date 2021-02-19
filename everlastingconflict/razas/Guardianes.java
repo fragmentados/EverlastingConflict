@@ -39,7 +39,7 @@ public class Guardianes {
         u.tiempo = Unidad.tiempo_estandar;
         u.descripcion = "Vehículo básico capaz de elminar pequeñas amenazas.";
         Guardianes.vehiculo(u);
-        u.coste_alternativo = 1;
+        u.guardiansThreatLevelNeeded = 1;
     }
 
     public static final void Tanque(Unidad u) {
@@ -54,7 +54,7 @@ public class Guardianes {
         u.tiempo = Unidad.tiempo_estandar + 5;
         u.descripcion = "Vehículo medio de velocidad media y buena resistencia. Ataque potente pero de alta cadencia.";
         Guardianes.vehiculo(u);
-        u.coste_alternativo = 2;
+        u.guardiansThreatLevelNeeded = 2;
     }
 
     public static final void Acribillador(Unidad u) {
@@ -69,7 +69,7 @@ public class Guardianes {
         u.tiempo = Unidad.tiempo_estandar + 2;
         u.descripcion = "Vehículo ligero y rápido con un arma de baja potencia pero alta cadencia.";
         Guardianes.vehiculo(u);
-        u.coste_alternativo = 2;
+        u.guardiansThreatLevelNeeded = 2;
     }
 
     public static final void Destructor(Unidad u) {
@@ -84,7 +84,7 @@ public class Guardianes {
         u.tiempo = Unidad.tiempo_estandar + 7;
         u.descripcion = "Vehículo con la mayor potencia de fuego del arsenal de los Guardianes. Posee dos armas: una ametralladora pesada y un cañón penetrador.";
         Guardianes.vehiculo(u);
-        u.coste_alternativo = 3;
+        u.guardiansThreatLevelNeeded = 3;
     }
 
     //Pilotos
@@ -97,9 +97,9 @@ public class Guardianes {
         u.cadencia = Unidad.cadencia_estandar + 2;
         u.velocidad = Unidad.velocidad_estandar + 0.2f;
         u.vision = Unidad.vision_estandar - 100;
-        u.tiempo = Unidad.tiempo_estandar;
+        u.tiempo = Unidad.tiempo_estandar - 4;
         u.piloto = true;
-        u.coste_alternativo = 1;
+        u.guardiansThreatLevelNeeded = 1;
     }
 
     public static final void Artillero(Unidad u) {
@@ -159,7 +159,7 @@ public class Guardianes {
         if (Guardianes.armas_biblicas) {
             u.ataque += 2;
         }
-        u.coste_alternativo = 1;
+        u.guardiansThreatLevelNeeded = 1;
     }
 
     public static final void Silenciador(Unidad u) {
@@ -176,7 +176,7 @@ public class Guardianes {
         if (Guardianes.armas_biblicas) {
             u.ataque += 2;
         }
-        u.coste_alternativo = 2;
+        u.guardiansThreatLevelNeeded = 2;
     }
 
     public static final void Inquisidor(Unidad u) {
@@ -193,7 +193,7 @@ public class Guardianes {
         if (Guardianes.armas_biblicas) {
             u.ataque += 2;
         }
-        u.coste_alternativo = 2;
+        u.guardiansThreatLevelNeeded = 2;
     }
 
     public static final void Enviado(Unidad u) {
@@ -210,7 +210,7 @@ public class Guardianes {
         if (Guardianes.armas_biblicas) {
             u.ataque += 2;
         }
-        u.coste_alternativo = 1;
+        u.guardiansThreatLevelNeeded = 1;
     }
 
     public static final void Activador(Unidad u) {
@@ -235,12 +235,14 @@ public class Guardianes {
         ((Taller) e).maximo_anexos = 5;
         e.descripcion = "Edificio encargado de producir los vehículos de los Guardianes.";
         e.constructor = true;
+        e.activo = false;
     }
 
     public static final void Pilotos(Edificio e) {        
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;        
         e.descripcion = "Edificio encargado de entrenar a los pilotos de los Guardianes.";
+        e.activo = false;
     }
 
     public static final void Ayuntamiento(Edificio e) {        
@@ -249,31 +251,34 @@ public class Guardianes {
         e.descripcion = "Edificio encargado de gestionar los eventos positivos y negativos de los Guardianes.";
         e.constructor = true;
         e.radio_construccion = 1500f;
-        e.activo = true;
     }
 
     public static final void Templo(Edificio e) {        
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;        
         e.descripcion = "Edificio encargado de entrenar a las unidades sagradas de los Guardianes.";
+        e.activo = false;
     }
 
     public static final void Laboratorio(Edificio e) {        
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;        
         e.descripcion = "Edificio encargado de desarrollar las mejoras de los vehículos de Guardianes.";
+        e.activo = false;
     }
 
     public static final void Vaticano(Edificio e) {        
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;        
         e.descripcion = "Edificio encargado de desarrollar las mejoras de las unidades sagradas de los Guardianes.";
+        e.activo = false;
     }
 
     public static final void Gubernamental(Edificio e) {        
         e.vida_max = Edificio.vida_estandar;
         e.vision = Edificio.vision_estandar;        
         e.descripcion = "Edificio encargado de desarrollar las mejoras económicas de los Guardianes.";
+        e.activo = false;
     }
 
     public static final void Torreta(Edificio e) { 
@@ -286,8 +291,8 @@ public class Guardianes {
         e.coste = 50;
         e.tiempo = 15;
         e.descripcion = "Edificio defensivo capaz de ser personalizado al introducir en él pilotos.";
-        e.coste_alternativo = 2;
-        e.hostil = true;        
+        e.guardiansThreatLevelNeeded = 2;
+        e.hostil = true;
     }
 
     public static void iniciar_botones_unidad(Unidad u) {

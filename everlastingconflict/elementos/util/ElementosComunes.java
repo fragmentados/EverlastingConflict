@@ -11,11 +11,13 @@ public class ElementosComunes {
     public static Sound UNIT_DEATH_SOUND;
     public static Sound BUILDING_DEATH_SOUND;
     public static Sound VICTORY_SOUND;
+    public static Sound DEFEAT_SOUND;
     // Image for resource drawing
     public static Image POPULATION_IMAGE;
     public static Image FENIX_CUARTEL;
     public static Image FENIX_UNIDADES_NO_CONSTRUCTORAS;
-    public static Image ICONO_DINERO;
+    public static Image MONEY_IMAGE;
+    public static Image THREAT_IMAGE;
     // Colors for map drawing
     public static Color HALF_VISIBLE_COLOR = new Color(0.2f, 0.2f, 0.05f, 1f);
     public static Color FULL_VISIBLE_COLOR = new Color(0.3f, 0.3f, 0.1f, 1f) ;
@@ -40,10 +42,11 @@ public class ElementosComunes {
         UNIT_DEATH_SOUND = new Sound("media/Sonidos/MuerteUnidad.wav");
         BUILDING_DEATH_SOUND = new Sound("media/Sonidos/MuerteEdificio.ogg");
         VICTORY_SOUND = new Sound("media/Sonidos/Victoria.ogg");
+        DEFEAT_SOUND = new Sound("media/Sonidos/Derrota.wav");
         POPULATION_IMAGE = new Image("media/Recursos/Poblacion.png");
         FENIX_CUARTEL = new Image("media/Recursos/CuartelFenix.png");
         FENIX_UNIDADES_NO_CONSTRUCTORAS  = new Image("media/Recursos/FenixUnidadesNoConstructoras.png");
-        ICONO_DINERO  = new Image("media/Recursos/IconoDinero.png");
+        MONEY_IMAGE = new Image("media/Recursos/IconoDinero.png");
         CAZADOR_IMAGE  = new Image("media/Iconos/Cazador.png");
         DEVORADOR_IMAGE  = new Image("media/Iconos/Devorador.png");
         AMAESTRADOR_IMAGE  = new Image("media/Iconos/Amaestrador.png");
@@ -56,5 +59,6 @@ public class ElementosComunes {
         MATRIARCA_IMAGE  = new Image("media/Iconos/Matriarca.png");
         DAY_IMAGE  = new Image("media/Iconos/Sol.png");
         NIGHT_IMAGE  = new Image("media/Iconos/Luna.png");
+        THREAT_IMAGE = new Image("media/Recursos/GuardianesAmenaza.png");
     }
 }

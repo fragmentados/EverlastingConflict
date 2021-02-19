@@ -106,11 +106,11 @@ public class MaestrosTutorial extends Tutorial {
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
-        j1.iniciar_elementos(this);
+        j1.initElements(this);
         j1.unidades.get(0).botones = new ArrayList<>();
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
         j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar")));
-        j1.unidades.get(0).initButtonKeys(j1.unidades.get(0).botones);
+        j1.unidades.get(0).initButtonKeys();
         bestias.add(new Bestias("Grupo1", 500, 200));
         VentanaCombate.crearReloj(new RelojMaestros(j1));
     }

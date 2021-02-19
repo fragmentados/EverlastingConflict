@@ -42,8 +42,8 @@ public class Jugador {
     //Recursos
     private float recursos;
     public Image resourceImage;
-    public float recursos_alternativos;
-    public float recursos_alternativos_dos;
+    public float guardiansPeoplePercentage;
+    public float guardiansThreatLevel;
     public int poblacion, poblacion_max;
     public boolean perforacion = false;
     public Eventos eventos;
@@ -74,8 +74,8 @@ public class Jugador {
                 return 0;
             case "Guardianes":
                 eventos = new Eventos();
-                recursos_alternativos = 50;
-                recursos_alternativos_dos = 1;
+                guardiansPeoplePercentage = 50;
+                guardiansThreatLevel = 1;
                 return 50;
         }
         //Nunca se debería llegar
@@ -113,13 +113,7 @@ public class Jugador {
     }
 
     public boolean comprobacion_recursos_guardianes(ElementoSimple e) {
-        if (this.recursos_alternativos_dos >= e.coste_alternativo) {
-            if (recursos >= e.coste) {
-                recursos -= e.coste;
-                return true;
-            }
-        }
-        return false;
+        return recursos >= e.coste && this.guardiansThreatLevel >= e.guardiansThreatLevelNeeded;
     }
 
     public void resta_recursos(int coste) {
@@ -137,7 +131,7 @@ public class Jugador {
         }
     }
 
-    public void iniciar_elementos(Partida p) {
+    public void initElements(Partida p) {
         switch (raza) {
             case "Fénix":
                 edificios.add(new Edificio("Sede", x_inicial, y_inicial));
@@ -181,7 +175,7 @@ public class Jugador {
 
     public void comportamiento_elementos(Partida p, Graphics g, int delta) {
         if (this.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
-            this.recursos += (this.recursos_alternativos / 100f) * delta * Reloj.TIME_REGULAR_SPEED * Guardianes.recursos_por_segundo;
+            this.addResources((this.guardiansPeoplePercentage / 100f) * delta * Reloj.TIME_REGULAR_SPEED * Guardianes.recursos_por_segundo);
             eventos.comportamiento(this, delta);
         }
         comportamiento_unidades(p, g, delta);
@@ -245,7 +239,7 @@ public class Jugador {
         }
     }
 
-    public void dibujar_recursos(Graphics g, float x, float y) {
+    public void drawResources(Graphics g, float x, float y) {
         switch (raza) {
             case "Fénix":
                 this.resourceImage.draw(x - 120, y, 20, 20);
@@ -266,11 +260,12 @@ public class Jugador {
 
                 break;
             case "Guardianes":
-                ElementosComunes.ICONO_DINERO.draw(x - 120, y, 20, 20);
+                ElementosComunes.MONEY_IMAGE.draw(x - 120, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos), x - 100, y);
                 this.resourceImage.draw(x - 70, y, 20, 20);
-                g.drawString(Integer.toString((int) recursos_alternativos) + "%", x - 50, y);
-                g.drawString(Integer.toString((int) recursos_alternativos_dos), x, y);
+                g.drawString(Integer.toString((int) guardiansPeoplePercentage) + "%", x - 50, y);
+                ElementosComunes.THREAT_IMAGE.draw(x - 10, y, 20, 20);
+                g.drawString(Integer.toString((int) guardiansThreatLevel), x + 10, y);
                 ElementosComunes.POPULATION_IMAGE.draw(x + 30, y, 20, 20);
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
                 break;
@@ -339,18 +334,18 @@ public class Jugador {
     }
 
     public void aumentar_porcentaje(int c) {
-        if (this.recursos_alternativos + c >= Guardianes.maximo_felicidad) {
-            this.recursos_alternativos = Guardianes.maximo_felicidad;
+        if (this.guardiansPeoplePercentage + c >= Guardianes.maximo_felicidad) {
+            this.guardiansPeoplePercentage = Guardianes.maximo_felicidad;
         } else {
-            this.recursos_alternativos += c;
+            this.guardiansPeoplePercentage += c;
         }
     }
 
     public void disminuir_porcentaje(int c) {
-        if (this.recursos_alternativos - c <= 0) {
-            this.recursos_alternativos = 0;
+        if (this.guardiansPeoplePercentage - c <= 0) {
+            this.guardiansPeoplePercentage = 0;
         } else {
-            this.recursos_alternativos -= c;
+            this.guardiansPeoplePercentage -= c;
         }
     }
 

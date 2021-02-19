@@ -149,7 +149,7 @@ public class GuardianesTutorial extends Tutorial {
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
-        j1.iniciar_elementos(this);
+        j1.initElements(this);
     }
 
     public GuardianesTutorial() {

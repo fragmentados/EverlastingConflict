@@ -19,6 +19,6 @@ public abstract class ElementoSimple {
     public Animation sprite;
     public Image icono;
     public int coste;
-    public int coste_alternativo;
+    public int guardiansThreatLevelNeeded;
     public int tiempo;
 }

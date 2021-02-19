@@ -57,6 +57,10 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
         removeTechnologyButtonsAlreadyResearched(aliado);
     }
 
+    public void initButtonKeys() {
+        this.initButtonKeys(this.botones);
+    }
+
     public void initButtonKeys(List<BotonComplejo> botones) {
         List<Integer> keysNumber = Arrays.asList(Input.KEY_Q, Input.KEY_W, Input.KEY_E, Input.KEY_R,
                 Input.KEY_A, Input.KEY_S, Input.KEY_D, Input.KEY_F, Input.KEY_Z, Input.KEY_X, Input.KEY_C, Input.KEY_V);

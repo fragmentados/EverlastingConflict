@@ -497,6 +497,7 @@ public class VentanaCombate extends Ventana {
             if (partida.check_victory_player_2() && derrota == null) {
                 this.playerX = 0;
                 this.playerY = 0;
+                ElementosComunes.DEFEAT_SOUND.playAt(0f, 0f, 0f);
                 derrota = new Animation(new Image[]{new Image("media/Derrota1.png"), new Image("media/Derrota2.png")}, new int[]{300, 300}, true);
                 continuar.x = 650;
                 continuar.y = 400;
@@ -1004,9 +1005,9 @@ public class VentanaCombate extends Ventana {
                 g.drawString(t.pasos.get(0).texto, playerX, playerY);
                 continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_X - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
-                partida.j1.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
+                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
             } else {
-                partida.j1.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
+                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
                 // TODO EFB No pintar recursos del segundo jugador
                 //partida.j2.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY + 15);
             }

@@ -5,14 +5,14 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Fenix;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.Fenix;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -31,8 +31,8 @@ public class AIFenix extends AI {
     }
 
     @Override
-    public final void iniciar_elementos(Partida p) {
-        super.iniciar_elementos(p);
+    public final void initElements(Partida p) {
+        super.initElements(p);
         xcuartel = x_inicial - 210;
         ycuartel = y_inicial;
 
@@ -48,7 +48,7 @@ public class AIFenix extends AI {
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
         super.comportamiento_unidades(p, g, delta);
-        /*pushear(p);
+        pushear(p);
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Recolector":
@@ -61,12 +61,12 @@ public class AIFenix extends AI {
                 //Unidad Militar
                 //comportamiento_militar(p, u);
             }
-        }*/
+        }
     }
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        /*super.comportamiento_edificios(p, g, delta);
+        super.comportamiento_edificios(p, g, delta);
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 case "Cuartel Fénix":
@@ -81,7 +81,7 @@ public class AIFenix extends AI {
                     break;
 
             }
-        }*/
+        }
     }
 
     public void comportamiento_constructor(Partida p, Unidad u) {

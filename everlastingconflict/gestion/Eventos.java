@@ -5,16 +5,15 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.relojes.Reloj;
 import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.relojes.Reloj;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
 /**
  *
@@ -110,11 +109,11 @@ public class Eventos {
 
     public boolean esta_lleno(Jugador j) {
         boolean resultado = true;
-        if (j.recursos_alternativos_dos == 3) {
+        if (j.guardiansThreatLevel == 3) {
             if (!existe_evento("Una revolución se acerca")) {
                 resultado = false;
             }
-        } else if (j.recursos_alternativos_dos == 2) {
+        } else if (j.guardiansThreatLevel == 2) {
             if (!existe_evento("Manifestaciones en las plazas")) {
                 resultado = false;
             }
@@ -127,10 +126,10 @@ public class Eventos {
     }
 
     public void aparece_nuevo_evento(Jugador j) {
-        if (j.recursos_alternativos_dos == 3) {
+        if (j.guardiansThreatLevel == 3) {
             anadir_evento(j, new Evento("Una revolución se acerca"));
         } else {
-            if (j.recursos_alternativos_dos == 2) {
+            if (j.guardiansThreatLevel == 2) {
                 anadir_evento(j, new Evento("Manifestaciones en las plazas"));
             } else {
                 anadir_evento(j, new Evento("Una racha criminal asola las calles"));

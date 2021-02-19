@@ -148,7 +148,7 @@ public class Unidad extends ElementoMovil {
                             //Unidad soluciona evento negativo
                             this.solucionar(p, aliado);
                         } else {
-                            this.activar(p);
+                            this.enableBuilding(p);
                         }
                     } else {
                         //Piloto embarca vehículo
@@ -436,7 +436,7 @@ public class Unidad extends ElementoMovil {
             }
         }
         //Se destruye el Piloto
-        this.destruir(p, null);
+        this.destruir(p, null, false);
     }
 
     public void transformacion_torreta() {
@@ -484,7 +484,8 @@ public class Unidad extends ElementoMovil {
         }
     }
 
-    public void activar(Partida p) {
+    public void enableBuilding(Partida p) {
+        Jugador aliado = p.jugador_aliado(this);
         if (objetivo.nombre.equals("Torreta defensiva")) {
             transformacion_torreta();
         } else {
@@ -492,6 +493,13 @@ public class Unidad extends ElementoMovil {
             objetivo.vida = objetivo.vida_max;
         }
         ((Edificio) objetivo).activo = true;
-        this.destruir(p, null);
+        this.destruir(p, null, false);
+        boolean allBuildingsEnabled = aliado.edificios.stream().allMatch(e -> e.activo);
+        if (allBuildingsEnabled) {
+            // Makes no sense to keep creating enablers
+            Edificio ayuntamiento = aliado.edificios.stream().filter(e -> "Ayuntamiento".equals(e.nombre)).findFirst().get();
+            ayuntamiento.botones.removeIf(b -> "Activador".equals(b.elemento_nombre));
+            ayuntamiento.initButtonKeys();
+        }
     }
 }

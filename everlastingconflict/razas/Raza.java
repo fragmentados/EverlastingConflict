@@ -301,7 +301,7 @@ public class Raza {
                 Guardianes.iniciar_botones_edificio(e);
                 break;
         }
-        e.initButtonKeys(e.botones);
+        e.initButtonKeys();
         e.checkButtonResources(aliado);
     }
 
@@ -325,7 +325,7 @@ public class Raza {
                 Guardianes.iniciar_botones_unidad(u);
                 break;
         }
-        u.initButtonKeys(u.botones);
+        u.initButtonKeys();
         u.checkButtonResources(aliado);
     }
 

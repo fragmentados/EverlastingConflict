@@ -266,8 +266,8 @@ public class Partida {
 //            r.x -= 200;
 //            r.y -= 200;
 //        }
-        j1.iniciar_elementos(this);
-        j2.iniciar_elementos(this);
+        j1.initElements(this);
+        j2.initElements(this);
     }
 
     public boolean check_victory_player_1() {

@@ -11,16 +11,13 @@ import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_X;
-import static everlastingconflict.mapas.VentanaCombate.WORLD_SIZE_Y;
-import static everlastingconflict.mapas.VentanaCombate.playerX;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
 import everlastingconflict.mapas.VentanaPrincipal;
-import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
+
+import java.util.ArrayList;
+
+import static everlastingconflict.mapas.VentanaCombate.*;
 
 /**
  *
@@ -109,7 +106,7 @@ public class FenixTutorial extends Tutorial {
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
-        j1.iniciar_elementos(this);
+        j1.initElements(this);
         j1.edificios.add(new Edificio("Cuartel Fénix", 200, 600));
         j1.edificios.get(1).iniciarbotones(this);
         j1.edificios.get(1).botones.get(1).canBeUsed = true;

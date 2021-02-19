@@ -5,18 +5,13 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.ElementoCoordenadas;
+import org.newdawn.slick.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 /**
  *
@@ -56,25 +51,25 @@ public class Evento extends ElementoCoordenadas {
                 efecto = 5;
                 coste = 20;
                 positivo = true;
-                coste_alternativo = 1;
+                guardiansThreatLevelNeeded = 1;
                 break;
             case "Construir colegios":
                 efecto = 20;
                 coste = 100;
                 positivo = true;
-                coste_alternativo = 2;
+                guardiansThreatLevelNeeded = 2;
                 break;
             case "Construir bloques de viviendas":
                 efecto = 35;
                 coste = 300;
                 positivo = true;
-                coste_alternativo = 3;
+                guardiansThreatLevelNeeded = 3;
                 break;
             case "Sufragio universal":
                 efecto = 100;
                 coste = 500;
                 positivo = true;
-                coste_alternativo = 3;
+                guardiansThreatLevelNeeded = 3;
                 break;
         }
         try {

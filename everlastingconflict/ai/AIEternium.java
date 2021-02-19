@@ -5,13 +5,13 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -30,8 +30,8 @@ public class AIEternium extends AI {
     }
 
     @Override
-    public void iniciar_elementos(Partida p) {
-        super.iniciar_elementos(p);
+    public void initElements(Partida p) {
+        super.initElements(p);
         x_asimilacion = x_inicial;
         y_asimilacion = y_inicial + 210;
 

@@ -240,7 +240,7 @@ public class UI {
         g.drawRect(x_minim, y_minim, anchura_minim, altura_minim);
     }
 
-    public void renderComplexElement(Partida p, Graphics g, float x, float y, float anchura, float altura) {
+    public void renderComplexElement(Partida p, Graphics g, float x, float y, float anchura) {
         //x,y,anchura,altura representan la información del rectángulo donde
         //se escribira el elemento
         ElementoComplejo e = elementos.get(0);
@@ -514,7 +514,7 @@ public class UI {
         g.drawRect(VentanaCombate.playerX + anchura_miniatura, initialY, anchura_seleccion, UI_HEIGHT);
         if (!elementos.isEmpty()) {
             if (elementos.size() == 1) {
-                renderComplexElement(p, g, VentanaCombate.playerX + anchura_miniatura, initialY, anchura_seleccion, UI_HEIGHT);
+                renderComplexElement(p, g, VentanaCombate.playerX + anchura_miniatura, initialY, anchura_seleccion);
             } else {
                 ant.x = sig.x = VentanaCombate.playerX + anchura_miniatura + 5;
                 ant.y = initialY + 5;
