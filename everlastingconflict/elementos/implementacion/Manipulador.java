@@ -313,19 +313,19 @@ public class Manipulador extends Unidad {
         } else if (vida < vida_max) {
             outerCircleColor = Color.yellow;
         }*/
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2;
+        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2;
         drawCircle(g, x, vida, vida_max, (int) vida, 23,
                 new Color(0f, 0.8f, 0f, 1f), Color.green);
     }
 
     public void drawManaCircle(Graphics g) {
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 100;
+        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 + 100;
         drawCircle(g, x, mana, mana_max, (int) mana, 28, new Color(0f, 0f, 0.8f, 1f),
                 new Color(0f, 0f, 1f, 1f));
     }
 
     public void drawXpCircle(Graphics g) {
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 + 200;
+        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 + 200;
         drawCircle(g, x, experiencia, experiencia_max, nivel, 35, new Color(204, 160, 0, 255),
                 Color.orange);
     }

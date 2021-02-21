@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
 import static everlastingconflict.mapas.VentanaCombate.playerY;
 
 /**
@@ -244,7 +244,7 @@ public class BotonComplejo extends BotonSimple {
         if (canBeShown) {
             //Origen solo es necesario para botones del Manipulador
             float xbotones = VentanaCombate.playerX + 600;
-            float ybotones = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 1;
+            float ybotones = playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 1;
             float anchura_contador = 565;
             float altura_contador = 200;
             float espacio_lineas = 20;

@@ -47,7 +47,7 @@ public class Edificio extends ElementoAtacante {
     public ProgressBar barra;
     public List<ElementoSimple> cola_construccion;
     public float recurso_int;
-    //Atributo para CuartelFenix
+     //Atributo para CuartelFenix
     public String unidad_actual;
     //Atributos para Mando Central
     public Edificio edificio_construccion;
@@ -228,23 +228,23 @@ public class Edificio extends ElementoAtacante {
     }
 
     private void setInitialCoordinatesForCreatedUnit(Unidad unitToCreate) {
-        float x = getCoordinateForCreatedUnit(this.x, reunion_x, anchura);
-        float y = getCoordinateForCreatedUnit(this.y, reunion_y, altura);
+        float x = getCoordinateForCreateUnit(this.x, reunion_x, anchura);
+        float y = getCoordinateForCreateUnit(this.y, reunion_y, altura);
         unitToCreate.x = x;
         unitToCreate.y = y;
     }
 
-    private float getCoordinateForCreatedUnit(float initialValue, float maxValue, float buildingOffset) {
-        float result;
-        if (maxValue > initialValue + buildingOffset / 2) {
-            result = initialValue + buildingOffset / 2;
-        } else if (maxValue < initialValue - buildingOffset / 2) {
-            result = initialValue - buildingOffset / 2;
-        } else {
-            result = initialValue;
-        }
-        return result;
-    }
+     protected float getCoordinateForCreateUnit(float initialValue, float maxValue, float buildingOffset) {
+         float result;
+         if (maxValue > initialValue + buildingOffset / 2) {
+             result = initialValue + buildingOffset / 2;
+         } else if (maxValue < initialValue - buildingOffset / 2) {
+             result = initialValue - buildingOffset / 2;
+         } else {
+             result = initialValue;
+         }
+         return result;
+     }
 
     private void mandoCentralCrearUnidad(Jugador jugador, Unidad unidadACrear) {
         int indice = obtener_indice_elemento(unidadACrear.nombre);

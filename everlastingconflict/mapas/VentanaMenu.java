@@ -115,9 +115,7 @@ public class VentanaMenu extends Ventana {
             } else if (opciones.isHovered(input.getMouseX(), input.getMouseY())) {
 
             } else if (salir.isHovered(input.getMouseX(), input.getMouseY())) {
-                container.exit();
-                //Client.ventana_mapa.dispose();
-                System.exit(0);
+                VentanaPrincipal.exit(container);
             } else if (racePlayer1.desplegar.isHovered(input.getMouseX(), input.getMouseY())) {
                 racePlayer1.desplegar.efecto();
             } else  if (player2Type.desplegar.isHovered(input.getMouseX(), input.getMouseY())) {
@@ -157,8 +155,8 @@ public class VentanaMenu extends Ventana {
         combate.dibujar(g);
         tutorial.dibujar(g);
         /*multijugador.dibujar(g);
-        opciones.dibujar(g);
-        salir.dibujar(g);*/
+        opciones.dibujar(g);*/
+        salir.dibujar(g);
         volver.dibujar(g);
         aceptar.dibujar(g);
         g.drawString("Usuario: ", 20, 50);

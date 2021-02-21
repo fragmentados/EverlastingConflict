@@ -8,6 +8,7 @@ package everlastingconflict.campaign.tutorial;
 import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
+import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.mapas.VentanaCombate;
@@ -90,7 +91,7 @@ public class FenixTutorial extends Tutorial {
         pasos.add(new Paso("Por último, prueba a ordenar al Cuartel que pare de crear unidades.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.edificios.get(1).unidad_actual == null;
+                return p.j1.edificios.get(1).statusBehaviour == StatusBehaviour.DETENIDO;
             }
         });
         pasos.add(new Paso("Enhorabuena, has completado con éxito el tutorial Fénix. Ya posees los conocimientos básicos para llevar a tu ejército a la victoria."));
@@ -101,8 +102,8 @@ public class FenixTutorial extends Tutorial {
         super.initElements(njugador);
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
-        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
         j1.x_inicial = 200;
         j1.y_inicial = 200;
         j1.initElements(this);

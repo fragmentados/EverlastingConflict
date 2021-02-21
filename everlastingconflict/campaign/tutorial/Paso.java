@@ -20,7 +20,7 @@ public class Paso {
 
     public Paso(String t) {
         texto = t;
-        this.texto = Partida.anadir_saltos_de_linea(this.texto, VentanaCombate.VIEWPORT_SIZE_X);
+        this.texto = Partida.anadir_saltos_de_linea(this.texto, VentanaCombate.VIEWPORT_SIZE_WIDTH);
     }
 
     public Paso(String t, boolean requiresClick) {

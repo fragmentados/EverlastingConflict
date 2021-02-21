@@ -70,8 +70,8 @@ public class VentanaCombate extends Ventana {
     public static float playerY = 0;
     public static float WORLD_SIZE_X;
     public static float WORLD_SIZE_Y;
-    public static float VIEWPORT_SIZE_X;
-    public static float VIEWPORT_SIZE_Y;
+    public static float VIEWPORT_SIZE_WIDTH;
+    public static float VIEWPORT_SIZE_HEIGHT;
     public static float offsetMinX = 0;
     public static float offsetMinY = 0;
     public static float offsetMaxX;
@@ -198,8 +198,8 @@ public class VentanaCombate extends Ventana {
     public void coordenadas_errores() {
         for (int i = (mensajes.size() - 1); i >= 0; i--) {
             if (mensajes.get(i).error) {
-                mensajes.get(i).x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - (mensajes.get(i).mensaje.length() * 10) / 2;
-                mensajes.get(i).y = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - 20 * (mensajes.size() - i);
+                mensajes.get(i).x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - (mensajes.get(i).mensaje.length() * 10) / 2;
+                mensajes.get(i).y = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_HEIGHT - 20 * (mensajes.size() - i);
             }
         }
     }
@@ -512,12 +512,12 @@ public class VentanaCombate extends Ventana {
         partida.comportamiento_elementos(container.getGraphics(), delta);
         //Mover la pantalla
         if (x_movimiento == -1 && y_movimiento == -1) {
-            if ((input.getMouseX() >= VentanaCombate.VIEWPORT_SIZE_X - 20) || (input.isKeyDown(Input.KEY_RIGHT))) {
+            if ((input.getMouseX() >= VentanaCombate.VIEWPORT_SIZE_WIDTH - 20) || (input.isKeyDown(Input.KEY_RIGHT))) {
                 if (playerX < offsetMaxX) {
                     playerX += scrollspeed * delta;
                 }
             }
-            if ((input.getMouseY() >= VentanaCombate.VIEWPORT_SIZE_Y) || (input.isKeyDown(Input.KEY_DOWN))) {
+            if ((input.getMouseY() >= VentanaCombate.VIEWPORT_SIZE_HEIGHT) || (input.isKeyDown(Input.KEY_DOWN))) {
                 if (playerY < offsetMaxY) {
                     playerY += scrollspeed * delta;
                 }
@@ -598,7 +598,7 @@ public class VentanaCombate extends Ventana {
                     }
                 }
             }
-            if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT)) {
+            if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT)) {
                 ui.handleLeftClick(input, partida, x_click, y_click, mayus);
                 click = false;
             } else if ((edificio != null)) {
@@ -639,8 +639,8 @@ public class VentanaCombate extends Ventana {
             if (!click) {
                 x_click = (int) playerX + input.getMouseX();
                 y_click = (int) playerY + input.getMouseY();
-                if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                    if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+                if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT)) {
+                    if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                         ui.movePlayerPerspective(x_click, y_click);
                     }
                 }
@@ -720,8 +720,8 @@ public class VentanaCombate extends Ventana {
             }
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
-            if (y_click >= ((int) playerY + VIEWPORT_SIZE_Y)) {
-                if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+            if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT)) {
+                if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                     Point2D resultado = ui.obtener_coordenadas_minimapa(x_click, y_click);
                     gestionar_click_derecho((float) resultado.getX(), (float) resultado.getY());
                 }
@@ -784,15 +784,15 @@ public class VentanaCombate extends Ventana {
                     //Obtener coordenadas medias
                     float x_medio = (x_max + x_min) / 2;
                     float y_medio = (y_max + y_min) / 2;
-                    if (x_medio - VentanaCombate.VIEWPORT_SIZE_X / 2 <= 0) {
+                    if (x_medio - VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 <= 0) {
                         VentanaCombate.playerX = 0;
                     } else {
-                        VentanaCombate.playerX = x_medio - VentanaCombate.VIEWPORT_SIZE_X / 2;
+                        VentanaCombate.playerX = x_medio - VentanaCombate.VIEWPORT_SIZE_WIDTH / 2;
                     }
-                    if (y_medio - VentanaCombate.VIEWPORT_SIZE_Y / 2 <= 0) {
+                    if (y_medio - VentanaCombate.VIEWPORT_SIZE_HEIGHT / 2 <= 0) {
                         VentanaCombate.playerY = 0;
                     } else {
-                        VentanaCombate.playerY = y_medio - VentanaCombate.VIEWPORT_SIZE_Y / 2;
+                        VentanaCombate.playerY = y_medio - VentanaCombate.VIEWPORT_SIZE_HEIGHT / 2;
                     }
                 } else {
                     //El grupo de control no está seleccionado: Se selecciona.
@@ -832,9 +832,9 @@ public class VentanaCombate extends Ventana {
         g.translate(-playerX, -playerY);
         if (victoria != null || derrota != null) {
             if (victoria != null) {
-                victoria.draw(250, 200);
+                victoria.draw(VIEWPORT_SIZE_WIDTH / 2 - 400, VIEWPORT_SIZE_HEIGHT / 2 - 50);
             } else {
-                derrota.draw(250, 200);
+                derrota.draw(VIEWPORT_SIZE_WIDTH / 2 - 400, VIEWPORT_SIZE_HEIGHT / 2 - 50);
             }
         } else {
             //Gris
@@ -950,14 +950,14 @@ public class VentanaCombate extends Ventana {
             if (partida instanceof Tutorial) {
                 Tutorial t = (Tutorial) partida;
                 g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-                g.fillRect(playerX, playerY, VentanaCombate.VIEWPORT_SIZE_X, 100);
+                g.fillRect(playerX, playerY, VentanaCombate.VIEWPORT_SIZE_WIDTH, 100);
                 g.setColor(Color.white);
                 g.drawString(t.pasos.get(0).texto, playerX, playerY);
-                continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - continuar.anchura;
+                continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
-                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
+                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
             } else {
-                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
+                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
                 // TODO EFB No pintar recursos del segundo jugador
                 //partida.j2.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY + 15);
             }
@@ -975,8 +975,8 @@ public class VentanaCombate extends Ventana {
         ElementosComunes.VICTORY_SOUND.playAt(0f, 0f, 0f);
         victoria = new Animation(new Image[]{new Image("media/Victoria1.png"), new Image("media/Victoria2.png")}, new int[]{300, 300}, true);
         continuar.canBeUsed = true;
-        continuar.x = 650;
-        continuar.y = 400;
+        continuar.x = VIEWPORT_SIZE_WIDTH / 2;
+        continuar.y = VIEWPORT_SIZE_HEIGHT / 2 + 100;
     }
 
     private void displayDefeat() throws SlickException {
@@ -985,8 +985,8 @@ public class VentanaCombate extends Ventana {
         ElementosComunes.DEFEAT_SOUND.playAt(0f, 0f, 0f);
         derrota = new Animation(new Image[]{new Image("media/Derrota1.png"), new Image("media/Derrota2.png")}, new int[]{300, 300}, true);
         continuar.canBeUsed = true;
-        continuar.x = 650;
-        continuar.y = 400;
+        continuar.x = VIEWPORT_SIZE_WIDTH / 2;
+        continuar.y = VIEWPORT_SIZE_HEIGHT / 2 + 100;
     }
 
     private boolean checkTutorialStepResolution() throws SlickException {
@@ -1008,6 +1008,6 @@ public class VentanaCombate extends Ventana {
         derrota = null;
         ElementosComunes.VICTORY_SOUND.stop();
         ElementosComunes.DEFEAT_SOUND.stop();
-        RTS.map.cambio_de_mapa(container, new Partida(), "Menu");
+        RTS.mainController.cambio_de_mapa(container, new Partida(), "Menu");
     }
 }

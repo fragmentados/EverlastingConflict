@@ -5,6 +5,7 @@
  */
 package everlastingconflict.mapas;
 
+import everlastingconflict.RTS;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -55,11 +56,6 @@ public class VentanaPrincipal extends BasicGame {
     @Override
     public void init(GameContainer container) throws SlickException {
         cambio_de_mapa(container, new Partida(), "Menu");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIEternium()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Clark"), new AIFenix()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", RaceNameEnum.MAESTROS.getName()), new AIFenix()), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", "Eternium"), new Jugador("H", "Clark")), "Campo");
-        //cambio_de_mapa(container, new Partida(new Jugador("Elias", RaceNameEnum.GUARDIANES.getName()), new AIFenix()), "Campo");
 
     }
 
@@ -71,5 +67,12 @@ public class VentanaPrincipal extends BasicGame {
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         ventanaActual.render(container, g);
+    }
+
+    public static void exit(GameContainer container) {
+        RTS.canvas.dispose();
+        RTS.mainFrame.dispose();
+        container.exit();
+        System.exit(0);
     }
 }

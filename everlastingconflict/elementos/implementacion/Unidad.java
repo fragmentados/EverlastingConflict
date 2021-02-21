@@ -159,8 +159,12 @@ public class Unidad extends ElementoMovil {
                 }
                 break;
             case CONSTRUYENDO:
-                if ((x == edificio_construccion.x) && (y == edificio_construccion.y)) {
+                // Ha llegado a las coordenadas
+                if (this.movimiento == null) {
                     if (edificio_construccion.vida == 0) {
+                        if (p.belongsToMainPlayer(this)) {
+                            ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
+                        }
                         this.movil = false;
                         if (edificio_construccion.nombre.equals("Refinería")) {
                             for (Recurso r : p.recursos) {
@@ -178,8 +182,8 @@ public class Unidad extends ElementoMovil {
                             edificio_construccion.vida = edificio_construccion.vida_max;
                             edificio_construccion.iniciarbotones(p);
                             edificio_construccion.statusBehaviour = StatusBehaviour.PARADO;
+                            statusBehaviour = StatusBehaviour.PARADO;
                             this.movil = true;
-                            this.mover(p, edificio_construccion.reunion_x, edificio_construccion.reunion_y);
                             edificio_construccion = null;
                             this.enableBuildingButtons();
                         } else {
@@ -374,7 +378,20 @@ public class Unidad extends ElementoMovil {
         edificio_construccion = edificio;
         edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
         edificio_construccion.cambiar_coordenadas(x, y);
-        anadir_movimiento(x, y);
+        anadir_movimiento(getCoordinateForBuildingCreation(this.x, x, edificio.anchura, this.anchura),
+                getCoordinateForBuildingCreation(this.y, y, edificio.altura, this.altura));
+    }
+
+    protected float getCoordinateForBuildingCreation(float initialValue, float maxValue, float buildingOffset, float unitOffset) {
+        float result;
+        if (maxValue > initialValue + buildingOffset / 2) {
+            result = maxValue - buildingOffset / 2 - unitOffset / 2;
+        } else if (maxValue < initialValue - buildingOffset / 2) {
+            result = maxValue + buildingOffset / 2 + unitOffset / 2;
+        } else {
+            result = initialValue;
+        }
+        return result;
     }
 
     public void efecto_piloto(Partida p, Unidad v) {

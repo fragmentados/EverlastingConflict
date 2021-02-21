@@ -22,7 +22,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.List;
 
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_Y;
+import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
 import static everlastingconflict.mapas.VentanaCombate.playerY;
 
 /**
@@ -243,7 +243,7 @@ public class BotonManipulador extends BotonComplejo {
             super.renderExtendedInfo(aliado, g, origen);
             if (requisito != null) {
                 float x = VentanaCombate.playerX + 601;
-                float y = playerY + VIEWPORT_SIZE_Y - UI.UI_HEIGHT - 201;
+                float y = playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 201;
                 g.drawString("Esta habilidad sólo se puede utilizar de " + requisito, x, y  + 150);
             }
         }

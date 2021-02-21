@@ -58,7 +58,7 @@ public class UI {
         color = new Color(0f, 0f, 0.6f, 1f);
         anchura_miniatura = 200;
         anchura_seleccion = 730;
-        anchura_botones = VentanaCombate.VIEWPORT_SIZE_X - 1180;
+        anchura_botones = VentanaCombate.VIEWPORT_SIZE_WIDTH - 1180;
     }
 
     public void anterior() {
@@ -228,13 +228,13 @@ public class UI {
 
     public void renderMinimap(Partida p, Graphics g, float initialY) {
         //Rectángulo grande     
-        x_mini = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X - anchura_mini;
+        x_mini = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH - anchura_mini;
         y_mini = initialY;
         dibujar_puntos(p, g);
         g.drawRect(x_mini, y_mini, anchura_mini - 1, altura_mini);
         //Rectángulo pequeño                
-        anchura_minim = anchura_mini * (VentanaCombate.VIEWPORT_SIZE_X / VentanaCombate.WORLD_SIZE_X);
-        altura_minim = altura_mini * (VentanaCombate.VIEWPORT_SIZE_Y / VentanaCombate.WORLD_SIZE_Y);
+        anchura_minim = anchura_mini * (VentanaCombate.VIEWPORT_SIZE_WIDTH / VentanaCombate.WORLD_SIZE_X);
+        altura_minim = altura_mini * (VentanaCombate.VIEWPORT_SIZE_HEIGHT / VentanaCombate.WORLD_SIZE_Y);
         x_minim = x_mini + (anchura_mini - anchura_minim) * (VentanaCombate.playerX / VentanaCombate.offsetMaxX);
         y_minim = y_mini + (altura_mini - altura_minim) * (VentanaCombate.playerY / VentanaCombate.offsetMaxY);
         g.drawRect(x_minim, y_minim, anchura_minim, altura_minim);
@@ -498,9 +498,9 @@ public class UI {
     }
 
     public void renderUI(Partida p, Graphics g, List<ControlGroup> controlGroupGroups) {
-        float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI_HEIGHT - 1;
+        float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_HEIGHT - UI_HEIGHT - 1;
         g.setColor(UI_COLOR);
-        g.fillRect(VentanaCombate.playerX, initialY, VentanaCombate.VIEWPORT_SIZE_X - 1, UI_HEIGHT);
+        g.fillRect(VentanaCombate.playerX, initialY, VentanaCombate.VIEWPORT_SIZE_WIDTH - 1, UI_HEIGHT);
         //Primer Rectángulo: Miniatura.        
         if (!elementos.isEmpty()) {
             Image miniatura = seleccion_actual.get(0).miniatura;
@@ -570,7 +570,7 @@ public class UI {
     }
 
     public void renderControlGroups(Graphics g, List<ControlGroup> controlGroups, float initialY) {
-        float initialX = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X - anchura_mini - 12 * 22;
+        float initialX = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH - anchura_mini - 12 * 22;
         //Grupos de control
         for (int i = Input.KEY_1; i <= Input.KEY_0; i++) {
             int numero;
@@ -593,7 +593,7 @@ public class UI {
 
     public Point2D obtener_coordenadas_minimapa(float x_click, float y_click) {
         float x = x_click - (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
-        float y = y_click - ((int) playerY + VIEWPORT_SIZE_Y);
+        float y = y_click - ((int) playerY + VIEWPORT_SIZE_HEIGHT);
         float resultado_x = (x / anchura_mini) * VentanaCombate.WORLD_SIZE_X;
         float resultado_y = (y / altura_mini) * VentanaCombate.WORLD_SIZE_Y;
         return new Point2D.Float(resultado_x, resultado_y);
@@ -602,7 +602,7 @@ public class UI {
     public void movePlayerPerspective(float x_click, float y_click) {
         //Obtengo el x relativo dentro del minimapa
         float x = x_click - (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
-        float y = y_click - (VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI.UI_HEIGHT);
+        float y = y_click - (VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT);
         //Transformación a las coordenadas del mapa
         x *= (VentanaCombate.WORLD_SIZE_X / anchura_mini);
         y *= (VentanaCombate.WORLD_SIZE_Y / altura_mini);
@@ -627,7 +627,7 @@ public class UI {
 
     public void handleLeftClick(Input input, Partida p, int x_click, int y_click, boolean mayus) {
         if ((x_click >= (VentanaCombate.playerX + anchura_miniatura)) && (x_click <= (VentanaCombate.playerX + anchura_seleccion + anchura_miniatura))) {
-            float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_Y - UI.UI_HEIGHT;
+            float initialY = VentanaCombate.playerY + VentanaCombate.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT;
             //Segundo cuadrado: Selección actual de unidades
             if (elementos.size() == 1 && seleccion_actual.get(0) instanceof Edificio) {
                 //Cancelar producción
@@ -656,7 +656,7 @@ public class UI {
                 for (int i = 0; i < ui.elementos.size(); i++) {
                     ElementoSimple e = ui.elementos.get(i);
                     float x_e = playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5);
-                    float y_e = playerY + VIEWPORT_SIZE_Y + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5);
+                    float y_e = playerY + VIEWPORT_SIZE_HEIGHT + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5);
                     if ((x_click >= x_e) && (x_click <= x_e + 40)) {
                         if ((y_click >= y_e) && (y_click <= y_e + 40)) {
                             resultado = e;
@@ -710,7 +710,7 @@ public class UI {
                 }
             }
             //Minimapa
-            if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_X))) {
+            if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                 //Mover la perspectiva
                 ui.movePlayerPerspective(x_click, y_click);
             }

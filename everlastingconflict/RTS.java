@@ -20,26 +20,26 @@ import java.awt.*;
 public class RTS {
 
     public static CanvasGameContainer canvas;
-    public static VentanaPrincipal map;
-    public static JFrame ventana_mapa;
+    public static VentanaPrincipal mainController;
+    public static JFrame mainFrame;
     public static final boolean DEBUG_MODE = false;
     
     public static void main(String[] args) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        VentanaCombate.VIEWPORT_SIZE_X = screenSize.width;
-        VentanaCombate.VIEWPORT_SIZE_Y = screenSize.height;
-        map = new VentanaPrincipal();
+        VentanaCombate.VIEWPORT_SIZE_WIDTH = screenSize.width;
+        VentanaCombate.VIEWPORT_SIZE_HEIGHT = screenSize.height;
+        mainController = new VentanaPrincipal();
         try {
-            canvas = new CanvasGameContainer(map);
+            canvas = new CanvasGameContainer(mainController);
             canvas.getContainer().setShowFPS(false);
-            ventana_mapa = new JFrame();
-            ventana_mapa.setUndecorated(true);
-            ventana_mapa.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-            ventana_mapa.setVisible(true);
-            ventana_mapa.add(canvas);
+            mainFrame = new JFrame();
+            mainFrame.setUndecorated(true);
+            mainFrame.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+            mainFrame.setVisible(true);
+            mainFrame.add(canvas);
             canvas.start();
-            ventana_mapa.setExtendedState(Frame.MAXIMIZED_BOTH);
-            ventana_mapa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+            mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             canvas.getContainer().setFullscreen(true);
         } catch (SlickException e) {
         }

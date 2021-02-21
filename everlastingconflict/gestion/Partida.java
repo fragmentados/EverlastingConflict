@@ -173,8 +173,8 @@ public class Partida {
         float height = map.getHeight();
         VentanaCombate.WORLD_SIZE_X = width;
         VentanaCombate.WORLD_SIZE_Y = height;
-        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;
-        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_Y;
+        VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
+        VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
         if (njugador == 1) {
             j1.x_inicial = 200;
             j1.y_inicial = 200;

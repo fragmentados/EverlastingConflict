@@ -38,7 +38,7 @@ public class ElementosComunes {
 
 
     public static void init() throws SlickException {
-        CONSTRUCTION_SOUND = new Sound("media/Sonidos/Construccion.ogg");
+        CONSTRUCTION_SOUND = new Sound("media/Sonidos/Construccion.wav");
         UNIT_DEATH_SOUND = new Sound("media/Sonidos/MuerteUnidad.wav");
         BUILDING_DEATH_SOUND = new Sound("media/Sonidos/MuerteEdificio.ogg");
         VICTORY_SOUND = new Sound("media/Sonidos/Victoria.ogg");
