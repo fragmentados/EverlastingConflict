@@ -184,7 +184,7 @@ public class BotonComplejo extends BotonSimple {
             return true;
         } else {
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-                return presionado((int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
+                return isHovered((int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
             } else {
                 return false;
             }

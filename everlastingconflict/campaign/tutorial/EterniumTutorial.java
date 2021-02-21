@@ -5,7 +5,6 @@
  */
 package everlastingconflict.campaign.tutorial;
 
-import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
@@ -13,7 +12,6 @@ import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.relojes.RelojEternium;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 
@@ -68,11 +66,10 @@ public class EterniumTutorial extends Tutorial {
                 VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
             }
         });
-        pasos.add(new Paso("Primero, el hierro se extrae de vetas mediante refinerías. Cualquier unidad militar Eternium puede construir refinerías sobre una veta de hierro. Prueba a hacerlo ahora") {
+        pasos.add(new Paso("Primero, el hierro se extrae de vetas mediante refinerías. Cualquier unidad militar Eternium puede construir refinerías sobre una veta de hierro. Prueba a hacerlo ahora", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return j1.unidades.get(0).botones.get(0).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Refinería".equals(s));
             }
 
             @Override
@@ -82,7 +79,7 @@ public class EterniumTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("En segundo lugar, el hierro debe ser transformado en la cámara de asimilación. Construye una cámara de asimilación utilizando la sede en cualquier lugar dentro del área permitida.") {
+        pasos.add(new Paso("En segundo lugar, el hierro debe ser transformado en la cámara de asimilación. Construye una cámara de asimilación utilizando la sede en cualquier lugar dentro del área permitida.", false) {
             @Override
             public void efecto(Partida p) {
                 j1.edificios.get(0).seleccionar();
@@ -91,23 +88,21 @@ public class EterniumTutorial extends Tutorial {
 
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return j1.edificios.get(0).botones.get(3).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Cámara de asimilación".equals(s));
             }
         });
-        pasos.add(new Paso("El último paso para la conversión requiere de tecnología de la que no disponemos en el campo de batalla con lo que se debe transportar a una de las naves que orbitan el planeta. Construye un transportador para terminar el sistema.") {
+        pasos.add(new Paso("El último paso para la conversión requiere de tecnología de la que no disponemos en el campo de batalla con lo que se debe transportar a una de las naves que orbitan el planeta. Construye un transportador para terminar el sistema.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return j1.edificios.get(0).botones.get(4).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Teletransportador".equals(s));
             }
         });
         pasos.add(new Paso("Como puedes comprobar, a partir de ahora, las refinerías empezarán a generar recursos de manera continua.Cada nueva refinería que crees empezará a generar recursos de la misma forma. Pero debes recordar esto, la cámara de asimilación y el teletransportador son los dos edificio primordiales ya que, si alguno es destruido, todas tus refinerías dejarán de funcionar hasta que se reconstruya."));
-
     }
 
     @Override
     public void initElements(int njugador) {
+        super.initElements(njugador);
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;

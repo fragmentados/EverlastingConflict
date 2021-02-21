@@ -685,10 +685,10 @@ public class UI {
                         }
                     }
                 }
-                if (ant.presionado(x_click, y_click)) {
+                if (ant.isHovered(x_click, y_click)) {
                     anterior();
                 }
-                if (sig.presionado(x_click, y_click)) {
+                if (sig.isHovered(x_click, y_click)) {
                     siguiente();
                 }
             }
@@ -703,7 +703,7 @@ public class UI {
                         botones = ((Manipulador) e).enhancementButtons;
                     }
                     for (BotonComplejo b : botones) {
-                        if (b.presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
+                        if (b.isHovered((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
                             b.resolucion(elementos, e, p);
                         }
                     }

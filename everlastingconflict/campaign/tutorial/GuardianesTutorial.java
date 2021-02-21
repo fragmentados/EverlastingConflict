@@ -34,11 +34,10 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("Sin embargo, sólo el edificio Central, el Ayuntamiento, puede ser usado nada más empezar, el resto deben ser activados. Para ello, debemos crear una unidad especial en el Ayuntamiento, el Activador. Prueba a hacerlo ahora.") {
+        pasos.add(new Paso("Sin embargo, sólo el edificio Central, el Ayuntamiento, puede ser usado nada más empezar, el resto deben ser activados. Para ello, debemos crear una unidad especial en el Ayuntamiento, el Activador. Prueba a hacerlo ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(0).botones.get(0).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return !p.j1.edificios.get(0).cola_construccion.isEmpty() && p.j1.edificios.get(0).cola_construccion.get(0).nombre.equals("Activador");
             }
 
             @Override
@@ -46,11 +45,10 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("Para activar un edificio, selecciona el Activador recién creado y pulsa el botón derecho sobre el edificio a activar. Prueba a activar el Taller bélico ahora.") {
+        pasos.add(new Paso("Para activar un edificio, selecciona el Activador recién creado y pulsa el botón derecho sobre el edificio a activar. Prueba a activar el Taller bélico ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(3).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.j1.edificios.stream().anyMatch(e -> e.nombre.equals("Taller bélico") && e.activo);
             }
 
             @Override
@@ -58,11 +56,10 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("La siguiente característica de la raza son los vehíuculos: es un tipo de unidad más potente que el resto pero que requieren de un piloto para poder moverse y atacar. Pero antes de ello, debemos crear un anexo en el taller bélico para que guarde el vehículo.") {
+        pasos.add(new Paso("La siguiente característica de la raza son los vehículos: es un tipo de unidad más potente que el resto pero que requieren de un piloto para poder moverse y atacar. Pero antes de ello, debemos crear un anexo en el taller bélico para que guarde el vehículo.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(3).botones.get(0).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.j1.edificios.stream().anyMatch(e -> e.nombre.equals("Anexo"));
             }
 
             @Override
@@ -70,25 +67,25 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("A continuación, prueba a crear una Patrulla y observa como se moviliza hacia el anexo.") {
+        pasos.add(new Paso("A continuación, prueba a crear una Patrulla y observa como se moviliza hacia el anexo.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(3).botones.get(1).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla"));
             }
 
             @Override
             public void efecto(Partida p) {
                 VentanaCombate.continuar.canBeUsed = false;
+                p.j1.edificios.get(1).activo = true;
                 p.j1.edificios.get(1).iniciarbotones(p);
+                p.j1.edificios.get(1).vida = p.j1.edificios.get(1).vida_max;
             }
 
         });
-        pasos.add(new Paso("Como puedes comprobar, por ahora el vehículo no se puede mover ni atacar. Eso es porque debe ser tripulado. Para ello, debes crear un piloto en la academia de pilotos. Generalmente, deberías crear otro Activador para que la Academia pudiera ser usable, pero en este Tutorial vamos a activar el edificio por ti. Prueba a construir un Artillero.") {
+        pasos.add(new Paso("Como puedes comprobar, por ahora el vehículo no se puede mover ni atacar. Eso es porque debe ser tripulado. Para ello, debes crear un piloto en la academia de pilotos. Generalmente, deberías crear otro Activador para que la Academia pudiera ser usable, pero en este Tutorial vamos a activar el edificio por ti. Prueba a construir un Artillero.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(1).botones.get(0).presionado((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Artillero"));
             }
 
             @Override
@@ -96,11 +93,14 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("Para embarcar un vehículo, selecciona el piloto y pulsa el botón derecho sobre el vehículo a embarcar. Prueba a hacerlo ahora.") {
+        pasos.add(new Paso("Para embarcar un vehículo, selecciona el piloto y pulsa el botón derecho sobre el vehículo a embarcar. Prueba a hacerlo ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.unidades.get(0).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla") && u.movil && u.hostil);
+            }
+            @Override
+            public void efecto(Partida p) {
+                VentanaCombate.continuar.canBeUsed = true;
             }
         });
         pasos.add(new Paso("A continuación, veamos como los Guardianes obtienen recursos. Existen tres recursos que se muestran de izquierda a derecha en la parte de arriba de la pantalla: el primero es el que se usa para crear todas las unidades y los edificios, el segundo es el porcentaje de felicidad de la población, cuanto mayor sea más rápido se obtendrá el primer recurso, el útlimo recurso representa el nivel de amenaza. Cuanto mayor sea, más piezas del arsenal de los Guardianes se desbloquearán pero peores eventos podrán aparecer."));
@@ -135,7 +135,7 @@ public class GuardianesTutorial extends Tutorial {
 
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.continuar.canBeUsed = false;
+                VentanaCombate.continuar.canBeUsed = true;
             }
         });
         pasos.add(new Paso("Enhorabuena. Ahora ya sabes todo lo que necesitas saber para llevar a tu ejército a la victoria."));
@@ -143,6 +143,7 @@ public class GuardianesTutorial extends Tutorial {
 
     @Override
     public void initElements(int njugador) {
+        super.initElements(njugador);
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;

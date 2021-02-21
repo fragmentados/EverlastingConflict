@@ -13,10 +13,6 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Image;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  *
  * @author Elías
@@ -336,11 +332,5 @@ public class Raza {
         } catch (Exception e) {
         }
         return image;
-    }
-
-    public static List<String> getAllRaceNames() {
-        List<String> raceNames = new ArrayList<>();
-        raceNames.addAll(Arrays.asList(RaceNameEnum.FENIX.getName(), RaceNameEnum.CLARK.getName(), RaceNameEnum.ETERNIUM.getName(), RaceNameEnum.MAESTROS.getName(), RaceNameEnum.GUARDIANES.getName()));
-        return raceNames;
     }
 }

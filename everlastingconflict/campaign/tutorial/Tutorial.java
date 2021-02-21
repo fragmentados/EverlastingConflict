@@ -6,6 +6,9 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.mapas.MapEnum;
+import everlastingconflict.razas.RaceNameEnum;
+
 import java.util.List;
 
 /**
@@ -18,5 +21,21 @@ public abstract class Tutorial extends Partida {
 
     public abstract void iniciar_pasos();
 
-    public abstract void initElements(int njugador);
+    public void initElements(int njugador) {
+        this.map = MapEnum.SMALL;
+    }
+
+    public static Partida createTutorialByRace(String race) {
+        if(RaceNameEnum.FENIX.getName().equals(race)) {
+            return new FenixTutorial();
+        } else if(RaceNameEnum.CLARK.getName().equals(race)) {
+            return new ClarkTutorial();
+        } else if(RaceNameEnum.ETERNIUM.getName().equals(race)) {
+            return new EterniumTutorial();
+        } else if(RaceNameEnum.GUARDIANES.getName().equals(race)) {
+            return new GuardianesTutorial();
+        } else {
+            return new MaestrosTutorial();
+        }
+    }
 }

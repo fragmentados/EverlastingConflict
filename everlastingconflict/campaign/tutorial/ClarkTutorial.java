@@ -58,16 +58,35 @@ public class ClarkTutorial extends Tutorial {
         pasos.add(new Paso("Cuando dos unidades básicas se fusionan, se destruyen para crear una unidad que posee las características de las dos unidades que se usaron para crearla.") {
             @Override
             public void efecto(Partida p) {
+                p.j1.edificios.get(0).seleccionar();
+                VentanaCombate.continuar.canBeUsed = false;
+            }
+        });
+        pasos.add(new Paso("En el Primarca tienes una ayuda con la que se pueden ver las combinaciones posibles y las unidades resultado de esas fusiones. Prueba a activarla") {
+            @Override
+            public boolean comprobacion(Partida p) {
+                Input input = RTS.canvas.getContainer().getInput();
+                return VentanaCombate.ui.seleccion_actual.get(0).botones.get(6).isHovered(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
+            }
+            @Override
+            public void efecto(Partida p) {
+                VentanaCombate.continuar.canBeUsed = true;
+            }
+        });
+        pasos.add(new Paso("Como puedes ver cualquier combinación de dos unidades básicas generará una unidad más poderosa y fusionar una unidad básica de cada tipo generará la unidad más poderosa de los clark") {
+            @Override
+            public void efecto(Partida p) {
+                p.j1.edificios.get(0).deseleccionar();
                 p.j1.unidades.get(0).seleccionar();
                 p.j1.unidades.get(1).seleccionar();
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("Veamos un ejemplo: Prueba a fusionar ahora el depredador y el devorador") {
+        pasos.add(new Paso("Veamoslo con un ejemplo: Prueba a fusionar ahora el depredador y el devorador") {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                return VentanaCombate.ui.seleccion_actual.get(0).botones.get(1).presionado(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
+                return VentanaCombate.ui.seleccion_actual.get(0).botones.get(1).isHovered(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
             }
         });
         pasos.add(new Paso("Como has podido observar, las dos unidades han desaparecido, y, en su lugar ha aparecido una nueva unidad más poderosa. El Moldeador es una unidad capaz de cambiar entre ataque cuerpo a cuerpo y ataque a distancia."));
@@ -82,7 +101,6 @@ public class ClarkTutorial extends Tutorial {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                boolean resultado = false;
                 for (Bestias be : p.bestias) {
                     for (Bestia b : be.contenido) {
                         if (b.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
@@ -90,7 +108,7 @@ public class ClarkTutorial extends Tutorial {
                         }
                     }
                 }
-                return resultado;
+                return false;
             }
 
             @Override
@@ -98,7 +116,7 @@ public class ClarkTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
-        pasos.add(new Paso("Como puedes ver, cada vez que un Alpha muere, tus recursos aumentan. En una partida normal de Everlasting Conflict, hay varios tipos de bestias por todo el mapa y cada una da un número distinto de recursos. Sin embargo, a mayor recompensa, mayor será la capacidad ofensiva de la bestia.") {
+        pasos.add(new Paso("Como puedes ver, cada vez que un Alpha muere, tus recursos aumentan. En una partida normal de Everlasting Conflict, hay varios tipos de bestias por todo el mapa y cada una da un número distinto de recursos. Sin embargo, a mayor recompensa, mayor será la capacidad ofensiva de la bestia.", false) {
             @Override
             public boolean comprobacion(Partida p) {
                 return p.bestias.get(0).muerte;
@@ -110,6 +128,7 @@ public class ClarkTutorial extends Tutorial {
 
     @Override
     public void initElements(int njugador) {
+        super.initElements(njugador);
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_X;

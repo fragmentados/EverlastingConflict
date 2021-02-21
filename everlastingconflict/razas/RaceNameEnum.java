@@ -8,14 +8,19 @@ import java.util.stream.Collectors;
 
 public enum RaceNameEnum {
     FENIX("Fénix"),
-    CLARK("Clark"),
     ETERNIUM("Eternium"),
+    CLARK("Clark"),
     GUARDIANES("Guardianes"),
     MAESTROS("Maestros");
 
     private String name;
 
     private static final Map<String, RaceNameEnum> raceEnumMap = Collections.unmodifiableMap(initializeMapping());
+
+    public static List<String> getAllNames() {
+        List<String> allNames = raceEnumMap.entrySet().stream().map(e -> e.getKey()).collect(Collectors.toList());
+        return sortRaceNames(allNames);
+    }
 
     private static Map<String, RaceNameEnum> initializeMapping() {
         Map<String, RaceNameEnum> raceEnumMap = new HashMap<>();

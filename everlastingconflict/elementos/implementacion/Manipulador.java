@@ -52,8 +52,8 @@ public class Manipulador extends Unidad {
     public static int cantidad_invocacion = 2;
     public static float minimo_cooldown = 2;
 
-    private static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos habilidades para que el Manipulador las aprenda");
-    private static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco atributos para que se mejoren");
+    public static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos habilidades para que el Manipulador las aprenda");
+    public static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco atributos para que se mejoren");
 
     public final int experiencia_maxima() {
         return 100 + 50 * (nivel - 1);

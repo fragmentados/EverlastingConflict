@@ -277,18 +277,6 @@ public class VentanaCombate extends Ventana {
         edificio.sprite.draw(posx, posy);
     }
 
-//    public Point obtener_coordenadas(ElementoSimple u) {
-//        for (int i = 0; i < mapa.getWidth(); i++) {
-//            for (int j = 0; j < mapa.getHeight(); j++) {
-//                if ((u.x >= i * mapa.getTileWidth()) && (u.x <= (i + 1) * mapa.getTileWidth())) {
-//                    if ((u.y >= j * mapa.getTileHeight()) && (u.y <= (j + 1) * mapa.getTileHeight())) {
-//                        return new Point(i, j);
-//                    }
-//                }
-//            }
-//        }
-//        return new Point(-1, -1);
-//    }
     public void dibujar_visibilidad(Graphics g, Color c, int desplazamiento) {
         g.setColor(c);
         for (Unidad u : partida.j1.unidades) {
@@ -429,44 +417,39 @@ public class VentanaCombate extends Ventana {
         }
     }
 
-    public void handleCameraMovement(int delta) {
-        if (x_movimiento != -1 || y_movimiento != -1) {
-            if (x_movimiento != -1) {
-                if (playerX < x_movimiento) {
-                    if (playerX + 0.5f * delta >= x_movimiento) {
-                        playerX = x_movimiento;
-                    } else {
-                        playerX += 0.5f * delta;
-                    }
+    public void handleForcedCameraMovement(int delta) {
+        if (x_movimiento != -1) {
+            if (playerX < x_movimiento) {
+                if (playerX + 0.5f * delta >= x_movimiento) {
+                    playerX = x_movimiento;
                 } else {
-                    if (playerX > x_movimiento) {
-                        if (playerX - 0.5f * delta <= x_movimiento) {
-                            playerX = x_movimiento;
-                        } else {
-                            playerX += 0.5f * delta;
-                        }
-                    } else {
-                        x_movimiento = -1;
-                    }
+                    playerX += 0.5f * delta;
+                }
+            } else if (playerX > x_movimiento) {
+                if (playerX - 0.5f * delta <= x_movimiento) {
+                    playerX = x_movimiento;
+                } else {
+                    playerX -= 0.5f * delta;
                 }
             } else {
-                if (playerY < y_movimiento) {
-                    if (playerY + 0.5f * delta >= y_movimiento) {
-                        playerY = y_movimiento;
-                    } else {
-                        playerY += 0.5f * delta;
-                    }
+                x_movimiento = -1;
+            }
+        }
+        if (y_movimiento != -1) {
+            if (playerY < y_movimiento) {
+                if (playerY + 0.5f * delta >= y_movimiento) {
+                    playerY = y_movimiento;
                 } else {
-                    if (playerY > y_movimiento) {
-                        if (playerY - 0.5f * delta <= y_movimiento) {
-                            playerY = y_movimiento;
-                        } else {
-                            playerY += 0.5f * delta;
-                        }
-                    } else {
-                        y_movimiento = -1;
-                    }
+                    playerY += 0.5f * delta;
                 }
+            } else if (playerY > y_movimiento) {
+                if (playerY - 0.5f * delta <= y_movimiento) {
+                    playerY = y_movimiento;
+                } else {
+                    playerY -= 0.5f * delta;
+                }
+            } else {
+                y_movimiento = -1;
             }
         }
     }
@@ -484,23 +467,13 @@ public class VentanaCombate extends Ventana {
             }
         }
         mensajes.removeAll(messagesToBeRemoved);
-        handleCameraMovement(delta);
+        handleForcedCameraMovement(delta);
         if (!(partida instanceof Tutorial)) {
             if (partida.check_victory_player_1() && victoria == null) {
-                this.playerX = 0;
-                this.playerY = 0;
-                ElementosComunes.VICTORY_SOUND.playAt(0f, 0f, 0f);
-                victoria = new Animation(new Image[]{new Image("media/Victoria1.png"), new Image("media/Victoria2.png")}, new int[]{300, 300}, true);
-                continuar.x = 650;
-                continuar.y = 400;
+                displayVictory();
             }
             if (partida.check_victory_player_2() && derrota == null) {
-                this.playerX = 0;
-                this.playerY = 0;
-                ElementosComunes.DEFEAT_SOUND.playAt(0f, 0f, 0f);
-                derrota = new Animation(new Image[]{new Image("media/Derrota1.png"), new Image("media/Derrota2.png")}, new int[]{300, 300}, true);
-                continuar.x = 650;
-                continuar.y = 400;
+                displayDefeat();
             }
         }
         //Relojes
@@ -603,42 +576,25 @@ public class VentanaCombate extends Ventana {
                 container.setMouseCursor(atacar, 10, 10);
             }
         }
-        /*
-         if (partida instanceof Tutorial) {
-         if (!continuar.activado) {
-         Tutorial t = (Tutorial) partida;
-         if (t.pasos.get(0).comprobacion(partida)) {
-         continuar.activado = true;
-         t.pasos.get(0).efecto(partida);
-         t.pasos.remove(0);                    
-         if (t.pasos.isEmpty()) {
-         RTS.RTS.mapa_ejemplo.cambio_de_mapa(container, partida, "Menu");
-         }
-         }
-         }
-         }
-         */
+        if (partida instanceof Tutorial) {
+            if (!((Tutorial) partida).pasos.isEmpty() && !((Tutorial) partida).pasos.get(0).requiresClick) {
+                checkTutorialStepResolution();
+            }
+        }
         //Click izquierdo
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
-            if (!(partida instanceof Tutorial)) {
-                if (continuar.presionado(x_click, y_click)) {
-                    RTS.map.cambio_de_mapa(container, new Partida(), "Menu");
+            if (continuar.isHovered(x_click, y_click)) {
+                if (!(partida instanceof Tutorial) || ((Tutorial)partida).pasos.isEmpty()) {
+                    endGameAndReturnToMenu(container);
                 }
             }
             click = true;
             if (partida instanceof Tutorial) {
-                Tutorial t = (Tutorial) partida;
-                if (t.pasos.get(0).comprobacion(partida)) {
-                    if (!continuar.canBeUsed) {
-                        continuar.canBeUsed = true;
-                    }
-                    t.pasos.get(0).efecto(partida);
-                    t.pasos.remove(0);
-                    click = false;
-                    if (t.pasos.isEmpty()) {
-                        RTS.map.cambio_de_mapa(container, partida, "Menu");
+                if (!((Tutorial) partida).pasos.isEmpty() && ((Tutorial) partida).pasos.get(0).requiresClick) {
+                    if (checkTutorialStepResolution()) {
+                        click = false;
                     }
                 }
             }
@@ -756,15 +712,9 @@ public class VentanaCombate extends Ventana {
         //Click derecho
         if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
             if (partida instanceof Tutorial) {
-                Tutorial t = (Tutorial) partida;
-                if (t.pasos.get(0).comprobacion(partida)) {
-                    if (!continuar.canBeUsed) {
-                        continuar.canBeUsed = true;
-                    }
-                    t.pasos.get(0).efecto(partida);
-                    t.pasos.remove(0);
-                    if (t.pasos.isEmpty()) {
-                        RTS.map.cambio_de_mapa(container, partida, "Menu");
+                if (!((Tutorial) partida).pasos.isEmpty() && ((Tutorial) partida).pasos.get(0).requiresClick) {
+                    if (checkTutorialStepResolution()) {
+                        click = false;
                     }
                 }
             }
@@ -1003,7 +953,7 @@ public class VentanaCombate extends Ventana {
                 g.fillRect(playerX, playerY, VentanaCombate.VIEWPORT_SIZE_X, 100);
                 g.setColor(Color.white);
                 g.drawString(t.pasos.get(0).texto, playerX, playerY);
-                continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_X - continuar.anchura;
+                continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_X / 2 - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
                 partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_X - 100, playerY);
             } else {
@@ -1017,5 +967,47 @@ public class VentanaCombate extends Ventana {
             g.drawString(client.username, x_chat - client.username.length() * 10, y_chat);
             chat_texto.render(container, g);
         }
+    }
+
+    private void displayVictory() throws SlickException {
+        this.playerX = 0;
+        this.playerY = 0;
+        ElementosComunes.VICTORY_SOUND.playAt(0f, 0f, 0f);
+        victoria = new Animation(new Image[]{new Image("media/Victoria1.png"), new Image("media/Victoria2.png")}, new int[]{300, 300}, true);
+        continuar.canBeUsed = true;
+        continuar.x = 650;
+        continuar.y = 400;
+    }
+
+    private void displayDefeat() throws SlickException {
+        this.playerX = 0;
+        this.playerY = 0;
+        ElementosComunes.DEFEAT_SOUND.playAt(0f, 0f, 0f);
+        derrota = new Animation(new Image[]{new Image("media/Derrota1.png"), new Image("media/Derrota2.png")}, new int[]{300, 300}, true);
+        continuar.canBeUsed = true;
+        continuar.x = 650;
+        continuar.y = 400;
+    }
+
+    private boolean checkTutorialStepResolution() throws SlickException {
+        Tutorial t = (Tutorial) partida;
+        if (t.pasos.get(0).comprobacion(partida)) {
+            continuar.canBeUsed = true;
+            t.pasos.get(0).efecto(partida);
+            t.pasos.remove(0);
+            if (t.pasos.isEmpty()) {
+                displayVictory();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void endGameAndReturnToMenu(GameContainer container) throws SlickException {
+        victoria = null;
+        derrota = null;
+        ElementosComunes.VICTORY_SOUND.stop();
+        ElementosComunes.DEFEAT_SOUND.stop();
+        RTS.map.cambio_de_mapa(container, new Partida(), "Menu");
     }
 }

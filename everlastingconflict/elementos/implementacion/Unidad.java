@@ -489,10 +489,10 @@ public class Unidad extends ElementoMovil {
         if (objetivo.nombre.equals("Torreta defensiva")) {
             transformacion_torreta();
         } else {
+            ((Edificio) objetivo).activo = true;
             ((Edificio) objetivo).iniciarbotones(p);
             objetivo.vida = objetivo.vida_max;
         }
-        ((Edificio) objetivo).activo = true;
         this.destruir(p, null, false);
         boolean allBuildingsEnabled = aliado.edificios.stream().allMatch(e -> e.activo);
         if (allBuildingsEnabled) {

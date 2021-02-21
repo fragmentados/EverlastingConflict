@@ -212,8 +212,7 @@ public class Edificio extends ElementoAtacante {
                     jugador.removeResources(unidadACrear.coste);
                 }
                 if (!jugador.raza.equals(RaceNameEnum.FENIX.getName()) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
-                    unidadACrear.x = this.x;
-                    unidadACrear.y = this.y;
+                    setInitialCoordinatesForCreatedUnit(unidadACrear);
                     jugador.poblacion += unidadACrear.coste_poblacion;
                     if (cola_construccion.isEmpty()) {
                         barra.activar(unidadACrear.tiempo);
@@ -226,6 +225,25 @@ public class Edificio extends ElementoAtacante {
                 }
             }
         }
+    }
+
+    private void setInitialCoordinatesForCreatedUnit(Unidad unitToCreate) {
+        float x = getCoordinateForCreatedUnit(this.x, reunion_x, anchura);
+        float y = getCoordinateForCreatedUnit(this.y, reunion_y, altura);
+        unitToCreate.x = x;
+        unitToCreate.y = y;
+    }
+
+    private float getCoordinateForCreatedUnit(float initialValue, float maxValue, float buildingOffset) {
+        float result;
+        if (maxValue > initialValue + buildingOffset / 2) {
+            result = initialValue + buildingOffset / 2;
+        } else if (maxValue < initialValue - buildingOffset / 2) {
+            result = initialValue - buildingOffset / 2;
+        } else {
+            result = initialValue;
+        }
+        return result;
     }
 
     private void mandoCentralCrearUnidad(Jugador jugador, Unidad unidadACrear) {
@@ -323,15 +341,15 @@ public class Edificio extends ElementoAtacante {
 
     @Override
     public void dibujar(Partida p, Color c, Input input, Graphics g) {
+        if (VentanaCombate.ui.elementos.indexOf(this) != -1) {
+            dibujar_fin_movimiento(g);
+        }
         this.chechAnimationStatus(p);
         super.dibujar(p, c, input, g);
         if (!activo) {
             spriteDisabled.draw(x - anchura / 2, y - altura / 2);
         }
         barra.dibujar(g);
-        if (VentanaCombate.ui.elementos.indexOf(this) != -1) {
-            dibujar_fin_movimiento(g);
-        }
     }
 
     private void chechAnimationStatus(Partida p) {

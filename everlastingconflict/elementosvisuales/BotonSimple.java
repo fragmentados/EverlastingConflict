@@ -42,7 +42,7 @@ public class BotonSimple {
         this.y = y;
     }
 
-    public boolean presionado(float x, float y) {
+    public boolean isHovered(float x, float y) {
         if (canBeUsed) {
             if ((x >= this.x) && (x <= (this.x + anchura))) {
                 if ((y >= this.y) && (y <= (this.y + altura))) {
