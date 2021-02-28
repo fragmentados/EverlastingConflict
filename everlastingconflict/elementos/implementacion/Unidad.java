@@ -123,8 +123,8 @@ public class Unidad extends ElementoMovil {
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
         super.comportamiento(p, g, delta);
-        Jugador aliado = p.jugador_aliado(this);
-        Jugador enemigo = p.jugador_enemigo(this);
+        Jugador aliado = p.getPlayerFromElement(this);
+        List<Jugador> enemies = p.enemyPlayersFromElement(this);
         if (statusEffectCollection.existe_estado(StatusEffectName.REGENERACION)) {
             if (this.vida < this.vida_max) {
                 aumentar_vida(Reloj.TIME_REGULAR_SPEED * delta);
@@ -133,10 +133,12 @@ public class Unidad extends ElementoMovil {
         if (statusEffectCollection.existe_estado(StatusEffectName.EROSION)) {
             disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
         }
-        for (ElementoEspecial e : enemigo.elementos_especiales) {
-            if (e.nombre.equals("Agujero negro")) {
-                if (this.alcance(e.x, e.y, e.anchura / 2)) {
-                    this.destruir(p, null);
+        for (Jugador enemy : enemies) {
+            for (ElementoEspecial e : enemy.elementos_especiales) {
+                if (e.nombre.equals("Agujero negro")) {
+                    if (this.alcance(e.x, e.y, e.anchura / 2)) {
+                        this.destruir(p, null);
+                    }
                 }
             }
         }
@@ -193,7 +195,7 @@ public class Unidad extends ElementoMovil {
                 }
                 break;
             case ATACAR_MOVER:
-                boolean atacar = atacar_cercanos(p);
+                boolean atacar = checkToAttackNearbyElements(p);
                 if (!atacar) {
                     if (canMove() && (movimiento == null) || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov)) {
                         anadir_movimiento(x_atmov, y_atmov);
@@ -222,10 +224,12 @@ public class Unidad extends ElementoMovil {
                 }
                 break;
             case PARADO:
-                for (ElementoEspecial e : enemigo.elementos_especiales) {
-                    if (e.nombre.equals("Agujero negro")) {
-                        if (this.alcance(300, e)) {
-                            this.mover(p, e.x, e.y);
+                for (Jugador enemy : enemies) {
+                    for (ElementoEspecial e : enemy.elementos_especiales) {
+                        if (e.nombre.equals("Agujero negro")) {
+                            if (this.alcance(300, e)) {
+                                this.mover(p, e.x, e.y);
+                            }
                         }
                     }
                 }
@@ -267,13 +271,13 @@ public class Unidad extends ElementoMovil {
     public void destruir(Partida p, ElementoAtacante atacante, boolean shouldPlaySound) {
         //La unidad no ha sido destruida previamente
         if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
-                && p.jugador_aliado(this).unidades.indexOf(this) != -1) {
+                && p.getPlayerFromElement(this).unidades.indexOf(this) != -1) {
             this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             if (this.seleccionada()) {
                 this.deseleccionar();
             }
-            p.jugador_aliado(this).poblacion -= this.coste_poblacion;
-            p.jugador_aliado(this).unidades.remove(this);
+            p.getPlayerFromElement(this).poblacion -= this.coste_poblacion;
+            p.getPlayerFromElement(this).unidades.remove(this);
             Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             if (shouldPlaySound) {
                 ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
@@ -294,8 +298,8 @@ public class Unidad extends ElementoMovil {
         if (canMove()) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
-                if (!p.jugador_aliado(this).raza.equals(RaceNameEnum.FENIX.getName())) {
-                    p.jugador_aliado(this).addResources(edificio_construccion.coste);
+                if (!p.getPlayerFromElement(this).raza.equals(RaceNameEnum.FENIX.getName())) {
+                    p.getPlayerFromElement(this).addResources(edificio_construccion.coste);
                 }
                 edificio_construccion = null;
             }
@@ -374,7 +378,7 @@ public class Unidad extends ElementoMovil {
     public void construir(Partida p, Edificio edificio, float x, float y) {
         super.construir(p, edificio, x, y);
         statusBehaviour = StatusBehaviour.CONSTRUYENDO;
-        p.jugador_aliado(this).resta_recursos(edificio.coste);
+        p.getPlayerFromElement(this).resta_recursos(edificio.coste);
         edificio_construccion = edificio;
         edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
         edificio_construccion.cambiar_coordenadas(x, y);
@@ -442,7 +446,7 @@ public class Unidad extends ElementoMovil {
         v.movil = true;
         v.hostil = true;
         //Eliminación del vehículo de la lista de las unidades creadas del Taller
-        for (Edificio e : p.jugador_aliado(this).edificios) {
+        for (Edificio e : p.getPlayerFromElement(this).edificios) {
             if (e instanceof Taller) {
                 Taller t = (Taller) e;
                 if (t.unidades_creadas.indexOf(v) != -1) {
@@ -502,7 +506,7 @@ public class Unidad extends ElementoMovil {
     }
 
     public void enableBuilding(Partida p) {
-        Jugador aliado = p.jugador_aliado(this);
+        Jugador aliado = p.getPlayerFromElement(this);
         if (objetivo.nombre.equals("Torreta defensiva")) {
             transformacion_torreta();
         } else {

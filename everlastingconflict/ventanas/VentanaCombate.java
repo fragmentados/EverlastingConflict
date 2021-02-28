@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.ControlGroup;
 import everlastingconflict.Experimento_Multiplayer_Real.Client;
@@ -182,7 +182,7 @@ public class VentanaCombate extends Ventana {
         }
         ctrl = attackMoveModeEnabled = mayus = click = false;
         deseleccionar = true;
-        partida.initElements(1);
+        partida.initElements();
         atacar = new Image("media/Cursores/atacar.png");
         construccion = new Image("media/Edificios/construccion.png");
         chat_texto = new TextField(container, container.getDefaultFont(), (int) x_chat, (int) y_chat, 300, 20);
@@ -277,17 +277,10 @@ public class VentanaCombate extends Ventana {
         edificio.sprite.draw(posx, posy);
     }
 
-    public void dibujar_visibilidad(Graphics g, Color c, int desplazamiento) {
-        g.setColor(c);
-        for (Unidad u : partida.j1.unidades) {
-            int alcance = u.vision + desplazamiento;
-            g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
-        }
-        for (Edificio u : partida.j1.edificios) {
-            int alcance = u.vision + desplazamiento;
-            g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
-        }
-        partida.j1.visiones.stream().forEach(v -> v.dibujar(g, desplazamiento));
+    public void renderVisibility(Graphics g, Color c, int desplazamiento) {
+        Jugador mainPlayer = partida.getMainPlayer();
+        mainPlayer.renderVisibility(g, c, desplazamiento);
+        partida.getAlliesFromPlayer(mainPlayer).forEach(p -> p.renderVisibility(g, c, desplazamiento));
     }
 
     public void pathing_prueba(boolean movimiento, List<Unidad> unidades, float x, float y) {
@@ -354,7 +347,7 @@ public class VentanaCombate extends Ventana {
                             }
                         }
                     }
-                    Jugador aliado = partida.jugador_aliado(u);
+                    Jugador aliado = partida.getPlayerFromElement(u);
                     if (u.piloto) {
                         //Embarca vehículo
                         for (Unidad u2 : aliado.unidades) {
@@ -456,6 +449,7 @@ public class VentanaCombate extends Ventana {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
+        Jugador mainPlayer = partida.getMainPlayer();
         Input input = container.getInput();
         ctrl = input.isKeyDown(Input.KEY_LCONTROL);
         mayus = input.isKeyDown(Input.KEY_LSHIFT);
@@ -469,10 +463,10 @@ public class VentanaCombate extends Ventana {
         mensajes.removeAll(messagesToBeRemoved);
         handleForcedCameraMovement(delta);
         if (!(partida instanceof Tutorial)) {
-            if (partida.check_victory_player_1() && victoria == null) {
+            if (partida.checkMainPlayerVictory() && victoria == null) {
                 displayVictory();
             }
-            if (partida.check_victory_player_2() && derrota == null) {
+            if (partida.checkMainPlayerDefeat() && derrota == null) {
                 displayDefeat();
             }
         }
@@ -507,8 +501,6 @@ public class VentanaCombate extends Ventana {
             }
         }
         //Comportamientos
-        partida.j1.comportamiento_elementos(partida, container.getGraphics(), delta);
-        partida.j2.comportamiento_elementos(partida, container.getGraphics(), delta);
         partida.comportamiento_elementos(container.getGraphics(), delta);
         //Mover la pantalla
         if (x_movimiento == -1 && y_movimiento == -1) {
@@ -606,7 +598,7 @@ public class VentanaCombate extends Ventana {
                 if (!constructor.nombre.equals("No hay")) {
                     if (edificio.construible(constructor, partida, input, x_click, y_click)) {
                         if (edificio.nombre.equals("Refinería") || edificio.nombre.equals("Centro de restauración")) {
-                            Recurso r = partida.recurso_mas_cercano(null, null, "Hierro", (int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
+                            Recurso r = partida.closestResource(null, null, "Hierro", (int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
                             if (r != null) {
                                 constructor.construir(partida, edificio, r.x, r.y);
                             }
@@ -667,10 +659,10 @@ public class VentanaCombate extends Ventana {
                     y_click = y_final;
                     y_final = contador;
                 }
-                for (Unidad u : partida.j1.unidades) {
+                for (Unidad u : mainPlayer.unidades) {
                     if (u.en_rango(x_click, y_click, x_final, y_final)) {
                         if (ctrl) {
-                            for (Unidad u2 : partida.j1.unidades) {
+                            for (Unidad u2 : mainPlayer.unidades) {
                                 if (u2 != u) {
                                     if (u2.nombre.equals(u.nombre)) {
                                         if (!u2.seleccionada()) {
@@ -691,10 +683,10 @@ public class VentanaCombate extends Ventana {
                     }
                 }
                 if (seleccionar_edificios) {
-                    for (Edificio e : partida.j1.edificios) {
+                    for (Edificio e : mainPlayer.edificios) {
                         if (e.en_rango(x_click, y_click, x_final, y_final)) {
                             if (ctrl) {
-                                for (Edificio e2 : partida.j1.edificios) {
+                                for (Edificio e2 : mainPlayer.edificios) {
                                     if (e2 != e) {
                                         if (e2.nombre.equals(e.nombre)) {
                                             e2.seleccionar();
@@ -824,6 +816,7 @@ public class VentanaCombate extends Ventana {
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
+        Jugador mainPlayer = partida.getMainPlayer();
         Input input = container.getInput();
         //invertir.dibujar(g);
         //Negro        
@@ -838,31 +831,15 @@ public class VentanaCombate extends Ventana {
             }
         } else {
             //Gris
-            dibujar_visibilidad(g, HALF_VISIBLE_COLOR, 100);
+            renderVisibility(g, HALF_VISIBLE_COLOR, 100);
             //Verde
-            dibujar_visibilidad(g, FULL_VISIBLE_COLOR, 0);
-            partida.dibujar_elementos(g, input);
-            partida.j1.dibujar_elementos(partida, g, input);
-            for (Recurso r : partida.j2.lista_recursos) {
-                if (r.visible(partida)) {
-                    r.dibujar(partida, partida.j2.color, input, g);
-                }
-            }
-            for (Edificio e : partida.j2.edificios) {
-                if (e.visible(partida)) {
-                    e.dibujar(partida, partida.j2.color, input, g);
-                }
-            }
-            for (Unidad u : partida.j2.unidades) {
-                if (u.visible(partida)) {
-                    u.dibujar(partida, partida.j2.color, input, g);
-                }
-            }
+            renderVisibility(g, FULL_VISIBLE_COLOR, 0);
+            partida.renderElements(g, input);
             if (elementCircle != null) {
                 if (elementCircle instanceof Bestia) {
                     elementCircle.circulo_extendido(g, Color.blue);
                 } else {
-                    elementCircle.circulo_extendido(g, partida.jugador_aliado(elementCircle).color);
+                    elementCircle.circulo_extendido(g, partida.getPlayerFromElement(elementCircle).color);
                 }
             }
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
@@ -872,7 +849,6 @@ public class VentanaCombate extends Ventana {
                     g.setColor(Color.white);
                 }
             }
-
             //Construcción        
             if ((edificio != null)) {
                 if (constructor instanceof Edificio) {
@@ -882,13 +858,13 @@ public class VentanaCombate extends Ventana {
                 }
                 dibujar_preview_edificio(g, edificio, input);
             }
-            for (Unidad u : partida.j1.unidades) {
+            for (Unidad u : mainPlayer.unidades) {
                 Edificio contador = u.edificio_construccion;
                 if ((contador != null) && (contador.vida < contador.vida_max)) {
                     dibujar_edificio(g, u.edificio_construccion);
                 }
             }
-            for (Edificio e : partida.j1.edificios) {
+            for (Edificio e : mainPlayer.edificios) {
                 Edificio contador = e.edificio_construccion;
                 if ((contador != null) && (contador.vida < contador.vida_max)) {
                     dibujar_edificio(g, e.edificio_construccion);
@@ -933,17 +909,11 @@ public class VentanaCombate extends Ventana {
                 hoveredButton.renderExtendedInfo(null, g, ui.seleccion_actual.get(0));
             }
             //Evento seleccionado Guardián
-            if (partida.j1.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
-                Evento evento_seleccionado = partida.j1.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
+            Jugador guardianPlayer = partida.getPlayerByRace(RaceNameEnum.GUARDIANES);
+            if (guardianPlayer != null) {
+                Evento evento_seleccionado = guardianPlayer.getSelectedEvent(playerX + input.getMouseX(), playerY + input.getMouseY());
                 if (evento_seleccionado != null) {
-                    new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j1, g, null);
-                }
-            } else {
-                if (partida.j2.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
-                    Evento evento_seleccionado = partida.j2.obtener_evento_seleccionado(playerX + input.getMouseX(), playerY + input.getMouseY());
-                    if (evento_seleccionado != null) {
-                        new BotonComplejo(evento_seleccionado).renderExtendedInfo(partida.j2, g, null);
-                    }
+                    new BotonComplejo(evento_seleccionado).renderExtendedInfo(guardianPlayer, g, null);
                 }
             }
             //Pasos tutorial
@@ -955,14 +925,10 @@ public class VentanaCombate extends Ventana {
                 g.drawString(t.pasos.get(0).texto, playerX, playerY);
                 continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
-                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
-            } else {
-                partida.j1.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
-                // TODO EFB No pintar recursos del segundo jugador
-                //partida.j2.dibujar_recursos(g, playerX + VIEWPORT_SIZE_X - 100, playerY + 15);
             }
+            mainPlayer.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
         }
-        continuar.dibujar(g);
+        continuar.render(g);
         if (chat) {
             g.drawString(client.username, x_chat - client.username.length() * 10, y_chat);
             chat_texto.render(container, g);
@@ -1008,6 +974,6 @@ public class VentanaCombate extends Ventana {
         derrota = null;
         ElementosComunes.VICTORY_SOUND.stop();
         ElementosComunes.DEFEAT_SOUND.stop();
-        RTS.mainController.cambio_de_mapa(container, new Partida(), "Menu");
+        RTS.mainController.windowSwitch(container, new Partida(), "Menu");
     }
 }

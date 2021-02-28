@@ -23,17 +23,17 @@ public class AI extends Jugador {
 
     public int npushear;
     
-    public AI(String n, String r) {
-        super(n, r);
+    public AI(String n, String r, Integer t) {
+        super(n, r, t);
     }
 
-    public static AI crearAI(String r) {
+    public static AI crearAI(String r, Integer t) {
         if (RaceNameEnum.CLARK.getName().equals(r)) {
-            return new AIClark();
+            return new AIClark(t);
         } else if (RaceNameEnum.ETERNIUM.getName().equals(r)) {
-            return new AIEternium();
+            return new AIEternium(t);
         } else if (RaceNameEnum.FENIX.getName().equals(r)) {
-                return new AIFenix();
+                return new AIFenix(t);
         }
         return null;
     }
@@ -43,7 +43,7 @@ public class AI extends Jugador {
         if (militares.size() >= npushear) {
             for (Unidad u : militares) {
                 if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
-                    Jugador enemigo = p.jugador_enemigo(this);
+                    Jugador enemigo = p.enemyPlayer(this);
                     u.atacarmover(p, enemigo.x_inicial, enemigo.y_inicial);
                 }
             }

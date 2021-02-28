@@ -1,21 +1,23 @@
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public enum MapEnum {
-    SMALL("Small(2000 x 2000)", 2000, 2000),
-    MEDIUM("Medium(4000 x 4000)", 4000, 4000),
-    LARGE("Large(6000 x 6000)", 6000, 6000);
+    SMALL("Small(2000 x 2000)", 2000, 2000, 2),
+    MEDIUM("Medium(4000 x 4000)", 4000, 4000, 4),
+    LARGE("Large(6000 x 6000)", 6000, 6000, 6);
 
     String name;
     int width;
     int height;
+    int maxPlayers;
 
-    MapEnum(String name, int width, int height) {
+    MapEnum(String name, int width, int height, int maxPlayers) {
         this.name = name;
         this.width = width;
         this.height = height;
+        this.maxPlayers = maxPlayers;
     }
 
     public String getName() {
@@ -28,6 +30,10 @@ public enum MapEnum {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
     }
 
     public static List<String> getAllNames() {

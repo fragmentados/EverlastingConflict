@@ -9,9 +9,9 @@ import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoSimple;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.*;
 import everlastingconflict.relojes.Reloj;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -47,6 +47,9 @@ public class Jugador {
     public int poblacion, poblacion_max;
     public boolean perforacion = false;
     public Eventos eventos;
+    // Team data
+    public Integer team;
+    public boolean isMainPlayer;
 
     public float getRecursos() {
         return recursos;
@@ -86,7 +89,7 @@ public class Jugador {
 
     }
 
-    public Jugador(String nombre, String raza) {
+    public Jugador(String nombre, String raza, Integer team) {
         this.nombre = nombre;
         this.raza = raza;
         unidades = new ArrayList<>();
@@ -98,6 +101,7 @@ public class Jugador {
         poblacion = 0;
         poblacion_max = 200;
         this.resourceImage = Raza.getResourceImage(raza);
+        this.team = team;
     }
 
     public void comprobacion_perforacion() {
@@ -196,14 +200,17 @@ public class Jugador {
     }
 
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        for (Edificio e : edificios) {
-            e.barra.aumentar_progreso(delta);
-            e.comprobar_barra(p, this);
-            e.comportamiento(p, g, delta);
+        try {
+            for (Edificio e : edificios) {
+                e.barra.aumentar_progreso(delta);
+                e.checkProgressBar(p, this);
+                e.comportamiento(p, g, delta);
+            }
+        } catch (Exception ex) {
         }
     }
 
-    public void dibujar_elementos(Partida p, Graphics g, Input input) {
+    public void renderMainTeamElements(Partida p, Graphics g, Input input) {
         for (Recurso r : lista_recursos) {
             r.dibujar(p, color, input, g);
         }
@@ -237,6 +244,12 @@ public class Jugador {
         if (raza.equals(RaceNameEnum.GUARDIANES.getName())) {
             eventos.dibujar(g);
         }
+    }
+
+    public void renderNonMainTeamElements(Partida p, Graphics g, Input input) {
+        lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.dibujar(p, color, input, g));
+        edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.dibujar(p, color, input, g));
+        unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));
     }
 
     public void drawResources(Graphics g, float x, float y) {
@@ -273,22 +286,22 @@ public class Jugador {
     }
 
     public int cantidad_edificio(String n) {
-        int resultado = 0;
+        List<Edificio> buildingsToCount = new ArrayList<>();
         for (Edificio ed : edificios) {
             if (n.equals(ed.nombre)) {
-                resultado++;
+                buildingsToCount.add(ed);
             }
         }
         for (Unidad u : unidades) {
             if (u.constructor) {
                 if (u.edificio_construccion != null) {
                     if (u.edificio_construccion.nombre.equals(n)) {
-                        resultado++;
+                        buildingsToCount.add(u.edificio_construccion);
                     }
                 }
             }
         }
-        return resultado;
+        return buildingsToCount.size();
     }
 
     public int cantidad_unidad(String n) {
@@ -349,7 +362,7 @@ public class Jugador {
         }
     }
 
-    public Evento obtener_evento_seleccionado(float x, float y) {
+    public Evento getSelectedEvent(float x, float y) {
         for (Evento e : eventos.contenido) {
             if (new Rectangle2D.Float(e.x, e.y, e.anchura, e.altura).contains(new Point2D.Float(x, y))) {
                 return e;
@@ -369,5 +382,26 @@ public class Jugador {
 
     public Manipulador getManipulator() {
         return (Manipulador) this.unidades.stream().filter(u -> u instanceof Manipulador).findFirst().get();
+    }
+
+    public boolean isDefeated() {
+        if (RaceNameEnum.MAESTROS.getName().equals(this.raza)) {
+            return !unidades.get(0).nombre.equals("Manipulador");
+        }else {
+            return edificios.isEmpty();
+        }
+    }
+
+    public void renderVisibility(Graphics g, Color c, int desplazamiento) {
+        g.setColor(c);
+        unidades.forEach(u -> {
+            int alcance = u.vision + desplazamiento;
+            g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
+        });
+        edificios.forEach(u -> {
+            int alcance = u.vision + desplazamiento;
+            g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
+        });
+        visiones.stream().forEach(v -> v.dibujar(g, desplazamiento));
     }
 }

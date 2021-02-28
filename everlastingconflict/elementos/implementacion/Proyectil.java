@@ -67,8 +67,7 @@ public class Proyectil extends ElementoMovil {
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
         if (movimiento != null) {
-            if (movimiento.resolucion(p, delta)) {
-            }
+            movimiento.resolucion(p, delta);
         }
         if (objetivo.hitbox(this.x, this.y)) {
             if (shouldHeal) {

@@ -10,7 +10,7 @@ import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 

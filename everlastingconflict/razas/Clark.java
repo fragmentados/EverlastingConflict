@@ -9,10 +9,11 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.elementosvisuales.BotonComplejo;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Clark {
         int ndevorador = (int) f.contenido.stream().filter(u -> "Devorador".equals(u.nombre)).count();
         int ncazador = (int) f.contenido.stream().filter(u -> "Cazador".equals(u.nombre)).count();
         float x = f.contenido.get(0).x, y = f.contenido.get(0).y;
-        Jugador aliado = p.jugador_aliado(f.contenido.get(0));
+        Jugador aliado = p.getPlayerFromElement(f.contenido.get(0));
         int tamano = f.contenido.size();
         Unidad resultado = null;
         switch (ndepredador) {

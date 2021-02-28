@@ -11,12 +11,13 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 /**
  *
@@ -25,21 +26,34 @@ import java.awt.geom.Rectangle2D;
 public abstract class ElementoCoordenadas extends ElementoSimple {
 
     public float x, y;
-    public int anchura, altura;    
+    public int anchura, altura;
     
     public boolean visible(Partida p) {
-        Jugador enemigo = p.jugador_enemigo(this);
-        for (Edificio e : enemigo.edificios) {
+        return p.enemyPlayersFromElement(this).stream().anyMatch(player -> visibleByPlayer(player));
+    }
+
+    public boolean visibleByMainTeam(Partida p) {
+        List<Jugador> mainTeam = p.getMainTeam();
+        for (Jugador jugador : mainTeam) {
+            if (visibleByPlayer(jugador)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean visibleByPlayer(Jugador j) {
+        for (Edificio e : j.edificios) {
             if (e.alcance(e.vision / 2, this)) {
                 return true;
             }
         }
-        for (Unidad u : enemigo.unidades) {
+        for (Unidad u : j.unidades) {
             if (u.alcance(u.vision / 2, this)) {
                 return true;
             }
         }
-        for (Vision v : enemigo.visiones) {
+        for (Vision v : j.visiones) {
             if (v.forma.contains(new Rectangle2D.Float(x - anchura / 2, y - altura / 2, anchura, altura))) {
                 return true;
             }
@@ -131,42 +145,13 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
         return (distancia_x + distancia_y) <= n;
     }
 
-    public ElementoComplejo colision(Partida p, float x, float y) {
+    public boolean colision(Partida partida, float x, float y) {
         //Devuelve true si existe alguna otra unidad en las coordenadas especificadas
-        ElementoComplejo resultado = new Unidad("No hay");
-        for (Edificio e : p.j1.edificios) {
-            if (e != this) {
-                if (e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2)) {
-                    resultado = e;
-                    return resultado;
-                }
-            }
+        boolean colision = partida.players.stream().flatMap(p -> p.unidades.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
+        if (!colision) {
+            colision = partida.players.stream().flatMap(p -> p.edificios.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
         }
-        for (Edificio e : p.j2.edificios) {
-            if (e != this) {
-                if (e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2)) {
-                    resultado = e;
-                    return resultado;
-                }
-            }
-        }
-        for (Unidad u : p.j1.unidades) {
-            if (u != this) {
-                if (u.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2)) {
-                    resultado = u;
-                    return resultado;
-                }
-            }
-        }
-        for (Unidad u : p.j2.unidades) {
-            if (u != this) {
-                if (u.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2)) {
-                    resultado = u;
-                    return resultado;
-                }
-            }
-        }
-        return resultado;
+        return colision;
     }
 
     public void dibujar(Partida p, Color c, Input input, Graphics g){

@@ -9,11 +9,11 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.implementacion.*;
-import everlastingconflict.mapas.MapEnum;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
+import everlastingconflict.ventanas.MapEnum;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -21,8 +21,9 @@ import org.newdawn.slick.Input;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 /**
  *
@@ -30,7 +31,8 @@ import static everlastingconflict.mapas.VentanaCombate.*;
  */
 public class Partida {
 
-    public Jugador j1, j2;
+    //public Jugador j1, j2;
+    public List<Jugador> players = new ArrayList<>();
     public List<Recurso> recursos;
     public List<Bestias> bestias;
     public List<Proyectil> proyectiles;
@@ -59,7 +61,7 @@ public class Partida {
         return resultado;
     }
 
-    public Recurso recurso_mas_cercano(Recurso recurso, String nombre_jugador, String nombre, float x, float y) {
+    public Recurso closestResource(Recurso recurso, String nombre_jugador, String nombre, float x, float y) {
         //Se pasa recurso para que no devuelva el mismo recurso.
         //Se pasa nombre para que el recurso tenga un nombre determinado
         //Se pasa nombre_jugador para que no devuelva un recurso capturado por el jugador
@@ -69,7 +71,7 @@ public class Partida {
         for (Recurso r : recursos) {
             if ((recurso == null) || (r != recurso)) {
                 if ((nombre == null) || ((r.nombre.equals(nombre) && (!r.nombre.equals("Civiles") || r.vida == 0)))) {
-                    if ((nombre_jugador == null) || (!r.capturador.equals(nombre_jugador))) {
+                    if ((nombre_jugador == null) || (!nombre_jugador.equals(r.capturador))) {
                         float distancia_local = Math.abs(r.x - x) + Math.abs(r.y - y);
                         if ((distancia_local < distancia) || (distancia == -1)) {
                             if (!r.ocupado) {
@@ -84,90 +86,73 @@ public class Partida {
         return resultado;
     }
 
-    public Jugador jugador_enemigo(Jugador j) {
-        if (j == j1) {
-            return j2;
-        } else {
-            return j1;
-        }
+    public Jugador enemyPlayer(Jugador player) {
+        return players.stream().filter(p -> !player.team.equals(p.team)).findFirst().get();
+    }
+
+    public List<Jugador> getNonMainPlayers() {
+        return players.stream().filter(p -> !p.isMainPlayer).collect(Collectors.toList());
+    }
+
+    public List<Jugador> getNonMainTeam() {
+        List<Jugador> mainTeam = getMainTeam();
+        return this.players.stream().filter(p -> !mainTeam.contains(p)).collect(Collectors.toList());
+    }
+
+    public Jugador getMainPlayer() {
+        return players.stream().filter(p -> p.isMainPlayer).findFirst().get();
+    }
+
+    public List<Jugador> getMainTeam() {
+        List<Jugador> mainTeam = new ArrayList<>();
+        mainTeam.add(getMainPlayer());
+        mainTeam.addAll(getAlliesFromPlayer(mainTeam.get(0)));
+        return mainTeam;
+    }
+
+    public List<Jugador> getAlliesFromPlayer(Jugador j) {
+        return players.stream().filter(p -> !j.equals(p) && j.team.equals(p.team)).collect(Collectors.toList());
     }
 
     public boolean belongsToMainPlayer(ElementoCoordenadas e) {
+        Jugador mainPlayer = this.getMainPlayer();
         if (e instanceof Unidad) {
-            return j1.unidades.indexOf(e) != -1;
+            return mainPlayer.unidades.indexOf(e) != -1;
         } else if (e instanceof Edificio) {
-            return j1.edificios.indexOf(e) != -1;
+            return mainPlayer.edificios.indexOf(e) != -1;
         } else {
-            return j1.lista_recursos.indexOf(e) != -1;
+            return mainPlayer.lista_recursos.indexOf(e) != -1;
         }
     }
 
-    public Jugador jugador_aliado(ElementoCoordenadas e) {
-        if (e instanceof Unidad) {
-            if (j1.unidades.indexOf(e) != -1) {
-                return j1;
-            } else {
-                return j2;
-            }
-        } else {
-            if (e instanceof Edificio) {
-                if (j1.edificios.indexOf(e) != -1) {
-                    return j1;
-                } else {
-                    return j2;
-                }
-            } else {
-                if (j1.lista_recursos.indexOf(e) != -1) {
-                    return j1;
-                } else {
-                    return j2;
-                }
-            }
-        }
+    public Jugador getPlayerFromElement(ElementoCoordenadas e) {
+        return this.players.stream()
+                .filter(p -> p.unidades.contains(e) || p.edificios.contains(e) || p.lista_recursos.contains(e))
+                .findFirst().orElse(null);
     }
 
-    public Jugador jugador_enemigo(ElementoCoordenadas e) {
-        if (e instanceof Unidad) {
-            if (j1.unidades.indexOf(e) != -1) {
-                return j2;
-            } else {
-                return j1;
-            }
-        } else {
-            if (e instanceof Edificio) {
-                if (j1.edificios.indexOf(e) != -1) {
-                    return j2;
-                } else {
-                    return j1;
-                }
-            } else {
-                if (j1.lista_recursos.indexOf(e) != -1) {
-                    return j2;
-                } else {
-                    return j1;
-                }
-            }
-        }
+    /*public Jugador enemyPlayer(ElementoCoordenadas e) {
+        return this.players.stream().filter(p -> !p.equals(getPlayerFromElement(e))).findFirst().orElse(null);
+    }*/
+
+    public List<Jugador> enemyPlayersFromElement(ElementoCoordenadas e) {
+        Jugador playerFromElement = getPlayerFromElement(e);
+        return this.players.stream().filter(p -> !p.team.equals(playerFromElement.team)).collect(Collectors.toList());
     }
 
-    public Jugador getPlayerByRace(String race) {
-        Jugador playerByRace = null;
-        if (race.equals(j1.raza)) {
-            playerByRace = j1;
-        } else if (race.equals(j2.raza)) {
-            playerByRace = j2;
-        }
-        return playerByRace;
+    public Jugador getPlayerByRace(RaceNameEnum race) {
+        return this.players.stream().filter(p -> p.raza.equals(race.getName())).findFirst().orElse(null);
     }
 
-    public void invertir() {
-        Jugador contador = j1;
-        j1 = j2;
-        j2 = contador;
-
+    public Jugador getPlayerByName(String name) {
+        return this.players.stream().filter(p -> p.nombre.equals(name)).findFirst().orElse(null);
     }
 
-    public void initElements(int njugador) {
+    public boolean existsPlayerWithRace(RaceNameEnum race) {
+        return this.players.stream().anyMatch(p -> race.getName().equals(p.raza));
+    }
+
+    public void initElements() {
         //Representan la altura y anchura del mapa
         float width = map.getWidth();
         float height = map.getHeight();
@@ -175,21 +160,21 @@ public class Partida {
         VentanaCombate.WORLD_SIZE_Y = height;
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        if (njugador == 1) {
-            j1.x_inicial = 200;
-            j1.y_inicial = 200;
-            j2.x_inicial = width - 400;
-            j2.y_inicial = height - 400;
-        } else {
-            j2.x_inicial = 200;
-            j2.y_inicial = 200;
-            j1.x_inicial = width - 400;
-            j1.y_inicial = height - 400;
+        this.players.get(0).x_inicial = 200;
+        this.players.get(0).y_inicial = 200;
+        this.players.get(1).x_inicial = width - 400;
+        this.players.get(1).y_inicial = height - 400;
+        if (this.players.size() >= 3) {
+            this.players.get(2).x_inicial = width - 400;
+            this.players.get(2).y_inicial = 200;
+        }
+        if (this.players.size() >= 4) {
+            this.players.get(3).x_inicial = 200;
+            this.players.get(2).y_inicial = height - 400;
         }
         float sextox = width / 6;
         float sextoy = height / 6;
-        if ((j1.raza.equals(RaceNameEnum.CLARK.getName()) || j2.raza.equals(RaceNameEnum.CLARK.getName()))
-            || (j1.raza.equals(RaceNameEnum.MAESTROS.getName()) || j2.raza.equals(RaceNameEnum.MAESTROS.getName()))) {
+        if (existsPlayerWithRace(RaceNameEnum.CLARK) || existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
             //Alphas
             bestias.add(new Bestias("Grupo1", sextox, sextoy));
             bestias.add(new Bestias("Grupo1", sextox * 3, sextoy));
@@ -215,7 +200,7 @@ public class Partida {
 //                be.cambiar_coordenadas(be.x - 200, be.y - 200);
 //            }
         }
-        if (j1.raza.equals("Eternium") || j2.raza.equals("Eternium")) {
+        if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
             recursos.add(new Recurso("Hierro", sextox * 2, sextoy));
             recursos.add(new Recurso("Hierro", sextox * 4, sextoy));
             recursos.add(new Recurso("Hierro", sextox, sextoy * 2));
@@ -225,8 +210,8 @@ public class Partida {
             recursos.add(new Recurso("Hierro", sextox * 2, sextoy * 5));
             recursos.add(new Recurso("Hierro", sextox * 4, sextoy * 5));
         }
-        if (j1.raza.equals("Fénix") || j2.raza.equals("Fénix")) {
-            if (j1.raza.equals("Eternium") || j2.raza.equals("Eternium")) {
+        if (existsPlayerWithRace(RaceNameEnum.FENIX)) {
+            if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
                 recursos.add(new Recurso("Civiles", sextox, sextoy));
                 recursos.add(new Recurso("Civiles", sextox * 3, sextoy));
                 recursos.add(new Recurso("Civiles", sextox * 5, sextoy));
@@ -236,7 +221,6 @@ public class Partida {
                 recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 5));
                 recursos.add(new Recurso("Civiles", sextox * 3, sextoy * 5));
             } else {
-                //if (j1.raza.equals("Clark") || j2.raza.equals("Clark")) {
                 recursos.add(new Recurso("Civiles", sextox * 2, sextoy));
                 recursos.add(new Recurso("Civiles", sextox * 4, sextoy));
                 recursos.add(new Recurso("Civiles", sextox, sextoy * 2));
@@ -245,47 +229,34 @@ public class Partida {
                 recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 4));
                 recursos.add(new Recurso("Civiles", sextox * 2, sextoy * 5));
                 recursos.add(new Recurso("Civiles", sextox * 4, sextoy * 5));
-                //}
             }
         }
         // Inicializar relojes
-        if (j1.raza.equals("Maestros")) {
-            VentanaCombate.crearReloj(new RelojMaestros(j1));
+        if (existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
+            VentanaCombate.crearReloj(new RelojMaestros(this.getPlayerByRace(RaceNameEnum.MAESTROS)));
         }
-        if (j2.raza.equals("Maestros")) {
-            VentanaCombate.crearReloj(new RelojMaestros(j2));
+        if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
+            VentanaCombate.crearReloj(new RelojEternium(this.getPlayerByRace(RaceNameEnum.ETERNIUM)));
         }
-
-        if (j1.raza.equals("Eternium")) {
-            VentanaCombate.crearReloj(new RelojEternium(j1));
-        }
-        if (j2.raza.equals("Eternium")) {
-            VentanaCombate.crearReloj(new RelojEternium(j2));
-        }
-//        for (Recurso r : recursos) {
-//            r.x -= 200;
-//            r.y -= 200;
-//        }
-        j1.initElements(this);
-        j2.initElements(this);
+        initPlayerColors();
+        players.forEach(p -> p.initElements(this));
     }
 
-    public boolean check_victory_player_1() {
-        switch (j2.raza) {
-            case "Maestros":
-                return !j2.unidades.get(0).nombre.equals("Manipulador");
-            default:
-                return j2.edificios.isEmpty();
-        }
+    private void initPlayerColors() {
+        Jugador mainPlayer = getMainPlayer();
+        mainPlayer.color = Color.green;
+        // Allies
+        players.stream().filter(p -> !mainPlayer.equals(p) && p.team.equals(mainPlayer.team)).forEach(p -> p.color = Color.yellow);
+        // Enemies
+        players.stream().filter(p -> !p.team.equals(mainPlayer.team)).forEach(p -> p.color = Color.red);
     }
 
-    public boolean check_victory_player_2() {
-        switch (j1.raza) {
-            case "Maestros":
-                return !j1.unidades.get(0).nombre.equals("Manipulador");
-            default:
-                return j1.edificios.isEmpty();
-        }
+    public boolean checkMainPlayerVictory() {
+        return this.players.stream().filter(p -> !p.isMainPlayer).allMatch(p -> p.isDefeated());
+    }
+
+    public boolean checkMainPlayerDefeat() {
+        return this.players.stream().filter(p -> p.isMainPlayer).findFirst().get().isDefeated();
     }
 
     public void comportamiento_elementos(Graphics g, int delta) {
@@ -296,13 +267,16 @@ public class Partida {
             for (Proyectil p : proyectiles) {
                 p.comportamiento(this, g, delta);
             }
-        } catch (Exception e){}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        players.forEach(p -> p.comportamiento_elementos(this, g, delta));
     }
 
-    public void dibujar_elementos(Graphics g, Input input) {
+    public void renderElements(Graphics g, Input input) {
         for (Recurso r : recursos) {
-            if (r.visible(this)) {
-                if (r.capturador.equals("")) {
+            if (r.visibleByMainTeam(this)) {
+                if (r.capturador == null) {
                     r.dibujar(this, Color.blue, input, g);
                 }
             }
@@ -311,10 +285,12 @@ public class Partida {
             b.dibujar(this, Color.blue, input, g);
         }
         for (Proyectil p : proyectiles) {
-            if (p.visible(this)) {
+            if (p.visibleByMainTeam(this)) {
                 p.dibujar(this, Color.blue, input, g);
             }
         }
+        getMainTeam().forEach(p -> p.renderMainTeamElements(this, g, input));
+        getNonMainTeam().forEach(p -> p.renderNonMainTeamElements(this, g, input));
     }
 
     public Partida() {
@@ -323,21 +299,19 @@ public class Partida {
         proyectiles = new ArrayList<>();
     }
 
-    public Partida(Jugador j, Jugador j2, MapEnum map) {
+    public Partida(List<Jugador> players, MapEnum map) {
         this();
-        this.j1 = j;
-        this.j2 = j2;
-        j1.color = Color.green;
-        j2.color = Color.red;
+        this.players = players;
+        this.players.get(0).isMainPlayer = true;
         this.map = map;
     }
 
     public ElementoVulnerable getElementAttackedAtPosition(float x, float y, List<Unidad> seleccionadas) {
-        Optional<Unidad> unitAttackedOp = j2.unidades.stream().filter(u -> u.visible(this) && u.hitbox(x, y)).findFirst();
+        Optional<Unidad> unitAttackedOp = getNonMainPlayers().stream().flatMap(p -> p.unidades.stream()).filter(u -> u.visible(this) && u.hitbox(x, y)).findFirst();
         if (!unitAttackedOp.isPresent()) {
-            Optional<Edificio> buildingAttackedOp = j2.edificios.stream().filter(e -> e.visible(this) && e.hitbox(x, y)).findFirst();
+            Optional<Edificio> buildingAttackedOp = getNonMainPlayers().stream().flatMap(p -> p.edificios.stream()).filter(e -> e.visible(this) && e.hitbox(x, y)).findFirst();
             if (!buildingAttackedOp.isPresent()) {
-                Optional<Recurso> resourceAttackedOp = j2.lista_recursos.stream().filter(r -> r.visible(this) && r.hitbox(x, y)).findFirst();
+                Optional<Recurso> resourceAttackedOp = getNonMainPlayers().stream().flatMap(p -> p.lista_recursos.stream()).filter(r -> r.visible(this) && r.hitbox(x, y)).findFirst();
                 if (!resourceAttackedOp.isPresent()) {
                     Optional<Bestia> beastAttackedOp = this.bestias.stream().flatMap(be -> be.getContenido().stream()).filter(b -> b.visible(this) && b.hitbox(x, y)).findFirst();
                     if (beastAttackedOp.isPresent()) {
@@ -366,12 +340,11 @@ public class Partida {
     private List<ElementoComplejo> getSelectableElements() {
         //Seleccionar un Elemento
         List<ElementoComplejo> selectableElements = new ArrayList<>();
-        selectableElements.addAll(j1.unidades);
-        selectableElements.addAll(j1.edificios);
-        selectableElements.addAll(j1.lista_recursos);
-        selectableElements.addAll(j2.unidades);
-        selectableElements.addAll(j2.edificios);
-        selectableElements.addAll(j2.lista_recursos);
+        players.forEach(p -> {
+            selectableElements.addAll(p.unidades);
+            selectableElements.addAll(p.edificios);
+            selectableElements.addAll(p.lista_recursos);
+        });
         bestias.stream().map(bs -> bs.contenido).forEach(b -> selectableElements.addAll(b));
         selectableElements.addAll(recursos);
         return selectableElements;
@@ -402,7 +375,7 @@ public class Partida {
     }
 
     public boolean resourceBelongsToPlayer(Recurso r) {
-        return j1.lista_recursos.contains(r) || j2.lista_recursos.contains(r);
+        return players.stream().anyMatch(p -> p.lista_recursos.contains(r));
     }
 
 }

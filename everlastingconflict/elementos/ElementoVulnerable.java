@@ -6,7 +6,7 @@
 package everlastingconflict.elementos;
 
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;

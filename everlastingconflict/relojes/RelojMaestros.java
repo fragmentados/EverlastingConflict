@@ -11,7 +11,7 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;

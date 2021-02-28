@@ -5,9 +5,11 @@
  */
 package everlastingconflict.campaign.tutorial;
 
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.MapEnum;
 import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.ventanas.MapEnum;
+import org.newdawn.slick.Color;
 
 import java.util.List;
 
@@ -37,5 +39,16 @@ public abstract class Tutorial extends Partida {
         } else {
             return new MaestrosTutorial();
         }
+    }
+
+    public Tutorial() {
+        iniciar_pasos();
+        Jugador j1 = new Jugador("Jugador", "Clark", 1);
+        j1.color = Color.green;
+        j1.isMainPlayer = true;
+        players.add(j1);
+        Jugador j2 = new Jugador("IA", RaceNameEnum.ETERNIUM.getName(), 2);
+        j2.color = Color.red;
+        players.add(j2);
     }
 }

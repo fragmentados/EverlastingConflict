@@ -7,16 +7,14 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.RaceNameEnum;
-import org.newdawn.slick.Color;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 /**
  *
@@ -37,7 +35,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("Sin embargo, sólo el edificio Central, el Ayuntamiento, puede ser usado nada más empezar, el resto deben ser activados. Para ello, debemos crear una unidad especial en el Ayuntamiento, el Activador. Prueba a hacerlo ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return !p.j1.edificios.get(0).cola_construccion.isEmpty() && p.j1.edificios.get(0).cola_construccion.get(0).nombre.equals("Activador");
+                return !p.getMainPlayer().edificios.get(0).cola_construccion.isEmpty() && p.getMainPlayer().edificios.get(0).cola_construccion.get(0).nombre.equals("Activador");
             }
 
             @Override
@@ -48,7 +46,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("Para activar un edificio, selecciona el Activador recién creado y pulsa el botón derecho sobre el edificio a activar. Prueba a activar el Taller bélico ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.edificios.stream().anyMatch(e -> e.nombre.equals("Taller bélico") && e.activo);
+                return p.getMainPlayer().edificios.stream().anyMatch(e -> e.nombre.equals("Taller bélico") && e.activo);
             }
 
             @Override
@@ -59,7 +57,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("La siguiente característica de la raza son los vehículos: es un tipo de unidad más potente que el resto pero que requieren de un piloto para poder moverse y atacar. Pero antes de ello, debemos crear un anexo en el taller bélico para que guarde el vehículo.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.edificios.stream().anyMatch(e -> e.nombre.equals("Anexo"));
+                return p.getMainPlayer().edificios.stream().anyMatch(e -> e.nombre.equals("Anexo"));
             }
 
             @Override
@@ -70,22 +68,22 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("A continuación, prueba a crear una Patrulla y observa como se moviliza hacia el anexo.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla"));
+                return p.getMainPlayer().unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla"));
             }
 
             @Override
             public void efecto(Partida p) {
                 VentanaCombate.continuar.canBeUsed = false;
-                p.j1.edificios.get(1).activo = true;
-                p.j1.edificios.get(1).iniciarbotones(p);
-                p.j1.edificios.get(1).vida = p.j1.edificios.get(1).vida_max;
+                p.getMainPlayer().edificios.get(1).activo = true;
+                p.getMainPlayer().edificios.get(1).iniciarbotones(p);
+                p.getMainPlayer().edificios.get(1).vida = p.getMainPlayer().edificios.get(1).vida_max;
             }
 
         });
         pasos.add(new Paso("Como puedes comprobar, por ahora el vehículo no se puede mover ni atacar. Eso es porque debe ser tripulado. Para ello, debes crear un piloto en la academia de pilotos. Generalmente, deberías crear otro Activador para que la Academia pudiera ser usable, pero en este Tutorial vamos a activar el edificio por ti. Prueba a construir un Artillero.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Artillero"));
+                return p.getMainPlayer().unidades.stream().anyMatch(u -> u.nombre.equals("Artillero"));
             }
 
             @Override
@@ -96,7 +94,7 @@ public class GuardianesTutorial extends Tutorial {
         pasos.add(new Paso("Para embarcar un vehículo, selecciona el piloto y pulsa el botón derecho sobre el vehículo a embarcar. Prueba a hacerlo ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla") && u.movil && u.hostil);
+                return p.getMainPlayer().unidades.stream().anyMatch(u -> u.nombre.equals("Patrulla") && u.movil && u.hostil);
             }
             @Override
             public void efecto(Partida p) {
@@ -109,16 +107,16 @@ public class GuardianesTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 VentanaCombate.continuar.canBeUsed = false;
-                Unidad u = new Unidad("Patrulla", p.j1.unidades.get(0).x - 50, p.j1.unidades.get(0).y);
+                Unidad u = new Unidad("Patrulla", p.getMainPlayer().unidades.get(0).x - 50, p.getMainPlayer().unidades.get(0).y);
                 u.movil = true;
-                p.j1.unidades.add(u);
+                p.getMainPlayer().unidades.add(u);
             }
         });
         pasos.add(new Paso("Veamos un ejemplo. Se ha creado una Patrulla automáticamente. Dos patrullas son las tropas necesarias para solucionar el evento 'Una racha criminal asola las calles'. Prueba a enviar la primera Patrulla al ayuntamiento ahora.") {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(0).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.getMainPlayer().edificios.get(0).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
             }
 
             @Override
@@ -130,7 +128,7 @@ public class GuardianesTutorial extends Tutorial {
             @Override
             public boolean comprobacion(Partida p) {
                 Input input = RTS.canvas.getContainer().getInput();
-                return p.j1.edificios.get(0).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
+                return p.getMainPlayer().edificios.get(0).hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY());
             }
 
             @Override
@@ -148,16 +146,13 @@ public class GuardianesTutorial extends Tutorial {
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        j1.x_inicial = 200;
-        j1.y_inicial = 200;
-        j1.initElements(this);
+        getMainPlayer().x_inicial = 200;
+        getMainPlayer().y_inicial = 200;
+        getMainPlayer().initElements(this);
     }
 
     public GuardianesTutorial() {
-        iniciar_pasos();
-        j1 = new Jugador("Prueba", RaceNameEnum.GUARDIANES.getName());
-        j2 = new Jugador("Prueba", RaceNameEnum.ETERNIUM.getName());
-        j1.color = Color.green;
-        j2.color = Color.red;
+        super();
+        players.get(0).raza = RaceNameEnum.GUARDIANES.getName();
     }
 }

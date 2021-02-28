@@ -14,10 +14,10 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.relojes.RelojMaestros;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -301,20 +301,25 @@ public class Habilidad extends ElementoSimple {
     }
 
     public ElementoComplejo seleccion_objetivo(Partida p, ElementoComplejo origen, float x, float y) {
-        Jugador aliado = p.jugador_aliado(origen), enemigo = p.jugador_enemigo(origen);
+        Jugador aliado = p.getPlayerFromElement(origen);
+        List<Jugador> enemies = p.enemyPlayersFromElement(origen);
         List<ElementoComplejo> contador = new ArrayList<>();
         switch (tipo_seleccion) {
             case "EdificioAliado":
                 contador.addAll(aliado.edificios);
                 break;
             case "EdificioEnemigo":
-                contador.addAll(enemigo.edificios);
+                for (Jugador enemy : enemies) {
+                    contador.addAll(enemy.edificios);
+                }
                 break;
             case "UnidadAliada":
                 contador.addAll(aliado.unidades);
                 break;
             case "UnidadEnemiga":
-                contador.addAll(enemigo.unidades);
+                for (Jugador enemy : enemies) {
+                    contador.addAll(enemy.unidades);
+                }
                 for (Bestias be : p.bestias) {
                     contador.addAll(be.contenido);
                 }
@@ -349,20 +354,23 @@ public class Habilidad extends ElementoSimple {
             if (alcance == 0) {
                 resolucion(p, origen, origen);
             } else {
-                VentanaPrincipal.mapac.elemento_habilidad = origen;
-                VentanaPrincipal.mapac.habilidad = this;
+                VentanaPrincipal.ventanaCombate.elemento_habilidad = origen;
+                VentanaPrincipal.ventanaCombate.habilidad = this;
             }
         }
     }
 
     public List<ElementoComplejo> area(Partida p, ElementoComplejo origen, float x, float y, String t) {
-        Jugador aliado = p.jugador_aliado(origen), enemigo = p.jugador_enemigo(origen);
+        Jugador aliado = p.getPlayerFromElement(origen);
+        List<Jugador> enemies = p.enemyPlayersFromElement(origen);
         List<ElementoComplejo> resultado = new ArrayList<>();
         switch (t) {
             case "UnidadEnemiga":
-                for (Unidad u : enemigo.unidades) {
-                    if (u.alcance(x, y, area)) {
-                        resultado.add(u);
+                for (Jugador enemy : enemies) {
+                    for (Unidad u : enemy.unidades) {
+                        if (u.alcance(x, y, area)) {
+                            resultado.add(u);
+                        }
                     }
                 }
                 for (Bestias be : p.bestias) {
@@ -393,9 +401,11 @@ public class Habilidad extends ElementoSimple {
                         }
                     }
                 }
-                for (Unidad u : enemigo.unidades) {
-                    if (u.alcance(x, y, area)) {
-                        resultado.add(u);
+                for (Jugador enemy : enemies) {
+                    for (Unidad u : enemy.unidades) {
+                        if (u.alcance(x, y, area)) {
+                            resultado.add(u);
+                        }
                     }
                 }
                 break;
@@ -407,7 +417,7 @@ public class Habilidad extends ElementoSimple {
         Bestia bestia;
         List<ElementoComplejo> elementos_area;
         List<Unidad> unidades = new ArrayList<>();
-        Jugador aliado = p.jugador_aliado(origen);
+        Jugador aliado = p.getPlayerFromElement(origen);
         Manipulador m;
         if (coste > 0) {
             m = (Manipulador) origen;
@@ -417,35 +427,35 @@ public class Habilidad extends ElementoSimple {
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Pugnator"));
                     }
-                    VentanaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    VentanaPrincipal.ventanaCombate.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar sagittarius":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Sagittarius"));
                     }
-                    VentanaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    VentanaPrincipal.ventanaCombate.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar medicum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Medicum"));
                     }
-                    VentanaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    VentanaPrincipal.ventanaCombate.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar magum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Magum"));
                     }
-                    VentanaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    VentanaPrincipal.ventanaCombate.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar exterminatore":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad("Exterminatore"));
                     }
-                    VentanaPrincipal.mapac.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    VentanaPrincipal.ventanaCombate.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Deflagración":
@@ -619,8 +629,8 @@ public class Habilidad extends ElementoSimple {
                     break;
             }
         }
-        VentanaPrincipal.mapac.elemento_habilidad = null;
-        VentanaPrincipal.mapac.habilidad = null;
+        VentanaPrincipal.ventanaCombate.elemento_habilidad = null;
+        VentanaPrincipal.ventanaCombate.habilidad = null;
         for (BotonComplejo b : origen.botones) {
             if (b.elemento_nombre != null && b.elemento_nombre.equals(nombre)) {
                 b.activar_cooldown(origen);

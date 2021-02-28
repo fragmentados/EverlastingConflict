@@ -5,8 +5,8 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.relojes.Reloj;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 

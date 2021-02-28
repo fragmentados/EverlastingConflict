@@ -7,7 +7,7 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Input;
 
 /**

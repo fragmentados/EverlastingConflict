@@ -13,9 +13,8 @@ package everlastingconflict.Experimento_Multiplayer_Real;
  * The Client that can be run both as a console or a GUI
  */
 
-import everlastingconflict.mapas.MensajeChat;
-import everlastingconflict.mapas.VentanaPrincipal;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.ventanas.MensajeChat;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.CanvasGameContainer;
 
 import javax.swing.*;
@@ -177,21 +176,21 @@ public class Client {
                     Message msg = (Message) sInput.readObject();
                     switch (msg.type) {
                         case Message.elimination_type:
-                            VentanaPrincipal.mapam.otro_usuario = "Libre";
-                            VentanaPrincipal.mapam.otro_usuario_raza = "-";
+                            //VentanaPrincipal.ventanaMenu.otro_usuario = "Libre";
+                            //VentanaPrincipal.ventanaMenu.otro_usuario_raza = "-";
                             break;
                         case Message.user_type:
-                            VentanaPrincipal.mapam.otro_usuario = msg.text;
-                            VentanaPrincipal.mapam.otro_usuario_raza = RaceNameEnum.FENIX.getName();
+                            //VentanaPrincipal.ventanaMenu.otro_usuario = msg.text;
+                            //VentanaPrincipal.ventanaMenu.otro_usuario_raza = RaceNameEnum.FENIX.getName();
                             break;
                         case Message.raze_type:
-                            VentanaPrincipal.mapam.otro_usuario_raza = msg.text;
+                            //VentanaPrincipal.ventanaMenu.otro_usuario_raza = msg.text;
                             break;
                         case Message.start_type:
-                            VentanaPrincipal.mapam.start = true;
+                            VentanaPrincipal.ventanaMenu.start = true;
                             break;
                         case Message.text_type:                            
-                            VentanaPrincipal.mapac.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
+                            VentanaPrincipal.ventanaCombate.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
                             break;
                     }
                     // if console mode print the message and add back the prompt

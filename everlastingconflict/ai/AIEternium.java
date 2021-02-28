@@ -14,19 +14,14 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Graphics;
 
-/**
- *
- * @author Elías
- */
-// TODO Comentado funcionamiento para poder testear bien
 public class AIEternium extends AI {
 
     public float x_transporte, y_transporte;
     public float x_asimilacion, y_asimilacion;
     public float x_altar, y_altar;
 
-    public AIEternium() {
-        super("AIEternium", "Eternium");
+    public AIEternium(Integer t) {
+        super("AIEternium", "Eternium", t);
     }
 
     @Override
@@ -75,7 +70,7 @@ public class AIEternium extends AI {
 
     public void comportamiento_adepto(Partida p, Unidad u) {
         if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
-            Recurso r = p.recurso_mas_cercano(null, this.nombre, "Hierro", u.x, u.y);
+            Recurso r = p.closestResource(null, this.nombre, "Hierro", u.x, u.y);
             if (r != null) {
                 Edificio contador = new Edificio("Refinería");
                 contador.vida = 0;

@@ -17,14 +17,14 @@ package everlastingconflict.elementos.implementacion;
  import everlastingconflict.gestion.Jugador;
  import everlastingconflict.gestion.Partida;
  import everlastingconflict.gestion.ProgressBar;
- import everlastingconflict.mapas.Mensaje;
- import everlastingconflict.mapas.VentanaCombate;
- import everlastingconflict.mapas.VentanaPrincipal;
  import everlastingconflict.razas.Eternium;
  import everlastingconflict.razas.Fenix;
  import everlastingconflict.razas.RaceNameEnum;
  import everlastingconflict.razas.Raza;
  import everlastingconflict.relojes.Reloj;
+ import everlastingconflict.ventanas.Mensaje;
+ import everlastingconflict.ventanas.VentanaCombate;
+ import everlastingconflict.ventanas.VentanaPrincipal;
  import org.newdawn.slick.Color;
  import org.newdawn.slick.Graphics;
  import org.newdawn.slick.Image;
@@ -191,7 +191,7 @@ public class Edificio extends ElementoAtacante {
             cantidad_produccion.set(indice, new Integer(contador));
         } else {
             if (elementProduced instanceof Tecnologia) {
-                Jugador aliado = p.jugador_aliado(this);
+                Jugador aliado = p.getPlayerFromElement(this);
                 // Enable all buttons that research the tecnology
                 aliado.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
                         .flatMap(e -> e.botones.stream())
@@ -200,8 +200,8 @@ public class Edificio extends ElementoAtacante {
             }
             eliminar_cola(elementProduced);
         }
-        if (!p.jugador_aliado(this).raza.equals(RaceNameEnum.FENIX.getName())) {
-            p.jugador_aliado(this).addResources(elementProduced.coste);
+        if (!p.getPlayerFromElement(this).raza.equals(RaceNameEnum.FENIX.getName())) {
+            p.getPlayerFromElement(this).addResources(elementProduced.coste);
         }
     }
 
@@ -265,7 +265,7 @@ public class Edificio extends ElementoAtacante {
         Point2D.Float resultado = new Point2D.Float(0, 0);
         float contador_x = reunion_x, contador_y = reunion_y;
         int i = 0;
-        while (!u.colision(p, contador_x, contador_y).nombre.equals("No hay")) {
+        while (u.colision(p, contador_x, contador_y)) {
             i++;
             if (i == 10) {
                 contador_x = reunion_x;
@@ -294,10 +294,9 @@ public class Edificio extends ElementoAtacante {
         }
     }
 
-    public void comprobar_barra(Partida p, Jugador j) {
+    public void checkProgressBar(Partida p, Jugador j) {
         if (barra.terminado()) {
             if (cola_construccion.size() > 0) {
-                //System.out.println("Unidad creada");
                 if (cola_construccion.get(0) instanceof Unidad) {
                     if (this.nombre.equals("Mando Central")) {
                         for (int i = 0; i < cantidad_produccion.get(0); i++) {
@@ -317,7 +316,6 @@ public class Edificio extends ElementoAtacante {
                         u.iniciarbotones(p);
                         Point2D.Float contador = obtener_coordenadas(p, u);
                         u.anadir_movimiento(contador.x, contador.y);
-
                     }
                 } else {
                     Tecnologia t = (Tecnologia) cola_construccion.get(0);
@@ -357,7 +355,7 @@ public class Edificio extends ElementoAtacante {
         if (!statusBehaviour.equals(StatusBehaviour.CONSTRUYENDOSE)) {
             // Eternium collecting buildings only animate when they all work
             if (this.nombre.equals("Cámara de asimilación") || this.nombre.equals("Teletransportador") || this.nombre.equals("Refinería")) {
-                this.sprite.setAutoUpdate(p.jugador_aliado(this).perforacion);
+                this.sprite.setAutoUpdate(p.getPlayerFromElement(this).perforacion);
             } else {
                 // Other buildings animate when they are creating something
                 this.sprite.setAutoUpdate(barra.isActive());
@@ -368,14 +366,14 @@ public class Edificio extends ElementoAtacante {
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
         if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
-                && p.jugador_aliado(this).edificios.indexOf(this) != -1) {
+                && p.getPlayerFromElement(this).edificios.indexOf(this) != -1) {
             this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             if (this.seleccionada()) {
                 this.deseleccionar();
             }
-            p.jugador_aliado(this).edificios.remove(this);
-            if (p.jugador_aliado(this).raza.equals(RaceNameEnum.ETERNIUM.getName())) {
-                p.jugador_aliado(this).comprobacion_perforacion();
+            p.getPlayerFromElement(this).edificios.remove(this);
+            if (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.ETERNIUM.getName())) {
+                p.getPlayerFromElement(this).comprobacion_perforacion();
             }
             Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             ElementosComunes.BUILDING_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);
@@ -386,7 +384,7 @@ public class Edificio extends ElementoAtacante {
     public void construir(Partida p, Edificio edificio, float x, float y) {
         super.construir(p, edificio, x, y);
         statusBehaviour = StatusBehaviour.CONSTRUYENDO;
-        p.jugador_aliado(this).resta_recursos(edificio.coste);
+        p.getPlayerFromElement(this).resta_recursos(edificio.coste);
         edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
         edificio_construccion = edificio;
         edificio_construccion.cambiar_coordenadas(x, y);
@@ -395,8 +393,7 @@ public class Edificio extends ElementoAtacante {
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
         super.comportamiento(p, g, delta);
-        Jugador aliado = p.jugador_aliado(this);
-        Jugador enemigo = p.jugador_enemigo(this);
+        Jugador aliado = p.getPlayerFromElement(this);
         if (nombre.equals("Estación reparadora")) {
             for (Unidad u : aliado.unidades) {
                 if (u.vehiculo) {
@@ -407,9 +404,12 @@ public class Edificio extends ElementoAtacante {
             }
         }
         if (nombre.equals("Distorsionador temporal")) {
-            for (Unidad u : enemigo.unidades) {
-                if (this.alcance(200, u)) {
-                    u.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 1f, 40f));
+            List<Jugador> enemies = p.enemyPlayersFromElement(this);
+            for (Jugador enemy : enemies) {
+                for (Unidad u : enemy.unidades) {
+                    if (this.alcance(200, u)) {
+                        u.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 1f, 40f));
+                    }
                 }
             }
         }
@@ -447,7 +447,7 @@ public class Edificio extends ElementoAtacante {
                         if (recurso_int - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                             recurso_int = Edificio.tiempo_mineria;
                             aliado.addResources(Edificio.recursos_refineria);
-                            VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
+                            VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + Edificio.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
                         } else {
                             recurso_int -= Reloj.TIME_REGULAR_SPEED * delta;
                         }
@@ -490,7 +490,7 @@ public class Edificio extends ElementoAtacante {
                 if (r.nombre.equals("Hierro")) {
                     Rectangle2D r2 = new Rectangle2D.Float(r.x - r.anchura / 2, r.y - r.altura / 2, r.anchura, r.altura);
                     if (r2.intersects(re)) {
-                        Jugador aliado = partida.jugador_aliado(VentanaPrincipal.mapac.constructor);
+                        Jugador aliado = partida.getPlayerFromElement(VentanaPrincipal.ventanaCombate.constructor);
                         for (Edificio e : aliado.edificios) {
                             if (e.nombre.equals("Refinería") && e.hitbox(r.x, r.y)) {
                                 return new ArrayList<>();
@@ -502,36 +502,20 @@ public class Edificio extends ElementoAtacante {
                 }
             }
         } else {
-            for (int i = 0; i < partida.j1.unidades.size(); i++) {
-                Unidad u = partida.j1.unidades.get(i);
-                Rectangle2D r = new Rectangle2D.Float(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-                if (r.intersects(re)) {
-                    Rectangle2D r2 = r.createIntersection(re);
-                    intersecciones.add(r2);
+            for (Jugador player : partida.players) {
+                for (Unidad u : player.unidades) {
+                    Rectangle2D r = new Rectangle2D.Float(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
+                    if (r.intersects(re)) {
+                        Rectangle2D r2 = r.createIntersection(re);
+                        intersecciones.add(r2);
+                    }
                 }
-            }
-            for (int i = 0; i < partida.j2.unidades.size(); i++) {
-                Unidad u = partida.j2.unidades.get(i);
-                Rectangle2D r = new Rectangle2D.Float(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-                if (r.intersects(re)) {
-                    Rectangle2D r2 = r.createIntersection(re);
-                    intersecciones.add(r2);
-                }
-            }
-            for (int i = 0; i < partida.j1.edificios.size(); i++) {
-                Edificio u = partida.j1.edificios.get(i);
-                Rectangle2D r = new Rectangle2D.Float(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-                if (r.intersects(re)) {
-                    Rectangle2D r2 = r.createIntersection(re);
-                    intersecciones.add(r2);
-                }
-            }
-            for (int i = 0; i < partida.j2.edificios.size(); i++) {
-                Edificio u = partida.j2.edificios.get(i);
-                Rectangle2D r = new Rectangle2D.Float(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-                if (r.intersects(re)) {
-                    Rectangle2D r2 = r.createIntersection(re);
-                    intersecciones.add(r2);
+                for (Edificio e : player.edificios) {
+                    Rectangle2D r = new Rectangle2D.Float(e.x - e.anchura / 2, e.y - e.altura / 2, e.anchura, e.altura);
+                    if (r.intersects(re)) {
+                        Rectangle2D r2 = r.createIntersection(re);
+                        intersecciones.add(r2);
+                    }
                 }
             }
             for (int i = 0; i < partida.recursos.size(); i++) {

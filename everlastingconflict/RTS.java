@@ -5,8 +5,8 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
 

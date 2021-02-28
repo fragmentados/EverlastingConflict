@@ -55,13 +55,13 @@ public class BotonSimple {
         return false;
     }
 
-    public void dibujar(Graphics g) {
+    public void render(Graphics g) {
         if (canBeUsed) {
             if (sprite != null) {
                 sprite.draw(x, y, anchura, altura);
             } else {
-                float x_contador = this.x + this.anchura / 2 - this.texto.length() * 9 / 2;
-                float y_contador = this.y + this.altura / 2 - 7;
+                float x_contador = x + this.anchura / 2 - this.texto.length() * 9 / 2;
+                float y_contador = y + this.altura / 2 - 7;
                 g.drawString(texto, x_contador, y_contador);
             }
             g.setColor(new Color(0f, 0.6f, 0.8f, 0.5f));

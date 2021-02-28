@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.ControlGroup;
 import everlastingconflict.elementos.ElementoComplejo;
@@ -16,6 +16,7 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceNameEnum;
 import org.newdawn.slick.Color;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 public class UI {
 
@@ -162,7 +163,7 @@ public class UI {
         }
     }
 
-    public void dibujar_punto(Graphics g, ElementoCoordenadas e) {
+    public void renderElementOnMinimap(Graphics g, ElementoCoordenadas e) {
         float anchura = anchura_mini * (e.anchura / VentanaCombate.WORLD_SIZE_X);
         float altura = altura_mini * (e.altura / VentanaCombate.WORLD_SIZE_Y);
         float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / VentanaCombate.WORLD_SIZE_X);
@@ -170,29 +171,46 @@ public class UI {
         g.fillRect(x, y, anchura, altura);
     }
 
-    public void dibujar_puntos(Partida p, Graphics g) {
+    public void renderPlayerElementsOnMinimap(Partida p, Graphics g, Jugador player, boolean isMainTeam) {
+        g.setColor(player.color);
+        for (Unidad u : player.unidades) {
+            if (isMainTeam || u.visible(p)) {
+                renderElementOnMinimap(g, u);
+            }
+        }
+        for (Edificio u : player.edificios) {
+            if (isMainTeam || u.visible(p)) {
+                renderElementOnMinimap(g, u);
+            }
+        }
+        for (Recurso r : player.lista_recursos) {
+            if (isMainTeam || r.visible(p)) {
+                renderElementOnMinimap(g, r);
+            }
+        }
+    }
 
-        g.setColor(p.j1.color);
-        float anchura, altura, x, y;
-        for (Unidad u : p.j1.unidades) {
-            dibujar_punto(g, u);
-            //SysteMapaCampo.out.println("x = " + x + ".y = " + y + ".anchura = " + anchura + ".altura = " + altura + ".");            
-        }
-        for (Edificio u : p.j1.edificios) {
-            dibujar_punto(g, u);
-        }
-        g.setColor(p.j2.color);
-        for (Unidad u : p.j2.unidades) {
-            if (u.visible(p)) {
-                dibujar_punto(g, u);
+    public void renderResourceOnMinimap(Partida p, Graphics g) {
+        for (Recurso r : p.recursos) {
+            if (r.visibleByMainTeam(p)) {
+                if (r.capturador != null) {
+                    g.setColor(p.getPlayerByName(r.capturador).color);
+                } else {
+                    g.setColor(Color.gray);
+                }
+                renderElementOnMinimap(g, r);
+                g.setColor(Color.gray);
             }
         }
-        for (Edificio u : p.j2.edificios) {
-            if (u.visible(p)) {
-                dibujar_punto(g, u);
-            }
+    }
+
+    public void renderElementsOnMinimap(Partida p, Graphics g) {
+        p.getMainTeam().forEach(player -> renderPlayerElementsOnMinimap(p, g, player, true));
+        for (Jugador player : p.getNonMainTeam()) {
+            renderPlayerElementsOnMinimap(p, g, player, false);
         }
         g.setColor(Color.gray);
+        float anchura, altura, x, y;
         for (Bestias be : p.bestias) {
             if (be.muerte) {
                 anchura = anchura_mini * (VentanaCombate.muerte.getWidth() / VentanaCombate.WORLD_SIZE_X);
@@ -203,26 +221,12 @@ public class UI {
             } else {
                 for (Bestia b : be.contenido) {
                     if (b.visible(p)) {
-                        dibujar_punto(g, b);
+                        renderElementOnMinimap(g, b);
                     }
                 }
             }
         }
-        for (Recurso r : p.recursos) {
-            if (r.visible(p)) {
-                if (r.capturador.equals(p.j1.nombre)) {
-                    g.setColor(Color.green);
-                } else {
-                    if (r.capturador.equals(p.j2.nombre)) {
-                        if (r.visible(p)) {
-                            g.setColor(Color.red);
-                        }
-                    }
-                }
-                dibujar_punto(g, r);
-                g.setColor(Color.gray);
-            }
-        }
+        renderResourceOnMinimap(p, g);
         g.setColor(Color.white);
     }
 
@@ -230,7 +234,7 @@ public class UI {
         //Rectángulo grande     
         x_mini = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH - anchura_mini;
         y_mini = initialY;
-        dibujar_puntos(p, g);
+        renderElementsOnMinimap(p, g);
         g.drawRect(x_mini, y_mini, anchura_mini - 1, altura_mini);
         //Rectángulo pequeño                
         anchura_minim = anchura_mini * (VentanaCombate.VIEWPORT_SIZE_WIDTH / VentanaCombate.WORLD_SIZE_X);
@@ -281,7 +285,7 @@ public class UI {
                         g.drawString(Integer.toString((int) unidad.escudo), x + 10 + Integer.toString((int) e.vida).length() * 10 + 10 + Integer.toString((int) e.vida_max).length() * 10 + 10, y + 50 + e.icono.getHeight() + 10);
                         g.setColor(Color.white);
                     }
-                    if (!(unidad instanceof Bestia) && (p.jugador_aliado(unidad).raza.equals("Eternium"))) {
+                    if (!(unidad instanceof Bestia) && (p.getPlayerFromElement(unidad).raza.equals("Eternium"))) {
                         ataque = unidad.ataque_eternium();
                         defensa = unidad.defensa_eternium();
                     } else {
@@ -291,10 +295,10 @@ public class UI {
                     if (unidad.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
                         ataque += unidad.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
                     }
-                    if (p.jugador_aliado(unidad).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+                    if (p.getPlayerFromElement(unidad).raza.equals(RaceNameEnum.MAESTROS.getName())) {
                         if (Manipulador.alentar) {
                             Manipulador m = null;
-                            for (Unidad u : p.jugador_aliado(unidad).unidades) {
+                            for (Unidad u : p.getPlayerFromElement(unidad).unidades) {
                                 if (u.nombre.equals("Manipulador")) {
                                     m = (Manipulador) u;
                                 }
@@ -519,9 +523,9 @@ public class UI {
                 ant.x = sig.x = VentanaCombate.playerX + anchura_miniatura + 5;
                 ant.y = initialY + 5;
                 sig.y = initialY + 50;
-                ant.dibujar(g);
+                ant.render(g);
                 g.drawString(Integer.toString(npagina), VentanaCombate.playerX + anchura_miniatura + 15, initialY + 30);
-                sig.dibujar(g);
+                sig.render(g);
                 g.setColor(Color.green);
                 for (int i = inicio; i < fin; i++) {
                     ElementoComplejo e = elementos.get(i);
@@ -553,7 +557,7 @@ public class UI {
                     //Las coordenadas de los botones tienen que cambiarse en este bucle para se tenga en cuenta playerX y playerY
                     boton.x = VentanaCombate.playerX + anchura_miniatura + anchura_seleccion + 5 + (i % 4) * (boton.sprite.getWidth() + 5);
                     boton.y = initialY + 5 + ((i % 16) / 4) * (boton.sprite.getHeight() + 5);
-                    boton.dibujar(g);
+                    boton.render(g);
                     if (e instanceof Edificio) {
                         Edificio edificio = (Edificio) e;
                         if ((edificio.unidad_actual != null) && (edificio.unidad_actual.equals(boton.texto))) {

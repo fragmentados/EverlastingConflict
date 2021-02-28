@@ -12,13 +12,13 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.Mensaje;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojMaestros;
+import everlastingconflict.ventanas.Mensaje;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -289,7 +289,7 @@ public class Manipulador extends Unidad {
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
         super.comportamiento(p, g, delta);
-        Jugador aliado = p.jugador_aliado(this);
+        Jugador aliado = p.getPlayerFromElement(this);
         if (this.mana < this.mana_max) {
             recoverMana(aliado, Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
         }
@@ -365,13 +365,13 @@ public class Manipulador extends Unidad {
     public static void checkToGainExperience(Partida p, ElementoAtacante atacante, float xpValue, float destroyedElementX, float destroyedElementY, float destroyedElementHeight) {
         if (atacante instanceof Manipulador) {
             Manipulador m = (Manipulador) atacante;
-            VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
+            VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
             m.aumentar_experiencia(xpValue);
-        } else if (Manipulador.lider && p.jugador_aliado(atacante).raza.equals(RaceNameEnum.MAESTROS.getName())) {
-            for (Unidad u : p.jugador_aliado(atacante).unidades) {
+        } else if (Manipulador.lider && p.getPlayerFromElement(atacante).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+            for (Unidad u : p.getPlayerFromElement(atacante).unidades) {
                 if (u.nombre.equals("Manipulador")) {
                     Manipulador m = (Manipulador) u;
-                    VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
+                    VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
                     m.aumentar_experiencia(xpValue);
                     break;
                 }

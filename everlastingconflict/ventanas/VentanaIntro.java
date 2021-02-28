@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.GameContainer;

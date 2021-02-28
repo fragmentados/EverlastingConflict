@@ -25,8 +25,8 @@ public class AIFenix extends AI {
     public float xacademia, yacademia;
     public float xcentro, ycentro;
 
-    public AIFenix() {
-        super("AIFenix", "Fénix");
+    public AIFenix(Integer t) {
+        super("AIFenix", "Fénix", t);
 
     }
 
@@ -109,7 +109,7 @@ public class AIFenix extends AI {
 
     public void comportamiento_recolector(Partida p, Unidad u) {
         if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
-            Recurso r = p.recurso_mas_cercano(null, this.nombre, "Civiles", u.x, u.y);
+            Recurso r = p.closestResource(null, this.nombre, "Civiles", u.x, u.y);
             if (r != null) {
                 u.recolectar(p, r);
             } else {

@@ -10,11 +10,11 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.Mensaje;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
+import everlastingconflict.ventanas.Mensaje;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.*;
 
 /**
@@ -81,9 +81,9 @@ public class Bestia extends Unidad {
         if (!StatusBehaviour.DESTRUIDO.equals(this.statusBehaviour)
                 && p.bestias.stream().filter(b -> b.contenido.contains(this)).findFirst().isPresent()) {
             this.statusBehaviour = StatusBehaviour.DESTRUIDO;
-            Jugador aliado = p.jugador_aliado(atacante);
+            Jugador aliado = p.getPlayerFromElement(atacante);
             if (aliado.raza.equals("Clark")) {
-                VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
+                VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
                 aliado.addResources(this.recompensa);
             }
             if (this.seleccionada()) {
@@ -104,7 +104,7 @@ public class Bestia extends Unidad {
 
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
-        Jugador mastersPlayer = p.getPlayerByRace(RaceNameEnum.MAESTROS.getName());
+        Jugador mastersPlayer = p.getPlayerByRace(RaceNameEnum.MAESTROS);
         if (mastersPlayer != null) {
             for (ElementoEspecial e : mastersPlayer.elementos_especiales) {
                 if (e.nombre.equals("Agujero negro")) {
@@ -150,7 +150,7 @@ public class Bestia extends Unidad {
                 break;
             case PARADO:
                 if (mastersPlayer != null) {
-                    for (ElementoEspecial e : p.getPlayerByRace(RaceNameEnum.MAESTROS.getName()).elementos_especiales) {
+                    for (ElementoEspecial e : p.getPlayerByRace(RaceNameEnum.MAESTROS).elementos_especiales) {
                         if (e.nombre.equals("Agujero negro")) {
                             if (this.alcance(300, e)) {
                                 this.mover(p, e.x, e.y);

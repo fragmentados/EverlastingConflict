@@ -14,16 +14,16 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.UI;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Maestros;
 import everlastingconflict.relojes.RelojMaestros;
+import everlastingconflict.ventanas.UI;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
 
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
+import static everlastingconflict.ventanas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.ventanas.VentanaCombate.playerY;
 
 /**
  *
@@ -99,7 +99,7 @@ public class BotonManipulador extends BotonComplejo {
                             Maestros.velocidad_exterminatore += 0.2f;
                             Maestros.area_magum += 25;
                             Maestros.ataque_medicum += 5;
-                            for (Unidad u : partida.jugador_aliado(m).unidades) {
+                            for (Unidad u : partida.getPlayerFromElement(m).unidades) {
                                 switch (u.nombre) {
                                     case "Pugnator":
                                         u.cadencia -= 0.1f;
@@ -189,7 +189,7 @@ public class BotonManipulador extends BotonComplejo {
                             m2.reduccion_enfriamiento = m.reduccion_enfriamiento;
                             m2.botones = m.botones;
                             m2.initButtonKeys();
-                            partida.jugador_aliado(m).unidades.add(m2);
+                            partida.getPlayerFromElement(m).unidades.add(m2);
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Eficiencia energética":
@@ -250,9 +250,9 @@ public class BotonManipulador extends BotonComplejo {
     }
 
     @Override
-    public void dibujar(Graphics g) {
+    public void render(Graphics g) {
         if (canBeShown) {
-            super.dibujar(g);
+            super.render(g);
             if (requisito != null) {
                 g.drawRect(x + anchura / 2, y + altura / 2, 20, 20);
                 if (RelojMaestros.nombre_dia.equals(requisito)) {

@@ -1,4 +1,4 @@
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.elementos.ElementoSimple;
 

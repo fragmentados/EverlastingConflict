@@ -282,7 +282,7 @@ public class Raza {
     }
 
     public static void iniciar_botones_edificio(Partida p, Edificio e) {
-        Jugador aliado = p.jugador_aliado(e);
+        Jugador aliado = p.getPlayerFromElement(e);
         switch (aliado.raza) {
             case "Fénix":
                 Fenix.iniciar_botones_edificio(e);
@@ -302,7 +302,7 @@ public class Raza {
     }
 
     public static void iniciar_botones_unidad(Partida p, Unidad u) {
-        Jugador aliado = p.jugador_aliado(u);
+        Jugador aliado = p.getPlayerFromElement(u);
         u.botones.add(new BotonComplejo("Detener"));
         switch (aliado.raza) {
             case "Fénix":

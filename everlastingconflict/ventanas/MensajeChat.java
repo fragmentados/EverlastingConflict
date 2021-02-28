@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.relojes.Reloj;
@@ -33,11 +33,7 @@ public class MensajeChat {
     }
 
     public void dibujar(Partida p, Graphics g) {
-        if (p.j1.nombre.equals(nombre_usuario)) {
-            g.setColor(p.j1.color);
-        } else {
-            g.setColor(p.j2.color);
-        }
+        g.setColor(p.getPlayerByName(nombre_usuario).color);
         g.drawString(nombre_usuario + ": ", x, y);
         g.setColor(Color.white);
         g.drawString(texto, x + nombre_usuario.length() * 10, y);

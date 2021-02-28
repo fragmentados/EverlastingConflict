@@ -10,7 +10,7 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -57,19 +57,18 @@ public class Recurso extends ElementoComplejo {
         this.x = x;
         this.y = y;
         this.ocupado = false;
-        this.capturador = "";
         initImages();
 
     }
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        if (p.jugador_aliado(this).lista_recursos.indexOf(this) != -1) {
-            p.jugador_aliado(this).lista_recursos.remove(this);
+        if (p.getPlayerFromElement(this).lista_recursos.indexOf(this) != -1) {
+            p.getPlayerFromElement(this).lista_recursos.remove(this);
             p.recursos.add(this);
-            if (!this.capturador.equals("")) {
-                p.jugador_aliado(this).removeResources(10);
-                capturador = "";
+            if (this.capturador != null) {
+                p.getPlayerFromElement(this).removeResources(10);
+                capturador = null;
             }
             vida = 0;
             this.sprite.setAutoUpdate(false);

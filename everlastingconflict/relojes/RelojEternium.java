@@ -8,7 +8,7 @@ package everlastingconflict.relojes;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.*;
 
 import java.util.logging.Level;

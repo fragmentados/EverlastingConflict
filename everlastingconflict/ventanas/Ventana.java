@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;

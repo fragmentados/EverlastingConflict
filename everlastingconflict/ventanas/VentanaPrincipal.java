@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package everlastingconflict.mapas;
+package everlastingconflict.ventanas;
 
 import everlastingconflict.RTS;
 import everlastingconflict.gestion.Partida;
@@ -13,30 +13,32 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 /**
- *
  * @author Elías
  */
 public class VentanaPrincipal extends BasicGame {
 
-    public static VentanaCombate mapac = new VentanaCombate();
-    public static VentanaIntro mapai = new VentanaIntro();
-    public static VentanaMenu mapam = new VentanaMenu();
+    public static VentanaCombate ventanaCombate = new VentanaCombate();
+    public static VentanaIntro ventanaIntro = new VentanaIntro();
+    public static VentanaMenu ventanaMenu = new VentanaMenu();
+    public static VentanaSeleccion ventanaSeleccion = new VentanaSeleccion();
     public static Ventana ventanaActual;
 
-    public static void cambio_de_mapa(GameContainer container, Partida p, String t) throws SlickException {
+    public static void windowSwitch(GameContainer container, Partida p, String t) throws SlickException {
         Ventana contador = null;
         switch (t) {
             case "Menu":
-                mapam.partida = p;
-                contador = mapam;
+                contador = ventanaMenu;
                 break;
             case "Campo":
-                mapac.partida = p;                
-                contador = mapac;
+                ventanaCombate.partida = p;
+                contador = ventanaCombate;
                 break;
             case "Intro":
-                mapai.partida = p;
-                contador = mapai;
+                ventanaIntro.partida = p;
+                contador = ventanaIntro;
+                break;
+            case "Seleccion":
+                contador = ventanaSeleccion;
                 break;
         }
         if (contador != null) {
@@ -48,25 +50,31 @@ public class VentanaPrincipal extends BasicGame {
 
     public VentanaPrincipal() {
         super("VentanaPrincipal");
-        //mapac = new MapaCampo(p);
-        //mapai = new MapaIntro(p);
-        //mapam = new MapaMenu(p);
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        cambio_de_mapa(container, new Partida(), "Menu");
-
+        windowSwitch(container, new Partida(), "Menu");
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-        ventanaActual.update(container, delta);
+        try {
+            ventanaActual.update(container, delta);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
-        ventanaActual.render(container, g);
+        try {
+            ventanaActual.render(container, g);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     public static void exit(GameContainer container) {

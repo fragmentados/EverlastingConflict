@@ -5,11 +5,9 @@
  */
 package everlastingconflict.elementosvisuales;
 
+import org.newdawn.slick.*;
+
 import java.util.List;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 /**
  *
@@ -20,14 +18,16 @@ public class ComboBox {
     public float x, y;
     public float anchura, altura = 20;
     public List<String> opciones;
+    public String label;
     public String opcion_seleccionada;
     public BotonSimple desplegar;
     public boolean desplegado;
 
-    public ComboBox(List<String> o, float x, float y) {
+    public ComboBox(String label, List<String> o, float x, float y) {
         this.x = x;
         this.y = y;
         opciones = o;
+        this.label = label;
         opcion_seleccionada = opciones.get(0);
         for (String t : opciones) {
             if (t.length() * 10 > anchura) {
@@ -82,8 +82,11 @@ public class ComboBox {
         g.drawString(o, x, y);
     }
 
-    public void dibujar(Graphics g) {
+    public void render(Graphics g) {
         g.setColor(Color.white);
+        if (label != null) {
+            g.drawString(label, x - label.length() * 10, y);
+        }
         g.fillRect(x, y, anchura, altura);
         g.setColor(Color.black);
         g.drawRect(x, y, anchura, altura);
@@ -96,8 +99,13 @@ public class ComboBox {
                 i++;
             }
         }
-        desplegar.dibujar(g);
+        desplegar.render(g);
         g.setColor(Color.white);
     }
 
+    public void checkIfItsClicked(Input input) {
+        if(desplegar.isHovered(input.getMouseX(), input.getMouseY())) {
+            desplegar.efecto();
+        }
+    }
 }

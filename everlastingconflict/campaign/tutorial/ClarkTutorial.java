@@ -8,16 +8,15 @@ package everlastingconflict.campaign.tutorial;
 import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Bestia;
 import everlastingconflict.elementos.implementacion.Bestias;
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
-import org.newdawn.slick.Color;
+import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 /**
  *
@@ -32,33 +31,33 @@ public class ClarkTutorial extends Tutorial {
         pasos.add(new Paso("Veamos las unidades básicas con más detenimiento:") {
             @Override
             public void efecto(Partida p) {
-                p.j1.unidades.get(0).seleccionar();
+                p.getMainPlayer().unidades.get(0).seleccionar();
             }
         });
         pasos.add(new Paso("El depredador es la unidad básica especializada en el combate cuerpo a cuerpo.") {
             @Override
             public void efecto(Partida p) {
-                p.j1.unidades.get(0).deseleccionar();
-                p.j1.unidades.get(1).seleccionar();
+                p.getMainPlayer().unidades.get(0).deseleccionar();
+                p.getMainPlayer().unidades.get(1).seleccionar();
             }
         });
         pasos.add(new Paso("El devorador es la unidad básica especializada en el combate a distancia.") {
             @Override
             public void efecto(Partida p) {
-                p.j1.unidades.get(1).deseleccionar();
-                p.j1.unidades.get(2).seleccionar();
+                p.getMainPlayer().unidades.get(1).deseleccionar();
+                p.getMainPlayer().unidades.get(2).seleccionar();
             }
         });
         pasos.add(new Paso("El cazador es la unidad básica sin capacidad ofensiva con poderosas habilidades.") {
             @Override
             public void efecto(Partida p) {
-                p.j1.unidades.get(2).deseleccionar();
+                p.getMainPlayer().unidades.get(2).deseleccionar();
             }
         });
         pasos.add(new Paso("Cuando dos unidades básicas se fusionan, se destruyen para crear una unidad que posee las características de las dos unidades que se usaron para crearla.") {
             @Override
             public void efecto(Partida p) {
-                p.j1.edificios.get(0).seleccionar();
+                p.getMainPlayer().edificios.get(0).seleccionar();
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
@@ -76,9 +75,9 @@ public class ClarkTutorial extends Tutorial {
         pasos.add(new Paso("Como puedes ver cualquier combinación de dos unidades básicas generará una unidad más poderosa y fusionar una unidad básica de cada tipo generará la unidad más poderosa de los clark") {
             @Override
             public void efecto(Partida p) {
-                p.j1.edificios.get(0).deseleccionar();
-                p.j1.unidades.get(0).seleccionar();
-                p.j1.unidades.get(1).seleccionar();
+                p.getMainPlayer().edificios.get(0).deseleccionar();
+                p.getMainPlayer().unidades.get(0).seleccionar();
+                p.getMainPlayer().unidades.get(1).seleccionar();
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
@@ -93,7 +92,7 @@ public class ClarkTutorial extends Tutorial {
         pasos.add(new Paso("La siguiente peculiaridad de la raza Clark es su forma de obtener recursos. Los Clark no necesitan materiales para construir grandes armas o vehículos, sólo necesitan masa y para conseguirla deben acabar con la fauna local.") {
             @Override
             public void efecto(Partida p) {
-                VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
+                VentanaPrincipal.ventanaCombate.movimiento_pantalla(200, 0);
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
@@ -133,17 +132,14 @@ public class ClarkTutorial extends Tutorial {
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        j1.x_inicial = 200;
-        j1.y_inicial = 200;
-        j1.initElements(this);
+        players.get(0).x_inicial = 200;
+        players.get(0).y_inicial = 200;
+        players.get(0).initElements(this);
         bestias.add(new Bestias("Grupo1", 600, 200));
     }
 
     public ClarkTutorial() {
-        iniciar_pasos();
-        j1 = new Jugador("Prueba", "Clark");
-        j2 = new Jugador("Prueba", "Eternium");
-        j1.color = Color.green;
-        j2.color = Color.red;
+        super();
+        players.get(0).raza = RaceNameEnum.CLARK.getName();
     }
 }

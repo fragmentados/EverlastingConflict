@@ -6,16 +6,15 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
+import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.RelojEternium;
-import org.newdawn.slick.Color;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 
 import java.util.ArrayList;
 
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 /**
  *
@@ -29,7 +28,7 @@ public class EterniumTutorial extends Tutorial {
         pasos.add(new Paso("Los Eternium son una raza dominada por el tiempo. En la parte superior de la pantalla puedes ver un reloj con cuatro esferas. Esas esferas representan las distintas fases por las que pasa el reloj.") {
             @Override
             public void efecto(Partida p) {
-                p.j1.unidades.get(0).seleccionar();
+                p.getMainPlayer().unidades.get(0).seleccionar();
             }
         });
         pasos.add(new Paso("En la primera fase, las capacidades ofensivas y defensivas de las unidades y de los edificios Eternium se encuentran al 75%") {
@@ -62,39 +61,39 @@ public class EterniumTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 VentanaCombate.continuar.canBeUsed = false;
-                j1.unidades.get(0).seleccionar();
-                VentanaPrincipal.mapac.movimiento_pantalla(200, 0);
+                getMainPlayer().unidades.get(0).seleccionar();
+                VentanaPrincipal.ventanaCombate.movimiento_pantalla(200, 0);
             }
         });
         pasos.add(new Paso("Primero, el hierro se extrae de vetas mediante refinerías. Cualquier unidad militar Eternium puede construir refinerías sobre una veta de hierro. Prueba a hacerlo ahora", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Refinería".equals(s));
+                return getMainPlayer().edificios.stream().map(e -> e.nombre).anyMatch(s -> "Refinería".equals(s));
             }
 
             @Override
             public void efecto(Partida p) {
-                j1.unidades.get(0).deseleccionar();
-                j1.edificios.get(0).seleccionar();
+                getMainPlayer().unidades.get(0).deseleccionar();
+                getMainPlayer().edificios.get(0).seleccionar();
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("En segundo lugar, el hierro debe ser transformado en la cámara de asimilación. Construye una cámara de asimilación utilizando la sede en cualquier lugar dentro del área permitida.", false) {
             @Override
             public void efecto(Partida p) {
-                j1.edificios.get(0).seleccionar();
+                getMainPlayer().edificios.get(0).seleccionar();
                 VentanaCombate.continuar.canBeUsed = false;
             }
 
             @Override
             public boolean comprobacion(Partida p) {
-                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Cámara de asimilación".equals(s));
+                return getMainPlayer().edificios.stream().map(e -> e.nombre).anyMatch(s -> "Cámara de asimilación".equals(s));
             }
         });
         pasos.add(new Paso("El último paso para la conversión requiere de tecnología de la que no disponemos en el campo de batalla con lo que se debe transportar a una de las naves que orbitan el planeta. Construye un transportador para terminar el sistema.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return j1.edificios.stream().map(e -> e.nombre).anyMatch(s -> "Teletransportador".equals(s));
+                return getMainPlayer().edificios.stream().map(e -> e.nombre).anyMatch(s -> "Teletransportador".equals(s));
             }
         });
         pasos.add(new Paso("Como puedes comprobar, a partir de ahora, las refinerías empezarán a generar recursos de manera continua.Cada nueva refinería que crees empezará a generar recursos de la misma forma. Pero debes recordar esto, la cámara de asimilación y el teletransportador son los dos edificio primordiales ya que, si alguno es destruido, todas tus refinerías dejarán de funcionar hasta que se reconstruya."));
@@ -107,20 +106,18 @@ public class EterniumTutorial extends Tutorial {
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        j1.x_inicial = 200;
-        j1.y_inicial = 200;
-        j1.initElements(this);
+        getMainPlayer().x_inicial = 200;
+        getMainPlayer().y_inicial = 200;
+        getMainPlayer().initElements(this);
         recursos.add(new Recurso("Hierro", 600, 200));
-        VentanaCombate.crearReloj(new RelojEternium(j1));
+        VentanaCombate.crearReloj(new RelojEternium(getMainPlayer()));
         VentanaCombate.relojEternium().detener_reloj(1000);
     }
 
     public EterniumTutorial() {
-        iniciar_pasos();
-        j1 = new Jugador("Prueba", "Eternium");
-        j2 = new Jugador("Prueba", "Fénix");
-        j1.color = Color.green;
-        j2.color = Color.red;
+        super();
+        players.get(0).raza = RaceNameEnum.ETERNIUM.getName();
+        players.get(1).raza = RaceNameEnum.CLARK.getName();
     }
 
 }

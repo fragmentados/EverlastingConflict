@@ -14,15 +14,15 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.Mensaje;
-import everlastingconflict.mapas.UI;
-import everlastingconflict.mapas.VentanaCombate;
-import everlastingconflict.mapas.VentanaPrincipal;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.Reloj;
+import everlastingconflict.ventanas.Mensaje;
+import everlastingconflict.ventanas.UI;
+import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.mapas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.mapas.VentanaCombate.playerY;
+import static everlastingconflict.ventanas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.ventanas.VentanaCombate.playerY;
 
 /**
  *
@@ -205,7 +205,7 @@ public class BotonComplejo extends BotonSimple {
     }
 
     @Override
-    public void dibujar(Graphics g) {
+    public void render(Graphics g) {
         if (canBeShown) {
             g.setColor(Color.white);
             if (sprite != null) {
@@ -366,7 +366,7 @@ public class BotonComplejo extends BotonSimple {
 
     public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Partida partida) {
         //e representa el elemento desde el cual se activa el botón          
-        Jugador aliado = partida.jugador_aliado(e);
+        Jugador aliado = partida.getPlayerFromElement(e);
         this.resolucion_contador = BotonComplejo.resolucion;
         if (canBeUsed) {
             if (e instanceof Edificio) {
@@ -388,9 +388,9 @@ public class BotonComplejo extends BotonSimple {
                                                 t.construir_anexo(partida);
                                             }
                                         } else {
-                                            VentanaPrincipal.mapac.edificio = contador_edificio;
-                                            VentanaPrincipal.mapac.edificio.vida = 0;
-                                            VentanaPrincipal.mapac.constructor = (ElementoAtacante) e;
+                                            VentanaPrincipal.ventanaCombate.edificio = contador_edificio;
+                                            VentanaPrincipal.ventanaCombate.edificio.vida = 0;
+                                            VentanaPrincipal.ventanaCombate.constructor = (ElementoAtacante) e;
                                         }
                                     }
                                 }
@@ -463,14 +463,14 @@ public class BotonComplejo extends BotonSimple {
                                             if (!contador.statusEffectCollection.existe_estado(StatusEffectName.AMNESIA)) {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < Fenix.limite_cuarteles)) {
-                                                    if (partida.jugador_aliado(e).comprobacion_recursos(contador_edificio)) {
-                                                        VentanaPrincipal.mapac.edificio = contador_edificio;
-                                                        VentanaPrincipal.mapac.edificio.vida = 0;
-                                                        VentanaPrincipal.mapac.constructor = contador;
+                                                    if (partida.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
+                                                        VentanaPrincipal.ventanaCombate.edificio = contador_edificio;
+                                                        VentanaPrincipal.ventanaCombate.edificio.vida = 0;
+                                                        VentanaPrincipal.ventanaCombate.constructor = contador;
                                                         break;
                                                     }
                                                 } else {
-                                                    VentanaPrincipal.mapac.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
+                                                    VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
                                                 }
                                             }
                                         }

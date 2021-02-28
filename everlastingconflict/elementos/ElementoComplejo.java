@@ -10,8 +10,8 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.Raza;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -48,7 +48,7 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     }
 
     public void iniciarbotones(Partida p) {
-        Jugador aliado = p.jugador_aliado(this);
+        Jugador aliado = p.getPlayerFromElement(this);
         if (this instanceof Edificio) {
             Raza.iniciar_botones_edificio(p, (Edificio) this);
         } else {

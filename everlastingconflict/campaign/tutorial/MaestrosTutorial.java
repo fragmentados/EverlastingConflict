@@ -10,18 +10,16 @@ import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.estados.StatusEffectName;
-import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.RelojMaestros;
-import org.newdawn.slick.Color;
+import everlastingconflict.ventanas.VentanaCombate;
 
 import java.util.ArrayList;
 
 import static everlastingconflict.elementos.implementacion.Manipulador.ATTRIBUTES_BUTTON;
 import static everlastingconflict.elementos.implementacion.Manipulador.SKILL_BUTTON;
-import static everlastingconflict.mapas.VentanaCombate.*;
+import static everlastingconflict.ventanas.VentanaCombate.*;
 
 /**
  *
@@ -67,14 +65,14 @@ public class MaestrosTutorial extends Tutorial {
 
             @Override
             public boolean comprobacion(Partida p) {
-                return p.j1.unidades.get(0).statusEffectCollection.existe_estado(StatusEffectName.MEDITACION);
+                return p.getMainPlayer().unidades.get(0).statusEffectCollection.existe_estado(StatusEffectName.MEDITACION);
             }
         });
         pasos.add(new Paso("Como podrás comprobar, tu Manipulador es ahora incapaz de moverse, pero su experiencia aumenta continuamente hasta subir al nivel dos. Espera hasta que ocurra esto.", false) {
 
             @Override
             public boolean comprobacion(Partida p) {
-                return ((Manipulador)p.j1.unidades.get(0)).nivel == 2;
+                return ((Manipulador)p.getMainPlayer().unidades.get(0)).nivel == 2;
             }
             @Override
             public void efecto(Partida p) {
@@ -84,19 +82,19 @@ public class MaestrosTutorial extends Tutorial {
         pasos.add(new Paso("Enhorabuena! Tu Manipulador ha subido de nivel. Sigues disponiendo de la habilidad Meditación pero no aumentará la experiencia sino que mejorará tu regeneración de maná. Además, han aparecido dos botones nuevos: Habilidades y Atributos. Prueba a pulsar Habilidades ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return !((Manipulador) p.j1.unidades.get(0)).enhancementButtons.isEmpty();
+                return !((Manipulador) p.getMainPlayer().unidades.get(0)).enhancementButtons.isEmpty();
             }
 
             @Override
             public void efecto(Partida p) {
-                ((Manipulador) p.j1.unidades.get(0)).enhancementButtons.removeIf(b -> "Deflagración".equals(b.elemento_nombre));
+                ((Manipulador) p.getMainPlayer().unidades.get(0)).enhancementButtons.removeIf(b -> "Deflagración".equals(b.elemento_nombre));
                 VentanaCombate.continuar.canBeUsed = false;
             }
         });
         pasos.add(new Paso("Ahora podrás elegir hasta dos habildiades para que tu Manipulador las aprenda. Prueba a hacerlo ahora.", false) {
             @Override
             public boolean comprobacion(Partida p) {
-                return ((Manipulador) p.j1.unidades.get(0)).enhancementButtons.isEmpty();
+                return ((Manipulador) p.getMainPlayer().unidades.get(0)).enhancementButtons.isEmpty();
             }
             @Override
             public void efecto(Partida p) {
@@ -116,27 +114,24 @@ public class MaestrosTutorial extends Tutorial {
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        j1.x_inicial = 200;
-        j1.y_inicial = 200;
-        j1.initElements(this);
-        j1.unidades.get(0).botones = new ArrayList<>();
-        j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
-        j1.unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar")));
-        j1.unidades.get(0).botones.removeIf(b -> b.equals(SKILL_BUTTON) || b.equals(ATTRIBUTES_BUTTON));
+        getMainPlayer().x_inicial = 200;
+        getMainPlayer().y_inicial = 200;
+        getMainPlayer().initElements(this);
+        getMainPlayer().unidades.get(0).botones = new ArrayList<>();
+        getMainPlayer().unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
+        getMainPlayer().unidades.get(0).botones.add(new BotonManipulador(new Habilidad("Meditar")));
+        getMainPlayer().unidades.get(0).botones.removeIf(b -> b.equals(SKILL_BUTTON) || b.equals(ATTRIBUTES_BUTTON));
         SKILL_BUTTON.remainingClicks = 0;
         ATTRIBUTES_BUTTON.remainingClicks = 0;
-        j1.unidades.get(0).initButtonKeys();
+        getMainPlayer().unidades.get(0).initButtonKeys();
         bestias = new ArrayList<>();
         bestias.add(new Bestias("Grupo1", 500, 200));
-        VentanaCombate.crearReloj(new RelojMaestros(j1));
+        VentanaCombate.crearReloj(new RelojMaestros(getMainPlayer()));
     }
 
     public MaestrosTutorial() {
-        iniciar_pasos();
-        j1 = new Jugador("Prueba", RaceNameEnum.MAESTROS.getName());
-        j2 = new Jugador("Prueba", RaceNameEnum.ETERNIUM.getName());
-        j1.color = Color.green;
-        j2.color = Color.red;
+        super();
+        players.get(0).raza = RaceNameEnum.MAESTROS.getName();
     }
 
 }

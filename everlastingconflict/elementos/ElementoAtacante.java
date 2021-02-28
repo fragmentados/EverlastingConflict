@@ -12,9 +12,9 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.mapas.VentanaCombate;
 import everlastingconflict.razas.RaceNameEnum;
 import everlastingconflict.relojes.Reloj;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public boolean curar_cercanos(Partida p) {
-        Jugador aliado = p.jugador_aliado(this);
+        Jugador aliado = p.getPlayerFromElement(this);
         float distancia = -1;
         for (Unidad u : aliado.unidades) {
             if(u.vida < u.vida_max) {
@@ -88,10 +88,40 @@ public abstract class ElementoAtacante extends ElementoEstado {
         return false;
     }
 
-    public boolean atacar_cercanos(Partida p) {
-        Jugador enemigo = p.jugador_enemigo(this);
+    public boolean checkToAttackNearbyElements(Partida p) {
+        boolean isAttacking = false;
+        List<Jugador> enemyPlayers = p.enemyPlayersFromElement(this);
         float distancia = -1;
-        for (Unidad u : enemigo.unidades) {
+        for (Jugador enemyPlayer : enemyPlayers) {
+            if (!isAttacking) {
+                isAttacking = checkToAttackNearbyElementsFromPlayer(p, enemyPlayer);
+            }
+        }
+        if (!isAttacking) {
+            // Atacar a las bestias hostiles cercanas
+            for (Bestias be : p.bestias) {
+                for (Bestia b : be.contenido) {
+                    if (b.statusBehaviour.equals(StatusBehaviour.ATACANDO)) {
+                        if (distancia == -1 || this.obtener_distancia(b) < distancia) {
+                            distancia = this.obtener_distancia(b);
+                            if (provocado_tiempo == 0 || b.nombre.equals(nombre_provocador)) {
+                                if (alcance(this.alcance, b)) {
+                                    this.objetivo = b;
+                                    this.ataque(p);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return isAttacking;
+    }
+
+    public boolean checkToAttackNearbyElementsFromPlayer(Partida p, Jugador j) {
+        float distancia = -1;
+        for (Unidad u : j.unidades) {
             if (distancia == -1 || this.obtener_distancia(u) < distancia) {
                 distancia = this.obtener_distancia(u);
                 if (provocado_tiempo == 0 || u.nombre.equals(nombre_provocador)) {
@@ -104,7 +134,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
             }
         }
         distancia = -1;
-        for (Edificio e : enemigo.edificios) {
+        for (Edificio e : j.edificios) {
             if (distancia == -1 || this.obtener_distancia(e) < distancia) {
                 distancia = this.obtener_distancia(e);
                 if (provocado_tiempo == 0 || e.nombre.equals(nombre_provocador)) {
@@ -117,7 +147,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
             }
         }
         distancia = -1;
-        for (Recurso r : enemigo.lista_recursos) {
+        for (Recurso r : j.lista_recursos) {
             if (distancia == -1 || this.obtener_distancia(r) < distancia) {
                 distancia = this.obtener_distancia(r);
                 if (provocado_tiempo == 0 || r.nombre.equals(nombre_provocador)) {
@@ -125,23 +155,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
                         this.objetivo = r;
                         this.ataque(p);
                         return true;
-                    }
-                }
-            }
-        }
-        // Atacar a las bestias hostiles cercanas
-        for (Bestias be : p.bestias) {
-            for (Bestia b : be.contenido) {
-                if (b.statusBehaviour.equals(StatusBehaviour.ATACANDO)) {
-                    if (distancia == -1 || this.obtener_distancia(b) < distancia) {
-                        distancia = this.obtener_distancia(b);
-                        if (provocado_tiempo == 0 || b.nombre.equals(nombre_provocador)) {
-                            if (alcance(this.alcance, b)) {
-                                this.objetivo = b;
-                                this.ataque(p);
-                                return true;
-                            }
-                        }
                     }
                 }
             }
@@ -204,52 +217,54 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     private List<ElementoVulnerable> getElementsToAttack(Partida p) {
-        List<ElementoVulnerable> elementsAttacked = new ArrayList<>();
-        elementsAttacked.add(this.objetivo);
+        List<ElementoVulnerable> elementsToBeAttacked = new ArrayList<>();
+        elementsToBeAttacked.add(this.objetivo);
         if (area > 0) {
             //Dañan a todos los elementos menos al objetivo
-            Jugador enemigo = p.jugador_enemigo(this);
             if (objetivo instanceof Bestia) {
                 for (Bestias be : p.bestias) {
                     if (be.contenido.indexOf(objetivo) != -1) {
-                        elementsAttacked.addAll(be.contenido);
+                        elementsToBeAttacked.addAll(be.contenido);
                         break;
                     }
                 }
             } else {
-                elementsAttacked.addAll(enemigo.unidades);
-                elementsAttacked.addAll(enemigo.edificios);
+                List<Jugador> enemies = p.enemyPlayersFromElement(this);
+                for (Jugador enemy : enemies) {
+                    elementsToBeAttacked.addAll(enemy.unidades);
+                    elementsToBeAttacked.addAll(enemy.edificios);
+                }
             }
         }
-        return elementsAttacked;
+        return elementsToBeAttacked;
     }
 
     private List<ElementoVulnerable> getElementsToHeal(Partida p) {
-        return p.jugador_aliado(this).unidades
+        return p.getPlayerFromElement(this).unidades
                 .stream().filter(u -> u.vida < u.vida_max).collect(Collectors.toList());
     }
 
     private int getAttack(Partida p) {
-        if (!(this instanceof Bestia) && (p.jugador_aliado(this).raza.equals(RaceNameEnum.ETERNIUM.getName()))) {
+        if (!(this instanceof Bestia) && (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.ETERNIUM.getName()))) {
             return this.ataque_eternium();
         } else {
             return this.ataque;
         }
     }
 
-    public boolean  dano(Partida p, String tipo, int ataque_contador, ElementoVulnerable e) {
+    public boolean dano(Partida p, String tipo, int ataque_contador, ElementoVulnerable e) {
         //e representa el objetivo del ataque
         if (hostil) {
             int defensa_contador;
-            if (!(e instanceof Bestia) && (p.jugador_aliado(e).raza.equals("Eternium"))) {
+            if (!(e instanceof Bestia) && (p.getPlayerFromElement(e).raza.equals("Eternium"))) {
                 defensa_contador = e.defensa_eternium();
             } else {
                 defensa_contador = e.defensa;
             }
-            if (p.jugador_aliado(this).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+            if (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.MAESTROS.getName())) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
-                    for (Unidad u : p.jugador_aliado(this).unidades) {
+                    for (Unidad u : p.getPlayerFromElement(this).unidades) {
                         if (u.nombre.equals("Manipulador")) {
                             m = (Manipulador) u;
                         }
@@ -287,7 +302,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 if (cantidad_dano > 0) {
                     e.vida -= cantidad_dano;
                 }
-                p.jugador_aliado(e).avisar_ataque(p, this);
+                p.getPlayerFromElement(e).avisar_ataque(p, this);
             }
             if (this instanceof Manipulador) {
                 Manipulador m = (Manipulador) this;
@@ -409,7 +424,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
         switch (statusBehaviour) {
             case PARADO:
                 if (hostil) {
-                    atacar_cercanos(p);
+                    checkToAttackNearbyElements(p);
                 } else if (healer) {
                     curar_cercanos(p);
                 }

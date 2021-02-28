@@ -63,7 +63,7 @@ public class Taller extends Edificio {
         Point2D.Float resultado = new Point2D.Float(0, 0);
         float contador_x = reunion_x, contador_y = reunion_y;
         int i = 0;
-        while (!u.colision(p, contador_x, contador_y).nombre.equals("No hay")) {
+        while (!u.colision(p, contador_x, contador_y)) {
             i++;
             if (i == 10) {
                 contador_x = reunion_x;
@@ -86,7 +86,7 @@ public class Taller extends Edificio {
     }
 
     @Override
-    public void comprobar_barra(Partida p, Jugador j) {
+    public void checkProgressBar(Partida p, Jugador j) {
         if (barra.terminado()) {
             if (cola_construccion.size() > 0) {
                 //System.out.println("Unidad creada");
