@@ -84,9 +84,9 @@ public class VentanaMenu extends Ventana {
 
             } else if (salir.isHovered(input.getMouseX(), input.getMouseY())) {
                 VentanaPrincipal.exit(container);
-            } else if (raceTutorial.desplegar.isHovered(input.getMouseX(), input.getMouseY())) {
-                raceTutorial.desplegar.efecto();
             }
+            raceTutorial.checkIfItsClicked(input);
+            raceTutorial.checkOptionSelected(input.getMouseX(), input.getMouseY());
         }
     }
 

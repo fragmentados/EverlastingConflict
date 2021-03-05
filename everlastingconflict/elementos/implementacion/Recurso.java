@@ -63,11 +63,12 @@ public class Recurso extends ElementoComplejo {
 
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
-        if (p.getPlayerFromElement(this).lista_recursos.indexOf(this) != -1) {
-            p.getPlayerFromElement(this).lista_recursos.remove(this);
+        Jugador aliado = p.getPlayerFromElement(this);
+        if (aliado.lista_recursos.indexOf(this) != -1) {
+            aliado.lista_recursos.remove(this);
             p.recursos.add(this);
             if (this.capturador != null) {
-                p.getPlayerFromElement(this).removeResources(10);
+                aliado.removeResources(10);
                 capturador = null;
             }
             vida = 0;

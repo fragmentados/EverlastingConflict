@@ -140,8 +140,8 @@ public class GuardianesTutorial extends Tutorial {
     }
 
     @Override
-    public void initElements(int njugador) {
-        super.initElements(njugador);
+    public void initElements() {
+        super.initElements();
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
@@ -152,7 +152,6 @@ public class GuardianesTutorial extends Tutorial {
     }
 
     public GuardianesTutorial() {
-        super();
-        players.get(0).raza = RaceNameEnum.GUARDIANES.getName();
+        super(RaceNameEnum.GUARDIANES.getName(), RaceNameEnum.ETERNIUM.getName());
     }
 }

@@ -5,17 +5,16 @@
  */
 package everlastingconflict.movimientos;
 
+import everlastingconflict.elementos.ElementoMovil;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.ElementoMovil;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 import java.awt.geom.Point2D;
 import java.util.List;
-
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
 /**
  *
@@ -29,77 +28,79 @@ public abstract class Movimiento {
     public static final boolean desviaciones = false;
 
     public boolean comprobar_coordenadas(Partida partida, int delta) {
-        float x_final = puntos.get(0).x;
-        float y_final = puntos.get(0).y;
-        float movimiento = 100 * Reloj.TIME_REGULAR_SPEED * unidad.velocidad * delta;
-        if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
-            movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
-        }
-        float distancia_x = Math.abs(x_final - unidad.x);
-        float distancia_y = Math.abs(y_final - unidad.y);
-        float distancia_total = distancia_x + distancia_y;
-        float movimientox = movimiento * (distancia_x / distancia_total);
-        if (movimientox > movimiento) {
-            movimientox = movimiento;
-        }
-        float movimientoy = movimiento * (distancia_y / distancia_total);
-        if (movimientoy > movimiento) {
-            movimientoy = movimiento;
-        }
-        boolean horizontal = (movimientox > movimientoy);
-        unidad.sprite.update(delta);
-        if (unidad.x < x_final) {
-            if (unidad.x + movimientox >= x_final) {
-                unidad.x = x_final;
-            } else {
-                unidad.x += movimientox;
+        if (!puntos.isEmpty()) {
+            float x_final = puntos.get(0).x;
+            float y_final = puntos.get(0).y;
+            float movimiento = 100 * Reloj.TIME_REGULAR_SPEED * unidad.velocidad * delta;
+            if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
+                movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
             }
-            if (horizontal) {
-                if (unidad.derecha != null) {
-                    unidad.sprite = unidad.derecha;
-                }
+            float distancia_x = Math.abs(x_final - unidad.x);
+            float distancia_y = Math.abs(y_final - unidad.y);
+            float distancia_total = distancia_x + distancia_y;
+            float movimientox = movimiento * (distancia_x / distancia_total);
+            if (movimientox > movimiento) {
+                movimientox = movimiento;
             }
-        } else {
-            if (unidad.x > x_final) {
-                if (unidad.x - movimientox <= x_final) {
+            float movimientoy = movimiento * (distancia_y / distancia_total);
+            if (movimientoy > movimiento) {
+                movimientoy = movimiento;
+            }
+            boolean horizontal = (movimientox > movimientoy);
+            unidad.sprite.update(delta);
+            if (unidad.x < x_final) {
+                if (unidad.x + movimientox >= x_final) {
                     unidad.x = x_final;
                 } else {
-                    unidad.x -= movimientox;
+                    unidad.x += movimientox;
                 }
-            }
-            if (horizontal) {
-                if (unidad.izquierda != null) {
-                    unidad.sprite = unidad.izquierda;
+                if (horizontal) {
+                    if (unidad.derecha != null) {
+                        unidad.sprite = unidad.derecha;
+                    }
                 }
-            }
-        }
-        if (unidad.y < y_final) {
-            if (unidad.y + movimientoy >= y_final) {
-                unidad.y = y_final;
             } else {
-                unidad.y += movimientoy;
-            }
-            if (!horizontal) {
-                if (unidad.abajo != null) {
-                    unidad.sprite = unidad.abajo;
+                if (unidad.x > x_final) {
+                    if (unidad.x - movimientox <= x_final) {
+                        unidad.x = x_final;
+                    } else {
+                        unidad.x -= movimientox;
+                    }
+                }
+                if (horizontal) {
+                    if (unidad.izquierda != null) {
+                        unidad.sprite = unidad.izquierda;
+                    }
                 }
             }
-        } else {
-            if (unidad.y > y_final) {
-                if (unidad.y - movimientoy <= y_final) {
+            if (unidad.y < y_final) {
+                if (unidad.y + movimientoy >= y_final) {
                     unidad.y = y_final;
                 } else {
-                    unidad.y -= movimientoy;
+                    unidad.y += movimientoy;
+                }
+                if (!horizontal) {
+                    if (unidad.abajo != null) {
+                        unidad.sprite = unidad.abajo;
+                    }
+                }
+            } else {
+                if (unidad.y > y_final) {
+                    if (unidad.y - movimientoy <= y_final) {
+                        unidad.y = y_final;
+                    } else {
+                        unidad.y -= movimientoy;
+                    }
+                }
+                if (!horizontal) {
+                    if (unidad.arriba != null) {
+                        unidad.sprite = unidad.arriba;
+                    }
                 }
             }
-            if (!horizontal) {
-                if (unidad.arriba != null) {
-                    unidad.sprite = unidad.arriba;
-                }
+            if (unidad.x == x_final && unidad.y == y_final) {
+                puntos.remove(0);
             }
-        }
-        if (unidad.x == x_final && unidad.y == y_final) {
-            puntos.remove(0);
         }
         return puntos.isEmpty();
     }

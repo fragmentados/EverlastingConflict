@@ -126,8 +126,8 @@ public class ClarkTutorial extends Tutorial {
     }
 
     @Override
-    public void initElements(int njugador) {
-        super.initElements(njugador);
+    public void initElements() {
+        super.initElements();
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
@@ -139,7 +139,6 @@ public class ClarkTutorial extends Tutorial {
     }
 
     public ClarkTutorial() {
-        super();
-        players.get(0).raza = RaceNameEnum.CLARK.getName();
+        super(RaceNameEnum.CLARK.getName(), RaceNameEnum.ETERNIUM.getName());
     }
 }

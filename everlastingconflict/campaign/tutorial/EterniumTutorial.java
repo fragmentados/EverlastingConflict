@@ -100,8 +100,8 @@ public class EterniumTutorial extends Tutorial {
     }
 
     @Override
-    public void initElements(int njugador) {
-        super.initElements(njugador);
+    public void initElements() {
+        super.initElements();
         VentanaCombate.WORLD_SIZE_X = map.getWidth();
         VentanaCombate.WORLD_SIZE_Y = map.getHeight();
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
@@ -115,9 +115,7 @@ public class EterniumTutorial extends Tutorial {
     }
 
     public EterniumTutorial() {
-        super();
-        players.get(0).raza = RaceNameEnum.ETERNIUM.getName();
-        players.get(1).raza = RaceNameEnum.CLARK.getName();
+        super(RaceNameEnum.ETERNIUM.getName(), RaceNameEnum.CLARK.getName());
     }
 
 }

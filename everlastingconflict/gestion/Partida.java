@@ -19,6 +19,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,8 +87,8 @@ public class Partida {
         return resultado;
     }
 
-    public Jugador enemyPlayer(Jugador player) {
-        return players.stream().filter(p -> !player.team.equals(p.team)).findFirst().get();
+    public List<Jugador> enemyPlayers(Jugador player) {
+        return players.stream().filter(p -> !player.team.equals(p.team)).collect(Collectors.toList());
     }
 
     public List<Jugador> getNonMainPlayers() {
@@ -131,13 +132,13 @@ public class Partida {
                 .findFirst().orElse(null);
     }
 
-    /*public Jugador enemyPlayer(ElementoCoordenadas e) {
-        return this.players.stream().filter(p -> !p.equals(getPlayerFromElement(e))).findFirst().orElse(null);
-    }*/
-
     public List<Jugador> enemyPlayersFromElement(ElementoCoordenadas e) {
         Jugador playerFromElement = getPlayerFromElement(e);
-        return this.players.stream().filter(p -> !p.team.equals(playerFromElement.team)).collect(Collectors.toList());
+        if (playerFromElement != null) {
+            return this.players.stream().filter(p -> !p.team.equals(playerFromElement.team)).collect(Collectors.toList());
+        } else {
+            return Arrays.asList(this.getMainPlayer());
+        }
     }
 
     public Jugador getPlayerByRace(RaceNameEnum race) {

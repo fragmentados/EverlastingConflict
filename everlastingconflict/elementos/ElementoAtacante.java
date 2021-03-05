@@ -199,9 +199,8 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 List<ElementoVulnerable> elementsAffected = getElementsAffected(p);
                 for (ElementoVulnerable u : elementsAffected) {
                     if (u.alcance(objetivo.x, objetivo.y, area)) {
-                        ElementoVulnerable objetivo_contador = u;
                         //dano(p, "Físico", ataque_contador, u);
-                        disparar_proyectil(p, attack, objetivo_contador);
+                        disparar_proyectil(p, attack, u);
                     }
                 }
             }
@@ -254,17 +253,19 @@ public abstract class ElementoAtacante extends ElementoEstado {
 
     public boolean dano(Partida p, String tipo, int ataque_contador, ElementoVulnerable e) {
         //e representa el objetivo del ataque
+        Jugador aliado = p.getPlayerFromElement(this);
+        Jugador enemigo = p.getPlayerFromElement(e);
         if (hostil) {
             int defensa_contador;
-            if (!(e instanceof Bestia) && (p.getPlayerFromElement(e).raza.equals("Eternium"))) {
+            if (!(e instanceof Bestia) && (enemigo != null && RaceNameEnum.ETERNIUM.getName().equals(enemigo.raza))) {
                 defensa_contador = e.defensa_eternium();
             } else {
                 defensa_contador = e.defensa;
             }
-            if (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+            if (aliado != null && RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
-                    for (Unidad u : p.getPlayerFromElement(this).unidades) {
+                    for (Unidad u : aliado.unidades) {
                         if (u.nombre.equals("Manipulador")) {
                             m = (Manipulador) u;
                         }
@@ -302,7 +303,9 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 if (cantidad_dano > 0) {
                     e.vida -= cantidad_dano;
                 }
-                p.getPlayerFromElement(e).avisar_ataque(p, this);
+                if (enemigo != null) {
+                    enemigo.avisar_ataque(p, this);
+                }
             }
             if (this instanceof Manipulador) {
                 Manipulador m = (Manipulador) this;

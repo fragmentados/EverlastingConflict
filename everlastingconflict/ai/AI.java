@@ -43,8 +43,11 @@ public class AI extends Jugador {
         if (militares.size() >= npushear) {
             for (Unidad u : militares) {
                 if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
-                    Jugador enemigo = p.enemyPlayer(this);
-                    u.atacarmover(p, enemigo.x_inicial, enemigo.y_inicial);
+                    List<Jugador> enemigos = p.enemyPlayers(this);
+                    if (!enemigos.isEmpty()) {
+                        Jugador enemigo = enemigos.get(0);
+                        u.atacarmover(p, enemigo.x_inicial, enemigo.y_inicial);
+                    }
                 }
             }
             if (npushear * 2 <= 50) {
