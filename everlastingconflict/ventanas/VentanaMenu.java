@@ -71,6 +71,7 @@ public class VentanaMenu extends Ventana {
             } else if (aceptar.isHovered(input.getMouseX(), input.getMouseY())) {
                 //client.send_start();
                 start = true;
+                tutorialMode = false;
             } else if (multijugador.isHovered(input.getMouseX(), input.getMouseY())) {
 
             } else if (tutorial.isHovered(input.getMouseX(), input.getMouseY())) {
