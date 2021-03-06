@@ -50,6 +50,7 @@ public class Jugador {
     // Team data
     public Integer team;
     public boolean isMainPlayer;
+    public boolean isLeader = false;
 
     public float getRecursos() {
         return recursos;
@@ -89,7 +90,7 @@ public class Jugador {
 
     }
 
-    public Jugador(String nombre, String raza, Integer team) {
+    public Jugador(String nombre, String raza, Integer team, boolean isLeader) {
         this.nombre = nombre;
         this.raza = raza;
         unidades = new ArrayList<>();
@@ -102,6 +103,7 @@ public class Jugador {
         poblacion_max = 200;
         this.resourceImage = Raza.getResourceImage(raza);
         this.team = team;
+        this.isLeader = isLeader;
     }
 
     public void comprobacion_perforacion() {
@@ -252,9 +254,15 @@ public class Jugador {
         unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));
     }
 
-    public void drawResources(Graphics g, float x, float y) {
+    public void renderResources(Graphics g, float x, float y) {
         switch (raza) {
             case "Fénix":
+                if (isLeader) {
+                    ElementosComunes.LIDER_IMAGE.draw(x - 160, y, 20, 20);
+                }
+                g.setColor(this.color);
+                g.fillRect(x - 140, y, 20, 20);
+                g.setColor(Color.white);
                 this.resourceImage.draw(x - 120, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos) + "%", x - 100, y);
                 ElementosComunes.FENIX_UNIDADES_NO_CONSTRUCTORAS.draw(x - 70, y, 20, 20);
@@ -266,6 +274,12 @@ public class Jugador {
                 break;
             case "Clark":
             case "Eternium":
+                if (isLeader) {
+                    ElementosComunes.LIDER_IMAGE.draw(x - 40, y, 20, 20);
+                }
+                g.setColor(this.color);
+                g.fillRect(x - 20, y, 20, 20);
+                g.setColor(Color.white);
                 this.resourceImage.draw(x, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos), x + 20, y);
                 ElementosComunes.POPULATION_IMAGE.draw(x + 70, y, 20, 20);
@@ -273,6 +287,12 @@ public class Jugador {
 
                 break;
             case "Guardianes":
+                if (isLeader) {
+                    ElementosComunes.LIDER_IMAGE.draw(x - 160, y, 20, 20);
+                }
+                g.setColor(this.color);
+                g.fillRect(x - 140, y, 20, 20);
+                g.setColor(Color.white);
                 ElementosComunes.MONEY_IMAGE.draw(x - 120, y, 20, 20);
                 g.drawString(Integer.toString((int) recursos), x - 100, y);
                 this.resourceImage.draw(x - 70, y, 20, 20);

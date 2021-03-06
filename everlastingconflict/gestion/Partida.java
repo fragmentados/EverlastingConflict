@@ -14,6 +14,8 @@ import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.ventanas.MapEnum;
 import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.victory.AnhilationVictoryCondition;
+import everlastingconflict.victory.VictoryCondition;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -32,12 +34,12 @@ import static everlastingconflict.ventanas.VentanaCombate.*;
  */
 public class Partida {
 
-    //public Jugador j1, j2;
     public List<Jugador> players = new ArrayList<>();
     public List<Recurso> recursos;
     public List<Bestias> bestias;
     public List<Proyectil> proyectiles;
     public MapEnum map;
+    public VictoryCondition victoryCondition = new AnhilationVictoryCondition();
 
     public static String anadir_saltos_de_linea(String texto, float anchura) {
         String resultado = "";
@@ -171,7 +173,7 @@ public class Partida {
         }
         if (this.players.size() >= 4) {
             this.players.get(3).x_inicial = 200;
-            this.players.get(2).y_inicial = height - 400;
+            this.players.get(3).y_inicial = height - 400;
         }
         float sextox = width / 6;
         float sextoy = height / 6;
@@ -232,6 +234,8 @@ public class Partida {
                 recursos.add(new Recurso("Civiles", sextox * 4, sextoy * 5));
             }
         }
+        // Torre de vigilancia en medio del mapa
+        recursos.add(new TorreVision("Vision", map.getWidth() / 2, map.getHeight() / 2));
         // Inicializar relojes
         if (existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
             VentanaCombate.crearReloj(new RelojMaestros(this.getPlayerByRace(RaceNameEnum.MAESTROS)));
@@ -253,11 +257,11 @@ public class Partida {
     }
 
     public boolean checkMainPlayerVictory() {
-        return this.players.stream().filter(p -> !p.isMainPlayer).allMatch(p -> p.isDefeated());
+        return this.players.stream().filter(p -> !p.isMainPlayer).allMatch(p -> this.victoryCondition.isDefeated(this, p));
     }
 
     public boolean checkMainPlayerDefeat() {
-        return this.players.stream().filter(p -> p.isMainPlayer).findFirst().get().isDefeated();
+        return this.victoryCondition.isDefeated(this, getMainPlayer());
     }
 
     public void comportamiento_elementos(Graphics g, int delta) {
@@ -305,6 +309,11 @@ public class Partida {
         this.players = players;
         this.players.get(0).isMainPlayer = true;
         this.map = map;
+    }
+
+    public Partida(List<Jugador> players, MapEnum map, VictoryCondition victoryCondition) {
+        this(players, map);
+        this.victoryCondition = victoryCondition;
     }
 
     public ElementoVulnerable getElementAttackedAtPosition(float x, float y, List<Unidad> seleccionadas) {
@@ -377,6 +386,14 @@ public class Partida {
 
     public boolean resourceBelongsToPlayer(Recurso r) {
         return players.stream().anyMatch(p -> p.lista_recursos.contains(r));
+    }
+
+    public List<Recurso> getGameCivilTowns() {
+        return this.recursos.stream().filter(r -> r.nombre.equals("Civiles")).collect(Collectors.toList());
+    }
+
+    public List<Recurso> getVisionTowers() {
+        return this.recursos.stream().filter(r -> r.nombre.equals("Vision")).collect(Collectors.toList());
     }
 
 }

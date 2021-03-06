@@ -7,6 +7,7 @@ package everlastingconflict.elementosvisuales;
 
 import org.newdawn.slick.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class ComboBox {
     public String opcion_seleccionada;
     public BotonSimple desplegar;
     public boolean desplegado;
+    public List<String> descriptions = new ArrayList<>();
 
     public ComboBox(String label, List<String> o, float x, float y) {
         this.x = x;
@@ -47,6 +49,11 @@ public class ComboBox {
         } catch (SlickException e) {
 
         }
+    }
+
+    public ComboBox(String label, List<String> o, List<String> descriptions, float x, float y) {
+        this(label, o, x, y);
+        this.descriptions = descriptions;
     }
 
     public String checkOptionSelected(float x, float y) {
@@ -101,6 +108,9 @@ public class ComboBox {
         }
         desplegar.render(g);
         g.setColor(Color.white);
+        if ((descriptions.size() - 1) >= this.opciones.indexOf(opcion_seleccionada)) {
+            g.drawString(descriptions.get(this.opciones.indexOf(opcion_seleccionada)), x + 300, y);
+        }
     }
 
     public void checkIfItsClicked(Input input) {

@@ -48,7 +48,6 @@ import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_C
 import static everlastingconflict.relojes.Reloj.TIME_REGULAR_SPEED;
 
 /**
- *
  * @author Elías
  */
 public class VentanaCombate extends Ventana {
@@ -120,7 +119,7 @@ public class VentanaCombate extends Ventana {
     public static RelojEternium relojEternium() {
         Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojEternium).findFirst().orElse(null);
         if (relojEncontrado != null) {
-           return (RelojEternium) relojEncontrado;
+            return (RelojEternium) relojEncontrado;
         }
         return null;
     }
@@ -330,64 +329,65 @@ public class VentanaCombate extends Ventana {
         }
     }
 
-    public void gestionar_click_derecho(float x, float y) {
-        for (ElementoSimple e : ui.elementos) {
-            if (e instanceof Edificio) {
-                Edificio contador = (Edificio) e;
-                contador.reunion_x = x;
-                contador.reunion_y = y;
-            } else {
-                if (e instanceof Unidad) {
-                    Unidad u = (Unidad) e;
-                    if (u.nombre.equals("Recolector")) {
-                        for (Recurso r : partida.recursos) {
+    public void handleRightClick(float x, float y) {
+        if (ui.allElementsAreControlledByMainPlayer(partida)) {
+            for (ElementoSimple e : ui.elementos) {
+                if (e instanceof Edificio) {
+                    Edificio contador = (Edificio) e;
+                    contador.reunion_x = x;
+                    contador.reunion_y = y;
+                } else {
+                    if (e instanceof Unidad) {
+                        Unidad u = (Unidad) e;
+                        List<Recurso> resourcesToCheck = "Recolector".equals(u.nombre) ? partida.getGameCivilTowns() : partida.getVisionTowers();
+                        for (Recurso r : resourcesToCheck) {
                             if (r.hitbox(x, y)) {
                                 u.recolectar(partida, r);
                                 return;
                             }
                         }
-                    }
-                    Jugador aliado = partida.getPlayerFromElement(u);
-                    if (u.piloto) {
-                        //Embarca vehículo
-                        for (Unidad u2 : aliado.unidades) {
-                            if (u2.vehiculo) {
-                                if (u2.hitbox(x, y)) {
-                                    u.embarcar(u2);
-                                    return;
+                        Jugador aliado = partida.getPlayerFromElement(u);
+                        if (u.piloto) {
+                            //Embarca vehículo
+                            for (Unidad u2 : aliado.unidades) {
+                                if (u2.vehiculo) {
+                                    if (u2.hitbox(x, y)) {
+                                        u.embarcar(u2);
+                                        return;
+                                    }
                                 }
                             }
-                        }
-                        //Embarca torreta
-                        for (Edificio ed : aliado.edificios) {
-                            if (ed.hitbox(x, y)) {
-                                if (ed.nombre.equals("Torreta defensiva")) {
-                                    u.embarcar(ed);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                    if (aliado.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
-                        if (u.constructor) {
-                            //Constructor activa edificio inactivo
+                            //Embarca torreta
                             for (Edificio ed : aliado.edificios) {
-                                if (!ed.activo) {
-                                    if (ed.hitbox(x, y)) {
+                                if (ed.hitbox(x, y)) {
+                                    if (ed.nombre.equals("Torreta defensiva")) {
                                         u.embarcar(ed);
                                         return;
                                     }
                                 }
                             }
-                        } else {
-                            //Unidad solucion evento negativo
-                            if (aliado.edificios.get(0).hitbox(x, y)) {
-                                //Comprobación de si la unidad es necesaria o no
-                                for (Evento ev : aliado.eventos.contenido) {
-                                    if (!ev.positivo) {
-                                        if (ev.nombre_elemento.equals(u.nombre)) {
-                                            u.embarcar(aliado.edificios.get(0));
+                        }
+                        if (aliado.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
+                            if (u.constructor) {
+                                //Constructor activa edificio inactivo
+                                for (Edificio ed : aliado.edificios) {
+                                    if (!ed.activo) {
+                                        if (ed.hitbox(x, y)) {
+                                            u.embarcar(ed);
                                             return;
+                                        }
+                                    }
+                                }
+                            } else {
+                                //Unidad solucion evento negativo
+                                if (aliado.edificios.get(0).hitbox(x, y)) {
+                                    //Comprobación de si la unidad es necesaria o no
+                                    for (Evento ev : aliado.eventos.contenido) {
+                                        if (!ev.positivo) {
+                                            if (ev.nombre_elemento.equals(u.nombre)) {
+                                                u.embarcar(aliado.edificios.get(0));
+                                                return;
+                                            }
                                         }
                                     }
                                 }
@@ -396,17 +396,17 @@ public class VentanaCombate extends Ventana {
                     }
                 }
             }
-        }
-        List<Unidad> unitsSelected = ui.elementos.stream()
-                .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
-                .map(e -> (Unidad)e).collect(Collectors.toList());
-        elementCircle = partida.getElementAttackedAtPosition(x, y, unitsSelected);
-        if (elementCircle == null) {
-            if (!unitsSelected.isEmpty()) {
-                pathing_prueba(true, unitsSelected, x, y);
+            List<Unidad> unitsSelected = ui.elementos.stream()
+                    .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
+                    .map(e -> (Unidad) e).collect(Collectors.toList());
+            elementCircle = partida.getElementAttackedAtPosition(x, y, unitsSelected);
+            if (elementCircle == null) {
+                if (!unitsSelected.isEmpty()) {
+                    pathing_prueba(true, unitsSelected, x, y);
+                }
+            } else {
+                timeCircleCounter = timeCircle;
             }
-        } else {
-            timeCircleCounter = timeCircle;
         }
     }
 
@@ -455,7 +455,7 @@ public class VentanaCombate extends Ventana {
         mayus = input.isKeyDown(Input.KEY_LSHIFT);
         // Mensajes
         List<Mensaje> messagesToBeRemoved = new ArrayList<>();
-        for (Mensaje m: mensajes) {
+        for (Mensaje m : mensajes) {
             if (m.comprobar_mensaje(delta)) {
                 messagesToBeRemoved.add(m);
             }
@@ -562,8 +562,7 @@ public class VentanaCombate extends Ventana {
         }
         //Cambiar a Atacar-Mover
         if (input.isKeyPressed(Input.KEY_A)) {
-            boolean unitSelected = ui.elementos.stream().anyMatch(e -> e instanceof Unidad);
-            if (unitSelected) {
+            if (ui.unitSelected(partida) && ui.allElementsAreControlledByMainPlayer(partida)) {
                 attackMoveModeEnabled = true;
                 container.setMouseCursor(atacar, 10, 10);
             }
@@ -578,7 +577,7 @@ public class VentanaCombate extends Ventana {
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
             if (continuar.isHovered(x_click, y_click)) {
-                if (!(partida instanceof Tutorial) || ((Tutorial)partida).pasos.isEmpty()) {
+                if (!(partida instanceof Tutorial) || ((Tutorial) partida).pasos.isEmpty()) {
                     endGameAndReturnToMenu(container);
                 }
             }
@@ -715,7 +714,7 @@ public class VentanaCombate extends Ventana {
             if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT)) {
                 if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                     Point2D resultado = ui.obtener_coordenadas_minimapa(x_click, y_click);
-                    gestionar_click_derecho((float) resultado.getX(), (float) resultado.getY());
+                    handleRightClick((float) resultado.getX(), (float) resultado.getY());
                 }
                 click = false;
             } else if (attackMoveModeEnabled) {
@@ -728,14 +727,14 @@ public class VentanaCombate extends Ventana {
                 elemento_habilidad = null;
                 habilidad = null;
             } else {
-                gestionar_click_derecho(x_click, y_click);
+                handleRightClick(x_click, y_click);
             }
         }
         if (elementCircle != null) {
             timeCircleCounter -= TIME_REGULAR_SPEED * delta;
             if (timeCircleCounter <= 0) {
                 timeCircleCounter = 0;
-               elementCircle = null;
+                elementCircle = null;
             }
         }
     }
@@ -801,7 +800,7 @@ public class VentanaCombate extends Ventana {
     private void handleAttackMove(Input input, GameContainer container) {
         List<Unidad> unitsSelected = ui.elementos.stream()
                 .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
-                .map(e -> (Unidad)e).collect(Collectors.toList());
+                .map(e -> (Unidad) e).collect(Collectors.toList());
         // First try to attack the element on the cursor
         ElementoVulnerable elementAttacked = partida.getElementAttackedAtPosition((int) playerX + input.getMouseX(),
                 (int) playerY + input.getMouseY(), unitsSelected);
@@ -926,7 +925,10 @@ public class VentanaCombate extends Ventana {
                 continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - continuar.anchura;
                 continuar.y = playerY + 100 - 21;
             }
-            mainPlayer.drawResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY);
+            List<Jugador> mainTeam = partida.getMainTeam();
+            for (int i = 0; i < mainTeam.size(); i++) {
+                mainTeam.get(i).renderResources(g, playerX + VIEWPORT_SIZE_WIDTH - 100, playerY + 20 * i);
+            }
         }
         continuar.render(g);
         if (chat) {

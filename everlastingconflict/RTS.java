@@ -13,10 +13,6 @@ import org.newdawn.slick.SlickException;
 import javax.swing.*;
 import java.awt.*;
  
-/**
- *
- * @author Elías    
- */
 public class RTS {
 
     public static CanvasGameContainer canvas;

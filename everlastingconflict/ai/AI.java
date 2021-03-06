@@ -23,17 +23,17 @@ public class AI extends Jugador {
 
     public int npushear;
     
-    public AI(String n, String r, Integer t) {
-        super(n, r, t);
+    public AI(String n, String r, Integer t, boolean isLeader) {
+        super(n, r, t, isLeader);
     }
 
-    public static AI crearAI(String r, Integer t) {
+    public static AI crearAI(String r, Integer t, boolean isLeader) {
         if (RaceNameEnum.CLARK.getName().equals(r)) {
-            return new AIClark(t);
+            return new AIClark(t, isLeader);
         } else if (RaceNameEnum.ETERNIUM.getName().equals(r)) {
-            return new AIEternium(t);
+            return new AIEternium(t, isLeader);
         } else if (RaceNameEnum.FENIX.getName().equals(r)) {
-                return new AIFenix(t);
+                return new AIFenix(t, isLeader);
         }
         return null;
     }

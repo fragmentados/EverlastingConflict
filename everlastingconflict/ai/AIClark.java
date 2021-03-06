@@ -14,8 +14,8 @@ import org.newdawn.slick.Graphics;
  */
 public class AIClark extends AI {
 
-    public AIClark(Integer t) {
-        super("AIClark","Clark", t);
+    public AIClark(Integer t, boolean isLeader) {
+        super("AIClark","Clark", t, isLeader);
     }
 
     @Override

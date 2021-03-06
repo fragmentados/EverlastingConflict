@@ -44,12 +44,12 @@ public abstract class Tutorial extends Partida {
 
     public Tutorial(String r1, String r2) {
         iniciar_pasos();
-        Jugador j1 = new Jugador("Jugador", r1, 1);
+        Jugador j1 = new Jugador("Jugador", r1, 1, false);
         j1.color = Color.green;
         j1.isMainPlayer = true;
         j1.team = 1;
         players.add(j1);
-        Jugador j2 = new Jugador("IA", r2, 2);
+        Jugador j2 = new Jugador("IA", r2, 2, false);
         j2.color = Color.red;
         j2.team = 2;
         players.add(j2);

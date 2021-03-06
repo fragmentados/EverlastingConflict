@@ -206,20 +206,10 @@ public class Unidad extends ElementoMovil {
                 break;
             case RECOLECTANDO:
                 if ((this.x == recurso.x) && (this.y == recurso.y)) {
-                    if (recurso.vida < Recurso.vida_civiles) {
-                        if ((recurso.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta) >= Recurso.vida_civiles) {
-                            this.movil = true;
-                            recurso.vida = Recurso.vida_civiles;
-                            recurso.capturar(aliado);
-                            mover(p, recurso.x, recurso.y + recurso.altura);
-                        } else {
-                            if (recurso.vida == 0) {
-                                aliado.lista_recursos.add(recurso);
-                                p.recursos.remove(recurso);
-                                this.movil = false;
-                            }
-                            recurso.vida += (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta;
-                        }
+                    if (recurso instanceof TorreVision) {
+                        recurso.capturar(p, aliado, this);
+                    } else {
+                        recurso.recolect(p, aliado, this, delta);
                     }
                 }
                 break;

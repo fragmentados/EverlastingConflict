@@ -44,6 +44,14 @@ public enum MapEnum {
         return allNames;
     }
 
+    public static List<String> getAllPlayerLimits() {
+        List<String> allNames = new ArrayList<>();
+        for (MapEnum value : values()) {
+            allNames.add("Jugadores máximos : " + value.getMaxPlayers());
+        }
+        return allNames;
+    }
+
     public static MapEnum findByName(String name) {
         for (MapEnum value : values()) {
             if (value.getName().equals(name)) {

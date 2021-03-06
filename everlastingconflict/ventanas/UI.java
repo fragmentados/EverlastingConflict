@@ -540,7 +540,7 @@ public class UI {
         }
         //Tercer Rectángulo: Botones
         g.drawRect(VentanaCombate.playerX + anchura_miniatura + anchura_seleccion, initialY, anchura_botones, UI_HEIGHT);
-        if (!seleccion_actual.isEmpty()) {
+        if (!seleccion_actual.isEmpty() && this.allElementsAreControlledByMainPlayer(p)) {
             ElementoComplejo e = seleccion_actual.get(0);
             List<BotonComplejo> botones;
             if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
@@ -737,5 +737,14 @@ public class UI {
             }
         }
         return null;
+    }
+
+    public boolean allElementsAreControlledByMainPlayer(Partida partida) {
+        Jugador mainPlayer = partida.getMainPlayer();
+        return this.elementos.stream().allMatch(e -> mainPlayer.equals(partida.getPlayerFromElement(e)));
+    }
+
+    public boolean unitSelected(Partida partida) {
+        return ui.elementos.stream().anyMatch(e -> e instanceof Unidad);
     }
 }

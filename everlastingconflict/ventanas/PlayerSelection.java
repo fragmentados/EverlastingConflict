@@ -13,6 +13,7 @@ public class PlayerSelection {
     public ComboBox isActiveCombo;
     public ComboBox raceCombo;
     public ComboBox teamCombo;
+    public ComboBox leaderCombo;
     public float x, y;
 
     public PlayerSelection(float x, float y) {
@@ -22,7 +23,10 @@ public class PlayerSelection {
         raceCombo = new ComboBox("Raza:", RaceNameEnum.getAllNames(), x + 200, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
                 .boxed().map(n -> n.toString()).collect(Collectors.toList()), x + 400, y);
+        leaderCombo = new ComboBox("Lider:", Arrays.asList("Sí", "No"), x + 500, y);
     }
+
+    public boolean isLeader() {return "Sí".equals(this.leaderCombo.opcion_seleccionada);}
 
     public boolean isPlayerActive() {
         return !"Closed".equals(isActiveCombo.opcion_seleccionada);
@@ -32,9 +36,11 @@ public class PlayerSelection {
         isActiveCombo.checkIfItsClicked(input);
         raceCombo.checkIfItsClicked(input);
         teamCombo.checkIfItsClicked(input);
+        leaderCombo.checkIfItsClicked(input);
         isActiveCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
         raceCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
         teamCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
+        leaderCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
     }
 
     public void render(Graphics g) {
@@ -42,6 +48,9 @@ public class PlayerSelection {
         if (isPlayerActive()) {
             raceCombo.render(g);
             teamCombo.render(g);
+            if ("Jugador Lider".equals(VentanaSeleccion.victoryCondition.opcion_seleccionada)) {
+                leaderCombo.render(g);
+            }
         }
     }
 }

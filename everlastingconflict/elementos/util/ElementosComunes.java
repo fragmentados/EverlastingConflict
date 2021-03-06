@@ -35,6 +35,8 @@ public class ElementosComunes {
     // Day / Night Images
     public static Image DAY_IMAGE;
     public static Image NIGHT_IMAGE;
+    // Victory condition icons
+    public static Image LIDER_IMAGE;
 
 
     public static void init() throws SlickException {
@@ -60,5 +62,6 @@ public class ElementosComunes {
         DAY_IMAGE  = new Image("media/Iconos/Sol.png");
         NIGHT_IMAGE  = new Image("media/Iconos/Luna.png");
         THREAT_IMAGE = new Image("media/Recursos/GuardianesAmenaza.png");
+        LIDER_IMAGE = new Image("media/Lider.png");
     }
 }

@@ -25,8 +25,8 @@ public class AIFenix extends AI {
     public float xacademia, yacademia;
     public float xcentro, ycentro;
 
-    public AIFenix(Integer t) {
-        super("AIFenix", "Fénix", t);
+    public AIFenix(Integer t, boolean isLeader) {
+        super("AIFenix", "Fénix", t, isLeader);
 
     }
 

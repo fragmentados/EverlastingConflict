@@ -20,8 +20,8 @@ public class AIEternium extends AI {
     public float x_asimilacion, y_asimilacion;
     public float x_altar, y_altar;
 
-    public AIEternium(Integer t) {
-        super("AIEternium", "Eternium", t);
+    public AIEternium(Integer t, boolean isLeader) {
+        super("AIEternium", "Eternium", t, isLeader);
     }
 
     @Override

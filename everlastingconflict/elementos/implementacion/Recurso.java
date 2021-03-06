@@ -10,6 +10,7 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
+import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.*;
 
@@ -58,7 +59,6 @@ public class Recurso extends ElementoComplejo {
         this.y = y;
         this.ocupado = false;
         initImages();
-
     }
 
     @Override
@@ -76,11 +76,30 @@ public class Recurso extends ElementoComplejo {
         }
     }
 
-    public void capturar(Jugador j) {
+    public void recolect(Partida partida, Jugador playerGatherer, Unidad gatherer, float delta) {
+        if (this.vida < Recurso.vida_civiles) {
+            if ((this.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta) >= Recurso.vida_civiles) {
+                gatherer.movil = true;
+                this.vida = Recurso.vida_civiles;
+                this.capturar(partida, playerGatherer, gatherer);
+                gatherer.mover(partida, this.x, this.y + this.altura);
+            } else {
+                if (this.vida == 0) {
+                    playerGatherer.lista_recursos.add(this);
+                    partida.recursos.remove(this);
+                    gatherer.movil = false;
+                }
+                this.vida += (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta;
+            }
+        }
+    }
+
+    public void capturar(Partida p, Jugador j, Unidad gatherer) {
         j.addResources(10);
         capturador = j.nombre;
         j.visiones.add(new Vision(this.x, this.y, 450, 450, 0));
         this.sprite.setAutoUpdate(true);
+        gatherer.mover(p, this.x, this.y + this.altura);
     }
 
     @Override
