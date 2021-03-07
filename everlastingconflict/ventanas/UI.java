@@ -18,7 +18,7 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -295,7 +295,7 @@ public class UI {
                     if (unidad.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
                         ataque += unidad.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
                     }
-                    if (p.getPlayerFromElement(unidad).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+                    if (p.getPlayerFromElement(unidad).raza.equals(RaceEnum.MAESTROS.getName())) {
                         if (Manipulador.alentar) {
                             Manipulador m = null;
                             for (Unidad u : p.getPlayerFromElement(unidad).unidades) {

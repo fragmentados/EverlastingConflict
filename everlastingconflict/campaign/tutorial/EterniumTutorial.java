@@ -7,7 +7,7 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.ventanas.VentanaCombate;
 import everlastingconflict.ventanas.VentanaPrincipal;
@@ -115,7 +115,7 @@ public class EterniumTutorial extends Tutorial {
     }
 
     public EterniumTutorial() {
-        super(RaceNameEnum.ETERNIUM.getName(), RaceNameEnum.CLARK.getName());
+        super(RaceEnum.ETERNIUM.getName(), RaceEnum.CLARK.getName());
     }
 
 }

@@ -11,7 +11,7 @@ import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.ventanas.VentanaCombate;
 
@@ -130,7 +130,7 @@ public class MaestrosTutorial extends Tutorial {
     }
 
     public MaestrosTutorial() {
-        super(RaceNameEnum.MAESTROS.getName(), RaceNameEnum.ETERNIUM.getName());
+        super(RaceEnum.MAESTROS.getName(), RaceEnum.ETERNIUM.getName());
     }
 
 }

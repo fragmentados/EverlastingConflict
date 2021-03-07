@@ -7,7 +7,7 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.MapEnum;
 import org.newdawn.slick.Color;
 
@@ -29,13 +29,13 @@ public abstract class Tutorial extends Partida {
     }
 
     public static Partida createTutorialByRace(String race) {
-        if(RaceNameEnum.FENIX.getName().equals(race)) {
+        if(RaceEnum.FENIX.getName().equals(race)) {
             return new FenixTutorial();
-        } else if(RaceNameEnum.CLARK.getName().equals(race)) {
+        } else if(RaceEnum.CLARK.getName().equals(race)) {
             return new ClarkTutorial();
-        } else if(RaceNameEnum.ETERNIUM.getName().equals(race)) {
+        } else if(RaceEnum.ETERNIUM.getName().equals(race)) {
             return new EterniumTutorial();
-        } else if(RaceNameEnum.GUARDIANES.getName().equals(race)) {
+        } else if(RaceEnum.GUARDIANES.getName().equals(race)) {
             return new GuardianesTutorial();
         } else {
             return new MaestrosTutorial();

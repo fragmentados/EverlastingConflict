@@ -5,7 +5,7 @@ import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.victory.VictoryCondition;
 import everlastingconflict.victory.VictoryConditionEnum;
 import org.newdawn.slick.GameContainer;
@@ -56,7 +56,7 @@ public class VentanaSeleccion extends Ventana {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        mainPlayerRace = new ComboBox("Raza:", RaceNameEnum.getAllNames(), 600, 500);
+        mainPlayerRace = new ComboBox("Raza:", RaceEnum.getAllNames(), 600, 500);
         mainPlayerTeam = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
                 .boxed().map(n -> n.toString()).collect(Collectors.toList()), 800, 500);
         mainPlayerLeader = new ComboBox("Lider:", Arrays.asList("Sí", "No"), 900, 500);

@@ -9,7 +9,7 @@ import everlastingconflict.elementos.ElementoComplejo;
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.implementacion.*;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.ventanas.MapEnum;
@@ -143,7 +143,7 @@ public class Partida {
         }
     }
 
-    public Jugador getPlayerByRace(RaceNameEnum race) {
+    public Jugador getPlayerByRace(RaceEnum race) {
         return this.players.stream().filter(p -> p.raza.equals(race.getName())).findFirst().orElse(null);
     }
 
@@ -151,7 +151,7 @@ public class Partida {
         return this.players.stream().filter(p -> p.nombre.equals(name)).findFirst().orElse(null);
     }
 
-    public boolean existsPlayerWithRace(RaceNameEnum race) {
+    public boolean existsPlayerWithRace(RaceEnum race) {
         return this.players.stream().anyMatch(p -> race.getName().equals(p.raza));
     }
 
@@ -166,7 +166,7 @@ public class Partida {
         initPlayerCoordinates(width, height);
         float sextox = width / 6;
         float sextoy = height / 6;
-        if (existsPlayerWithRace(RaceNameEnum.CLARK) || existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
+        if (existsPlayerWithRace(RaceEnum.CLARK) || existsPlayerWithRace(RaceEnum.MAESTROS)) {
             //Alphas
             bestias.add(new Bestias("Grupo1", sextox, sextoy));
             bestias.add(new Bestias("Grupo1", sextox * 3, sextoy));
@@ -192,7 +192,7 @@ public class Partida {
 //                be.cambiar_coordenadas(be.x - 200, be.y - 200);
 //            }
         }
-        if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
+        if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
             recursos.add(new Recurso("Hierro", sextox * 2, sextoy));
             recursos.add(new Recurso("Hierro", sextox * 4, sextoy));
             recursos.add(new Recurso("Hierro", sextox, sextoy * 2));
@@ -202,8 +202,8 @@ public class Partida {
             recursos.add(new Recurso("Hierro", sextox * 2, sextoy * 5));
             recursos.add(new Recurso("Hierro", sextox * 4, sextoy * 5));
         }
-        if (existsPlayerWithRace(RaceNameEnum.FENIX)) {
-            if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
+        if (existsPlayerWithRace(RaceEnum.FENIX)) {
+            if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
                 recursos.add(new Recurso("Civiles", sextox, sextoy));
                 recursos.add(new Recurso("Civiles", sextox * 3, sextoy));
                 recursos.add(new Recurso("Civiles", sextox * 5, sextoy));
@@ -226,11 +226,11 @@ public class Partida {
         // Torre de vigilancia en medio del mapa
         recursos.add(new TorreVision("Vision", map.getWidth() / 2, map.getHeight() / 2));
         // Inicializar relojes
-        if (existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
-            VentanaCombate.crearReloj(new RelojMaestros(this.getPlayerByRace(RaceNameEnum.MAESTROS)));
+        if (existsPlayerWithRace(RaceEnum.MAESTROS)) {
+            VentanaCombate.crearReloj(new RelojMaestros(this.getPlayerByRace(RaceEnum.MAESTROS)));
         }
-        if (existsPlayerWithRace(RaceNameEnum.ETERNIUM)) {
-            VentanaCombate.crearReloj(new RelojEternium(this.getPlayerByRace(RaceNameEnum.ETERNIUM)));
+        if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
+            VentanaCombate.crearReloj(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
         }
         initPlayerColors();
         players.forEach(p -> p.initElements(this));

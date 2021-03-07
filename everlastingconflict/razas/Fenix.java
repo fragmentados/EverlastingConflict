@@ -10,6 +10,7 @@ import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Jugador;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -25,7 +26,6 @@ public class Fenix {
 
     public static int ataque_tigre = Unidad.ataque_estandar;
     public static int alcance_halcon = Unidad.alcance_estandar + 100;
-    public static int limite_cuarteles = 2;
     public static int limite_unidades_no_militares = 5;
     public static boolean boton_cuartel_fenix = false;
     public static boolean boton_cuartel_tigre = false;
@@ -209,7 +209,7 @@ public class Fenix {
         e.descripcion = "Edificio encargado de desbloquear las unidades Fénix.";
     }    
 
-    public static void iniciar_botones_edificio(Edificio e) {
+    public static void iniciar_botones_edificio(Edificio e, Jugador aliado) {
         switch (e.nombre) {
             case "Cuartel Fénix":
                 e.botones.add(new BotonComplejo("Detener"));
@@ -225,11 +225,11 @@ public class Fenix {
                 e.botones.add(new BotonComplejo(new Tecnologia("Clases de tiro")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Resurrección")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Destruir al invasor")));
-                if (Fenix.limite_cuarteles == 2) {
+                if (aliado.limite_cuarteles == 2) {
                     //Aumentar limite 1
                     e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 1")));
                 } else {
-                    if (Fenix.limite_cuarteles == 3) {
+                    if (aliado.limite_cuarteles == 3) {
                         //Aumentar limite 2    
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 2")));
                     } else {

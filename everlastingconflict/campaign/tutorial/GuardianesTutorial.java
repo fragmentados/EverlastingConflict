@@ -8,7 +8,7 @@ package everlastingconflict.campaign.tutorial;
 import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Input;
 
@@ -152,6 +152,6 @@ public class GuardianesTutorial extends Tutorial {
     }
 
     public GuardianesTutorial() {
-        super(RaceNameEnum.GUARDIANES.getName(), RaceNameEnum.ETERNIUM.getName());
+        super(RaceEnum.GUARDIANES.getName(), RaceEnum.ETERNIUM.getName());
     }
 }

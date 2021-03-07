@@ -12,7 +12,7 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.*;
@@ -244,7 +244,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     private int getAttack(Partida p) {
-        if (!(this instanceof Bestia) && (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.ETERNIUM.getName()))) {
+        if (!(this instanceof Bestia) && (p.getPlayerFromElement(this).raza.equals(RaceEnum.ETERNIUM.getName()))) {
             return this.ataque_eternium();
         } else {
             return this.ataque;
@@ -257,12 +257,12 @@ public abstract class ElementoAtacante extends ElementoEstado {
         Jugador enemigo = p.getPlayerFromElement(e);
         if (hostil) {
             int defensa_contador;
-            if (!(e instanceof Bestia) && (enemigo != null && RaceNameEnum.ETERNIUM.getName().equals(enemigo.raza))) {
+            if (!(e instanceof Bestia) && (enemigo != null && RaceEnum.ETERNIUM.getName().equals(enemigo.raza))) {
                 defensa_contador = e.defensa_eternium();
             } else {
                 defensa_contador = e.defensa;
             }
-            if (aliado != null && RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
+            if (aliado != null && RaceEnum.MAESTROS.getName().equals(aliado.raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
                     for (Unidad u : aliado.unidades) {

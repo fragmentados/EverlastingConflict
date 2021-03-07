@@ -19,7 +19,7 @@ package everlastingconflict.elementos.implementacion;
  import everlastingconflict.gestion.ProgressBar;
  import everlastingconflict.razas.Eternium;
  import everlastingconflict.razas.Fenix;
- import everlastingconflict.razas.RaceNameEnum;
+ import everlastingconflict.razas.RaceEnum;
  import everlastingconflict.razas.Raza;
  import everlastingconflict.relojes.Reloj;
  import everlastingconflict.ventanas.Mensaje;
@@ -135,7 +135,7 @@ public class Edificio extends ElementoAtacante {
         this.reunion_y = this.y + this.altura + this.altura_barra_vida + barra.altura;
     }
 
-    public void researchTechnology(Partida p, Jugador j, Tecnologia t) {
+    public boolean researchTechnology(Partida p, Jugador j, Tecnologia t) {
         if (j.comprobacion_recursos(t)) {
             // Disable all buttons that research the tecnology
             j.edificios.stream().filter(e -> e.nombre.equals(this.nombre))
@@ -146,7 +146,9 @@ public class Edificio extends ElementoAtacante {
             }
             cola_construccion.add(t);
             j.tecnologias.add(t);
+            return true;
         }
+        return false;
     }
 
     public int obtener_indice_elemento(String n) {
@@ -200,7 +202,7 @@ public class Edificio extends ElementoAtacante {
             }
             eliminar_cola(elementProduced);
         }
-        if (!p.getPlayerFromElement(this).raza.equals(RaceNameEnum.FENIX.getName())) {
+        if (!p.getPlayerFromElement(this).raza.equals(RaceEnum.FENIX.getName())) {
             p.getPlayerFromElement(this).addResources(elementProduced.coste);
         }
     }
@@ -208,10 +210,10 @@ public class Edificio extends ElementoAtacante {
     public void createUnit(Partida partida, Jugador jugador, Unidad unidadACrear) {
         if (jugador.comprobacion_recursos(unidadACrear)) {
             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
-                if (!jugador.raza.equals(RaceNameEnum.FENIX.getName())) {
+                if (!jugador.raza.equals(RaceEnum.FENIX.getName())) {
                     jugador.removeResources(unidadACrear.coste);
                 }
-                if (!jugador.raza.equals(RaceNameEnum.FENIX.getName()) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
+                if (!jugador.raza.equals(RaceEnum.FENIX.getName()) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
                     setInitialCoordinatesForCreatedUnit(unidadACrear);
                     jugador.poblacion += unidadACrear.coste_poblacion;
                     if (cola_construccion.isEmpty()) {
@@ -372,7 +374,7 @@ public class Edificio extends ElementoAtacante {
                 this.deseleccionar();
             }
             p.getPlayerFromElement(this).edificios.remove(this);
-            if (p.getPlayerFromElement(this).raza.equals(RaceNameEnum.ETERNIUM.getName())) {
+            if (p.getPlayerFromElement(this).raza.equals(RaceEnum.ETERNIUM.getName())) {
                 p.getPlayerFromElement(this).comprobacion_perforacion();
             }
             Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);

@@ -285,7 +285,7 @@ public class Raza {
         Jugador aliado = p.getPlayerFromElement(e);
         switch (aliado.raza) {
             case "Fénix":
-                Fenix.iniciar_botones_edificio(e);
+                Fenix.iniciar_botones_edificio(e, aliado);
                 break;
             case "Clark":
                 Clark.iniciar_botones_edificio(e);

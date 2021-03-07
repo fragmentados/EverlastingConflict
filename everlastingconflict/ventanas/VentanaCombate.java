@@ -23,7 +23,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Clark;
 import everlastingconflict.razas.Fusion;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojEternium;
 import everlastingconflict.relojes.RelojMaestros;
@@ -173,7 +173,6 @@ public class VentanaCombate extends Ventana {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        ElementosComunes.init();
         container.setShowFPS(false);
         container.setVSync(true);
         continuar = new BotonSimple("Continuar");
@@ -191,8 +190,7 @@ public class VentanaCombate extends Ventana {
         detencion = new Image("media/Unidades/Detención.png");
         muerte = new Image("media/Unidades/Muerte.png");
         ui = new UI();
-        //this.ambientMusic = new Sound("/media/Sonidos/AdeptoAtaque.ogg");
-        //this.ambientMusic.loop();
+        //ElementosComunes.BACKGROUND_MUSIC_SOUND.loop(1f, 0.1f);
     }
 
     public void coordenadas_errores() {
@@ -368,7 +366,7 @@ public class VentanaCombate extends Ventana {
                                 }
                             }
                         }
-                        if (aliado.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
+                        if (aliado.raza.equals(RaceEnum.GUARDIANES.getName())) {
                             if (u.constructor) {
                                 //Constructor activa edificio inactivo
                                 for (Edificio ed : aliado.edificios) {
@@ -915,7 +913,7 @@ public class VentanaCombate extends Ventana {
                 hoveredButton.renderExtendedInfo(null, g, ui.seleccion_actual.get(0));
             }
             //Evento seleccionado Guardián
-            Jugador guardianPlayer = partida.getPlayerByRace(RaceNameEnum.GUARDIANES);
+            Jugador guardianPlayer = partida.getPlayerByRace(RaceEnum.GUARDIANES);
             if (guardianPlayer != null) {
                 Evento evento_seleccionado = guardianPlayer.getSelectedEvent(playerX + input.getMouseX(), playerY + input.getMouseY());
                 if (evento_seleccionado != null) {

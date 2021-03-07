@@ -336,7 +336,7 @@ public class Tecnologia extends ElementoSimple {
                         e.initButtonKeys();
                     }
                 }
-                Fenix.limite_cuarteles++;
+                jugador.limite_cuarteles++;
                 break;
             case "Aumentar límite 2":
                 for (Edificio e : jugador.edificios) {
@@ -345,10 +345,10 @@ public class Tecnologia extends ElementoSimple {
                         e.initButtonKeys();
                     }
                 }
-                Fenix.limite_cuarteles++;
+                jugador.limite_cuarteles++;
                 break;
             case "Aumentar límite 3":
-                Fenix.limite_cuarteles += 2;
+                jugador.limite_cuarteles += 2;
                 break;
             //Guardianes
             case "Reforma gubernamental":

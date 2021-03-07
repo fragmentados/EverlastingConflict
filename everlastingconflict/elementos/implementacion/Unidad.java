@@ -14,7 +14,7 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import org.newdawn.slick.*;
@@ -288,7 +288,7 @@ public class Unidad extends ElementoMovil {
         if (canMove()) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
-                if (!p.getPlayerFromElement(this).raza.equals(RaceNameEnum.FENIX.getName())) {
+                if (!p.getPlayerFromElement(this).raza.equals(RaceEnum.FENIX.getName())) {
                     p.getPlayerFromElement(this).addResources(edificio_construccion.coste);
                 }
                 edificio_construccion = null;

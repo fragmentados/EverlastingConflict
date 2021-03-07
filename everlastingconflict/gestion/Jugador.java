@@ -20,7 +20,9 @@ import org.newdawn.slick.Input;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -48,6 +50,7 @@ public class Jugador {
     public int poblacion, poblacion_max;
     public boolean perforacion = false;
     public Eventos eventos;
+    public  int limite_cuarteles = 2;
     // Team data
     public Integer team;
     public boolean isMainPlayer;
@@ -63,7 +66,7 @@ public class Jugador {
     }
 
     public void removeResources(float amount) {
-        if (!raza.equals(RaceNameEnum.FENIX.getName())) {
+        if (!raza.equals(RaceEnum.FENIX.getName())) {
             recursos -= amount;
             checkButtonResources();
         }
@@ -170,14 +173,14 @@ public class Jugador {
             u.iniciarbotones(p);
         }
         for (Edificio e : edificios) {
-            if (!this.raza.equals(RaceNameEnum.GUARDIANES.getName()) || e.nombre.equals("Ayuntamiento")) {
+            if (!this.raza.equals(RaceEnum.GUARDIANES.getName()) || e.nombre.equals("Ayuntamiento")) {
                 e.iniciarbotones(p);
             }
         }
     }
 
     public void comportamiento_elementos(Partida p, Graphics g, int delta) {
-        if (this.raza.equals(RaceNameEnum.GUARDIANES.getName())) {
+        if (this.raza.equals(RaceEnum.GUARDIANES.getName())) {
             this.addResources((this.guardiansPeoplePercentage / 100f) * delta * Reloj.TIME_REGULAR_SPEED * Guardianes.recursos_por_segundo);
             eventos.comportamiento(this, delta);
         }
@@ -216,7 +219,7 @@ public class Jugador {
         for (Edificio e : edificios) {
             e.dibujar(p, color, input, g);
         }
-        if (this.raza.equals(RaceNameEnum.MAESTROS.getName())) {
+        if (this.raza.equals(RaceEnum.MAESTROS.getName())) {
             if (this.unidades.get(0) instanceof Manipulador) {
                 Manipulador m = (Manipulador) this.unidades.get(0);
                 m.drawXpCircle(g);
@@ -224,7 +227,7 @@ public class Jugador {
                 m.drawManaCircle(g);
             }
         }
-        if (this.raza.equals(RaceNameEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
+        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
             for (Unidad u : unidades) {
                 if (u.nombre.equals("Protector")) {
                     u.dibujar(p, color, input, g);
@@ -240,7 +243,7 @@ public class Jugador {
         for (ElementoEspecial e : elementos_especiales) {
             e.dibujar(p, color, input, g);
         }
-        if (raza.equals(RaceNameEnum.GUARDIANES.getName())) {
+        if (raza.equals(RaceEnum.GUARDIANES.getName())) {
             eventos.dibujar(g);
         }
     }
@@ -265,7 +268,7 @@ public class Jugador {
                 ElementosComunes.FENIX_UNIDADES_NO_CONSTRUCTORAS.draw(x - 70, y, 20, 20);
                 g.drawString(Integer.toString(cantidad_no_militar()) + "/" + Integer.toString(Fenix.limite_unidades_no_militares), x - 50, y);
                 ElementosComunes.FENIX_CUARTEL.draw(x - 20, y, 20, 20);
-                g.drawString(Integer.toString(cantidad_edificio("Cuartel Fénix")) + "/" + Integer.toString(Fenix.limite_cuarteles), x, y);
+                g.drawString(Integer.toString(cantidad_edificio("Cuartel Fénix")) + "/" + Integer.toString(this.limite_cuarteles), x, y);
                 ElementosComunes.POPULATION_IMAGE.draw(x + 30, y, 20, 20);
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
                 break;
@@ -303,7 +306,7 @@ public class Jugador {
     }
 
     public int cantidad_edificio(String n) {
-        List<Edificio> buildingsToCount = new ArrayList<>();
+        Set<Edificio> buildingsToCount = new HashSet<>();
         for (Edificio ed : edificios) {
             if (n.equals(ed.nombre)) {
                 buildingsToCount.add(ed);
@@ -402,7 +405,7 @@ public class Jugador {
     }
 
     public boolean isDefeated() {
-        if (RaceNameEnum.MAESTROS.getName().equals(this.raza)) {
+        if (RaceEnum.MAESTROS.getName().equals(this.raza)) {
             return !unidades.get(0).nombre.equals("Manipulador");
         }else {
             return edificios.isEmpty();

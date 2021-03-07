@@ -10,7 +10,7 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Elías
  */
-public class AI extends Jugador {
+public abstract class AI extends Jugador {
 
     public int npushear;
 
@@ -27,35 +27,36 @@ public class AI extends Jugador {
     }
 
     public static AI crearAI(String r, Integer t, String dificultad, boolean isLeader) {
-        if (RaceNameEnum.CLARK.getName().equals(r)) {
+        if (RaceEnum.CLARK.getName().equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
                     return new AIClarkFacil(t, isLeader);
             }
-        } else if (RaceNameEnum.ETERNIUM.getName().equals(r)) {
+        } else if (RaceEnum.ETERNIUM.getName().equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
                     return new AIEterniumFacil(t, isLeader);
             }
-        } else if (RaceNameEnum.FENIX.getName().equals(r)) {
+        } else if (RaceEnum.FENIX.getName().equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
+                    return new AIFenixNormal(t, isLeader);
                 case "Difícil":
                     return new AIFenixFacil(t, isLeader);
             }
-        } else if (RaceNameEnum.GUARDIANES.getName().equals(r)) {
+        } else if (RaceEnum.GUARDIANES.getName().equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
                     return new AIGuardianesFacil(t, isLeader);
             }
-        } else if (RaceNameEnum.MAESTROS.getName().equals(r)) {
+        } else if (RaceEnum.MAESTROS.getName().equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
@@ -92,12 +93,19 @@ public class AI extends Jugador {
     @Override
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
         super.comportamiento_unidades(p, g, delta);
+        pushear(p);
+        this.decisiones_unidades(p);
     }
+
+    public abstract void decisiones_unidades(Partida p);
 
     @Override
     public void comportamiento_edificios(Partida p, Graphics g, int delta) {
         super.comportamiento_edificios(p, g, delta);
+        this.decisiones_edificios(p);
     }
+
+    public abstract void decisiones_edificios(Partida p);
 
     @Override
     public void avisar_ataque(Partida p, ElementoAtacante atacante) {

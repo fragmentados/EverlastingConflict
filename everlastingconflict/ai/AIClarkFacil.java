@@ -6,7 +6,6 @@
 package everlastingconflict.ai;
 
 import everlastingconflict.gestion.Partida;
-import org.newdawn.slick.Graphics;
 
 /**
  *
@@ -19,13 +18,13 @@ public class AIClarkFacil extends AI {
     }
 
     @Override
-    public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        super.comportamiento_unidades(p, g, delta);
+    public void decisiones_unidades(Partida p) {
+
     }
 
     @Override
-    public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
+    public void decisiones_edificios(Partida p) {
+
     }
 
 }

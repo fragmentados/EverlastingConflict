@@ -13,7 +13,6 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Fenix;
-import org.newdawn.slick.Graphics;
 
 /**
  *
@@ -31,7 +30,7 @@ public class AIFenixFacil extends AI {
     }
 
     @Override
-    public final void initElements(Partida p) {
+    public void initElements(Partida p) {
         super.initElements(p);
         xcuartel = this.horizontalOffset(x_inicial, 210);
         ycuartel = y_inicial;
@@ -46,9 +45,7 @@ public class AIFenixFacil extends AI {
     }
 
     @Override
-    public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        super.comportamiento_unidades(p, g, delta);
-        pushear(p);
+    public void decisiones_unidades(Partida p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Recolector":
@@ -58,35 +55,36 @@ public class AIFenixFacil extends AI {
                     comportamiento_constructor(p, u);
                     break;
                 default:
-                //Unidad Militar
-                //comportamiento_militar(p, u);
+                    //Unidad Militar
+                    //comportamiento_militar(p, u);
             }
         }
     }
 
     @Override
-    public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
+    public void decisiones_edificios(Partida p) {
         for (Edificio e : edificios) {
-            switch (e.nombre) {
-                case "Cuartel Fénix":
-                    comportamiento_cuartel(p, e);
-                    break;
-                case "Academia":
-                case "Centro tecnológico":
-                    comportamiento_academia(p, e);
-                    break;
-                case "Sede":
-                    comportamiento_sede(p, e);
-                    break;
+            if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+                switch (e.nombre) {
+                    case "Cuartel Fénix":
+                        comportamiento_cuartel(p, e);
+                        break;
+                    case "Academia":
+                    case "Centro tecnológico":
+                        comportamiento_academia(p, e);
+                        break;
+                    case "Sede":
+                        comportamiento_sede(p, e);
+                        break;
 
+                }
             }
         }
     }
 
     public void comportamiento_constructor(Partida p, Unidad u) {
         if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
-            if (this.cantidad_edificio("Cuartel Fénix") < Fenix.limite_cuarteles) {
+            if (this.cantidad_edificio("Cuartel Fénix") < this.limite_cuarteles) {
                 Edificio contador = new Edificio("Cuartel Fénix");
                 contador.vida = 0;
                 u.construir(p, contador, xcuartel, ycuartel);

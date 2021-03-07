@@ -5,15 +5,14 @@ import everlastingconflict.elementos.implementacion.Taller;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
-import org.newdawn.slick.Graphics;
+import everlastingconflict.razas.RaceEnum;
 
 public class AIGuardianesFacil extends AI {
 
 
 
     public AIGuardianesFacil(Integer t, boolean isLeader) {
-        super("AIGuardianes", RaceNameEnum.GUARDIANES.getName(), t, isLeader);
+        super("AIGuardianes", RaceEnum.GUARDIANES.getName(), t, isLeader);
     }
 
     @Override
@@ -23,9 +22,7 @@ public class AIGuardianesFacil extends AI {
     }
 
     @Override
-    public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        super.comportamiento_unidades(p, g, delta);
-        pushear(p);
+    public void decisiones_unidades(Partida p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Activador":
@@ -48,20 +45,21 @@ public class AIGuardianesFacil extends AI {
     }
 
     @Override
-    public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
+    public void decisiones_edificios(Partida p) {
         for (Edificio e : edificios) {
             if (e.activo) {
-                switch (e.nombre) {
-                    case "Ayuntamiento":
-                        comportamientoAyuntamiento(p, e);
-                        break;
-                    case "Taller bélico":
-                        comportamientoTaller(p, (Taller) e);
-                        break;
-                    case "Academia de pilotos":
-                        comportamientoAcademia(p, e);
-                        break;
+                if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+                    switch (e.nombre) {
+                        case "Ayuntamiento":
+                            comportamientoAyuntamiento(p, e);
+                            break;
+                        case "Taller bélico":
+                            comportamientoTaller(p, (Taller) e);
+                            break;
+                        case "Academia de pilotos":
+                            comportamientoAcademia(p, e);
+                            break;
+                    }
                 }
             }
         }

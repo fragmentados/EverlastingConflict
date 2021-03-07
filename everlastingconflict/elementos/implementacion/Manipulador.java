@@ -12,7 +12,7 @@ import everlastingconflict.estados.StatusEffect;
 import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojMaestros;
@@ -367,7 +367,7 @@ public class Manipulador extends Unidad {
             Manipulador m = (Manipulador) atacante;
             VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
             m.aumentar_experiencia(xpValue);
-        } else if (Manipulador.lider && p.getPlayerFromElement(atacante).raza.equals(RaceNameEnum.MAESTROS.getName())) {
+        } else if (Manipulador.lider && p.getPlayerFromElement(atacante).raza.equals(RaceEnum.MAESTROS.getName())) {
             for (Unidad u : p.getPlayerFromElement(atacante).unidades) {
                 if (u.nombre.equals("Manipulador")) {
                     Manipulador m = (Manipulador) u;

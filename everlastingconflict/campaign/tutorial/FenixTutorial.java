@@ -10,7 +10,7 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Recurso;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.VentanaCombate;
 import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.Input;
@@ -114,7 +114,7 @@ public class FenixTutorial extends Tutorial {
     }
 
     public FenixTutorial() {
-        super(RaceNameEnum.FENIX.getName(), RaceNameEnum.ETERNIUM.getName());
+        super(RaceEnum.FENIX.getName(), RaceEnum.ETERNIUM.getName());
     }
 
 }

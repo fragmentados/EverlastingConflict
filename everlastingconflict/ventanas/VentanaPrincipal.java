@@ -6,6 +6,7 @@
 package everlastingconflict.ventanas;
 
 import everlastingconflict.RTS;
+import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -54,6 +55,7 @@ public class VentanaPrincipal extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
+        ElementosComunes.init();
         windowSwitch(container, new Partida(), "Menu");
     }
 

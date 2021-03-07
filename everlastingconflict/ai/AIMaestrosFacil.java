@@ -3,13 +3,12 @@ package everlastingconflict.ai;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
-import org.newdawn.slick.Graphics;
+import everlastingconflict.razas.RaceEnum;
 
 public class AIMaestrosFacil extends AI {
 
     public AIMaestrosFacil(Integer t, boolean isLeader) {
-        super("AIMaestros", RaceNameEnum.MAESTROS.getName(), t, isLeader);
+        super("AIMaestros", RaceEnum.MAESTROS.getName(), t, isLeader);
     }
 
     @Override
@@ -19,9 +18,7 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        super.comportamiento_unidades(p, g, delta);
-        pushear(p);
+    public void decisiones_unidades(Partida p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 /*case "Activador":
@@ -32,8 +29,7 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
+    public void decisiones_edificios(Partida p) {
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 /*case "Ayuntamiento":

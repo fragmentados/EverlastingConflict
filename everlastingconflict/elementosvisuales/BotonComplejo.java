@@ -15,9 +15,8 @@ import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Clark;
-import everlastingconflict.razas.Fenix;
 import everlastingconflict.razas.Fusion;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.Mensaje;
 import everlastingconflict.ventanas.UI;
@@ -462,7 +461,7 @@ public class BotonComplejo extends BotonSimple {
                                         if (!contador.statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
                                             if (!contador.statusEffectCollection.existe_estado(StatusEffectName.AMNESIA)) {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
-                                                if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < Fenix.limite_cuarteles)) {
+                                                if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < aliado.limite_cuarteles)) {
                                                     if (partida.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
                                                         VentanaPrincipal.ventanaCombate.edificio = contador_edificio;
                                                         VentanaPrincipal.ventanaCombate.edificio.vida = 0;
@@ -532,14 +531,14 @@ public class BotonComplejo extends BotonSimple {
             if ("Tecnología".equals(elemento_tipo)) {
                 enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
             } else if ("Cuartel Fénix".equals(elemento_nombre)) {
-                enabled = aliado.cantidad_edificio(elemento_nombre) < Fenix.limite_cuarteles;
+                enabled = aliado.cantidad_edificio(elemento_nombre) < aliado.limite_cuarteles;
             } else if (elemento_coste > 0) {
-                if (RaceNameEnum.MAESTROS.getName().equals(aliado.raza)) {
+                if (RaceEnum.MAESTROS.getName().equals(aliado.raza)) {
                     Manipulador m = aliado.getManipulator();
                     enabled = m.mana >= this.elemento_coste;
                 } else {
                     enabled = aliado.getRecursos() >= this.elemento_coste;
-                    if (RaceNameEnum.GUARDIANES.getName().equals(aliado.raza)) {
+                    if (RaceEnum.GUARDIANES.getName().equals(aliado.raza)) {
                         enabled = enabled && aliado.guardiansThreatLevel >= this.elementThreatLevelNeeded;
                     }
                 }

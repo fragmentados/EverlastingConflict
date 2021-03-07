@@ -8,7 +8,8 @@ package everlastingconflict.ventanas;
 import everlastingconflict.campaign.tutorial.Tutorial;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 
@@ -22,6 +23,7 @@ public class VentanaMenu extends Ventana {
     private final String titulo = "THE EVERLASTING CONFLICT";
     public BotonSimple combate, multijugador, tutorial, volver, aceptar, salir, opciones;
     private ComboBox raceTutorial;
+    private Image tutorialImage;
     public static TextField usuario;
     public boolean start;
     private boolean tutorialMode = false;
@@ -41,7 +43,8 @@ public class VentanaMenu extends Ventana {
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
         aceptar.canBeUsed = volver.canBeUsed = false;
-        raceTutorial = new ComboBox("Raza:", RaceNameEnum.getAllNames(), 700, 400);
+        raceTutorial = new ComboBox("Raza:", RaceEnum.getAllNames(), 700, 400);
+        tutorialImage = new Image("media/" + raceTutorial.opcion_seleccionada + ".png");
     }
 
     public void start(GameContainer container) {
@@ -87,7 +90,9 @@ public class VentanaMenu extends Ventana {
                 VentanaPrincipal.exit(container);
             }
             raceTutorial.checkIfItsClicked(input);
-            raceTutorial.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            if (raceTutorial.checkOptionSelected(input.getMouseX(), input.getMouseY()) != null) {
+                tutorialImage  = new Image("media/" + raceTutorial.opcion_seleccionada + ".png");
+            }
         }
     }
 
@@ -105,6 +110,8 @@ public class VentanaMenu extends Ventana {
         g.drawString("Usuario: ", 20, 50);
         usuario.render(container, g);
         if (tutorialMode) {
+            tutorialImage.draw(350, 450);
+            g.drawString(Partida.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.opcion_seleccionada).getDescription(), 500), 600, 500);
             raceTutorial.render(g);
         }
     }

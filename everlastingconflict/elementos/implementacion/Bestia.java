@@ -10,7 +10,7 @@ import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.Mensaje;
@@ -104,7 +104,7 @@ public class Bestia extends Unidad {
 
     @Override
     public void comportamiento(Partida p, Graphics g, int delta) {
-        Jugador mastersPlayer = p.getPlayerByRace(RaceNameEnum.MAESTROS);
+        Jugador mastersPlayer = p.getPlayerByRace(RaceEnum.MAESTROS);
         if (mastersPlayer != null) {
             for (ElementoEspecial e : mastersPlayer.elementos_especiales) {
                 if (e.nombre.equals("Agujero negro")) {
@@ -150,7 +150,7 @@ public class Bestia extends Unidad {
                 break;
             case PARADO:
                 if (mastersPlayer != null) {
-                    for (ElementoEspecial e : p.getPlayerByRace(RaceNameEnum.MAESTROS).elementos_especiales) {
+                    for (ElementoEspecial e : p.getPlayerByRace(RaceEnum.MAESTROS).elementos_especiales) {
                         if (e.nombre.equals("Agujero negro")) {
                             if (this.alcance(300, e)) {
                                 this.mover(p, e.x, e.y);

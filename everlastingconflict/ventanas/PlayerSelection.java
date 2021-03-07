@@ -1,7 +1,7 @@
 package everlastingconflict.ventanas;
 
 import everlastingconflict.elementosvisuales.ComboBox;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
@@ -21,7 +21,7 @@ public class PlayerSelection {
         this.x = x;
         this.y = y;
         isActiveCombo = new ComboBox(null,  Arrays.asList("AI", "Closed"), x, y);
-        raceCombo = new ComboBox("Raza:", RaceNameEnum.getAllNames(), x + 200, y);
+        raceCombo = new ComboBox("Raza:", RaceEnum.getAllNames(), x + 200, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
                 .boxed().map(n -> n.toString()).collect(Collectors.toList()), x + 400, y);
         difficultyCombo = new ComboBox("Dificultad:", Arrays.asList("Fácil", "Normal", "Difícil"), x + 550, y);

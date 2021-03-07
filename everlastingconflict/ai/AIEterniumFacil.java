@@ -12,7 +12,6 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
-import org.newdawn.slick.Graphics;
 
 public class AIEterniumFacil extends AI {
 
@@ -40,9 +39,7 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        super.comportamiento_unidades(p, g, delta);
-        pushear(p);
+    public void decisiones_unidades(Partida p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Adepto":
@@ -53,17 +50,17 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void comportamiento_edificios(Partida p, Graphics g, int delta) {
-        super.comportamiento_edificios(p, g, delta);
-
+    public void decisiones_edificios(Partida p) {
         for (Edificio e : edificios) {
-            switch (e.nombre) {
-                case "Mando Central":
-                    comportamiento_mando(p, e);
-                    break;
-                case "Altar de los ancestros":
-                    comportamiento_altar(p, e);
-                    break;
+            if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+                switch (e.nombre) {
+                    case "Mando Central":
+                        comportamiento_mando(p, e);
+                        break;
+                    case "Altar de los ancestros":
+                        comportamiento_altar(p, e);
+                        break;
+                }
             }
         }
     }

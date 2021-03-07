@@ -9,7 +9,7 @@ import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Bestia;
 import everlastingconflict.elementos.implementacion.Bestias;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceNameEnum;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.VentanaCombate;
 import everlastingconflict.ventanas.VentanaPrincipal;
 import org.newdawn.slick.Input;
@@ -139,6 +139,6 @@ public class ClarkTutorial extends Tutorial {
     }
 
     public ClarkTutorial() {
-        super(RaceNameEnum.CLARK.getName(), RaceNameEnum.ETERNIUM.getName());
+        super(RaceEnum.CLARK.getName(), RaceEnum.ETERNIUM.getName());
     }
 }
