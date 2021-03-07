@@ -76,8 +76,8 @@ public class Unidad extends ElementoMovil {
             if (ataque > 0) {
                 try {
                     sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
-                } catch (SlickException ex) {
-                    Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    //Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             anchura = sprite.getWidth();
@@ -365,15 +365,20 @@ public class Unidad extends ElementoMovil {
     }
 
     @Override
-    public void construir(Partida p, Edificio edificio, float x, float y) {
-        super.construir(p, edificio, x, y);
-        statusBehaviour = StatusBehaviour.CONSTRUYENDO;
-        p.getPlayerFromElement(this).resta_recursos(edificio.coste);
-        edificio_construccion = edificio;
-        edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
-        edificio_construccion.cambiar_coordenadas(x, y);
-        anadir_movimiento(getCoordinateForBuildingCreation(this.x, x, edificio.anchura, this.anchura),
-                getCoordinateForBuildingCreation(this.y, y, edificio.altura, this.altura));
+    public boolean construir(Partida p, Edificio edificio, float x, float y) {
+        Jugador aliado = p.getPlayerFromElement(this);
+        if (aliado.comprobacion_recursos(edificio)) {
+            super.construir(p, edificio, x, y);
+            statusBehaviour = StatusBehaviour.CONSTRUYENDO;
+            p.getPlayerFromElement(this).removeResources(edificio.coste);
+            edificio_construccion = edificio;
+            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
+            edificio_construccion.cambiar_coordenadas(x, y);
+            anadir_movimiento(getCoordinateForBuildingCreation(this.x, x, edificio.anchura, this.anchura),
+                    getCoordinateForBuildingCreation(this.y, y, edificio.altura, this.altura));
+            return true;
+        }
+        return false;
     }
 
     protected float getCoordinateForBuildingCreation(float initialValue, float maxValue, float buildingOffset, float unitOffset) {

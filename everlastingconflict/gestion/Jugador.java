@@ -30,6 +30,7 @@ public class Jugador {
 
     //Datos basicos
     public float x_inicial, y_inicial;
+    public boolean verticalDown = true, horizontalRight = true;
     public String nombre, raza;
     public Color color;
     //RTS.Elementos
@@ -62,8 +63,10 @@ public class Jugador {
     }
 
     public void removeResources(float amount) {
-        recursos -= amount;
-        checkButtonResources();
+        if (!raza.equals(RaceNameEnum.FENIX.getName())) {
+            recursos -= amount;
+            checkButtonResources();
+        }
     }
 
     public final int getInitialResources() {
@@ -122,12 +125,6 @@ public class Jugador {
         return recursos >= e.coste && this.guardiansThreatLevel >= e.guardiansThreatLevelNeeded;
     }
 
-    public void resta_recursos(int coste) {
-        if (!raza.equals(RaceNameEnum.FENIX.getName())) {
-            recursos -= coste;
-        }
-    }
-
     public boolean comprobacion_recursos(ElementoSimple e) {
         switch (raza) {
             case "Guardianes":
@@ -141,31 +138,31 @@ public class Jugador {
         switch (raza) {
             case "Fénix":
                 edificios.add(new Edificio("Sede", x_inicial, y_inicial));
-                unidades.add(new Unidad("Constructor", x_inicial, y_inicial + 150));
-                unidades.add(new Unidad("Recolector", x_inicial + 50, y_inicial + 150));
+                unidades.add(new Unidad("Constructor", x_inicial, this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad("Recolector", this.horizontalOffset(x_inicial, 50), this.verticalOffset(y_inicial, 150)));
                 break;
             case "Eternium":
                 edificios.add(new Edificio("Mando Central", x_inicial, y_inicial));
-                unidades.add(new Unidad("Adepto", x_inicial + 50, y_inicial + 150));
+                unidades.add(new Unidad("Adepto", this.horizontalOffset(x_inicial, 50), this.verticalOffset(y_inicial, 150)));
                 break;
             case "Clark":
                 edificios.add(new Edificio("Primarca", x_inicial, y_inicial));
-                unidades.add(new Unidad("Depredador", x_inicial - 50, y_inicial + 150));
-                unidades.add(new Unidad("Devorador", x_inicial + 10, y_inicial + 150));
-                unidades.add(new Unidad("Cazador", x_inicial + 70, y_inicial + 150));
+                unidades.add(new Unidad("Depredador", this.horizontalOffset(x_inicial, -50), this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad("Devorador", this.horizontalOffset(x_inicial, 10), this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad("Cazador", this.horizontalOffset(x_inicial, 70), this.verticalOffset(y_inicial, 150)));
                 break;
             case "Maestros":
                 unidades.add(new Manipulador(x_inicial, y_inicial));
                 break;
             case "Guardianes":
                 edificios.add(new Edificio("Ayuntamiento", x_inicial, y_inicial));
-                edificios.add(new Edificio("Academia de pilotos", x_inicial + 250, y_inicial));
-                edificios.add(new Edificio("Templo", x_inicial + 400, y_inicial));
-                edificios.add(new Edificio("Vaticano", x_inicial + 550, y_inicial));
-                edificios.add(new Edificio("Edificio gubernamental", x_inicial + 700, y_inicial));
-                edificios.add(new Edificio("Laboratorio de I+D", x_inicial + 450, y_inicial + 250));
-                edificios.add(new Taller("Taller bélico", x_inicial + 300, y_inicial + 250));
-                edificios.add(new Taller("Taller bélico", x_inicial + 300, y_inicial + 400));
+                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300), this.verticalOffset(y_inicial, 250)));
+                edificios.add(new Edificio("Academia de pilotos", this.horizontalOffset(x_inicial, 200), y_inicial));
+                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300), this.verticalOffset(y_inicial, 400)));
+                edificios.add(new Edificio("Templo", this.horizontalOffset(x_inicial, 400), y_inicial));
+                edificios.add(new Edificio("Laboratorio de I+D", this.horizontalOffset(x_inicial, 500), y_inicial));
+                edificios.add(new Edificio("Vaticano", this.horizontalOffset(x_inicial, 600), y_inicial));
+                edificios.add(new Edificio("Edificio gubernamental", this.horizontalOffset(x_inicial, 700), y_inicial));
                 break;
         }
         for (Unidad u : unidades) {
@@ -423,5 +420,13 @@ public class Jugador {
             g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
         });
         visiones.stream().forEach(v -> v.dibujar(g, desplazamiento));
+    }
+
+    public float horizontalOffset(float initialValue, float offset) {
+        return this.horizontalRight ? initialValue + offset : initialValue - offset;
+    }
+
+    public float verticalOffset(float initialValue, float offset) {
+        return this.verticalDown ? initialValue + offset : initialValue - offset;
     }
 }

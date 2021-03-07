@@ -438,11 +438,12 @@ public abstract class ElementoAtacante extends ElementoEstado {
     @Override
     public abstract void destruir(Partida p, ElementoAtacante atacante);
 
-    public void construir(Partida p, Edificio edificio, float x, float y) {
+    public boolean construir(Partida p, Edificio edificio, float x, float y) {
         if (p.belongsToMainPlayer(this)) {
             ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
         }
         this.disableBuildingButtons();
+        return true;
     }
 
 }

@@ -43,7 +43,8 @@ public class VentanaSeleccion extends Ventana {
             List<Jugador> players = playerSelections
                     .stream().filter(p -> p.isPlayerActive())
                     .map(p -> AI.crearAI(p.raceCombo.opcion_seleccionada,
-                            Integer.valueOf(p.teamCombo.opcion_seleccionada), isLeaderGame() && p.isLeader()))
+                            Integer.valueOf(p.teamCombo.opcion_seleccionada), p.difficultyCombo
+                            .opcion_seleccionada, isLeaderGame() && p.isLeader()))
                     .collect(Collectors.toList());
             players.add(0, mainPlayer);
             Partida partida = new Partida(players, MapEnum.findByName(mapCombo.opcion_seleccionada),

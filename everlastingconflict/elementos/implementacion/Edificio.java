@@ -381,13 +381,18 @@ public class Edificio extends ElementoAtacante {
     }
 
     @Override
-    public void construir(Partida p, Edificio edificio, float x, float y) {
-        super.construir(p, edificio, x, y);
-        statusBehaviour = StatusBehaviour.CONSTRUYENDO;
-        p.getPlayerFromElement(this).resta_recursos(edificio.coste);
-        edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
-        edificio_construccion = edificio;
-        edificio_construccion.cambiar_coordenadas(x, y);
+    public boolean construir(Partida p, Edificio edificio, float x, float y) {
+        Jugador aliado = p.getPlayerFromElement(this);
+        if (aliado.comprobacion_recursos(edificio)) {
+            super.construir(p, edificio, x, y);
+            statusBehaviour = StatusBehaviour.CONSTRUYENDO;
+            aliado.removeResources(edificio.coste);
+            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDOSE;
+            edificio_construccion = edificio;
+            edificio_construccion.cambiar_coordenadas(x, y);
+            return true;
+        }
+        return false;
     }
 
     @Override

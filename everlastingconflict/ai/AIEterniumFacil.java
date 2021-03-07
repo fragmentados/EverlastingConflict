@@ -14,13 +14,13 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.Graphics;
 
-public class AIEternium extends AI {
+public class AIEterniumFacil extends AI {
 
     public float x_transporte, y_transporte;
     public float x_asimilacion, y_asimilacion;
     public float x_altar, y_altar;
 
-    public AIEternium(Integer t, boolean isLeader) {
+    public AIEterniumFacil(Integer t, boolean isLeader) {
         super("AIEternium", "Eternium", t, isLeader);
     }
 
@@ -28,13 +28,13 @@ public class AIEternium extends AI {
     public void initElements(Partida p) {
         super.initElements(p);
         x_asimilacion = x_inicial;
-        y_asimilacion = y_inicial + 210;
+        y_asimilacion = this.verticalOffset(y_inicial, 210);
 
-        x_transporte = x_inicial + 210;
+        x_transporte = this.horizontalOffset(y_inicial, 210);
         y_transporte = y_inicial;
 
-        x_altar = x_inicial + 210;
-        y_altar = y_inicial + 210;
+        x_altar = this.horizontalOffset(y_inicial, 210);
+        y_altar = this.verticalOffset(y_inicial, 210);
 
         npushear = 5;
     }

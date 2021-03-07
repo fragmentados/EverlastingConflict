@@ -12,9 +12,9 @@ import org.newdawn.slick.Graphics;
  *
  * @author Elías
  */
-public class AIClark extends AI {
+public class AIClarkFacil extends AI {
 
-    public AIClark(Integer t, boolean isLeader) {
+    public AIClarkFacil(Integer t, boolean isLeader) {
         super("AIClark","Clark", t, isLeader);
     }
 

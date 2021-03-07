@@ -19,13 +19,13 @@ import org.newdawn.slick.Graphics;
  *
  * @author Elías
  */
-public class AIFenix extends AI {
+public class AIFenixFacil extends AI {
 
     public float xcuartel, ycuartel;
     public float xacademia, yacademia;
     public float xcentro, ycentro;
 
-    public AIFenix(Integer t, boolean isLeader) {
+    public AIFenixFacil(Integer t, boolean isLeader) {
         super("AIFenix", "Fénix", t, isLeader);
 
     }
@@ -33,14 +33,14 @@ public class AIFenix extends AI {
     @Override
     public final void initElements(Partida p) {
         super.initElements(p);
-        xcuartel = x_inicial - 210;
+        xcuartel = this.horizontalOffset(x_inicial, 210);
         ycuartel = y_inicial;
 
         xacademia = x_inicial;
-        yacademia = y_inicial + 210;
+        yacademia = this.verticalOffset(y_inicial, 210);
 
-        xcentro = x_inicial + 210;
-        ycentro = y_inicial;
+        xcentro = this.horizontalOffset(x_inicial, 210);
+        ycentro = this.verticalOffset(y_inicial, 210);
 
         npushear = 10;
     }
@@ -90,7 +90,7 @@ public class AIFenix extends AI {
                 Edificio contador = new Edificio("Cuartel Fénix");
                 contador.vida = 0;
                 u.construir(p, contador, xcuartel, ycuartel);
-                xcuartel -= contador.anchura + 10;
+                xcuartel = this.horizontalOffset(xcuartel, contador.anchura + 10);
             } else {
                 if (this.cantidad_edificio("Academia") < 1) {
                     Edificio contador = new Edificio("Academia");

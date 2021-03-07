@@ -14,6 +14,7 @@ public class PlayerSelection {
     public ComboBox raceCombo;
     public ComboBox teamCombo;
     public ComboBox leaderCombo;
+    public ComboBox difficultyCombo;
     public float x, y;
 
     public PlayerSelection(float x, float y) {
@@ -23,7 +24,8 @@ public class PlayerSelection {
         raceCombo = new ComboBox("Raza:", RaceNameEnum.getAllNames(), x + 200, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
                 .boxed().map(n -> n.toString()).collect(Collectors.toList()), x + 400, y);
-        leaderCombo = new ComboBox("Lider:", Arrays.asList("Sí", "No"), x + 500, y);
+        difficultyCombo = new ComboBox("Dificultad:", Arrays.asList("Fácil", "Normal", "Difícil"), x + 550, y);
+        leaderCombo = new ComboBox("Lider:", Arrays.asList("Sí", "No"), x + 710, y);
     }
 
     public boolean isLeader() {return "Sí".equals(this.leaderCombo.opcion_seleccionada);}
@@ -37,10 +39,12 @@ public class PlayerSelection {
         raceCombo.checkIfItsClicked(input);
         teamCombo.checkIfItsClicked(input);
         leaderCombo.checkIfItsClicked(input);
+        difficultyCombo.checkIfItsClicked(input);
         isActiveCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
         raceCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
         teamCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
         leaderCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
+        difficultyCombo.checkOptionSelected(input.getMouseX(), input.getMouseY());
     }
 
     public void render(Graphics g) {
@@ -51,6 +55,7 @@ public class PlayerSelection {
             if ("Jugador Lider".equals(VentanaSeleccion.victoryCondition.opcion_seleccionada)) {
                 leaderCombo.render(g);
             }
+            difficultyCombo.render(g);
         }
     }
 }

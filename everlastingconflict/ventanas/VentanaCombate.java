@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import static everlastingconflict.elementos.util.ElementosComunes.FULL_VISIBLE_COLOR;
 import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_COLOR;
 import static everlastingconflict.relojes.Reloj.TIME_REGULAR_SPEED;
+import static everlastingconflict.ventanas.UI.anchura_miniatura;
 
 /**
  * @author Elías
@@ -615,10 +616,16 @@ public class VentanaCombate extends Ventana {
                 if ((elemento = habilidad.seleccion_objetivo(partida, elemento_habilidad, x_click, y_click)) != null) {
                     Unidad unidad = (Unidad) elemento_habilidad;
                     unidad.habilidad(habilidad, elemento);
-                    elemento_habilidad = null;
-                    habilidad = null;
-                    click = false;
+                } else {
+                    String wrongSkillText = "Elemento seleccionado incorrecto. La habilidad tiene estos objetivos válidos: ";
+                    VentanaPrincipal.ventanaCombate
+                            .anadir_mensaje(new Mensaje(wrongSkillText + habilidad.tipo_seleccion,
+                                    Color.red, VentanaCombate.playerX + anchura_miniatura,
+                                    VentanaCombate.playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 20, 5f));
                 }
+                elemento_habilidad = null;
+                habilidad = null;
+                click = false;
             } else if (attackMoveModeEnabled) {
                 handleAttackMove(input, container);
             } else {
@@ -631,7 +638,7 @@ public class VentanaCombate extends Ventana {
                 x_click = (int) playerX + input.getMouseX();
                 y_click = (int) playerY + input.getMouseY();
                 if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT)) {
-                    if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
+                    if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                         ui.movePlayerPerspective(x_click, y_click);
                     }
                 }
@@ -712,7 +719,7 @@ public class VentanaCombate extends Ventana {
             x_click = (int) playerX + input.getMouseX();
             y_click = (int) playerY + input.getMouseY();
             if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT)) {
-                if ((x_click >= (VentanaCombate.playerX + ui.anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
+                if ((x_click >= (VentanaCombate.playerX + anchura_miniatura + ui.anchura_seleccion + ui.anchura_botones)) && (x_click <= (VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH))) {
                     Point2D resultado = ui.obtener_coordenadas_minimapa(x_click, y_click);
                     handleRightClick((float) resultado.getX(), (float) resultado.getY());
                 }

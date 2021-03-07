@@ -39,10 +39,10 @@ public class UI {
     public List<ElementoComplejo> seleccion_actual;
     public BotonSimple sig, ant;
     public int inicio, fin, npagina;
-    public float x_mini, y_mini, anchura_mini = 250, altura_mini = 200;
-    public float x_minim, y_minim, anchura_minim, altura_minim;
-    public float anchura_miniatura;
-    public float anchura_seleccion;
+    public static float x_mini, y_mini, anchura_mini = 250, altura_mini = 200;
+    public static float x_minim, y_minim, anchura_minim, altura_minim;
+    public static float anchura_miniatura;
+    public static float anchura_seleccion;
     public float anchura_botones;
     public static final float UI_HEIGHT = 200;
     private static final Color UI_COLOR = new Color(0f, 0f, 0.6f, 1f);

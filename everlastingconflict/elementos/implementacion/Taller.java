@@ -104,7 +104,7 @@ public class Taller extends Edificio {
         }
     }
 
-    public void construir_anexo(Partida p) {
+    public boolean construir_anexo(Partida p) {
         if (this.anexos.size() < maximo_anexos) {
             Edificio edificio = new Edificio("Anexo");
             edificio.vida = 0;
@@ -112,9 +112,12 @@ public class Taller extends Edificio {
             for (Edificio ed : anexos) {
                 x_contador -= ed.anchura;
             }
-            anexos.add(edificio);
-            this.construir(p, edificio, x_contador, y);
+            if (this.construir(p, edificio, x_contador, y)) {
+                anexos.add(edificio);
+                return true;
+            }
         }
+        return false;
     }
 
 }

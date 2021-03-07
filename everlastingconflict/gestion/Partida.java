@@ -163,18 +163,7 @@ public class Partida {
         VentanaCombate.WORLD_SIZE_Y = height;
         VentanaCombate.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         VentanaCombate.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
-        this.players.get(0).x_inicial = 200;
-        this.players.get(0).y_inicial = 200;
-        this.players.get(1).x_inicial = width - 400;
-        this.players.get(1).y_inicial = height - 400;
-        if (this.players.size() >= 3) {
-            this.players.get(2).x_inicial = width - 400;
-            this.players.get(2).y_inicial = 200;
-        }
-        if (this.players.size() >= 4) {
-            this.players.get(3).x_inicial = 200;
-            this.players.get(3).y_inicial = height - 400;
-        }
+        initPlayerCoordinates(width, height);
         float sextox = width / 6;
         float sextoy = height / 6;
         if (existsPlayerWithRace(RaceNameEnum.CLARK) || existsPlayerWithRace(RaceNameEnum.MAESTROS)) {
@@ -245,6 +234,40 @@ public class Partida {
         }
         initPlayerColors();
         players.forEach(p -> p.initElements(this));
+    }
+
+    private void initPlayerCoordinates(float width, float height) {
+        // Left Top Corner
+        this.players.get(0).x_inicial = 200;
+        this.players.get(0).y_inicial = 200;
+        // Right Bottom Corner
+        this.players.get(1).x_inicial = width - 400;
+        this.players.get(1).y_inicial = height - 400;
+        this.players.get(1).verticalDown = false;
+        this.players.get(1).horizontalRight = false;
+        if (this.players.size() >= 3) {
+            // Right Top Corner
+            this.players.get(2).x_inicial = width - 400;
+            this.players.get(2).y_inicial = 400;
+            this.players.get(2).horizontalRight = false;
+        }
+        if (this.players.size() >= 4) {
+            // Left Bottom Corner
+            this.players.get(3).x_inicial = 400;
+            this.players.get(3).y_inicial = height - 400;
+            this.players.get(3).verticalDown = false;
+        }
+        if (this.players.size() >= 5) {
+            // Left Middle Corner
+            this.players.get(4).x_inicial = 200;
+            this.players.get(4).y_inicial = height / 2;
+        }
+        if (this.players.size() >= 6) {
+            // Right Bottom Corner
+            this.players.get(5).x_inicial = width - 400;
+            this.players.get(5).y_inicial = height / 2;
+            this.players.get(5).horizontalRight = false;
+        }
     }
 
     private void initPlayerColors() {

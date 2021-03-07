@@ -16,24 +16,52 @@ import org.newdawn.slick.Graphics;
 import java.util.List;
 
 /**
- *
  * @author Elías
  */
 public class AI extends Jugador {
 
     public int npushear;
-    
+
     public AI(String n, String r, Integer t, boolean isLeader) {
         super(n, r, t, isLeader);
     }
 
-    public static AI crearAI(String r, Integer t, boolean isLeader) {
+    public static AI crearAI(String r, Integer t, String dificultad, boolean isLeader) {
         if (RaceNameEnum.CLARK.getName().equals(r)) {
-            return new AIClark(t, isLeader);
+            switch(dificultad) {
+                case "Fácil":
+                case "Normal":
+                case "Difícil":
+                    return new AIClarkFacil(t, isLeader);
+            }
         } else if (RaceNameEnum.ETERNIUM.getName().equals(r)) {
-            return new AIEternium(t, isLeader);
+            switch(dificultad) {
+                case "Fácil":
+                case "Normal":
+                case "Difícil":
+                    return new AIEterniumFacil(t, isLeader);
+            }
         } else if (RaceNameEnum.FENIX.getName().equals(r)) {
-                return new AIFenix(t, isLeader);
+            switch(dificultad) {
+                case "Fácil":
+                case "Normal":
+                case "Difícil":
+                    return new AIFenixFacil(t, isLeader);
+            }
+        } else if (RaceNameEnum.GUARDIANES.getName().equals(r)) {
+            switch(dificultad) {
+                case "Fácil":
+                case "Normal":
+                case "Difícil":
+                    return new AIGuardianesFacil(t, isLeader);
+            }
+        } else if (RaceNameEnum.MAESTROS.getName().equals(r)) {
+            switch(dificultad) {
+                case "Fácil":
+                case "Normal":
+                case "Difícil":
+                    return new AIMaestrosFacil(t, isLeader);
+            }
         }
         return null;
     }
@@ -55,7 +83,7 @@ public class AI extends Jugador {
             }
         }
     }
-    
+
     @Override
     public void initElements(Partida p) {
         super.initElements(p);
@@ -73,7 +101,7 @@ public class AI extends Jugador {
 
     @Override
     public void avisar_ataque(Partida p, ElementoAtacante atacante) {
-        List<Unidad> militares = cantidad_militar();        
+        List<Unidad> militares = cantidad_militar();
         for (Unidad u : militares) {
             if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
                 u.atacarmover(p, atacante.x, atacante.y);

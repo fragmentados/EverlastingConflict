@@ -96,8 +96,9 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     @Override
-    public void construir(Partida p, Edificio edificio, float x, float y) {
+    public boolean construir(Partida p, Edificio edificio, float x, float y) {
         this.disableBuildingButtons();
+        return true;
     }
 
     @Override
