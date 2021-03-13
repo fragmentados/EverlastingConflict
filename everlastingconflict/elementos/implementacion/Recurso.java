@@ -64,15 +64,17 @@ public class Recurso extends ElementoComplejo {
     @Override
     public void destruir(Partida p, ElementoAtacante atacante) {
         Jugador aliado = p.getPlayerFromElement(this);
-        if (aliado.lista_recursos.indexOf(this) != -1) {
-            aliado.lista_recursos.remove(this);
-            p.recursos.add(this);
-            if (this.capturador != null) {
-                aliado.removeResources(10);
-                capturador = null;
+        if (aliado != null) {
+            if (aliado.lista_recursos.indexOf(this) != -1) {
+                aliado.lista_recursos.remove(this);
+                p.recursos.add(this);
+                if (this.capturador != null) {
+                    aliado.removeResources(10);
+                    capturador = null;
+                }
+                vida = 0;
+                this.sprite.setAutoUpdate(false);
             }
-            vida = 0;
-            this.sprite.setAutoUpdate(false);
         }
     }
 

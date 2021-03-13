@@ -134,7 +134,7 @@ public class Bestia extends Unidad {
             case ATACANDO:
                 float distancia = calcular_distancia();
                 if (distancia >= Bestia.distancia_maxima) {
-                    if (canMove()) {
+                    if (canMove(p)) {
                         this.mover(p, x_inicial, y_inicial);
                     }
                 } else {
@@ -142,7 +142,7 @@ public class Bestia extends Unidad {
                         movimiento = null;
                         ataque(p);                                                    
                     } else {
-                        if (canMove()) {
+                        if (canMove(p)) {
                             anadir_movimiento(objetivo.x, objetivo.y);
                         }
                     }

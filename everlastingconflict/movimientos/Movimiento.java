@@ -14,6 +14,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 public abstract class Movimiento {
 
     public ElementoMovil unidad;
-    public List<Point2D.Float> puntos;
+    public List<Point2D.Float> puntos = new ArrayList<>();
     public static final boolean desviaciones = false;
 
     public boolean comprobar_coordenadas(Partida partida, int delta) {

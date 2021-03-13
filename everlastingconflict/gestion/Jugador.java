@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * @author Elías
  */
 public class Jugador {
@@ -38,7 +37,7 @@ public class Jugador {
     //RTS.Elementos
     public List<Unidad> unidades;
     public List<Edificio> edificios;
-    public List<Recurso> lista_recursos;
+    public List<Recurso> lista_recursos = new ArrayList<>();
     public List<Vision> visiones;
     public List<ElementoEspecial> elementos_especiales;
     public List<Tecnologia> tecnologias = new ArrayList<>();
@@ -50,7 +49,7 @@ public class Jugador {
     public int poblacion, poblacion_max;
     public boolean perforacion = false;
     public Eventos eventos;
-    public  int limite_cuarteles = 2;
+    public int limite_cuarteles = 2;
     // Team data
     public Integer team;
     public boolean isMainPlayer;
@@ -196,8 +195,11 @@ public class Jugador {
     }
 
     public void comportamiento_unidades(Partida p, Graphics g, int delta) {
-        for (Unidad u : unidades) {
-            u.comportamiento(p, g, delta);
+        try {
+            for (Unidad u : unidades) {
+                u.comportamiento(p, g, delta);
+            }
+        } catch (Exception ex) {
         }
     }
 
@@ -251,7 +253,11 @@ public class Jugador {
     public void renderNonMainTeamElements(Partida p, Graphics g, Input input) {
         lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.dibujar(p, color, input, g));
         edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.dibujar(p, color, input, g));
-        unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));
+        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
+            unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> Eternium.dibujar_detencion(u, color, g));
+        } else {
+            unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));
+        }
     }
 
     public void renderResources(Graphics g, float x, float y) {
@@ -407,8 +413,8 @@ public class Jugador {
     public boolean isDefeated() {
         if (RaceEnum.MAESTROS.getName().equals(this.raza)) {
             return !unidades.get(0).nombre.equals("Manipulador");
-        }else {
-            return edificios.isEmpty();
+        } else {
+            return edificios.stream().noneMatch(e -> e.main);
         }
     }
 

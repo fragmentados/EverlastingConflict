@@ -295,17 +295,19 @@ public class UI {
                     if (unidad.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
                         ataque += unidad.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
                     }
-                    if (p.getPlayerFromElement(unidad).raza.equals(RaceEnum.MAESTROS.getName())) {
-                        if (Manipulador.alentar) {
-                            Manipulador m = null;
-                            for (Unidad u : p.getPlayerFromElement(unidad).unidades) {
-                                if (u.nombre.equals("Manipulador")) {
-                                    m = (Manipulador) u;
+                    if (p.getPlayerFromElement(unidad) != null) {
+                        if (p.getPlayerFromElement(unidad).raza.equals(RaceEnum.MAESTROS.getName())) {
+                            if (Manipulador.alentar) {
+                                Manipulador m = null;
+                                for (Unidad u : p.getPlayerFromElement(unidad).unidades) {
+                                    if (u.nombre.equals("Manipulador")) {
+                                        m = (Manipulador) u;
+                                    }
                                 }
-                            }
-                            if (m != null) {
-                                if (unidad.alcance(200, m)) {
-                                    ataque += 5;
+                                if (m != null) {
+                                    if (unidad.alcance(200, m)) {
+                                        ataque += 5;
+                                    }
                                 }
                             }
                         }

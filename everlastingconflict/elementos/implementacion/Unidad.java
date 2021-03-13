@@ -197,7 +197,7 @@ public class Unidad extends ElementoMovil {
             case ATACAR_MOVER:
                 boolean atacar = checkToAttackNearbyElements(p);
                 if (!atacar) {
-                    if (canMove() && (movimiento == null) || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov)) {
+                    if (canMove(p) && (movimiento == null || (movimiento.puntos.get(0).x != x_atmov || movimiento.puntos.get(0).y != y_atmov))) {
                         anadir_movimiento(x_atmov, y_atmov);
                     }
                 } else {
@@ -285,7 +285,7 @@ public class Unidad extends ElementoMovil {
     @Override
     public void mover(Partida p, float x, float y) {
         super.mover(p, x, y);
-        if (canMove()) {
+        if (canMove(p)) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
                 if (!p.getPlayerFromElement(this).raza.equals(RaceEnum.FENIX.getName())) {
@@ -308,8 +308,8 @@ public class Unidad extends ElementoMovil {
         anadir_recoleccion(p, recurso.x, recurso.y);
     }
 
-    public void atacar(ElementoVulnerable atacada) {
-        if (canAttack()) {
+    public void atacar(Partida p, ElementoVulnerable atacada) {
+        if (canAttack(p)) {
             statusBehaviour = StatusBehaviour.ATACANDO;
             objetivo = atacada;
         }

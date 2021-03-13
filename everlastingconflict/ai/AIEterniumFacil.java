@@ -29,10 +29,10 @@ public class AIEterniumFacil extends AI {
         x_asimilacion = x_inicial;
         y_asimilacion = this.verticalOffset(y_inicial, 210);
 
-        x_transporte = this.horizontalOffset(y_inicial, 210);
+        x_transporte = this.horizontalOffset(x_inicial, 210);
         y_transporte = y_inicial;
 
-        x_altar = this.horizontalOffset(y_inicial, 210);
+        x_altar = this.horizontalOffset(x_inicial, 210);
         y_altar = this.verticalOffset(y_inicial, 210);
 
         npushear = 5;

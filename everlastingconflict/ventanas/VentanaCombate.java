@@ -840,10 +840,11 @@ public class VentanaCombate extends Ventana {
             renderVisibility(g, FULL_VISIBLE_COLOR, 0);
             partida.renderElements(g, input);
             if (elementCircle != null) {
-                if (elementCircle instanceof Bestia) {
-                    elementCircle.circulo_extendido(g, Color.blue);
+                Jugador elementCirclePlayer = partida.getPlayerFromElement(elementCircle);
+                if (elementCirclePlayer != null) {
+                    elementCircle.circulo_extendido(g, elementCirclePlayer.color);
                 } else {
-                    elementCircle.circulo_extendido(g, partida.getPlayerFromElement(elementCircle).color);
+                    elementCircle.circulo_extendido(g, Color.blue);
                 }
             }
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
@@ -922,13 +923,14 @@ public class VentanaCombate extends Ventana {
             }
             //Pasos tutorial
             if (partida instanceof Tutorial) {
+                float initialTutorialY = playerY + VentanaCombate.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 100;
                 Tutorial t = (Tutorial) partida;
                 g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-                g.fillRect(playerX, playerY, VentanaCombate.VIEWPORT_SIZE_WIDTH, 100);
+                g.fillRect(playerX, initialTutorialY, VentanaCombate.VIEWPORT_SIZE_WIDTH, 100);
                 g.setColor(Color.white);
-                g.drawString(t.pasos.get(0).texto, playerX, playerY);
+                g.drawString(t.pasos.get(0).texto, playerX, initialTutorialY);
                 continuar.x = playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - continuar.anchura;
-                continuar.y = playerY + 100 - 21;
+                continuar.y = initialTutorialY + 100 - 21;
             }
             List<Jugador> mainTeam = partida.getMainTeam();
             for (int i = 0; i < mainTeam.size(); i++) {

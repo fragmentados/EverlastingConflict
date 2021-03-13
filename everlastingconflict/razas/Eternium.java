@@ -113,6 +113,7 @@ public class Eternium {
         e.descripcion = "Edificio central que produce unidades, construye edificios e investiga tecnologías.";
         e.constructor = true;
         e.radio_construccion = 1500f;
+        e.main = true;
     }
 
     public static final void Refineria(Edificio e) {

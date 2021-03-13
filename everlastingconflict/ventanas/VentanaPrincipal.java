@@ -65,7 +65,7 @@ public class VentanaPrincipal extends BasicGame {
             ventanaActual.update(container, delta);
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw ex;
+            //throw ex;
         }
     }
 
@@ -75,7 +75,7 @@ public class VentanaPrincipal extends BasicGame {
             ventanaActual.render(container, g);
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw ex;
+            //throw ex;
         }
     }
 

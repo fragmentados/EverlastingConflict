@@ -296,7 +296,7 @@ public class Partida {
                 p.comportamiento(this, g, delta);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         players.forEach(p -> p.comportamiento_elementos(this, g, delta));
     }
@@ -349,22 +349,22 @@ public class Partida {
                     Optional<Bestia> beastAttackedOp = this.bestias.stream().flatMap(be -> be.getContenido().stream()).filter(b -> b.visible(this) && b.hitbox(x, y)).findFirst();
                     if (beastAttackedOp.isPresent()) {
                         final ElementoVulnerable beastAttacked = beastAttackedOp.get();
-                        seleccionadas.stream().forEach(s -> s.atacar(beastAttacked));
+                        seleccionadas.stream().forEach(s -> s.atacar(this, beastAttacked));
                         return beastAttacked;
                     }
                 } else {
                     final ElementoVulnerable resourceAttacked = resourceAttackedOp.get();
-                    seleccionadas.stream().forEach(s -> s.atacar(resourceAttacked));
+                    seleccionadas.stream().forEach(s -> s.atacar(this, resourceAttacked));
                     return resourceAttacked;
                 }
             } else {
                 final ElementoVulnerable buildingAttacked = buildingAttackedOp.get();
-                seleccionadas.stream().forEach(s -> s.atacar(buildingAttacked));
+                seleccionadas.stream().forEach(s -> s.atacar(this, buildingAttacked));
                 return buildingAttacked;
             }
         } else {
             final ElementoVulnerable unitAttacked = unitAttackedOp.get();
-            seleccionadas.stream().forEach(s -> s.atacar(unitAttacked));
+            seleccionadas.stream().forEach(s -> s.atacar(this, unitAttacked));
             return unitAttacked;
         }
         return null;

@@ -7,10 +7,12 @@ package everlastingconflict.elementos;
 
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.movimientos.Mover;
 import everlastingconflict.movimientos.Movimiento;
 import everlastingconflict.movimientos.Recolectar;
+import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
@@ -20,7 +22,6 @@ import org.newdawn.slick.Input;
 import java.awt.geom.Point2D;
 
 /**
- *
  * @author Elías
  */
 public class ElementoMovil extends ElementoAtacante {
@@ -42,14 +43,17 @@ public class ElementoMovil extends ElementoAtacante {
         objetivo = null;
     }
 
-    public boolean canMove() {
-        return movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour);
+    public boolean canMove(Partida partida) {
+        Jugador ally = partida.getPlayerFromElement(this);
+        return movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour)
+                && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
+                || VentanaCombate.relojEternium().ndivision != 4);
     }
 
-    public void anadir_recoleccion(Partida partida, float x,float y){
+    public void anadir_recoleccion(Partida partida, float x, float y) {
         movimiento = new Recolectar(partida, this, x, y);
     }
-    
+
     public void anadir_movimiento(float x, float y) {
         if (!VentanaCombate.mayus) {
             movimiento = new Mover(this, x, y);
@@ -62,8 +66,8 @@ public class ElementoMovil extends ElementoAtacante {
         }
     }
 
-    public void mover(Partida p, float x, float y) {        
-        if (canMove()) {
+    public void mover(Partida p, float x, float y) {
+        if (canMove(p)) {
             statusBehaviour = StatusBehaviour.MOVER;
             anadir_movimiento(x, y);
         }

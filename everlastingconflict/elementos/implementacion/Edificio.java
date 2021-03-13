@@ -57,6 +57,7 @@ public class Edificio extends ElementoAtacante {
     public List<Integer> cantidad_produccion;
     public float radio_construccion;
     public boolean activo = true;
+    public boolean main = false;
     public Image spriteDisabled;
 
     //Valores estáticos

@@ -251,6 +251,7 @@ public class Guardianes {
         e.descripcion = "Edificio encargado de gestionar los eventos positivos y negativos de los Guardianes.";
         e.constructor = true;
         e.radio_construccion = 1500f;
+        e.main = true;
     }
 
     public static final void Templo(Edificio e) {        

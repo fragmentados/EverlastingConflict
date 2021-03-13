@@ -215,6 +215,10 @@ public class Manipulador extends Unidad {
         }
         this.initButtonKeys();
         iniciar_imagenes_manipulador();
+        if (this.statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
+            this.regeneracion_mana -= 2;
+            this.statusEffectCollection.eliminar_estado(StatusEffectName.MEDITACION);
+        }
     }
 
     public void aumentar_experiencia(float e) {

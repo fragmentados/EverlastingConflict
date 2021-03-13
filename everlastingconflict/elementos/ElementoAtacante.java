@@ -190,7 +190,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public void ataque(Partida p) {
-        if (canAttack() && !StatusBehaviour.DESTRUIDO.equals(objetivo)) {
+        if (canAttack(p) && !StatusBehaviour.DESTRUIDO.equals(objetivo)) {
             if (cadencia_contador == 0) {
                 if (sonido_combate != null) {
                     sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
@@ -341,14 +341,14 @@ public abstract class ElementoAtacante extends ElementoEstado {
             if (e instanceof Unidad) {
                 Unidad uatacada = (Unidad) e;
                 if (uatacada.objetivo == null) {
-                    uatacada.atacar(this);
+                    uatacada.atacar(p, this);
                 }
                 if (e instanceof Bestia) {
                     for (Bestias b : p.bestias) {
                         if (b.contenido.indexOf(e) != -1) {
                             for (Bestia be : b.contenido) {
                                 if (be.objetivo == null) {
-                                    be.atacar(this);
+                                    be.atacar(p, this);
                                 }
                             }
                         }
@@ -378,11 +378,13 @@ public abstract class ElementoAtacante extends ElementoEstado {
         return false;
     }
 
-    public boolean canAttack() {
+    public boolean canAttack(Partida partida) {
+        Jugador ally = partida.getPlayerFromElement(this);
         return (hostil || healer)
                 && statusEffectCollection.allowsAttack()
                 && StatusBehaviour.allowsAttack(statusBehaviour)
-                && ataque > 0;
+                && ataque > 0 && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
+                || VentanaCombate.relojEternium().ndivision != 4);
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum VictoryConditionEnum {
-    ANHILATION("Aniquilación", "Los jugadores son eliminados en el momento en el que pierden todos sus edificios", new AnhilationVictoryCondition()),
+    ANHILATION("Aniquilación", "Los jugadores son eliminados en el momento en el que pierden su edificio principal", new AnhilationVictoryCondition()),
     LEADER("Jugador Lider", "Cada equipo es eliminado en el momento en el que su lider es eliminado", new LeaderVictoryCondition());
 
     public String label;

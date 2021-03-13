@@ -172,7 +172,7 @@ public class BotonComplejo extends BotonSimple {
                 descripcion = "El cuartel creará de forma constante Fenixes, la unidad definitiva.\n";
                 descripcion += "Tiene una gran vida y ataque e incluso puede mejorarse para poder resucitar.";
                 break;
-            case "AyudaFusion":
+            case "Ayuda Fusión":
                 descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.\n";
                 break;
         }
@@ -436,7 +436,7 @@ public class BotonComplejo extends BotonSimple {
                             edificio.detener_produccion();
                             edificio.statusBehaviour = StatusBehaviour.DETENIDO;
                             break;
-                        case "AyudaFusion":
+                        case "Ayuda Fusión":
                             edificio.mostrarAyudaFusion = !edificio.mostrarAyudaFusion;
                             break;
                     }

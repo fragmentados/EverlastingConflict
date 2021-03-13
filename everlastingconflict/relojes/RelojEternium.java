@@ -174,9 +174,6 @@ public class RelojEternium extends Reloj {
         for (Unidad u : this.jugadorAsociado.unidades) {
             if (u.nombre.equals("Protector")) {
                 u.ataque = 0;
-            } else {
-                u.movil = true;
-                u.hostil = true;
             }
         }
     }
@@ -186,8 +183,7 @@ public class RelojEternium extends Reloj {
             if (u.nombre.equals("Protector")) {
                 u.ataque = Unidad.ataque_estandar + 30;
             } else {
-                u.movil = false;
-                u.hostil = false;
+                u.parar();
             }
         }
     }

@@ -182,6 +182,7 @@ public class Fenix {
         e.cadencia = Unidad.cadencia_estandar;
         e.hostil = true;
         e.descripcion = "Edificio central de la raza Fénix.";
+        e.main = true;
     }
 
     public static final void CuartelFenix(Edificio e) {

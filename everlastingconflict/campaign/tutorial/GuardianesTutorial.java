@@ -6,7 +6,9 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
+import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.VentanaCombate;
@@ -74,9 +76,10 @@ public class GuardianesTutorial extends Tutorial {
             @Override
             public void efecto(Partida p) {
                 VentanaCombate.continuar.canBeUsed = false;
-                p.getMainPlayer().edificios.get(1).activo = true;
-                p.getMainPlayer().edificios.get(1).iniciarbotones(p);
-                p.getMainPlayer().edificios.get(1).vida = p.getMainPlayer().edificios.get(1).vida_max;
+                Edificio academiaPilotos = p.getMainPlayer().edificios.stream().filter(e -> e.nombre.equals("Academia de pilotos")).findFirst().get();
+                academiaPilotos.activo = true;
+                academiaPilotos.iniciarbotones(p);
+                academiaPilotos.vida = academiaPilotos.vida_max;
             }
 
         });
@@ -101,11 +104,14 @@ public class GuardianesTutorial extends Tutorial {
                 VentanaCombate.continuar.canBeUsed = true;
             }
         });
-        pasos.add(new Paso("A continuación, veamos como los Guardianes obtienen recursos. Existen tres recursos que se muestran de izquierda a derecha en la parte de arriba de la pantalla: el primero es el que se usa para crear todas las unidades y los edificios, el segundo es el porcentaje de felicidad de la población, cuanto mayor sea más rápido se obtendrá el primer recurso, el útlimo recurso representa el nivel de amenaza. Cuanto mayor sea, más piezas del arsenal de los Guardianes se desbloquearán pero peores eventos podrán aparecer."));
+        pasos.add(new Paso("A continuación, veamos como los Guardianes obtienen recursos. Existen tres recursos que se muestran de izquierda a derecha en la parte de arriba de la pantalla: el primero es el que se usa para crear todas las unidades y los edificios, el segundo es el porcentaje de felicidad de la población, cuanto mayor sea más rápido se obtendrá el primer recurso, el último recurso representa el nivel de amenaza. Cuanto mayor sea, más piezas del arsenal de los Guardianes se desbloquearán pero peores eventos podrán aparecer."));
         pasos.add(new Paso("Por último, explicaremos los eventos que acabamos de mencionar. Existen dos tipos de eventos: los positivos y los negativos. Los positivos se obtienen investigándolos en el ayuntamiento y aumentan la felicidad de la población. Los eventos negativos aparecen cada cierto tiempo y, de no ser evitados, disminuyen la felicidad de la población."));
         pasos.add(new Paso("Para solucionar un evento negativo se deben sacrificar unidades. Para hacerlo debes moverlas al ayuntamiento.") {
             @Override
             public void efecto(Partida p) {
+                getMainPlayer().eventos.activo = true;
+                p.getMainPlayer().eventos.contenido = new ArrayList<>();
+                p.getMainPlayer().eventos.contenido.add(new Evento("Una racha criminal asola las calles"));
                 VentanaCombate.continuar.canBeUsed = false;
                 Unidad u = new Unidad("Patrulla", p.getMainPlayer().unidades.get(0).x - 50, p.getMainPlayer().unidades.get(0).y);
                 u.movil = true;
@@ -149,6 +155,7 @@ public class GuardianesTutorial extends Tutorial {
         getMainPlayer().x_inicial = 200;
         getMainPlayer().y_inicial = 200;
         getMainPlayer().initElements(this);
+        getMainPlayer().eventos.activo = false;
     }
 
     public GuardianesTutorial() {

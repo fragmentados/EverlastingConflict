@@ -90,7 +90,7 @@ public class EterniumTutorial extends Tutorial {
                 return getMainPlayer().edificios.stream().map(e -> e.nombre).anyMatch(s -> "Cámara de asimilación".equals(s));
             }
         });
-        pasos.add(new Paso("El último paso para la conversión requiere de tecnología de la que no disponemos en el campo de batalla con lo que se debe transportar a una de las naves que orbitan el planeta. Construye un transportador para terminar el sistema.", false) {
+        pasos.add(new Paso("El último paso para la conversión requiere de tecnología de la que no disponemos en el campo de batalla con lo que se debe transportar a una de las naves que orbitan el planeta. Construye un teletransportador para terminar el sistema.", false) {
             @Override
             public boolean comprobacion(Partida p) {
                 return getMainPlayer().edificios.stream().map(e -> e.nombre).anyMatch(s -> "Teletransportador".equals(s));

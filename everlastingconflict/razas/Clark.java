@@ -283,6 +283,7 @@ public class Clark {
         e.tiempo = 3000;
         e.coste = 0;
         e.descripcion = "Edificio central capaz de crear constructores e investigar tecnologías.";
+        e.main = true;
     }
 
     public static void iniciar_botones_edificio(Edificio e) {
@@ -294,7 +295,7 @@ public class Clark {
                 e.botones.add(new BotonComplejo(new Tecnologia("Asimilación mejorada")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Instintos primarios")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Bioacero reforzado")));
-                e.botones.add(new BotonComplejo("AyudaFusion"));
+                e.botones.add(new BotonComplejo("Ayuda Fusión"));
                 break;
         }
     }
