@@ -46,6 +46,8 @@ public class RelojEternium extends Reloj {
                 + " En la tercera fase las capacidades militares del ejercito estan al 150%"
                 + " En la cuarta fase las unidades Eternium no pueden moverse ni atacar";
         hintBoxText = Partida.anadir_saltos_de_linea(this.hintBoxText, hintBoxWidth);
+        anchura = 80;
+        altura = 80;
     }
 
     @Override

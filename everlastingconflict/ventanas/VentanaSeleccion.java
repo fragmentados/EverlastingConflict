@@ -63,8 +63,8 @@ public class VentanaSeleccion extends Ventana {
         playerSelections = new ArrayList<>();
         playerSelections.add(new PlayerSelection(400, 550));
         salir = new BotonSimple("Salir", VentanaCombate.VIEWPORT_SIZE_WIDTH - 60, 0);
-        volver = new BotonSimple("Volver", 600, 800);
-        aceptar = new BotonSimple("Aceptar", 700, 800);
+        volver = new BotonSimple("Volver", VentanaCombate.responsiveX(40), VentanaCombate.responsiveY(85));
+        aceptar = new BotonSimple("Aceptar", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(85));
         mapCombo = new ComboBox("Mapa:", MapEnum.getAllNames(), MapEnum.getAllPlayerLimits(), 500, 400);
         victoryCondition = new ComboBox("Condición de victoria:", VictoryConditionEnum.getAllNames(),
                 VictoryConditionEnum.getAllDescriptions(), 500, 300);

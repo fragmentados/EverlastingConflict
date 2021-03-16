@@ -10,10 +10,7 @@ import everlastingconflict.Experimento_Multiplayer_Real.Client;
 import everlastingconflict.Experimento_Multiplayer_Real.Message;
 import everlastingconflict.RTS;
 import everlastingconflict.campaign.tutorial.Tutorial;
-import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.ElementoVulnerable;
+import everlastingconflict.elementos.*;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
@@ -112,6 +109,7 @@ public class VentanaCombate extends Ventana {
     public Client client = new Client("server", 8080, "elias");
     //Music
     public Sound ambientMusic;
+    public static ElementoCoordenadas elementHighlighted = null;
 
     public static void crearReloj(Reloj r) {
         relojes.add(r);
@@ -942,6 +940,10 @@ public class VentanaCombate extends Ventana {
             g.drawString(client.username, x_chat - client.username.length() * 10, y_chat);
             chat_texto.render(container, g);
         }
+        if (elementHighlighted != null) {
+            g.setColor(Color.red);
+            g.drawOval(elementHighlighted.x, elementHighlighted.y, elementHighlighted.anchura + 50, elementHighlighted.altura + 50);
+        }
     }
 
     private void displayVictory() throws SlickException {
@@ -984,5 +986,13 @@ public class VentanaCombate extends Ventana {
         ElementosComunes.VICTORY_SOUND.stop();
         ElementosComunes.DEFEAT_SOUND.stop();
         RTS.mainController.windowSwitch(container, new Partida(), "Menu");
+    }
+
+    public static float responsiveX(float percentage) {
+        return VIEWPORT_SIZE_WIDTH * percentage / 100;
+    }
+
+    public static float responsiveY(float percentage) {
+        return VIEWPORT_SIZE_HEIGHT * percentage / 100;
     }
 }

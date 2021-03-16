@@ -5,6 +5,7 @@
  */
 package everlastingconflict.relojes;
 
+import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
@@ -16,7 +17,7 @@ import org.newdawn.slick.Input;
  *
  * @author Elías
  */
-public abstract class Reloj {
+public abstract class Reloj extends ElementoCoordenadas {
 
     //Variable para comprobar con comodidad el cuarto en el que se encuentra el reloj
     public int ndivision;
@@ -25,10 +26,6 @@ public abstract class Reloj {
     public static final float TIME_REGULAR_SPEED = 0.001f;
     public Image sprite;
     public Jugador jugadorAsociado;
-    public float anchura = 80;
-    public float altura = 80;
-    public float x;
-    public float y;
     float hintBoxWidth = 565;
     float hintBoxHeight = 200;
     protected String hintBoxText;

@@ -33,17 +33,17 @@ public class VentanaMenu extends Ventana {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        tutorial = new BotonSimple("Tutorial", 600, 300);
-        combate = new BotonSimple("Combate", 600, 400);
+        tutorial = new BotonSimple("Tutorial", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(40));
+        combate = new BotonSimple("Combate", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(50));
         multijugador = new BotonSimple("Multijugador", 600, 400);
         opciones = new BotonSimple("Opciones", 600, 600);
         salir = new BotonSimple("Salir", VentanaCombate.VIEWPORT_SIZE_WIDTH - 60, 0);
-        volver = new BotonSimple("Volver", 600, 800);
-        aceptar = new BotonSimple("Aceptar", 700, 800);
+        volver = new BotonSimple("Volver", VentanaCombate.responsiveX(40), VentanaCombate.responsiveY(85));
+        aceptar = new BotonSimple("Aceptar", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(85));
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
         aceptar.canBeUsed = volver.canBeUsed = false;
-        raceTutorial = new ComboBox("Raza:", RaceEnum.getAllNames(), 700, 400);
+        raceTutorial = new ComboBox("Raza:", RaceEnum.getAllNames(), VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(40));
         tutorialImage = new Image("media/" + raceTutorial.opcion_seleccionada + ".png");
     }
 
@@ -110,8 +110,8 @@ public class VentanaMenu extends Ventana {
         g.drawString("Usuario: ", 20, 50);
         usuario.render(container, g);
         if (tutorialMode) {
-            tutorialImage.draw(350, 450);
-            g.drawString(Partida.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.opcion_seleccionada).getDescription(), 500), 600, 500);
+            tutorialImage.draw(VentanaCombate.responsiveX(35), VentanaCombate.responsiveY(45));
+            g.drawString(Partida.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.opcion_seleccionada).getDescription(), 500), VentanaCombate.responsiveX(50), VentanaCombate.responsiveY(50));
             raceTutorial.render(g);
         }
     }

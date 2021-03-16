@@ -253,7 +253,8 @@ public class Jugador {
     public void renderNonMainTeamElements(Partida p, Graphics g, Input input) {
         lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.dibujar(p, color, input, g));
         edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.dibujar(p, color, input, g));
-        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
+        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) &&
+                (VentanaCombate.relojEternium() != null && VentanaCombate.relojEternium().ndivision == 4)) {
             unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> Eternium.dibujar_detencion(u, color, g));
         } else {
             unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));

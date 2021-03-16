@@ -39,6 +39,8 @@ public class RelojMaestros extends Reloj {
                 + " El Manipulador tendrá habilidades diferentes en cuanto cambie el reloj."
                 + " También hay unidades que son más fuertes en el día o en la noche.";
         hintBoxText = Partida.anadir_saltos_de_linea(this.hintBoxText, hintBoxWidth);
+        anchura = 80;
+        altura = 80;
     }
 
     public void cambio_temporal(String t) {
