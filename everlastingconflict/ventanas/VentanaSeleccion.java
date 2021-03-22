@@ -3,9 +3,11 @@ package everlastingconflict.ventanas;
 import everlastingconflict.ai.AI;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
+import everlastingconflict.elementosvisuales.ComboBoxOption;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 import everlastingconflict.victory.VictoryCondition;
 import everlastingconflict.victory.VictoryConditionEnum;
 import org.newdawn.slick.GameContainer;
@@ -24,6 +26,7 @@ public class VentanaSeleccion extends Ventana {
     private final String titulo = "THE EVERLASTING CONFLICT";
     public BotonSimple volver, aceptar, salir;
     public ComboBox mainPlayerRace;
+    public ComboBox mainPlayerSubRace;
     public ComboBox mainPlayerTeam;
     public ComboBox mainPlayerLeader;
     public static ComboBox victoryCondition;
@@ -32,23 +35,23 @@ public class VentanaSeleccion extends Ventana {
     public boolean start;
 
     public static boolean isLeaderGame() {
-        return "Jugador Lider".equals(VentanaSeleccion.victoryCondition.opcion_seleccionada);
+        return "Jugador Lider".equals(VentanaSeleccion.victoryCondition.opcion_seleccionada.text);
     }
 
     public void start(GameContainer container) {
         try {
-            Jugador mainPlayer = new Jugador("Prueba", mainPlayerRace.opcion_seleccionada,
-                    Integer.valueOf(mainPlayerTeam.opcion_seleccionada),
-                    isLeaderGame() && "Sí".equals(this.mainPlayerLeader.opcion_seleccionada));
+            Jugador mainPlayer = new Jugador("Prueba", mainPlayerRace.opcion_seleccionada.text,
+                    Integer.valueOf(mainPlayerTeam.opcion_seleccionada.text),
+                    isLeaderGame() && "Sí".equals(this.mainPlayerLeader.opcion_seleccionada), SubRaceEnum.findByName(mainPlayerSubRace.opcion_seleccionada.text));
             List<Jugador> players = playerSelections
                     .stream().filter(p -> p.isPlayerActive())
-                    .map(p -> AI.crearAI(p.raceCombo.opcion_seleccionada,
-                            Integer.valueOf(p.teamCombo.opcion_seleccionada), p.difficultyCombo
-                            .opcion_seleccionada, isLeaderGame() && p.isLeader()))
+                    .map(p -> AI.crearAI(p.raceCombo.opcion_seleccionada.text,
+                            Integer.valueOf(p.teamCombo.opcion_seleccionada.text), p.difficultyCombo
+                                    .opcion_seleccionada.text, isLeaderGame() && p.isLeader()))
                     .collect(Collectors.toList());
             players.add(0, mainPlayer);
-            Partida partida = new Partida(players, MapEnum.findByName(mapCombo.opcion_seleccionada),
-                    VictoryCondition.getFromName(VentanaSeleccion.victoryCondition.opcion_seleccionada));
+            Partida partida = new Partida(players, MapEnum.findByName(mapCombo.opcion_seleccionada.text),
+                    VictoryCondition.getFromName(VentanaSeleccion.victoryCondition.opcion_seleccionada.text));
             VentanaPrincipal.windowSwitch(container, partida, "Campo");
         } catch (SlickException ex) {
         }
@@ -56,18 +59,24 @@ public class VentanaSeleccion extends Ventana {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        mainPlayerRace = new ComboBox("Raza:", RaceEnum.getAllNames(), 600, 500);
+        mainPlayerRace = new ComboBox("Raza:",
+                Arrays.stream(RaceEnum.values()).map(r -> ComboBoxOption.createOptionWithSprite(r.getName(), r.getImagePath())).collect(Collectors.toList()), 600, 500);
+        mainPlayerSubRace = new ComboBox("SubRaza:",
+                Arrays.stream(SubRaceEnum.values()).map(r -> ComboBoxOption.createOptionWithSprite(r.getName(), r.getImagePath())).collect(Collectors.toList()), 850, 500);
         mainPlayerTeam = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
-                .boxed().map(n -> n.toString()).collect(Collectors.toList()), 800, 500);
-        mainPlayerLeader = new ComboBox("Lider:", Arrays.asList("Sí", "No"), 900, 500);
+                .boxed().map(n -> n.toString()).map(r -> new ComboBoxOption(r)).collect(Collectors.toList()), 1100, 500);
+        mainPlayerLeader = new ComboBox("Lider:",
+                Arrays.asList("Sí", "No").stream().map(r -> new ComboBoxOption(r)).collect(Collectors.toList()), 1300,
+                500);
         playerSelections = new ArrayList<>();
         playerSelections.add(new PlayerSelection(400, 550));
         salir = new BotonSimple("Salir", VentanaCombate.VIEWPORT_SIZE_WIDTH - 60, 0);
         volver = new BotonSimple("Volver", VentanaCombate.responsiveX(40), VentanaCombate.responsiveY(85));
         aceptar = new BotonSimple("Aceptar", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(85));
-        mapCombo = new ComboBox("Mapa:", MapEnum.getAllNames(), MapEnum.getAllPlayerLimits(), 500, 400);
-        victoryCondition = new ComboBox("Condición de victoria:", VictoryConditionEnum.getAllNames(),
-                VictoryConditionEnum.getAllDescriptions(), 500, 300);
+        mapCombo = new ComboBox("Mapa:", Arrays.stream(MapEnum.values()).map(m -> new ComboBoxOption(m.getName(),
+                "Jugadores máximos : " + m.getMaxPlayers())).collect(Collectors.toList()), 500, 400);
+        victoryCondition = new ComboBox("Condición de victoria:",
+                Arrays.stream(VictoryConditionEnum.values()).map(v -> new ComboBoxOption(v.label, v.description)).collect(Collectors.toList()), 500, 300);
     }
 
     @Override
@@ -90,8 +99,10 @@ public class VentanaSeleccion extends Ventana {
             mapCombo.checkIfItsClicked(input);
             mainPlayerTeam.checkIfItsClicked(input);
             victoryCondition.checkIfItsClicked(input);
+            mainPlayerSubRace.checkIfItsClicked(input);
             playerSelections.stream().forEach(p -> p.update(input));
             mainPlayerRace.checkOptionSelected(input.getMouseX(), input.getMouseY());
+            mainPlayerSubRace.checkOptionSelected(input.getMouseX(), input.getMouseY());
             mainPlayerTeam.checkOptionSelected(input.getMouseX(), input.getMouseY());
             victoryCondition.checkOptionSelected(input.getMouseX(), input.getMouseY());
             if (mapCombo.checkOptionSelected(input.getMouseX(), input.getMouseY()) != null) {
@@ -101,7 +112,7 @@ public class VentanaSeleccion extends Ventana {
     }
 
     private void updatePlayerCountBasedOnMapSize() {
-        int newMaxPlayers = MapEnum.findByName(mapCombo.opcion_seleccionada).maxPlayers;
+        int newMaxPlayers = MapEnum.findByName(mapCombo.opcion_seleccionada.text).maxPlayers;
         if (newMaxPlayers > playerSelections.size()) {
             int playersToAdd = newMaxPlayers - (playerSelections.size() + 1);
             for (int i = 0; i < playersToAdd; i++) {
@@ -123,6 +134,7 @@ public class VentanaSeleccion extends Ventana {
             playerSelections.get(i).render(g);
         }
         mainPlayerRace.render(g);
+        mainPlayerSubRace.render(g);
         mainPlayerTeam.render(g);
         if (isLeaderGame()) {
             mainPlayerLeader.render(g);

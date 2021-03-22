@@ -33,6 +33,7 @@ public class Jugador {
     public float x_inicial, y_inicial;
     public boolean verticalDown = true, horizontalRight = true;
     public String nombre, raza;
+    public SubRaceEnum subRace;
     public Color color;
     //RTS.Elementos
     public List<Unidad> unidades;
@@ -109,6 +110,11 @@ public class Jugador {
         this.resourceImage = Raza.getResourceImage(raza);
         this.team = team;
         this.isLeader = isLeader;
+    }
+
+    public Jugador(String nombre, String raza, Integer team, boolean isLeader, SubRaceEnum subRace) {
+        this(nombre, raza, team, isLeader);
+        this.subRace = subRace;
     }
 
     public void comprobacion_perforacion() {
@@ -229,7 +235,7 @@ public class Jugador {
                 m.drawManaCircle(g);
             }
         }
-        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.relojEternium().ndivision == 4)) {
+        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.eterniumWatch().ndivision == 4)) {
             for (Unidad u : unidades) {
                 if (u.nombre.equals("Protector")) {
                     u.dibujar(p, color, input, g);
@@ -254,7 +260,7 @@ public class Jugador {
         lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.dibujar(p, color, input, g));
         edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.dibujar(p, color, input, g));
         if (this.raza.equals(RaceEnum.ETERNIUM.getName()) &&
-                (VentanaCombate.relojEternium() != null && VentanaCombate.relojEternium().ndivision == 4)) {
+                (VentanaCombate.eterniumWatch() != null && VentanaCombate.eterniumWatch().ndivision == 4)) {
             unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> Eternium.dibujar_detencion(u, color, g));
         } else {
             unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));

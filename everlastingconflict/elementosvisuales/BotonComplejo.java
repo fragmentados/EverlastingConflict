@@ -47,6 +47,7 @@ public class BotonComplejo extends BotonSimple {
     public String tecla_string;
     public float cooldown, cooldown_contador;
     public Integer remainingClicks = null;
+    public Integer timesClicked = 0;
     private float resolucion_contador;
     private static final float resolucion = 0.2f;
     public boolean canBeShown = true;
@@ -172,6 +173,18 @@ public class BotonComplejo extends BotonSimple {
                 descripcion = "El cuartel creará de forma constante Fenixes, la unidad definitiva.\n";
                 descripcion += "Tiene una gran vida y ataque e incluso puede mejorarse para poder resucitar.";
                 break;
+            case "Oso":
+                descripcion = "El cuartel creará de forma constante Osos.\n";
+                descripcion += "Tiene una gran ataque cuerpo a cuerpo y velocidad.";
+                break;
+            case "Cuervo":
+                descripcion = "El cuartel creará de forma constante Fenixes, la unidad de apoyo.\n";
+                descripcion += "No tiene capacidad ofensiva pero tiene unas habilidades poderosas.";
+                break;
+            case "Tortuga":
+                descripcion = "El cuartel creará de forma constante Fenixes, la unidad defensiva.\n";
+                descripcion += "Tiene una gran vida y defensa y absorbe automáticamente los ataques enemigos.";
+                break;
             case "Ayuda Fusión":
                 descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.\n";
                 break;
@@ -232,6 +245,10 @@ public class BotonComplejo extends BotonSimple {
             if (remainingClicks != null) {
                 g.setColor(Color.green);
                 g.drawString(String.valueOf(remainingClicks), x + anchura - 10, y + altura - 13);
+            }
+            if (timesClicked > 0) {
+                g.setColor(Color.orange);
+                g.drawString(String.valueOf(timesClicked), x + anchura - 10, y + altura - 13);
             }
             if (cooldown_contador > 0) {
                 BotonComplejo.dibujar_aguja(g, this.x, this.y, this.cooldown_contador, this.cooldown);
@@ -414,6 +431,9 @@ public class BotonComplejo extends BotonSimple {
                         case "Tigre":
                         case "Halcón":
                         case "Fénix":
+                        case "Oso":
+                        case "Tortuga":
+                        case "Cuervo":
                             edificio.unidad_actual = texto;
                             edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
                             break;

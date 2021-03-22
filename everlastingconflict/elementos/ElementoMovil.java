@@ -47,7 +47,7 @@ public class ElementoMovil extends ElementoAtacante {
         Jugador ally = partida.getPlayerFromElement(this);
         return movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour)
                 && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
-                || VentanaCombate.relojEternium().ndivision != 4);
+                || VentanaCombate.eterniumWatch().ndivision != 4);
     }
 
     public void anadir_recoleccion(Partida partida, float x, float y) {

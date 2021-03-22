@@ -205,31 +205,38 @@ public class BotonManipulador extends BotonComplejo {
                             m.mana_max += 50;
                             m.mana += 50;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Vida":
                             m.vida_max += 50;
                             m.vida += 50;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Defensa":
                             m.defensa++;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Regeneración maná":
                             m.regeneracion_mana += 0.1f;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Ataque":
                             m.ataque += 5;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Reducción de enfriamiento":
                             m.aumentar_reduccion(2);
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                         case "Poder mágico":
                             m.poder_magico += 5;
                             m.applyEnhancement("Atributos", null);
+                            this.timesClicked++;
                             break;
                     }
                 }

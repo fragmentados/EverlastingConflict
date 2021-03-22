@@ -25,13 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Elías
  */
 public class Unidad extends ElementoMovil {
     //Recoleccion
     public Recurso recurso;
-    public int recurso_int;    
+    public int recurso_int;
     public int coste_poblacion;
     //Construccion
     public Edificio edificio_construccion;
@@ -124,7 +123,7 @@ public class Unidad extends ElementoMovil {
     public void comportamiento(Partida p, Graphics g, int delta) {
         super.comportamiento(p, g, delta);
         Jugador aliado = p.getPlayerFromElement(this);
-        List<Jugador> enemies = p.enemyPlayersFromElement(this);
+        List<Jugador> enemies = p.getEnemyPlayersFromElement(this);
         if (statusEffectCollection.existe_estado(StatusEffectName.REGENERACION)) {
             if (this.vida < this.vida_max) {
                 aumentar_vida(Reloj.TIME_REGULAR_SPEED * delta);
@@ -205,7 +204,7 @@ public class Unidad extends ElementoMovil {
                 }
                 break;
             case RECOLECTANDO:
-                if ((this.x == recurso.x) && (this.y == recurso.y)) {
+                if (this.movimiento == null) {
                     if (recurso instanceof TorreVision) {
                         recurso.capturar(p, aliado, this);
                     } else {
@@ -305,7 +304,7 @@ public class Unidad extends ElementoMovil {
     public void recolectar(Partida p, Recurso r) {
         statusBehaviour = StatusBehaviour.RECOLECTANDO;
         recurso = r;
-        anadir_recoleccion(p, recurso.x, recurso.y);
+        anadir_recoleccion(p, getCoordinateForBuildingCreation(this.x, recurso.x, recurso.anchura, this.anchura), getCoordinateForBuildingCreation(this.y, recurso.y, recurso.altura, this.altura));
     }
 
     public void atacar(Partida p, ElementoVulnerable atacada) {

@@ -302,7 +302,7 @@ public class Habilidad extends ElementoSimple {
 
     public ElementoComplejo seleccion_objetivo(Partida p, ElementoComplejo origen, float x, float y) {
         Jugador aliado = p.getPlayerFromElement(origen);
-        List<Jugador> enemies = p.enemyPlayersFromElement(origen);
+        List<Jugador> enemies = p.getEnemyPlayersFromElement(origen);
         List<ElementoComplejo> contador = new ArrayList<>();
         switch (tipo_seleccion) {
             case "EdificioAliado":
@@ -362,7 +362,7 @@ public class Habilidad extends ElementoSimple {
 
     public List<ElementoComplejo> area(Partida p, ElementoComplejo origen, float x, float y, String t) {
         Jugador aliado = p.getPlayerFromElement(origen);
-        List<Jugador> enemies = p.enemyPlayersFromElement(origen);
+        List<Jugador> enemies = p.getEnemyPlayersFromElement(origen);
         List<ElementoComplejo> resultado = new ArrayList<>();
         switch (t) {
             case "UnidadEnemiga":
@@ -559,7 +559,7 @@ public class Habilidad extends ElementoSimple {
                     ((Unidad) objetivo).provocar(origen, 3000);
                     break;
                 case "Parálisis temporal":
-                    VentanaCombate.relojEternium().detener_reloj(60);
+                    VentanaCombate.eterniumWatch().detener_reloj(60);
                     break;
                 case "Alentar":
                     elementos_area = area(p, origen, objetivo.x, objetivo.y, "UnidadAliada");
@@ -580,7 +580,7 @@ public class Habilidad extends ElementoSimple {
                     ((Unidad) origen).statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.SUPERVIVENCIA, 10));
                     break;
                 case "Eclipse Amanecer":
-                    RelojMaestros relojMaestros = VentanaCombate.relojMaestros();
+                    RelojMaestros relojMaestros = VentanaCombate.masterWatch();
                     if (relojMaestros.ndivision == 1) {
                         relojMaestros.contador_reloj = relojMaestros.fin_primera_mitad;
                     } else {

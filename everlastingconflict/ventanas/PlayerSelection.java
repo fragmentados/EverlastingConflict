@@ -1,6 +1,7 @@
 package everlastingconflict.ventanas;
 
 import everlastingconflict.elementosvisuales.ComboBox;
+import everlastingconflict.elementosvisuales.ComboBoxOption;
 import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -20,15 +21,25 @@ public class PlayerSelection {
     public PlayerSelection(float x, float y) {
         this.x = x;
         this.y = y;
-        isActiveCombo = new ComboBox(null,  Arrays.asList("AI", "Closed"), x, y);
-        raceCombo = new ComboBox("Raza:", RaceEnum.getAllNames(), x + 200, y);
+        isActiveCombo = new ComboBox(null,
+                Arrays.asList("AI", "Closed").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList())
+                , x, y);
+        raceCombo = new ComboBox("Raza:",
+                Arrays.stream(RaceEnum.values()).map(r -> ComboBoxOption.createOptionWithSprite(r.getName(),
+                        r.getImagePath())).collect(Collectors.toList()),
+                x + 200, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
-                .boxed().map(n -> n.toString()).collect(Collectors.toList()), x + 400, y);
-        difficultyCombo = new ComboBox("Dificultad:", Arrays.asList("Fácil", "Normal", "Difícil"), x + 550, y);
-        leaderCombo = new ComboBox("Lider:", Arrays.asList("Sí", "No"), x + 710, y);
+                .boxed().map(n -> new ComboBoxOption(n.toString())).collect(Collectors.toList()), x + 450, y);
+        difficultyCombo = new ComboBox("Dificultad:",
+                Arrays.asList("Fácil", "Normal", "Difícil").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()), x + 600, y);
+        leaderCombo = new ComboBox("Lider:",
+                Arrays.asList("Sí", "No").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()),
+                x + 760, y);
     }
 
-    public boolean isLeader() {return "Sí".equals(this.leaderCombo.opcion_seleccionada);}
+    public boolean isLeader() {
+        return "Sí".equals(this.leaderCombo.opcion_seleccionada);
+    }
 
     public boolean isPlayerActive() {
         return !"Closed".equals(isActiveCombo.opcion_seleccionada);
@@ -52,7 +63,7 @@ public class PlayerSelection {
         if (isPlayerActive()) {
             raceCombo.render(g);
             teamCombo.render(g);
-            if ("Jugador Lider".equals(VentanaSeleccion.victoryCondition.opcion_seleccionada)) {
+            if (VentanaSeleccion.isLeaderGame()) {
                 leaderCombo.render(g);
             }
             difficultyCombo.render(g);

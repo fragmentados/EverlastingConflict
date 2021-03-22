@@ -29,7 +29,7 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
     public int anchura, altura;
     
     public boolean visible(Partida p) {
-        return p.enemyPlayersFromElement(this).stream().anyMatch(player -> visibleByPlayer(player));
+        return p.getEnemyPlayersFromElement(this).stream().anyMatch(player -> visibleByPlayer(player));
     }
 
     public boolean visibleByMainTeam(Partida p) {

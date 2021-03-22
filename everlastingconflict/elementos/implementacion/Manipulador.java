@@ -55,6 +55,14 @@ public class Manipulador extends Unidad {
     public static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos habilidades para que el Manipulador las aprenda");
     public static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco atributos para que se mejoren");
 
+    public static BotonManipulador LIFE_BUTTON = new BotonManipulador("Vida", "Aumenta la vida actual y la vida máximo en 50 puntos");
+    public static BotonManipulador ATTACK_BUTTON = new BotonManipulador("Ataque", "Aumenta el ataque en 5 puntos");
+    public static BotonManipulador MANA_BUTTON = new BotonManipulador("Maná", "Aumenta el maná actual y el maná máximo en 50 puntos");
+    public static BotonManipulador DEFENSE_BUTTON = new BotonManipulador("Defensa", "Aumenta en 1 la defensa");
+    public static BotonManipulador MANA_REGENERATION_BUTTON = new BotonManipulador("Regeneración maná", "Aumenta la regeneración de maná en 0.1 / segundo");
+    public static BotonManipulador CDR_BUTTON = new BotonManipulador("Reducción de enfriamiento", "Reduce los enfriamientos de las habilidades un 2%");
+    public static BotonManipulador AP_BUTTON = new BotonManipulador("Poder mágico", "Aumenta el poder mágico en 5 puntos");
+
     public final int experiencia_maxima() {
         return 100 + 50 * (nivel - 1);
     }
@@ -119,13 +127,13 @@ public class Manipulador extends Unidad {
 
     public void obtener_botones_atributos() {
         enhancementButtons = new ArrayList<>();
-        enhancementButtons.add(new BotonManipulador("Vida"));
-        enhancementButtons.add(new BotonManipulador("Ataque"));
-        enhancementButtons.add(new BotonManipulador("Maná"));
-        enhancementButtons.add(new BotonManipulador("Defensa"));
-        enhancementButtons.add(new BotonManipulador("Regeneración maná"));
-        enhancementButtons.add(new BotonManipulador("Reducción de enfriamiento"));
-        enhancementButtons.add(new BotonManipulador("Poder mágico"));
+        enhancementButtons.add(LIFE_BUTTON);
+        enhancementButtons.add(ATTACK_BUTTON);
+        enhancementButtons.add(MANA_BUTTON);
+        enhancementButtons.add(DEFENSE_BUTTON);
+        enhancementButtons.add(MANA_REGENERATION_BUTTON);
+        enhancementButtons.add(CDR_BUTTON);
+        enhancementButtons.add(AP_BUTTON);
         enhancementsRemaining = 5;
         this.initButtonKeys(this.enhancementButtons);
     }

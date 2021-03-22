@@ -25,7 +25,7 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public float escudo, escudoInicial;
     
     public int defensa_eternium() {
-        switch (VentanaCombate.relojEternium().ndivision) {
+        switch (VentanaCombate.eterniumWatch().ndivision) {
             case 1:
                 return (int) (this.defensa * (75f / 100f));
             case 2:

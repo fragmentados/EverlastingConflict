@@ -7,7 +7,6 @@ package everlastingconflict.elementosvisuales;
 
 import org.newdawn.slick.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,22 +17,28 @@ public class ComboBox {
 
     public float x, y;
     public float anchura, altura = 20;
-    public List<String> opciones;
+    public List<ComboBoxOption> opciones;
     public String label;
-    public String opcion_seleccionada;
+    public ComboBoxOption opcion_seleccionada;
     public BotonSimple desplegar;
     public boolean desplegado;
-    public List<String> descriptions = new ArrayList<>();
 
-    public ComboBox(String label, List<String> o, float x, float y) {
+    public ComboBox(String label, List<ComboBoxOption> o, float x, float y) {
         this.x = x;
         this.y = y;
         opciones = o;
         this.label = label;
         opcion_seleccionada = opciones.get(0);
-        for (String t : opciones) {
-            if (t.length() * 10 > anchura) {
-                anchura = t.length() * 10;
+        for (ComboBoxOption op : opciones) {
+            if (op.text.length() * 10 > anchura) {
+                anchura = op.text.length() * 10;
+            }
+        }
+        for (ComboBoxOption op : opciones) {
+            if (op.sprite != null) {
+               anchura += 30;
+               altura = 30;
+               break;
             }
         }
         desplegado = false;
@@ -46,26 +51,22 @@ public class ComboBox {
             };
             desplegar.x = x + anchura + 1;
             desplegar.y = y;
+            desplegar.altura = altura;
         } catch (SlickException e) {
 
         }
     }
 
-    public ComboBox(String label, List<String> o, List<String> descriptions, float x, float y) {
-        this(label, o, x, y);
-        this.descriptions = descriptions;
-    }
-
-    public String checkOptionSelected(float x, float y) {
+    public ComboBoxOption checkOptionSelected(float x, float y) {
         if (desplegado) {
             int i = 1;
-            for (String t : opciones) {
-                if (x >= this.x && x <= this.x + this.anchura) {
-                    if (y >= this.y + i * 20 + 2 && y <= this.y + (i + 1) * 20) {
+            for (ComboBoxOption op : opciones) {
+                if (x >= this.x && x <= this.x + this.anchura + this.desplegar.anchura) {
+                    if (y >= this.y + i * altura + 2 && y <= this.y + (i + 1) * altura) {
                         desplegado = false;
-                        if (!opcion_seleccionada.equals(t)) {
-                            String previousSelectedOption = opcion_seleccionada;
-                            opcion_seleccionada = t;
+                        if (!opcion_seleccionada.equals(op)) {
+                            ComboBoxOption previousSelectedOption = opcion_seleccionada;
+                            opcion_seleccionada = op;
                             return previousSelectedOption;
                         }                        
                         break;
@@ -77,7 +78,8 @@ public class ComboBox {
         return null;
     }
 
-    public void dibujar_opcion(Graphics g, String o, float x, float y) {
+    public void renderOption(Graphics g, ComboBoxOption o, float x, float y) {
+        float xOptionText = x;
         if (o.equals(opcion_seleccionada)) {
             g.setColor(new Color(0f, 0f, 0.8f, 0.8f));
         } else {
@@ -86,10 +88,16 @@ public class ComboBox {
         g.fillRect(x, y, anchura + desplegar.anchura + 1, altura);
         g.setColor(Color.black);
         g.drawRect(x, y, anchura + desplegar.anchura + 1, altura);
-        g.drawString(o, x, y);
+
+        if (o.sprite != null) {
+            o.sprite.draw(x, y, 30, 30);
+            xOptionText += 30;
+        }
+        g.drawString(o.text, xOptionText, altura == 20 ? y : y + altura / 4);
     }
 
     public void render(Graphics g) {
+        float xOptionText = this.x;
         g.setColor(Color.white);
         if (label != null) {
             g.drawString(label, x - label.length() * 10, y);
@@ -97,19 +105,23 @@ public class ComboBox {
         g.fillRect(x, y, anchura, altura);
         g.setColor(Color.black);
         g.drawRect(x, y, anchura, altura);
-        g.drawString(opcion_seleccionada, x, y);
+        if (opcion_seleccionada.sprite != null) {
+            opcion_seleccionada.sprite.draw(xOptionText, y, 30, 30);
+            xOptionText += 30;
+        }
+        g.drawString(opcion_seleccionada.text, xOptionText, altura == 20 ? y : y + altura / 4);
         if (desplegado) {
             g.setColor(Color.black);
             int i = 1;
-            for (String t : opciones) {
-                dibujar_opcion(g, t, x, y + i * 20 + 2);
+            for (ComboBoxOption op : opciones) {
+                renderOption(g, op, x, y + i * altura + 2);
                 i++;
             }
         }
         desplegar.render(g);
         g.setColor(Color.white);
-        if ((descriptions.size() - 1) >= this.opciones.indexOf(opcion_seleccionada)) {
-            g.drawString(descriptions.get(this.opciones.indexOf(opcion_seleccionada)), x + 300, y);
+        if (this.opcion_seleccionada.description != null) {
+            g.drawString(this.opcion_seleccionada.description, x + 300, y);
         }
     }
 

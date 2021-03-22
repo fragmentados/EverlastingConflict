@@ -95,6 +95,15 @@ public class Raza {
             case "Fénix":
                 Fenix.Fenix(u);
                 break;
+            case "Oso":
+                Fenix.Oso(u);
+                break;
+            case "Tortuga":
+                Fenix.Tortuga(u);
+                break;
+            case "Cuervo":
+                Fenix.Cuervo(u);
+                break;
             //Guardianes
             case "Patrulla":
                 Guardianes.Patrulla(u);

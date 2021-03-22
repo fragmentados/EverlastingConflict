@@ -22,6 +22,7 @@ public class VentanaPrincipal extends BasicGame {
     public static VentanaIntro ventanaIntro = new VentanaIntro();
     public static VentanaMenu ventanaMenu = new VentanaMenu();
     public static VentanaSeleccion ventanaSeleccion = new VentanaSeleccion();
+    public static VentanaChangelog ventanaChangelog = new VentanaChangelog();
     public static Ventana ventanaActual;
 
     public static void windowSwitch(GameContainer container, Partida p, String t) throws SlickException {
@@ -40,6 +41,9 @@ public class VentanaPrincipal extends BasicGame {
                 break;
             case "Seleccion":
                 contador = ventanaSeleccion;
+                break;
+            case "Changelog":
+                contador = ventanaChangelog;
                 break;
         }
         if (contador != null) {

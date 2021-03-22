@@ -110,12 +110,17 @@ public class VentanaCombate extends Ventana {
     //Music
     public Sound ambientMusic;
     public static ElementoCoordenadas elementHighlighted = null;
+    public static int highlightRadius = 50;
 
-    public static void crearReloj(Reloj r) {
+     public static void initWatches() {
+         relojes = new ArrayList<>();
+     }
+
+    public static void createWatch(Reloj r) {
         relojes.add(r);
     }
 
-    public static RelojEternium relojEternium() {
+    public static RelojEternium eterniumWatch() {
         Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojEternium).findFirst().orElse(null);
         if (relojEncontrado != null) {
             return (RelojEternium) relojEncontrado;
@@ -123,7 +128,7 @@ public class VentanaCombate extends Ventana {
         return null;
     }
 
-    public static RelojMaestros relojMaestros() {
+    public static RelojMaestros masterWatch() {
         Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojMaestros).findFirst().orElse(null);
         if (relojEncontrado != null) {
             return (RelojMaestros) relojEncontrado;
@@ -171,6 +176,7 @@ public class VentanaCombate extends Ventana {
 
     @Override
     public void init(GameContainer container) throws SlickException {
+         playerX = playerY = 0;
         container.setShowFPS(false);
         container.setVSync(true);
         continuar = new BotonSimple("Continuar");
@@ -450,6 +456,10 @@ public class VentanaCombate extends Ventana {
         Input input = container.getInput();
         ctrl = input.isKeyDown(Input.KEY_LCONTROL);
         mayus = input.isKeyDown(Input.KEY_LSHIFT);
+        // On esc we return to menu
+        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            VentanaPrincipal.windowSwitch(container, partida, "Menu");
+        }
         // Mensajes
         List<Mensaje> messagesToBeRemoved = new ArrayList<>();
         for (Mensaje m : mensajes) {
@@ -942,7 +952,7 @@ public class VentanaCombate extends Ventana {
         }
         if (elementHighlighted != null) {
             g.setColor(Color.red);
-            g.drawOval(elementHighlighted.x, elementHighlighted.y, elementHighlighted.anchura + 50, elementHighlighted.altura + 50);
+            g.drawOval(elementHighlighted.x - (elementHighlighted.anchura + highlightRadius) / 2, elementHighlighted.y - (elementHighlighted.altura + highlightRadius) / 2, elementHighlighted.anchura + highlightRadius, elementHighlighted.altura + highlightRadius);
         }
     }
 

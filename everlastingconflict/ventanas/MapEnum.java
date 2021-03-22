@@ -36,6 +36,7 @@ public enum MapEnum {
         return maxPlayers;
     }
 
+
     public static List<String> getAllNames() {
         List<String> allNames = new ArrayList<>();
         for (MapEnum value : values()) {

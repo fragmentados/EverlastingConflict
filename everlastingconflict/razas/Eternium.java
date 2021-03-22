@@ -89,7 +89,7 @@ public class Eternium {
     }
 
     public static void Protector(Unidad u) {
-        if (VentanaCombate.relojEternium().ndivision == 4) {
+        if (VentanaCombate.eterniumWatch().ndivision == 4) {
             u.ataque = Unidad.ataque_estandar + 30;
         }else{
             u.ataque = 0;

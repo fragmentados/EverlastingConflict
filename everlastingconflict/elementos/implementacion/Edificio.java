@@ -412,7 +412,7 @@ public class Edificio extends ElementoAtacante {
             }
         }
         if (nombre.equals("Distorsionador temporal")) {
-            List<Jugador> enemies = p.enemyPlayersFromElement(this);
+            List<Jugador> enemies = p.getEnemyPlayersFromElement(this);
             for (Jugador enemy : enemies) {
                 for (Unidad u : enemy.unidades) {
                     if (this.alcance(200, u)) {

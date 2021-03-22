@@ -9,6 +9,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.MapEnum;
+import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public abstract class Tutorial extends Partida {
     @Override
     public void initElements() {
         this.map = MapEnum.SMALL;
+        VentanaCombate.initWatches();
     }
 
     public static Partida createTutorialByRace(String race) {

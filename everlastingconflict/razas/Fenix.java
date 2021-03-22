@@ -27,6 +27,9 @@ public class Fenix {
     public static int ataque_tigre = Unidad.ataque_estandar;
     public static int alcance_halcon = Unidad.alcance_estandar + 100;
     public static int limite_unidades_no_militares = 5;
+    public static boolean boton_cuartel_cuervo = false;
+    public static boolean boton_cuartel_tortuga = false;
+    public static boolean boton_cuartel_oso = false;
     public static boolean boton_cuartel_fenix = false;
     public static boolean boton_cuartel_tigre = false;
     public static boolean boton_cuartel_halcon = false;
@@ -148,25 +151,47 @@ public class Fenix {
     }
 
     public static final void Oso(Unidad u) {
-
+        u.ataque = Unidad.ataque_estandar + 15;
+        u.defensa = Unidad.defensa_estandar + 2;
+        u.vida_max = Unidad.vida_estandar + 150;
+        u.alcance = Unidad.alcance_estandar - 70;
+        u.cadencia = Unidad.cadencia_estandar;
+        u.velocidad = Unidad.velocidad_estandar + 0.5f;
+        u.vision = Unidad.vision_estandar - 100;
+        u.coste = 30;
+        u.tiempo = Unidad.tiempo_estandar + 10;
+        u.descripcion = "Unidad con gran capacidad ofensiva de ataque cuerpo a cuerpo y alta velocidad.";
     }
 
-    public static final void Avispa(Unidad u) {
-
+    public static final void Tortuga(Unidad u) {
+        u.ataque = 0;
+        u.defensa = Unidad.defensa_estandar + 6;
+        u.vida_max = Unidad.vida_estandar + 200;
+        u.alcance = Unidad.alcance_estandar;
+        u.cadencia = Unidad.cadencia_estandar;
+        u.velocidad = Unidad.velocidad_estandar;
+        u.vision = Unidad.vision_estandar - 100;
+        u.coste = 30;
+        u.tiempo = Unidad.tiempo_estandar + 10;
+        u.descripcion = "Unidad con gran capacidad defensiva que absorbe los ataques de los enemigos cercanos automáticamente";
+        u.hostil = false;
     }
 
     public static final void Cuervo(Unidad u) {
-
+        u.ataque = 0;
+        u.defensa = Unidad.defensa_estandar;
+        u.vida_max = Unidad.vida_estandar;
+        u.alcance = Unidad.alcance_estandar;
+        u.cadencia = Unidad.cadencia_estandar;
+        u.velocidad = Unidad.velocidad_estandar;
+        u.vision = Unidad.vision_estandar + 200;
+        u.coste = 30;
+        u.tiempo = Unidad.tiempo_estandar + 15;
+        u.descripcion = "Unidad sin capacidad ofensiva con poderosas habilidades para balancear la batalla";
+        u.hostil = false;
     }
 
     //Edificios
-    public static final void Cuartel(Edificio e) {
-        e.coste = 100;
-        e.vida_max = 1000;
-        e.vision = Unidad.vision_estandar + 100;
-        e.tiempo = 1500;
-    }
-
     public static final void Centro(Edificio e) {
         e.coste = 0;
         e.vida_max = 500;
@@ -220,6 +245,19 @@ public class Fenix {
                 e.botones.get(1).canBeUsed = Fenix.boton_cuartel_tigre;
                 e.botones.get(2).canBeUsed = Fenix.boton_cuartel_halcon;
                 e.botones.get(3).canBeUsed = Fenix.boton_cuartel_fenix;
+                if (SubRaceEnum.OSO.equals(aliado.subRace)) {
+                    BotonComplejo oso = new BotonComplejo("Oso");
+                    oso.canBeUsed = Fenix.boton_cuartel_oso;
+                    e.botones.add(oso);
+                } else if (SubRaceEnum.TORTUGA.equals(aliado.subRace)) {
+                    BotonComplejo tortuga = new BotonComplejo("Tortuga");
+                    tortuga.canBeUsed = Fenix.boton_cuartel_tortuga;
+                    e.botones.add(tortuga);
+                } else if (SubRaceEnum.CUERVO.equals(aliado.subRace)) {
+                    BotonComplejo cuervo = new BotonComplejo("Cuervo");
+                    cuervo.canBeUsed = Fenix.boton_cuartel_cuervo;
+                    e.botones.add(cuervo);
+                }
                 break;
             case "Centro tecnológico":
                 e.botones.add(new BotonComplejo(new Tecnologia("Rifles de asalto")));
@@ -243,6 +281,13 @@ public class Fenix {
                 e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Tigre")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Halcón")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Fénix")));
+                if (SubRaceEnum.OSO.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Oso")));
+                } else if (SubRaceEnum.TORTUGA.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Tortuga")));
+                } else if (SubRaceEnum.CUERVO.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Tecnologia("Desbloquear Cuervo")));
+                }
                 break;
             case "Sede":
                 e.botones.add(new BotonComplejo(new Unidad("Constructor")));

@@ -90,7 +90,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
 
     public boolean checkToAttackNearbyElements(Partida p) {
         boolean isAttacking = false;
-        List<Jugador> enemyPlayers = p.enemyPlayersFromElement(this);
+        List<Jugador> enemyPlayers = p.getEnemyPlayersFromElement(this);
         float distancia = -1;
         for (Jugador enemyPlayer : enemyPlayers) {
             if (!isAttacking) {
@@ -163,7 +163,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     public int ataque_eternium() {
-        switch (VentanaCombate.relojEternium().ndivision) {
+        switch (VentanaCombate.eterniumWatch().ndivision) {
             case 1:
                 return (int) (this.ataque * (75f / 100f));
             case 2:
@@ -228,7 +228,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     }
                 }
             } else {
-                List<Jugador> enemies = p.enemyPlayersFromElement(this);
+                List<Jugador> enemies = p.getEnemyPlayersFromElement(this);
                 for (Jugador enemy : enemies) {
                     elementsToBeAttacked.addAll(enemy.unidades);
                     elementsToBeAttacked.addAll(enemy.edificios);
@@ -384,7 +384,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 && statusEffectCollection.allowsAttack()
                 && StatusBehaviour.allowsAttack(statusBehaviour)
                 && ataque > 0 && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
-                || VentanaCombate.relojEternium().ndivision != 4);
+                || VentanaCombate.eterniumWatch().ndivision != 4);
     }
 
     @Override

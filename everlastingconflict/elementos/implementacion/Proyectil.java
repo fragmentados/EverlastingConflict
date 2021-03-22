@@ -10,14 +10,18 @@ import everlastingconflict.elementos.ElementoMovil;
 import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.estados.StatusEffectCollection;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -68,6 +72,7 @@ public class Proyectil extends ElementoMovil {
     public void comportamiento(Partida p, Graphics g, int delta) {
         if (movimiento != null) {
             movimiento.resolucion(p, delta);
+            checkTortuceAttraction(p);
         }
         if (objetivo.hitbox(this.x, this.y)) {
             if (shouldHeal) {
@@ -82,6 +87,24 @@ public class Proyectil extends ElementoMovil {
             this.destruir(p, null);
         } else {
             anadir_movimiento(objetivo.x, objetivo.y);
+        }
+    }
+
+    public void checkTortuceAttraction(Partida p) {
+        if (!"Tortuga".equals(origen.nombre)) {
+            List<Jugador> enemies = p.getEnemyPlayersFromElement(this.origen);
+            for (Jugador enemy : enemies) {
+                if (RaceEnum.FENIX.getName().equals(enemy.raza)) {
+                    List<Unidad> turtles = enemy.unidades.stream().filter(u -> "Tortuga".equals(u.nombre)).collect(Collectors.toList());
+                    for (Unidad tortoise : turtles) {
+                        if (Math.abs(this.x - tortoise.x) <= 200 && Math.abs(this.y - tortoise.y) <= 200) {
+                            this.objetivo = tortoise;
+                            this.movimiento = null;
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 

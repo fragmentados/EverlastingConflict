@@ -34,27 +34,27 @@ public class EterniumTutorial extends Tutorial {
         pasos.add(new Paso("En la primera fase, las capacidades ofensivas y defensivas de las unidades y de los edificios Eternium se encuentran al 75%") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.relojEternium().ndivision = 2;
+                VentanaCombate.eterniumWatch().ndivision = 2;
             }
         });
         pasos.add(new Paso("En la segunda fase, se encuentran al 100%") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.relojEternium().ndivision = 3;
+                VentanaCombate.eterniumWatch().ndivision = 3;
             }
         });
         pasos.add(new Paso("En la tercera fase, alcanzan su máximo ya que se encuentran al 150%") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.relojEternium().ndivision = 4;
-                VentanaCombate.relojEternium().detencion_temporal();
+                VentanaCombate.eterniumWatch().ndivision = 4;
+                VentanaCombate.eterniumWatch().detencion_temporal();
             }
         });
         pasos.add(new Paso("La cuarta fase es la más peligrosa ya que, en ella, las unidades Eternium son incapaces de moverse y de atacar. La única ventaja de esta fase, es que las capacidades defensivas aumentan hasta el 500% de su valor base.") {
             @Override
             public void efecto(Partida p) {
-                VentanaCombate.relojEternium().ndivision = 1;
-                VentanaCombate.relojEternium().liberacion_temporal();
+                VentanaCombate.eterniumWatch().ndivision = 1;
+                VentanaCombate.eterniumWatch().liberacion_temporal();
             }
         });
         pasos.add(new Paso("El sistema de recolección de recursos Eternium sigue el mismo patrón de alta inversión, alto beneficio. La recolección de hierro y transformación del mismo en energía sigue tres pasos.") {
@@ -110,8 +110,8 @@ public class EterniumTutorial extends Tutorial {
         getMainPlayer().y_inicial = 200;
         getMainPlayer().initElements(this);
         recursos.add(new Recurso("Hierro", 600, 200));
-        VentanaCombate.crearReloj(new RelojEternium(getMainPlayer()));
-        VentanaCombate.relojEternium().detener_reloj(1000);
+        VentanaCombate.createWatch(new RelojEternium(getMainPlayer()));
+        //VentanaCombate.eterniumWatch().detener_reloj(1000);
     }
 
     public EterniumTutorial() {

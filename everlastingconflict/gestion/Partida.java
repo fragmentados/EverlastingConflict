@@ -134,7 +134,7 @@ public class Partida {
                 .findFirst().orElse(null);
     }
 
-    public List<Jugador> enemyPlayersFromElement(ElementoCoordenadas e) {
+    public List<Jugador> getEnemyPlayersFromElement(ElementoCoordenadas e) {
         Jugador playerFromElement = getPlayerFromElement(e);
         if (playerFromElement != null) {
             return this.players.stream().filter(p -> !p.team.equals(playerFromElement.team)).collect(Collectors.toList());
@@ -226,14 +226,16 @@ public class Partida {
         // Torre de vigilancia en medio del mapa
         recursos.add(new TorreVision("Vision", map.getWidth() / 2, map.getHeight() / 2));
         // Inicializar relojes
+        VentanaCombate.initWatches();
         if (existsPlayerWithRace(RaceEnum.MAESTROS)) {
-            VentanaCombate.crearReloj(new RelojMaestros(this.getPlayerByRace(RaceEnum.MAESTROS)));
+            VentanaCombate.createWatch(new RelojMaestros(this.getPlayerByRace(RaceEnum.MAESTROS)));
         }
         if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
-            VentanaCombate.crearReloj(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
+            VentanaCombate.createWatch(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
         }
         initPlayerColors();
         players.forEach(p -> p.initElements(this));
+        players.get(0).unidades.add(new Unidad("Tortuga", 200, 200));
     }
 
     private void initPlayerCoordinates(float width, float height) {

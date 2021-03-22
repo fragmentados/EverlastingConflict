@@ -8,20 +8,23 @@ package everlastingconflict.ventanas;
 import everlastingconflict.campaign.tutorial.Tutorial;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
+import everlastingconflict.elementosvisuales.ComboBoxOption;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author Elías
  */
 public class VentanaMenu extends Ventana {
 
     //private Client client;
     private final String titulo = "THE EVERLASTING CONFLICT";
-    public BotonSimple combate, multijugador, tutorial, volver, aceptar, salir, opciones;
+    public BotonSimple combate, multijugador, tutorial, volver, aceptar, salir, opciones, changelog;
     private ComboBox raceTutorial;
     private Image tutorialImage;
     public static TextField usuario;
@@ -35,6 +38,7 @@ public class VentanaMenu extends Ventana {
     public void init(GameContainer container) throws SlickException {
         tutorial = new BotonSimple("Tutorial", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(40));
         combate = new BotonSimple("Combate", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(50));
+        changelog = new BotonSimple("Changelog", VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(60));
         multijugador = new BotonSimple("Multijugador", 600, 400);
         opciones = new BotonSimple("Opciones", 600, 600);
         salir = new BotonSimple("Salir", VentanaCombate.VIEWPORT_SIZE_WIDTH - 60, 0);
@@ -43,13 +47,18 @@ public class VentanaMenu extends Ventana {
         usuario = new TextField(container, container.getDefaultFont(), 100, 50, 100, 20);
         usuario.setText("Prueba");
         aceptar.canBeUsed = volver.canBeUsed = false;
-        raceTutorial = new ComboBox("Raza:", RaceEnum.getAllNames(), VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(40));
-        tutorialImage = new Image("media/" + raceTutorial.opcion_seleccionada + ".png");
+        raceTutorial = new ComboBox("Raza:",
+                Arrays.stream(RaceEnum.values()).map(r -> ComboBoxOption.createOptionWithSprite(r.getName(),
+                        r.getImagePath())).collect(Collectors.toList()),
+                VentanaCombate.responsiveX(45), VentanaCombate.responsiveY(40));
+        tutorialImage = new Image("media/" + raceTutorial.opcion_seleccionada.text + ".png");
     }
 
     public void start(GameContainer container) {
         try {
-            VentanaPrincipal.windowSwitch(container, Tutorial.createTutorialByRace(raceTutorial.opcion_seleccionada), "Campo");
+            VentanaPrincipal.windowSwitch(container,
+                    Tutorial.createTutorialByRace(raceTutorial.opcion_seleccionada.text),
+                    "Campo");
         } catch (SlickException ex) {
         }
     }
@@ -80,18 +89,22 @@ public class VentanaMenu extends Ventana {
             } else if (tutorial.isHovered(input.getMouseX(), input.getMouseY())) {
                 tutorialMode = aceptar.canBeUsed = true;
                 volver.canBeUsed = true;
-                multijugador.canBeUsed = opciones.canBeUsed = combate.canBeUsed = tutorial.canBeUsed = false;
+                changelog.canBeUsed = multijugador.canBeUsed = opciones.canBeUsed = combate.canBeUsed =
+                        tutorial.canBeUsed = false;
             } else if (volver.isHovered(input.getMouseX(), input.getMouseY())) {
                 tutorialMode = volver.canBeUsed = aceptar.canBeUsed = false;
-                multijugador.canBeUsed = opciones.canBeUsed = combate.canBeUsed = tutorial.canBeUsed = true;
+                changelog.canBeUsed = multijugador.canBeUsed = opciones.canBeUsed = combate.canBeUsed =
+                        tutorial.canBeUsed = true;
             } else if (opciones.isHovered(input.getMouseX(), input.getMouseY())) {
 
             } else if (salir.isHovered(input.getMouseX(), input.getMouseY())) {
                 VentanaPrincipal.exit(container);
+            } else if (changelog.isHovered(input.getMouseX(), input.getMouseY())) {
+                VentanaPrincipal.windowSwitch(container, null, "Changelog");
             }
             raceTutorial.checkIfItsClicked(input);
             if (raceTutorial.checkOptionSelected(input.getMouseX(), input.getMouseY()) != null) {
-                tutorialImage  = new Image("media/" + raceTutorial.opcion_seleccionada + ".png");
+                tutorialImage = new Image("media/" + raceTutorial.opcion_seleccionada.text + ".png");
             }
         }
     }
@@ -102,6 +115,7 @@ public class VentanaMenu extends Ventana {
         g.drawString(titulo, (VentanaCombate.VIEWPORT_SIZE_WIDTH - (titulo.length() * 10)) / 2, 0);
         combate.render(g);
         tutorial.render(g);
+        changelog.render(g);
         /*multijugador.dibujar(g);
         opciones.dibujar(g);*/
         salir.render(g);
@@ -111,7 +125,7 @@ public class VentanaMenu extends Ventana {
         usuario.render(container, g);
         if (tutorialMode) {
             tutorialImage.draw(VentanaCombate.responsiveX(35), VentanaCombate.responsiveY(45));
-            g.drawString(Partida.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.opcion_seleccionada).getDescription(), 500), VentanaCombate.responsiveX(50), VentanaCombate.responsiveY(50));
+            g.drawString(Partida.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.opcion_seleccionada.text).getDescription(), 500), VentanaCombate.responsiveX(50), VentanaCombate.responsiveY(50));
             raceTutorial.render(g);
         }
     }

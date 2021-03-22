@@ -58,6 +58,21 @@ public class Tecnologia extends ElementoSimple {
                 tiempo = 20;
                 descripcion = "Desbloquea a la unidad Fénix para construirla en el Cuartel.";
                 break;
+            case "Desbloquear Oso":
+                coste = 40;
+                tiempo = 20;
+                descripcion = "Desbloquea a la unidad Oso para construirla en el Cuartel.";
+                break;
+            case "Desbloquear Tortuga":
+                coste = 40;
+                tiempo = 20;
+                descripcion = "Desbloquea a la unidad Tortuga para construirla en el Cuartel.";
+                break;
+            case "Desbloquear Cuervo":
+                coste = 40;
+                tiempo = 20;
+                descripcion = "Desbloquea a la unidad Cuervo para construirla en el Cuartel.";
+                break;
             case "Rifles de asalto":
                 coste = 20;
                 tiempo = 10;
@@ -284,6 +299,42 @@ public class Tecnologia extends ElementoSimple {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Fénix")) {
+                                b.canBeUsed = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case "Desbloquear Oso":
+                Fenix.boton_cuartel_oso = true;
+                for (Edificio ed : jugador.edificios) {
+                    if (ed.nombre.equals("Cuartel Fénix")) {
+                        for (BotonComplejo b : ed.botones) {
+                            if (b.texto.equals("Oso")) {
+                                b.canBeUsed = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case "Desbloquear Tortuga":
+                Fenix.boton_cuartel_tortuga = true;
+                for (Edificio ed : jugador.edificios) {
+                    if (ed.nombre.equals("Cuartel Fénix")) {
+                        for (BotonComplejo b : ed.botones) {
+                            if (b.texto.equals("Tortuga")) {
+                                b.canBeUsed = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case "Desbloquear Cuervo":
+                Fenix.boton_cuartel_cuervo = true;
+                for (Edificio ed : jugador.edificios) {
+                    if (ed.nombre.equals("Cuartel Fénix")) {
+                        for (BotonComplejo b : ed.botones) {
+                            if (b.texto.equals("Cuervo")) {
                                 b.canBeUsed = true;
                             }
                         }
