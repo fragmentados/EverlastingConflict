@@ -14,7 +14,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import static everlastingconflict.RTS.DEBUG_MODE;
 
 /**
- *
  * @author Elías
  */
 class Arma {
@@ -48,9 +47,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public int alcance;
     public Animation animacion_ataque;
     public Sound sonido_combate;
-    public String nombre_provocador;
-    public float provocado_tiempo;
-    public float provocado_tiempo_contador;
     public int ataque_contador;
     public float ataque_tiempo_contador;
     public float ataque_tiempo;
@@ -72,15 +68,13 @@ public abstract class ElementoAtacante extends ElementoEstado {
         Jugador aliado = p.getPlayerFromElement(this);
         float distancia = -1;
         for (Unidad u : aliado.unidades) {
-            if(u.vida < u.vida_max) {
+            if (u.vida < u.vida_max) {
                 if (distancia == -1 || this.obtener_distancia(u) < distancia) {
                     distancia = this.obtener_distancia(u);
-                    if (provocado_tiempo == 0 || u.nombre.equals(nombre_provocador)) {
-                        if (alcance(this.alcance, u)) {
-                            this.objetivo = u;
-                            this.ataque(p);
-                            return true;
-                        }
+                    if (alcance(this.alcance, u)) {
+                        this.objetivo = u;
+                        this.ataque(p);
+                        return true;
                     }
                 }
             }
@@ -104,12 +98,10 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     if (b.statusBehaviour.equals(StatusBehaviour.ATACANDO)) {
                         if (distancia == -1 || this.obtener_distancia(b) < distancia) {
                             distancia = this.obtener_distancia(b);
-                            if (provocado_tiempo == 0 || b.nombre.equals(nombre_provocador)) {
-                                if (alcance(this.alcance, b)) {
-                                    this.objetivo = b;
-                                    this.ataque(p);
-                                    return true;
-                                }
+                            if (alcance(this.alcance, b)) {
+                                this.objetivo = b;
+                                this.ataque(p);
+                                return true;
                             }
                         }
                     }
@@ -124,12 +116,10 @@ public abstract class ElementoAtacante extends ElementoEstado {
         for (Unidad u : j.unidades) {
             if (distancia == -1 || this.obtener_distancia(u) < distancia) {
                 distancia = this.obtener_distancia(u);
-                if (provocado_tiempo == 0 || u.nombre.equals(nombre_provocador)) {
-                    if (alcance(this.alcance, u)) {
-                        this.objetivo = u;
-                        this.ataque(p);
-                        return true;
-                    }
+                if (alcance(this.alcance, u)) {
+                    this.objetivo = u;
+                    this.ataque(p);
+                    return true;
                 }
             }
         }
@@ -137,12 +127,10 @@ public abstract class ElementoAtacante extends ElementoEstado {
         for (Edificio e : j.edificios) {
             if (distancia == -1 || this.obtener_distancia(e) < distancia) {
                 distancia = this.obtener_distancia(e);
-                if (provocado_tiempo == 0 || e.nombre.equals(nombre_provocador)) {
-                    if (alcance(this.alcance, e)) {
-                        this.objetivo = e;
-                        this.ataque(p);
-                        return true;
-                    }
+                if (alcance(this.alcance, e)) {
+                    this.objetivo = e;
+                    this.ataque(p);
+                    return true;
                 }
             }
         }
@@ -150,26 +138,27 @@ public abstract class ElementoAtacante extends ElementoEstado {
         for (Recurso r : j.lista_recursos) {
             if (distancia == -1 || this.obtener_distancia(r) < distancia) {
                 distancia = this.obtener_distancia(r);
-                if (provocado_tiempo == 0 || r.nombre.equals(nombre_provocador)) {
-                    if (alcance(this.alcance, r)) {
-                        this.objetivo = r;
-                        this.ataque(p);
-                        return true;
-                    }
+                if (alcance(this.alcance, r)) {
+                    this.objetivo = r;
+                    this.ataque(p);
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    public int ataque_eternium() {
-        switch (VentanaCombate.eterniumWatch().ndivision) {
+    public int getAttackBasedOnEterniumWatch(Jugador aliado) {
+        boolean allyHasTemporalControl = aliado.hasTecnologyResearched("Control temporal");
+        switch (WindowCombat.eterniumWatch().ndivision) {
             case 1:
-                return (int) (this.ataque * (75f / 100f));
+                return allyHasTemporalControl ? (int) (this.ataque * (90f / 100f)) :
+                        (int) (this.ataque * (75f / 100f));
             case 2:
-                return this.ataque;
+                return allyHasTemporalControl ? (int) (this.ataque * (150f / 100f)) : this.ataque;
             case 3:
-                return (int) (this.ataque * (150f / 100f));
+                return allyHasTemporalControl ? (int) (this.ataque * (200f / 100f)) :
+                        (int) (this.ataque * (150f / 100f));
             //Nunca se debería llegar a este caso
             default:
                 return this.ataque;
@@ -244,8 +233,9 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     private int getAttack(Partida p) {
-        if (!(this instanceof Bestia) && (p.getPlayerFromElement(this).raza.equals(RaceEnum.ETERNIUM.getName()))) {
-            return this.ataque_eternium();
+        Jugador aliado = p.getPlayerFromElement(this);
+        if (!(this instanceof Bestia) && (aliado.raza.equals(RaceEnum.ETERNIUM))) {
+            return this.getAttackBasedOnEterniumWatch(aliado);
         } else {
             return this.ataque;
         }
@@ -257,12 +247,12 @@ public abstract class ElementoAtacante extends ElementoEstado {
         Jugador enemigo = p.getPlayerFromElement(e);
         if (hostil) {
             int defensa_contador;
-            if (!(e instanceof Bestia) && (enemigo != null && RaceEnum.ETERNIUM.getName().equals(enemigo.raza))) {
-                defensa_contador = e.defensa_eternium();
+            if (!(e instanceof Bestia) && (enemigo != null && RaceEnum.ETERNIUM.equals(enemigo.raza))) {
+                defensa_contador = e.getDefenseBasedOnEterniumWatch(enemigo);
             } else {
                 defensa_contador = e.defensa;
             }
-            if (aliado != null && RaceEnum.MAESTROS.getName().equals(aliado.raza)) {
+            if (aliado != null && RaceEnum.MAESTROS.equals(aliado.raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
                     for (Unidad u : aliado.unidades) {
@@ -285,8 +275,15 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
             }
             if (this.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
-                ataque_contador += this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
-                this.statusEffectCollection.eliminar_estado(StatusEffectName.ATAQUE_POTENCIADO);
+                ataque_contador += this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).value;
+                this.statusEffectCollection.forceRemoveStatus(StatusEffectName.ATAQUE_POTENCIADO);
+            }
+            if (this.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_DISMINUIDO)) {
+                ataque_contador -= this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_DISMINUIDO).value;
+                if (ataque_contador < 0) {
+                    ataque_contador = 0;
+                }
+                this.statusEffectCollection.forceRemoveStatus(StatusEffectName.ATAQUE_DISMINUIDO);
             }
             float cantidad_dano = (ataque_contador - defensa_contador);
             if (!(e instanceof Unidad) || ((Unidad) e).puede_ser_danado()) {
@@ -319,7 +316,8 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
                 if (m.disparo_helado && e instanceof Unidad) {
                     Unidad unidad = (Unidad) e;
-                    unidad.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 5f, 35f));
+                    unidad.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.RALENTIZACION, 5f,
+                            35f));
                 }
             }
             if (e instanceof Manipulador) {
@@ -363,8 +361,15 @@ public abstract class ElementoAtacante extends ElementoEstado {
         //e representa el objetivo de la curacion
         if (healer) {
             if (this.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_POTENCIADO)) {
-                ataque_contador += this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).contador;
-                this.statusEffectCollection.eliminar_estado(StatusEffectName.ATAQUE_POTENCIADO);
+                ataque_contador += this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_POTENCIADO).value;
+                this.statusEffectCollection.forceRemoveStatus(StatusEffectName.ATAQUE_POTENCIADO);
+            }
+            if (this.statusEffectCollection.existe_estado(StatusEffectName.ATAQUE_DISMINUIDO)) {
+                ataque_contador -= this.statusEffectCollection.obtener_estado(StatusEffectName.ATAQUE_DISMINUIDO).value;
+                if (ataque_contador < 0) {
+                    ataque_contador = 0;
+                }
+                this.statusEffectCollection.forceRemoveStatus(StatusEffectName.ATAQUE_DISMINUIDO);
             }
             if (ataque_contador > 0) {
                 if (e.vida + ataque_contador >= e.vida_max) {
@@ -383,13 +388,13 @@ public abstract class ElementoAtacante extends ElementoEstado {
         return (hostil || healer)
                 && statusEffectCollection.allowsAttack()
                 && StatusBehaviour.allowsAttack(statusBehaviour)
-                && ataque > 0 && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
-                || VentanaCombate.eterniumWatch().ndivision != 4);
+                && ataque > 0 && (ally == null || !RaceEnum.ETERNIUM.equals(ally.raza)
+                || WindowCombat.eterniumWatch().ndivision != 4);
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
         g.setColor(Color.black);
         if (DEBUG_MODE && hostil) {
             if (alcance > 0) {
@@ -409,14 +414,6 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 ataque = ataque_contador;
             } else {
                 ataque_tiempo_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
-            }
-        }
-        if (provocado_tiempo > 0) {
-            if (provocado_tiempo_contador - (Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
-                provocado_tiempo = provocado_tiempo_contador = 0;
-                nombre_provocador = null;
-            } else {
-                provocado_tiempo_contador -= (Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
         if (cadencia_contador > 0) {

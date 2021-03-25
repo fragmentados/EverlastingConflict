@@ -16,44 +16,43 @@ import org.newdawn.slick.SlickException;
 /**
  * @author Elías
  */
-public class VentanaPrincipal extends BasicGame {
+public class WindowMain extends BasicGame {
 
-    public static VentanaCombate ventanaCombate = new VentanaCombate();
-    public static VentanaIntro ventanaIntro = new VentanaIntro();
-    public static VentanaMenu ventanaMenu = new VentanaMenu();
-    public static VentanaSeleccion ventanaSeleccion = new VentanaSeleccion();
-    public static VentanaChangelog ventanaChangelog = new VentanaChangelog();
-    public static Ventana ventanaActual;
+    public static WindowCombat combatWindow = new WindowCombat();
+    public static WindowMenuChallenges challengeWindow = new WindowMenuChallenges();
+    public static WindowMenu menuWindow = new WindowMenu();
+    public static WindowMenuPlayerSelection playerSelectionWindow = new WindowMenuPlayerSelection();
+    public static WindowMenuChangelog changelogWindow = new WindowMenuChangelog();
+    public static Window currentWindow;
 
     public static void windowSwitch(GameContainer container, Partida p, String t) throws SlickException {
-        Ventana contador = null;
+        Window contador = null;
         switch (t) {
             case "Menu":
-                contador = ventanaMenu;
+                contador = menuWindow;
                 break;
-            case "Campo":
-                ventanaCombate.partida = p;
-                contador = ventanaCombate;
+            case "Combat":
+                combatWindow.partida = p;
+                contador = combatWindow;
                 break;
-            case "Intro":
-                ventanaIntro.partida = p;
-                contador = ventanaIntro;
+            case "Challenge":
+                contador = challengeWindow;
                 break;
-            case "Seleccion":
-                contador = ventanaSeleccion;
+            case "PlayerSelection":
+                contador = playerSelectionWindow;
                 break;
             case "Changelog":
-                contador = ventanaChangelog;
+                contador = changelogWindow;
                 break;
         }
         if (contador != null) {
             contador.init(container);
-            ventanaActual = contador;
+            currentWindow = contador;
         }
 
     }
 
-    public VentanaPrincipal() {
+    public WindowMain() {
         super("VentanaPrincipal");
     }
 
@@ -66,7 +65,7 @@ public class VentanaPrincipal extends BasicGame {
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         try {
-            ventanaActual.update(container, delta);
+            currentWindow.update(container, delta);
         } catch (Exception ex) {
             ex.printStackTrace();
             //throw ex;
@@ -76,7 +75,7 @@ public class VentanaPrincipal extends BasicGame {
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         try {
-            ventanaActual.render(container, g);
+            currentWindow.render(container, g);
         } catch (Exception ex) {
             ex.printStackTrace();
             //throw ex;

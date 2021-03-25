@@ -5,32 +5,25 @@
  */
 package everlastingconflict.gestion;
 
+import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.relojes.Reloj;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import java.awt.geom.Ellipse2D;
-
-import static everlastingconflict.elementos.util.ElementosComunes.FULL_VISIBLE_COLOR;
-import static everlastingconflict.elementos.util.ElementosComunes.HALF_VISIBLE_COLOR;
-
 /**
- *
  * @author Elías
  */
-public class Vision {
+public class Vision extends ElementoCoordenadas {
 
-    public Ellipse2D forma;
+    public int diameter;
     public float tiempo_contador;
     public boolean fullVision = true;
 
-    public Vision(float x, float y, float an, float al, float t) {
-        forma = new Ellipse2D.Float(x, y, an, al);
+    public Vision(float x, float y, int radius, float t) {
+        this.x = x;
+        this.y = y;
+        this.diameter = radius;
         tiempo_contador = t;
-    }
-
-    public Vision(float x, float y, float an, float al, float t, boolean fullVision) {
-        this(x, y, an, al, t);
-        this.fullVision = fullVision;
     }
 
     public boolean comportamiento(int delta) {
@@ -44,10 +37,10 @@ public class Vision {
         return false;
     }
 
-    public void dibujar(Graphics g, int desplazamiento) {
-        g.setColor(fullVision ? FULL_VISIBLE_COLOR : HALF_VISIBLE_COLOR);
-        float alcance = (float) (this.forma.getWidth() + desplazamiento);
-        g.fillOval((float) (forma.getX() - alcance / 2), (float) (forma.getY() - alcance / 2), alcance, alcance);
+    public void dibujar(Graphics g, Color color, int desplazamiento) {
+        g.setColor(color);
+        float alcance = (float) (diameter + desplazamiento);
+        g.fillOval(x - alcance / 2, y - alcance / 2, alcance, alcance);
     }
 
 }

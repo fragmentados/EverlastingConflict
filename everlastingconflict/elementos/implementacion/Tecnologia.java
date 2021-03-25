@@ -19,7 +19,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 /**
- *
  * @author Elías
  */
 public class Tecnologia extends ElementoSimple {
@@ -33,7 +32,8 @@ public class Tecnologia extends ElementoSimple {
 
     public final void iniciarimagenes() {
         try {
-            sprite = new Animation(new Image[]{new Image("media/Tecnologías/" + nombre + ".png")}, new int[]{300}, false);
+            sprite = new Animation(new Image[]{new Image("media/Tecnologías/" + nombre + ".png")}, new int[]{300},
+                    false);
             icono = new Image("media/Tecnologías/" + nombre + ".png");
         } catch (SlickException e) {
             e.printStackTrace();
@@ -113,6 +113,16 @@ public class Tecnologia extends ElementoSimple {
                 coste = 125;
                 tiempo = 15;
                 descripcion = "Aumenta drásticamente el ataque de los Ancestros.";
+                break;
+            case "Control temporal":
+                coste = 150;
+                tiempo = 20;
+                descripcion = "Aumenta los efectos positivos del reloj Eternium.";
+                break;
+            case "Aprendizaje económico":
+                coste = 100;
+                tiempo = 10;
+                descripcion = "Disminuye a la mitad el coste de los adeptos.";
                 break;
             case "Aumentar límite 1":
                 coste = 20;
@@ -200,15 +210,15 @@ public class Tecnologia extends ElementoSimple {
         }
     }
 
-    public void resolver_efecto(Partida partida, Jugador jugador) {
+    public void resolver_efecto(Partida partida, Jugador aliado) {
         switch (nombre) {
             //Eternium
             case "Catalización extrema":
-                Edificio.recursos_refineria = 100;
+                Eternium.recursos_refineria = 100;
                 break;
             case "Arco de plasma":
                 Eternium.ataque_guerrero += 10;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Guerrero")) {
                         u.ataque += 10;
                         u.alcance += 50;
@@ -218,7 +228,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Espada desintegradoara":
                 Eternium.ataque_guerrero += 30;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Guerrero")) {
                         u.ataque += 30;
                     }
@@ -226,7 +236,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Lanza de Longinus":
                 Eternium.ataque_ancestro += 40;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Ancestro")) {
                         u.ataque += 40;
                     }
@@ -249,7 +259,7 @@ public class Tecnologia extends ElementoSimple {
             case "Instintos primarios":
                 Clark.ataque_depredador += 5;
                 Clark.ataque_destructor += 10;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Depredador")) {
                         u.ataque += 5;
                     }
@@ -260,7 +270,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Bioacero reforzado":
                 Clark.defensa_defensor += 5;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Defensor")) {
                         u.defensa += 5;
                     }
@@ -271,7 +281,7 @@ public class Tecnologia extends ElementoSimple {
             //Fénix   
             case "Desbloquear Tigre":
                 Fenix.boton_cuartel_tigre = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Tigre")) {
@@ -283,7 +293,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Desbloquear Halcón":
                 Fenix.boton_cuartel_halcon = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Halcón")) {
@@ -295,7 +305,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Desbloquear Fénix":
                 Fenix.boton_cuartel_fenix = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Fénix")) {
@@ -307,7 +317,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Desbloquear Oso":
                 Fenix.boton_cuartel_oso = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Oso")) {
@@ -319,7 +329,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Desbloquear Tortuga":
                 Fenix.boton_cuartel_tortuga = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Tortuga")) {
@@ -331,7 +341,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Desbloquear Cuervo":
                 Fenix.boton_cuartel_cuervo = true;
-                for (Edificio ed : jugador.edificios) {
+                for (Edificio ed : aliado.edificios) {
                     if (ed.nombre.equals("Cuartel Fénix")) {
                         for (BotonComplejo b : ed.botones) {
                             if (b.texto.equals("Cuervo")) {
@@ -343,7 +353,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Rifles de asalto":
                 Fenix.alcance_halcon += 50;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Halcón")) {
                         u.alcance += 50;
                     }
@@ -353,14 +363,14 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Clases de tiro":
                 Fenix.ataque_tigre += 5;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Tigre")) {
                         u.ataque += 5;
                     }
                 }
                 break;
             case "Destruir al invasor":
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (!u.nombre.equals("Constructor") && !u.nombre.equals("Recolector")) {
                         u.ataque += 5;
                         u.defensa++;
@@ -369,7 +379,7 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Resurrección":
                 Unidad.activacion_resurreccion = true;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Fénix")) {
                         for (BotonComplejo b : u.botones) {
                             if (b.texto.equals("Resurrección")) {
@@ -381,39 +391,39 @@ public class Tecnologia extends ElementoSimple {
                 }
                 break;
             case "Aumentar límite 1":
-                for (Edificio e : jugador.edificios) {
+                for (Edificio e : aliado.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 2")));
                         e.initButtonKeys();
                     }
                 }
-                jugador.limite_cuarteles++;
+                aliado.limite_cuarteles++;
                 break;
             case "Aumentar límite 2":
-                for (Edificio e : jugador.edificios) {
+                for (Edificio e : aliado.edificios) {
                     if (e.nombre.equals("Centro tecnológico")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar límite 3")));
                         e.initButtonKeys();
                     }
                 }
-                jugador.limite_cuarteles++;
+                aliado.limite_cuarteles++;
                 break;
             case "Aumentar límite 3":
-                jugador.limite_cuarteles += 2;
+                aliado.limite_cuarteles += 2;
                 break;
             //Guardianes
             case "Reforma gubernamental":
                 int resultado = 0;
-                for (Evento e : jugador.eventos.contenido) {
+                for (Evento e : aliado.eventos.contenido) {
                     if (e.positivo) {
                         resultado += 15;
                     }
                 }
-                jugador.guardiansPeoplePercentage += resultado;
+                aliado.guardiansPeoplePercentage += resultado;
                 break;
             case "Ruedas mejoradas":
                 Guardianes.ruedas_mejoradas = true;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.vehiculo) {
                         u.velocidad += 0.3f;
                     }
@@ -424,23 +434,23 @@ public class Tecnologia extends ElementoSimple {
                 break;
             case "Cobradores de impuestos":
                 Guardianes.recursos_por_segundo -= 5;
-                jugador.guardiansPeoplePercentage -= 10;
+                aliado.guardiansPeoplePercentage -= 10;
                 break;
             case "Aumentar nivel de amenaza1":
-                for (Edificio e : jugador.edificios) {
+                for (Edificio e : aliado.edificios) {
                     if (e.nombre.equals("Edificio gubernamental")) {
                         e.botones.add(new BotonComplejo(new Tecnologia("Aumentar nivel de amenaza2")));
                         e.initButtonKeys();
                     }
                 }
-                jugador.guardiansThreatLevel++;
+                aliado.guardiansThreatLevel++;
                 break;
             case "Aumentar nivel de amenaza2":
-                jugador.guardiansThreatLevel++;
+                aliado.guardiansThreatLevel++;
                 break;
             case "Intervención divina":
                 Guardianes.habilidad_enviado = true;
-                for (Unidad u : jugador.unidades) {
+                for (Unidad u : aliado.unidades) {
                     if (u.nombre.equals("Enviado celeste")) {
                         for (BotonComplejo b : u.botones) {
                             if (b.elemento_nombre != null && b.elemento_nombre.equals("Intervención divina")) {
@@ -451,16 +461,17 @@ public class Tecnologia extends ElementoSimple {
                 }
                 break;
             case "Armas bíblicas":
-                for (Unidad u : jugador.unidades) {
-                    if (u.nombre.equals("Pacificador") || u.nombre.equals("Silenciador") || u.nombre.equals("Inquisidor") || u.nombre.equals("Enviado celeste")) {
+                for (Unidad u : aliado.unidades) {
+                    if (u.nombre.equals("Pacificador") || u.nombre.equals("Silenciador") || u.nombre.equals(
+                            "Inquisidor") || u.nombre.equals("Enviado celeste")) {
                         u.ataque += 2;
                     }
                 }
                 Guardianes.armas_biblicas = true;
                 break;
             case "Ley marcial":
-                jugador.eventos.desactivacion_permanente();
-                jugador.disminuir_porcentaje(20);
+                aliado.eventos.desactivacion_permanente();
+                aliado.disminuir_porcentaje(20);
                 break;
 //                case "Ecología":
 //                    if (jugador.restauracion_int == 3) {

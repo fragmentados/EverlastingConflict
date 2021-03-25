@@ -9,7 +9,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.ventanas.MapEnum;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public abstract class Tutorial extends Partida {
     @Override
     public void initElements() {
         this.map = MapEnum.SMALL;
-        VentanaCombate.initWatches();
+        WindowCombat.initWatches();
     }
 
     public static Partida createTutorialByRace(String race) {
@@ -44,7 +44,7 @@ public abstract class Tutorial extends Partida {
         }
     }
 
-    public Tutorial(String r1, String r2) {
+    public Tutorial(RaceEnum r1, RaceEnum r2) {
         iniciar_pasos();
         Jugador j1 = new Jugador("Jugador", r1, 1, false);
         j1.color = Color.green;

@@ -13,6 +13,9 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Fenix;
+import everlastingconflict.razas.SubRaceEnum;
+
+import static everlastingconflict.razas.RaceEnum.FENIX;
 
 /**
  *
@@ -24,8 +27,8 @@ public class AIFenixFacil extends AI {
     public float xacademia, yacademia;
     public float xcentro, ycentro;
 
-    public AIFenixFacil(Integer t, boolean isLeader) {
-        super("AIFenix", "Fénix", t, isLeader);
+    public AIFenixFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super("AIFenix", FENIX, subRaceEnum, t, isLeader, isJuggernaut);
 
     }
 
@@ -164,14 +167,14 @@ public class AIFenixFacil extends AI {
             for (BotonComplejo b : e.botones) {
                 if (b.elemento_nombre.equals("Recolector")) {
                     if (cantidad_unidad("Recolector") < 3) {
-                        Unidad u = new Unidad(b.elemento_nombre);
+                        Unidad u = new Unidad(this,b.elemento_nombre);
                         e.createUnit(p, this, u);
                         break;
                     }
                 }
                 if (b.elemento_nombre.equals("Constructor")) {
                     if (cantidad_unidad("Constructor") < 2) {
-                        Unidad u = new Unidad(b.elemento_nombre);
+                        Unidad u = new Unidad(this,b.elemento_nombre);
                         e.createUnit(p, this, u);
                         break;
                     }

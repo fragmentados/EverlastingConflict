@@ -14,11 +14,12 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.razas.Raza;
+import everlastingconflict.razas.SubRaceEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.ventanas.Mensaje;
-import everlastingconflict.ventanas.VentanaCombate;
-import everlastingconflict.ventanas.VentanaPrincipal;
+import everlastingconflict.ventanas.WindowCombat;
+import everlastingconflict.ventanas.WindowMain;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Elías
  */
 public class Manipulador extends Unidad {
@@ -52,16 +52,23 @@ public class Manipulador extends Unidad {
     public static int cantidad_invocacion = 2;
     public static float minimo_cooldown = 2;
 
-    public static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos habilidades para que el Manipulador las aprenda");
-    public static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco atributos para que se mejoren");
+    public static BotonManipulador SKILL_BUTTON = new BotonManipulador("Habilidades", "Selecciona hasta dos " +
+            "habilidades para que el Manipulador las aprenda");
+    public static BotonManipulador ATTRIBUTES_BUTTON = new BotonManipulador("Atributos", "Selecciona hasta cinco " +
+            "atributos para que se mejoren");
 
-    public static BotonManipulador LIFE_BUTTON = new BotonManipulador("Vida", "Aumenta la vida actual y la vida máximo en 50 puntos");
+    public static BotonManipulador LIFE_BUTTON = new BotonManipulador("Vida", "Aumenta la vida actual y la vida " +
+            "máximo en 50 puntos");
     public static BotonManipulador ATTACK_BUTTON = new BotonManipulador("Ataque", "Aumenta el ataque en 5 puntos");
-    public static BotonManipulador MANA_BUTTON = new BotonManipulador("Maná", "Aumenta el maná actual y el maná máximo en 50 puntos");
+    public static BotonManipulador MANA_BUTTON = new BotonManipulador("Maná", "Aumenta el maná actual y el maná " +
+            "máximo en 50 puntos");
     public static BotonManipulador DEFENSE_BUTTON = new BotonManipulador("Defensa", "Aumenta en 1 la defensa");
-    public static BotonManipulador MANA_REGENERATION_BUTTON = new BotonManipulador("Regeneración maná", "Aumenta la regeneración de maná en 0.1 / segundo");
-    public static BotonManipulador CDR_BUTTON = new BotonManipulador("Reducción de enfriamiento", "Reduce los enfriamientos de las habilidades un 2%");
-    public static BotonManipulador AP_BUTTON = new BotonManipulador("Poder mágico", "Aumenta el poder mágico en 5 puntos");
+    public static BotonManipulador MANA_REGENERATION_BUTTON = new BotonManipulador("Regeneración maná", "Aumenta la " +
+            "regeneración de maná en 0.1 / segundo");
+    public static BotonManipulador CDR_BUTTON = new BotonManipulador("Reducción de enfriamiento", "Reduce los " +
+            "enfriamientos de las habilidades un 2%");
+    public static BotonManipulador AP_BUTTON = new BotonManipulador("Poder mágico", "Aumenta el poder mágico en 5 " +
+            "puntos");
 
     public final int experiencia_maxima() {
         return 100 + 50 * (nivel - 1);
@@ -138,60 +145,88 @@ public class Manipulador extends Unidad {
         this.initButtonKeys(this.enhancementButtons);
     }
 
-    public void getSkillsToUnlock() {
+    public void getSkillsToUnlock(Jugador aliado) {
         enhancementButtons = new ArrayList<>();
         int skillSet = nivel - SKILL_BUTTON.remainingClicks + 1;
         switch (skillSet) {
             case 1:
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar pugnator")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Deflagración"), RelojMaestros.nombre_dia));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Pesadilla"), RelojMaestros.nombre_noche));
-                enhancementButtons.add(new BotonManipulador("Lider de hordas"));
-                enhancementButtons.add(new BotonManipulador("Exterminador de masas"));
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Pesadilla"),
+                            RelojMaestros.nombre_noche));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador("Lider de hordas"));
+                } else {
+                    enhancementButtons.add(new BotonManipulador("Exterminador de masas"));
+                }
                 enhancementButtons.add(new BotonManipulador("Sabiduría arcana"));
                 enhancementButtons.add(new BotonManipulador("Cauterización automática"));
                 break;
             case 2:
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar sagittarius")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Protección"), RelojMaestros.nombre_dia));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Lluvia de estrellas"), RelojMaestros.nombre_noche));
-                enhancementButtons.add(new BotonManipulador("Entrenamiento avanzado"));
-                enhancementButtons.add(new BotonManipulador("Tirador experto"));
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Lluvia de estrellas"),
+                            RelojMaestros.nombre_noche));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador("Entrenamiento avanzado"));
+                } else {
+                    enhancementButtons.add(new BotonManipulador("Tirador experto"));
+                }
                 enhancementButtons.add(new BotonManipulador("Poderío astral"));
                 enhancementButtons.add(new BotonManipulador("Protección mística"));
                 break;
             case 3:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar medicum")));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Meteoro"), RelojMaestros.nombre_dia));
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Meteoro"), RelojMaestros.nombre_dia));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar medicum")));
+                } else {
+                    enhancementButtons.add(new BotonManipulador("Incineración ígnea"));
+                }
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Regeneración"), RelojMaestros.nombre_noche));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Presencia abrumadora")));
                 enhancementButtons.add(new BotonManipulador("Invocación eficiente"));
-                enhancementButtons.add(new BotonManipulador("Incineración ígnea"));
                 enhancementButtons.add(new BotonManipulador("Control temporal"));
                 break;
             case 4:
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Teletransporte")));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador("Entrenamiento supremo"));
+                } else {
+                    enhancementButtons.add(new BotonManipulador("Reinversión física"));
+                }
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar magum")));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Teletransporte")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Apocalipsis")));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Tiempos de necesidad")));
-                enhancementButtons.add(new BotonManipulador("Entrenamiento supremo"));
-                enhancementButtons.add(new BotonManipulador("Reinversión física"));
                 enhancementButtons.add(new BotonManipulador("Reinversión mágica"));
                 break;
             case 5:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar exterminatore")));
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador("Eficiencia energética"));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Invocar exterminatore")));
+                } else {
+                    enhancementButtons.add(new BotonManipulador("Disparo helado"));
+                }
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Erosión"), RelojMaestros.nombre_noche));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Trampa solar"), RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador("Inspiración"));
-                enhancementButtons.add(new BotonManipulador("Disparo helado"));
-                enhancementButtons.add(new BotonManipulador("Eficiencia energética"));
                 enhancementButtons.add(new BotonManipulador(new Habilidad("Ansia de supervivencia")));
                 break;
             case 6:
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Sacrificio")));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Visión interestelar"), RelojMaestros.nombre_dia));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Agujero negro"), RelojMaestros.nombre_noche));
-                enhancementButtons.add(new BotonManipulador(new Habilidad("Impactos drenantes")));
+                if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Agujero negro"),
+                            RelojMaestros.nombre_noche));
+                } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Sacrificio")));
+                } else {
+                    enhancementButtons.add(new BotonManipulador(new Habilidad("Impactos drenantes")));
+                }
+                enhancementButtons.add(new BotonManipulador(new Habilidad("Visión interestelar"),
+                        RelojMaestros.nombre_dia));
                 enhancementButtons.add(new BotonManipulador("Fuerzas mixtas"));
                 enhancementButtons.add(new BotonManipulador("Último recurso"));
                 enhancementButtons.add(new BotonManipulador("Clon"));
@@ -206,7 +241,7 @@ public class Manipulador extends Unidad {
         experiencia = 0;
         experiencia_max = experiencia_maxima();
         if (SKILL_BUTTON.remainingClicks == null) {
-           SKILL_BUTTON.remainingClicks = 1;
+            SKILL_BUTTON.remainingClicks = 1;
         } else {
             SKILL_BUTTON.remainingClicks++;
         }
@@ -225,7 +260,7 @@ public class Manipulador extends Unidad {
         iniciar_imagenes_manipulador();
         if (this.statusEffectCollection.existe_estado(StatusEffectName.MEDITACION)) {
             this.regeneracion_mana -= 2;
-            this.statusEffectCollection.eliminar_estado(StatusEffectName.MEDITACION);
+            this.statusEffectCollection.forceRemoveStatus(StatusEffectName.MEDITACION);
         }
     }
 
@@ -240,7 +275,8 @@ public class Manipulador extends Unidad {
 
     public final void iniciar_imagenes_manipulador() {
         try {
-            sprite = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")}, new int[]{300}, false);
+            sprite = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")},
+                    new int[]{300}, false);
             icono = new Image("media/Manipulador/" + nombre + nivel + "_icono.png");
             miniatura = new Image("media/Miniaturas/Prueba.png");
             anchura = sprite.getWidth();
@@ -257,7 +293,8 @@ public class Manipulador extends Unidad {
         botones.add(new BotonComplejo("Detener"));
         learnSkill(new BotonManipulador(new Habilidad("Eclipse Amanecer")));
         BotonManipulador b = new BotonManipulador(new Habilidad("Meditar"));
-        b.descripcion = "El Manipulador deja de ser capaz de moverse pero obtiene maná a un ritmo mayor. Si está en nivel 1 también obtiene experiencia regularmente. Pulsa el botón otra vez para cancelar.";
+        b.descripcion = "El Manipulador deja de ser capaz de moverse pero obtiene maná a un ritmo mayor. Si está en " +
+                "nivel 1 también obtiene experiencia regularmente. Pulsa el botón otra vez para cancelar.";
         learnSkill(b);
         initButtonKeys();
     }
@@ -281,20 +318,23 @@ public class Manipulador extends Unidad {
         this.checkButtonResources(aliado);
     }
 
-    public Manipulador(float x, float y) {
-        super("No hay", x, y);
+    public Manipulador(Jugador aliado, float x, float y) {
+        super(aliado, "No hay", x, y);
         nombre = "Manipulador";
         botones = new ArrayList<>();
         enhancementButtons = new ArrayList<>();
-        Raza.unidad(this);
+        Raza.unidad(aliado, this);
         vida = vida_max;
-        nivel = 0;
-        levelUp();
-        regeneracion_mana = 1;
-        mana_max = 200;
-        mana = mana_max;
+        nivel = 1;
         experiencia = 0;
-        poder_magico = 0;
+        experiencia_max = experiencia_maxima();
+        SKILL_BUTTON.remainingClicks = 1;
+        ATTRIBUTES_BUTTON.remainingClicks = 1;
+        botones.add(SKILL_BUTTON);
+        botones.add(ATTRIBUTES_BUTTON);
+        this.initButtonKeys();
+        iniciar_imagenes_manipulador();
+        regeneracion_mana = 1;
         reduccion_enfriamiento = 0;
     }
 
@@ -325,25 +365,26 @@ public class Manipulador extends Unidad {
         } else if (vida < vida_max) {
             outerCircleColor = Color.yellow;
         }*/
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2;
+        float x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2;
         drawCircle(g, x, vida, vida_max, (int) vida, 23,
                 new Color(0f, 0.8f, 0f, 1f), Color.green);
     }
 
     public void drawManaCircle(Graphics g) {
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 + 100;
+        float x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 + 100;
         drawCircle(g, x, mana, mana_max, (int) mana, 28, new Color(0f, 0f, 0.8f, 1f),
                 new Color(0f, 0f, 1f, 1f));
     }
 
     public void drawXpCircle(Graphics g) {
-        float x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 + 200;
+        float x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 + 200;
         drawCircle(g, x, experiencia, experiencia_max, nivel, 35, new Color(204, 160, 0, 255),
                 Color.orange);
     }
 
-    public void drawCircle(Graphics g, float x, float initialValue, float maxValue, int middleNumber, int middleNumberXOffset, Color... colors) {
-        float yg = VentanaCombate.playerY + 5;
+    public void drawCircle(Graphics g, float x, float initialValue, float maxValue, int middleNumber,
+                           int middleNumberXOffset, Color... colors) {
+        float yg = WindowCombat.playerY + 5;
         //Círculo exterior
         g.setColor(colors[0]);
         g.fillOval(x, yg, 80, 80);
@@ -365,8 +406,8 @@ public class Manipulador extends Unidad {
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
         if (alentar) {
             g.setColor(Color.green);
             int alcancex = 2 * (200 + anchura / 2), alcancey = 2 * (200 + altura / 2);
@@ -374,18 +415,24 @@ public class Manipulador extends Unidad {
         }
     }
 
-    public static void checkToGainExperience(Partida p, ElementoAtacante atacante, float xpValue, float destroyedElementX, float destroyedElementY, float destroyedElementHeight) {
-        if (atacante instanceof Manipulador) {
-            Manipulador m = (Manipulador) atacante;
-            VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
-            m.aumentar_experiencia(xpValue);
-        } else if (Manipulador.lider && p.getPlayerFromElement(atacante).raza.equals(RaceEnum.MAESTROS.getName())) {
-            for (Unidad u : p.getPlayerFromElement(atacante).unidades) {
-                if (u.nombre.equals("Manipulador")) {
-                    Manipulador m = (Manipulador) u;
-                    VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange, destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
-                    m.aumentar_experiencia(xpValue);
-                    break;
+    public static void checkToGainExperience(Partida p, ElementoAtacante atacante, float xpValue,
+                                             float destroyedElementX, float destroyedElementY,
+                                             float destroyedElementHeight) {
+        if (atacante != null) {
+            if (atacante instanceof Manipulador) {
+                Manipulador m = (Manipulador) atacante;
+                WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange,
+                        destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
+                m.aumentar_experiencia(xpValue);
+            } else if (Manipulador.lider && p.getPlayerFromElement(atacante).raza.equals(RaceEnum.MAESTROS)) {
+                for (Unidad u : p.getPlayerFromElement(atacante).unidades) {
+                    if (u.nombre.equals("Manipulador")) {
+                        Manipulador m = (Manipulador) u;
+                        WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + xpValue, Color.orange,
+                                destroyedElementX, destroyedElementY - destroyedElementHeight / 2 - 20, 2f));
+                        m.aumentar_experiencia(xpValue);
+                        break;
+                    }
                 }
             }
         }
@@ -394,7 +441,7 @@ public class Manipulador extends Unidad {
     private void sortSkillButtons() {
         this.botones = this.botones
                 .stream().sorted((b1, b2) -> !b1.isPassiveAbility && b2.isPassiveAbility ? -1
-                        : b1.isPassiveAbility && !b2.isPassiveAbility? 1 : 0).collect(Collectors.toList());
+                        : b1.isPassiveAbility && !b2.isPassiveAbility ? 1 : 0).collect(Collectors.toList());
         this.initButtonKeys();
     }
 

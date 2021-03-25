@@ -6,6 +6,8 @@
 package everlastingconflict.ai;
 
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 
 /**
  *
@@ -13,8 +15,8 @@ import everlastingconflict.gestion.Partida;
  */
 public class AIClarkFacil extends AI {
 
-    public AIClarkFacil(Integer t, boolean isLeader) {
-        super("AIClark","Clark", t, isLeader);
+    public AIClarkFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super("AIClark", RaceEnum.CLARK, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     @Override

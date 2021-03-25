@@ -69,7 +69,7 @@ public class Raza {
         Raza.obtener_experiencia_bestia(b);
     }
 
-    public static void unidad(Unidad u) {
+    public static void unidad(Jugador aliado, Unidad u) {
         switch (u.nombre) {
             //Fenix
             case "Recolector":
@@ -155,13 +155,16 @@ public class Raza {
                 break;
             //Clark   
             case "Depredador":
-                Clark.Depredador(u);
+                Clark.Depredador(aliado, u);
+                break;
+            case "Regurgitador":
+                Clark.Regurgitador(u);
                 break;
             case "Devorador":
-                Clark.Devorador(u);
+                Clark.Devorador(aliado, u);
                 break;
             case "Cazador":
-                Clark.Cazador(u);
+                Clark.Cazador(aliado, u);
                 break;
             case "Moldeador":
                 Clark.Moldeador(u);
@@ -175,8 +178,11 @@ public class Raza {
             case "Desmembrador":
                 Clark.Desmembrador(u);
                 break;
-            case "Regurgitador":
-                Clark.Regurgitador(u);
+            case "Despedazador":
+                Clark.Despedazador(u);
+                break;
+            case "Escupidor":
+                Clark.Escupidor(u);
                 break;
             case "Amaestrador":
                 Clark.Amaestrador(u);
@@ -184,9 +190,12 @@ public class Raza {
             case "Matriarca":
                 Clark.Matriarca(u);
                 break;
+            case "Rumiante":
+                Clark.Rumiante(u);
+                break;
             //Eternium
             case "Adepto":
-                Eternium.Adepto(u);
+                Eternium.Adepto(aliado, u);
                 break;
             case "Guerrero":
                 Eternium.Guerrero(u);
@@ -197,9 +206,12 @@ public class Raza {
             case "Protector":
                 Eternium.Protector(u);
                 break;
+            case "Erradicador":
+                Eternium.Erradicador(u);
+                break;
             //Maestros
             case "Manipulador":
-                Maestros.Manipulador(u);
+                Maestros.Manipulador(aliado, u);
                 break;
             case "Pugnator":
                 Maestros.Pugnator(u);
@@ -293,17 +305,17 @@ public class Raza {
     public static void iniciar_botones_edificio(Partida p, Edificio e) {
         Jugador aliado = p.getPlayerFromElement(e);
         switch (aliado.raza) {
-            case "Fénix":
+            case FENIX:
                 Fenix.iniciar_botones_edificio(e, aliado);
                 break;
-            case "Clark":
-                Clark.iniciar_botones_edificio(e);
+            case CLARK:
+                Clark.iniciar_botones_edificio(aliado, e);
                 break;
-            case "Eternium":
-                Eternium.iniciar_botones_edificio(e);
+            case ETERNIUM:
+                Eternium.iniciar_botones_edificio(e, aliado);
                 break;
-            case "Guardianes":
-                Guardianes.iniciar_botones_edificio(e);
+            case GUARDIANES:
+                Guardianes.iniciar_botones_edificio(aliado, e);
                 break;
         }
         e.initButtonKeys();
@@ -314,19 +326,19 @@ public class Raza {
         Jugador aliado = p.getPlayerFromElement(u);
         u.botones.add(new BotonComplejo("Detener"));
         switch (aliado.raza) {
-            case "Fénix":
+            case FENIX:
                 Fenix.iniciar_botones_unidad(u);
                 break;
-            case "Clark":
+            case CLARK:
                 Clark.iniciar_botones_unidad(u);
                 break;
-            case "Eternium":
+            case ETERNIUM:
                 Eternium.iniciar_botones_unidad(u);
                 break;
-            case "Maestros":
+            case MAESTROS:
                 Maestros.iniciar_botones_unidad(u);
                 break;
-            case "Guardianes":
+            case GUARDIANES:
                 Guardianes.iniciar_botones_unidad(u);
                 break;
         }
@@ -334,10 +346,10 @@ public class Raza {
         u.checkButtonResources(aliado);
     }
 
-    public static Image getResourceImage(String raceName) {
+    public static Image getResourceImage(RaceEnum race) {
         Image image = null;
         try {
-            image = new Image("media/Recursos/" + raceName + ".png");
+            image = new Image("media/Recursos/" + race.getName() + ".png");
         } catch (Exception e) {
         }
         return image;

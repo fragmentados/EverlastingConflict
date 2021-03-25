@@ -10,14 +10,15 @@ import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.SubRaceEnum;
 
 /**
  * @author Elías
  */
 public class AIFenixNormal extends AIFenixFacil {
 
-    public AIFenixNormal(Integer t, boolean isLeader) {
-        super(t, isLeader);
+    public AIFenixNormal(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super(subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     @Override

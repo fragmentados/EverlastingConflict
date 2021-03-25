@@ -5,71 +5,93 @@
  */
 package everlastingconflict.elementosvisuales;
 
+import everlastingconflict.gestion.Partida;
 import org.newdawn.slick.*;
 
 import java.util.List;
 
+import static everlastingconflict.elementos.util.ElementosComunes.UI_COLOR;
+
 /**
- *
  * @author Elías
  */
 public class ComboBox {
 
     public float x, y;
-    public float anchura, altura = 20;
-    public List<ComboBoxOption> opciones;
+    public float width, height = 20;
+    public List<ComboBoxOption> options;
     public String label;
-    public ComboBoxOption opcion_seleccionada;
-    public BotonSimple desplegar;
-    public boolean desplegado;
+    public ComboBoxOption optionSelected;
+    public BotonSimple deployButton;
+    public boolean isDeployed = false;
 
     public ComboBox(String label, List<ComboBoxOption> o, float x, float y) {
         this.x = x;
         this.y = y;
-        opciones = o;
+        options = o;
         this.label = label;
-        opcion_seleccionada = opciones.get(0);
-        for (ComboBoxOption op : opciones) {
-            if (op.text.length() * 10 > anchura) {
-                anchura = op.text.length() * 10;
-            }
-        }
-        for (ComboBoxOption op : opciones) {
-            if (op.sprite != null) {
-               anchura += 30;
-               altura = 30;
-               break;
-            }
-        }
-        desplegado = false;
+        optionSelected = options.get(0);
         try {
-            desplegar = new BotonSimple(new Image("media/Desplegar.png")) {
+            deployButton = new BotonSimple(new Image("media/Desplegar.png")) {
                 @Override
                 public void efecto() {
-                    desplegado = !desplegado;
+                    isDeployed = !isDeployed;
                 }
             };
-            desplegar.x = x + anchura + 1;
-            desplegar.y = y;
-            desplegar.altura = altura;
         } catch (SlickException e) {
 
         }
+        initProportionsBasedOnOptions();
+    }
+
+    public void initProportionsBasedOnOptions() {
+        width = 20;
+        height = 20;
+        for (ComboBoxOption op : options) {
+            if (op.text.length() * 10 > width) {
+                width = op.text.length() * 10;
+            }
+        }
+        for (ComboBoxOption op : options) {
+            if (op.sprite != null) {
+                width += 30;
+                height = 30;
+                break;
+            }
+        }
+        deployButton.x = x + width + 1;
+        deployButton.y = y;
+        deployButton.altura = height;
     }
 
     public ComboBoxOption checkOptionSelected(float x, float y) {
-        if (desplegado) {
+        if (isDeployed) {
             int i = 1;
-            for (ComboBoxOption op : opciones) {
-                if (x >= this.x && x <= this.x + this.anchura + this.desplegar.anchura) {
-                    if (y >= this.y + i * altura + 2 && y <= this.y + (i + 1) * altura) {
-                        desplegado = false;
-                        if (!opcion_seleccionada.equals(op)) {
-                            ComboBoxOption previousSelectedOption = opcion_seleccionada;
-                            opcion_seleccionada = op;
+            for (ComboBoxOption op : options) {
+                if (x >= this.x && x <= this.x + this.width + this.deployButton.anchura) {
+                    if (y >= this.y + i * height + 2 && y <= this.y + (i + 1) * height) {
+                        isDeployed = false;
+                        if (!optionSelected.equals(op)) {
+                            ComboBoxOption previousSelectedOption = optionSelected;
+                            optionSelected = op;
                             return previousSelectedOption;
-                        }                        
+                        }
                         break;
+                    }
+                }
+                i++;
+            }
+        }
+        return null;
+    }
+
+    public ComboBoxOption getOptionHovered(float x, float y) {
+        if (isDeployed) {
+            int i = 1;
+            for (ComboBoxOption op : options) {
+                if (x >= this.x && x <= this.x + this.width + this.deployButton.anchura) {
+                    if (y >= this.y + i * height + 2 && y <= this.y + (i + 1) * height) {
+                        return op;
                     }
                 }
                 i++;
@@ -80,54 +102,69 @@ public class ComboBox {
 
     public void renderOption(Graphics g, ComboBoxOption o, float x, float y) {
         float xOptionText = x;
-        if (o.equals(opcion_seleccionada)) {
+        if (o.equals(optionSelected)) {
             g.setColor(new Color(0f, 0f, 0.8f, 0.8f));
         } else {
             g.setColor(Color.white);
         }
-        g.fillRect(x, y, anchura + desplegar.anchura + 1, altura);
+        g.fillRect(x, y, width + deployButton.anchura + 1, height);
         g.setColor(Color.black);
-        g.drawRect(x, y, anchura + desplegar.anchura + 1, altura);
+        g.drawRect(x, y, width + deployButton.anchura + 1, height);
 
         if (o.sprite != null) {
             o.sprite.draw(x, y, 30, 30);
             xOptionText += 30;
         }
-        g.drawString(o.text, xOptionText, altura == 20 ? y : y + altura / 4);
+        g.drawString(o.text, xOptionText, height == 20 ? y : y + height / 4);
     }
 
-    public void render(Graphics g) {
+    public void render(Input input, Graphics g) {
         float xOptionText = this.x;
         g.setColor(Color.white);
         if (label != null) {
             g.drawString(label, x - label.length() * 10, y);
         }
-        g.fillRect(x, y, anchura, altura);
+        g.fillRect(x, y, width, height);
         g.setColor(Color.black);
-        g.drawRect(x, y, anchura, altura);
-        if (opcion_seleccionada.sprite != null) {
-            opcion_seleccionada.sprite.draw(xOptionText, y, 30, 30);
+        g.drawRect(x, y, width, height);
+        if (optionSelected.sprite != null) {
+            optionSelected.sprite.draw(xOptionText, y, 30, 30);
             xOptionText += 30;
         }
-        g.drawString(opcion_seleccionada.text, xOptionText, altura == 20 ? y : y + altura / 4);
-        if (desplegado) {
+        g.drawString(optionSelected.text, xOptionText, height == 20 ? y : y + height / 4);
+        if (isDeployed) {
             g.setColor(Color.black);
             int i = 1;
-            for (ComboBoxOption op : opciones) {
-                renderOption(g, op, x, y + i * altura + 2);
+            for (ComboBoxOption op : options) {
+                renderOption(g, op, x, y + i * height + 2);
                 i++;
             }
         }
-        desplegar.render(g);
+        deployButton.render(g);
         g.setColor(Color.white);
-        if (this.opcion_seleccionada.description != null) {
-            g.drawString(this.opcion_seleccionada.description, x + 300, y);
-        }
     }
 
     public void checkIfItsClicked(Input input) {
-        if(desplegar.isHovered(input.getMouseX(), input.getMouseY())) {
-            desplegar.efecto();
+        if (deployButton.isHovered(input.getMouseX(), input.getMouseY())) {
+            deployButton.efecto();
         }
     }
+
+    public void renderHoveredDescription(Input input, Graphics g) {
+        ComboBoxOption optionHovered = getOptionHovered(input.getMouseX(), input.getMouseY());
+        if (optionHovered != null && optionHovered.description != null) {
+            //Origen solo es necesario para botones del Manipulador
+            float xDescription = this.x + this.width + this.deployButton.anchura + 10;
+            float widthDescription = optionHovered.description.length() * 10 < 400 ?
+                    optionHovered.description.length() * 10 : 400;
+            String descriptionFormatted = Partida.anadir_saltos_de_linea(optionHovered.description, widthDescription);
+            float heightDescription = (descriptionFormatted.chars().filter(ch -> ch == '\n').count() + 1) * 20;
+            g.setColor(UI_COLOR);
+            g.fillRect(xDescription, this.y, widthDescription, heightDescription);
+            g.setColor(Color.white);
+            g.drawRect(xDescription, this.y, widthDescription, heightDescription);
+            g.drawString(descriptionFormatted, xDescription + 1, this.y);
+        }
+    }
+
 }

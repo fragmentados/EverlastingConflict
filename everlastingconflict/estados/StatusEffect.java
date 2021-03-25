@@ -13,32 +13,32 @@ import everlastingconflict.relojes.Reloj;
  */
 public class StatusEffect {
 
-    public StatusEffectName tipo;
-    public float tiempo, tiempo_contador;
+    public StatusEffectName name;
+    public float time, timeCounter;
     //Variable para el uso del estado: Por ejemplo, porcentaje de ralentización de movimiento.
-    public float contador;
+    public float value;
 
     public StatusEffect(StatusEffectName status, float t, float c) {
         this(status, t);
-        this.contador = c;
+        this.value = c;
     }
 
     public StatusEffect(StatusEffectName status, float t) {
         this(status);
-        tiempo_contador = tiempo = t;
+        timeCounter = time = t;
     }
 
     public StatusEffect(StatusEffectName status) {
         //Constructor de estados permanentes
-        tipo = status;
+        name = status;
     }
 
     public boolean comportamiento(int delta) {
-        if (tiempo > 0) {
-            if (tiempo_contador - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
+        if (time > 0) {
+            if (timeCounter - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                 return true;
             } else {
-                tiempo_contador -= Reloj.TIME_REGULAR_SPEED * delta;
+                timeCounter -= Reloj.TIME_REGULAR_SPEED * delta;
             }
         }
         return false;

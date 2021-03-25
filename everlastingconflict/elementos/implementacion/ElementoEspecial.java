@@ -39,7 +39,7 @@ public class ElementoEspecial extends ElementoCoordenadas {
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
+    public void render(Partida p, Color c, Input input, Graphics g) {
         sprite.draw(x - anchura / 2, y - altura / 2);
         if (DEBUG_MODE) {
             g.setColor(Color.black);

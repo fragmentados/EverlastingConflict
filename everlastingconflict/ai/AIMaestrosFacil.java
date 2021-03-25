@@ -4,11 +4,12 @@ import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 
 public class AIMaestrosFacil extends AI {
 
-    public AIMaestrosFacil(Integer t, boolean isLeader) {
-        super("AIMaestros", RaceEnum.MAESTROS.getName(), t, isLeader);
+    public AIMaestrosFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super("AIMaestros", RaceEnum.MAESTROS, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     @Override

@@ -14,7 +14,7 @@ import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.razas.Raza;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.Mensaje;
-import everlastingconflict.ventanas.VentanaPrincipal;
+import everlastingconflict.ventanas.WindowMain;
 import org.newdawn.slick.*;
 
 /**
@@ -46,7 +46,7 @@ public class Bestia extends Unidad {
     }
 
     public Bestia(String n) {
-        super("No hay");
+        super(null, "No hay");
         nombre = n;
         Raza.bestia(this);
         this.iniciar_imagenes_bestias();
@@ -82,8 +82,8 @@ public class Bestia extends Unidad {
                 && p.bestias.stream().filter(b -> b.contenido.contains(this)).findFirst().isPresent()) {
             this.statusBehaviour = StatusBehaviour.DESTRUIDO;
             Jugador aliado = p.getPlayerFromElement(atacante);
-            if (aliado.raza.equals("Clark")) {
-                VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
+            if (aliado.raza.equals(RaceEnum.CLARK)) {
+                WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
                 aliado.addResources(this.recompensa);
             }
             if (this.seleccionada()) {
@@ -174,6 +174,6 @@ public class Bestia extends Unidad {
         if (statusEffectCollection.existe_estado(StatusEffectName.EROSION)) {
             disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
         }
-        statusEffectCollection.comportamiento(delta);
+        statusEffectCollection.comportamiento(p, this, delta);
     }
 }

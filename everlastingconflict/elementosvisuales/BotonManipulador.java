@@ -17,13 +17,13 @@ import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Maestros;
 import everlastingconflict.relojes.RelojMaestros;
 import everlastingconflict.ventanas.UI;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
 
-import static everlastingconflict.ventanas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.ventanas.VentanaCombate.playerY;
+import static everlastingconflict.ventanas.WindowCombat.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.ventanas.WindowCombat.playerY;
 
 /**
  *
@@ -55,6 +55,7 @@ public class BotonManipulador extends BotonComplejo {
     public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Partida partida) {
         if (canBeUsed && !isPassiveAbility) {
             if (e instanceof Manipulador) {
+                Jugador aliado = partida.getPlayerFromElement(e);
                 Manipulador m = (Manipulador) e;
                 if (texto == null) {
                     if (!m.enhancementButtons.isEmpty()) {
@@ -68,7 +69,7 @@ public class BotonManipulador extends BotonComplejo {
                 } else {
                     switch (texto) {
                         case "Habilidades":
-                            m.getSkillsToUnlock();
+                            m.getSkillsToUnlock(partida.getPlayerFromElement(e));
                             break;
                         case "Atributos":
                             m.obtener_botones_atributos();
@@ -170,7 +171,7 @@ public class BotonManipulador extends BotonComplejo {
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Clon":
-                            Manipulador m2 = new Manipulador(m.x + m.anchura / 2 + 10, m.y);
+                            Manipulador m2 = new Manipulador(aliado,m.x + m.anchura / 2 + 10, m.y);
                             //Dividir las estadísticas del antiguo manipulador a la mitad
                             m.ataque /= 2;
                             m.defensa /= 2;
@@ -249,7 +250,7 @@ public class BotonManipulador extends BotonComplejo {
         if (canBeShown) {
             super.renderExtendedInfo(aliado, g, origen);
             if (requisito != null) {
-                float x = VentanaCombate.playerX + 601;
+                float x = WindowCombat.playerX + 601;
                 float y = playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 201;
                 g.drawString("Esta habilidad sólo se puede utilizar de " + requisito, x, y  + 150);
             }

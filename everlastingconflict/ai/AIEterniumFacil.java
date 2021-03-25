@@ -12,6 +12,8 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
+import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 
 public class AIEterniumFacil extends AI {
 
@@ -19,8 +21,8 @@ public class AIEterniumFacil extends AI {
     public float x_asimilacion, y_asimilacion;
     public float x_altar, y_altar;
 
-    public AIEterniumFacil(Integer t, boolean isLeader) {
-        super("AIEternium", "Eternium", t, isLeader);
+    public AIEterniumFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super("AIEternium", RaceEnum.ETERNIUM, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     @Override
@@ -117,15 +119,15 @@ public class AIEterniumFacil extends AI {
         }
         if (this.perforacion && (altar == null || !altar.cola_construccion.isEmpty())) {
             //Reclutamiento de Unidades
-            Unidad u = new Unidad("Ancestro");
+            Unidad u = new Unidad(this, "Ancestro");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 e.createUnit(p, this, u);
             }
-            u = new Unidad("Guerrero");
+            u = new Unidad(this, "Guerrero");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 e.createUnit(p, this, u);
             }
-            u = new Unidad("Adepto");
+            u = new Unidad(this, "Adepto");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 e.createUnit(p, this, u);
             }

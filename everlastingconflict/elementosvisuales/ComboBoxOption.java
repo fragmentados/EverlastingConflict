@@ -17,13 +17,12 @@ public class ComboBoxOption {
         this.description = description;
     }
 
-    public static ComboBoxOption createOptionWithSprite(String text, String spritePath) {
-        ComboBoxOption cbo = new ComboBoxOption(text);
+    public ComboBoxOption(String text, String description, String spritePath) {
+        this(text, description);
         try {
-            cbo.sprite = new Image(spritePath);
+            sprite = new Image(spritePath);
         } catch (SlickException e) {
         }
-        return cbo;
     }
 
 }

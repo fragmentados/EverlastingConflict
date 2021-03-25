@@ -11,7 +11,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import java.util.List;
 import static everlastingconflict.RTS.DEBUG_MODE;
 
 /**
- *
  * @author Elías
  */
 public class Recurso extends ElementoComplejo {
@@ -39,7 +38,7 @@ public class Recurso extends ElementoComplejo {
             do {
                 imageList.add(new Image("media/Recursos/" + nombre + contador + ".png"));
                 contador++;
-            } while (contador < 3);
+            } while (contador < 5);
         } catch (Exception e) {
         }
         Image[] images = new Image[imageList.size()];
@@ -69,7 +68,7 @@ public class Recurso extends ElementoComplejo {
                 aliado.lista_recursos.remove(this);
                 p.recursos.add(this);
                 if (this.capturador != null) {
-                    aliado.removeResources(10);
+                    aliado.diminishFenixPercentage();
                     capturador = null;
                 }
                 vida = 0;
@@ -84,7 +83,6 @@ public class Recurso extends ElementoComplejo {
                 gatherer.movil = true;
                 this.vida = Recurso.vida_civiles;
                 this.capturar(partida, playerGatherer, gatherer);
-                gatherer.mover(partida, this.x, this.y + this.altura);
             } else {
                 if (this.vida == 0) {
                     playerGatherer.lista_recursos.add(this);
@@ -99,13 +97,12 @@ public class Recurso extends ElementoComplejo {
     public void capturar(Partida p, Jugador j, Unidad gatherer) {
         j.addResources(10);
         capturador = j.nombre;
-        j.visiones.add(new Vision(this.x, this.y, 450, 450, 0));
+        j.visiones.add(new Vision(this.x, this.y, 450, 0));
         this.sprite.setAutoUpdate(true);
-        gatherer.mover(p, this.x, this.y + this.altura);
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
+    public void render(Partida p, Color c, Input input, Graphics g) {
         //super.dibujar(p, c, input, g);
         sprite.draw(x - anchura / 2, y - altura / 2);
         g.setColor(Color.black);
@@ -113,14 +110,14 @@ public class Recurso extends ElementoComplejo {
             g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         }
         g.setColor(Color.white);
-        if (VentanaCombate.ui.elementos.indexOf(this) != -1)  {
+        if (WindowCombat.ui.elementos.indexOf(this) != -1 ||
+                (this.nombre.equals("Vision") && this.capturador != null)
+                || (this.hitbox(WindowCombat.playerX + input.getMouseX(),
+                WindowCombat.playerY + input.getMouseY()))) {
             circulo(g, c);
         }
-        if (p.resourceBelongsToPlayer(this)) {
+        if (p.resourceBelongsToPlayer(this) && this.vida > 0) {
             drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
-        }
-        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
-            circulo(g, c);
         }
     }
 }

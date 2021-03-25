@@ -21,6 +21,7 @@ public class Bestias {
         u.cadencia = Unidad.cadencia_estandar + 0.5f;
         u.velocidad = Unidad.velocidad_estandar - 0.1f;
         u.recompensa = 50;
+        u.vision = Unidad.vision_estandar + 100;
     }
 
     public static final void Beta(Bestia u) {
@@ -30,6 +31,7 @@ public class Bestias {
         u.cadencia = Unidad.cadencia_estandar;
         u.velocidad = Unidad.velocidad_estandar;
         u.recompensa = 100;
+        u.vision = Unidad.vision_estandar;
     }
 
     public static final void Gamma(Bestia u) {
@@ -39,6 +41,7 @@ public class Bestias {
         u.cadencia = Unidad.cadencia_estandar;
         u.velocidad = Unidad.velocidad_estandar;
         u.recompensa = 200;
+        u.vision = Unidad.vision_estandar;
     }
 
     public static final void Ommega(Bestia u) {
@@ -48,5 +51,6 @@ public class Bestias {
         u.cadencia = Unidad.cadencia_estandar + 0.5f;
         u.velocidad = Unidad.velocidad_estandar;
         u.recompensa = 300;
+        u.vision = Unidad.vision_estandar;
     }
 }

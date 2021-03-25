@@ -5,7 +5,10 @@
  */
 package everlastingconflict.elementos.implementacion;
 
-import everlastingconflict.elementos.*;
+import everlastingconflict.elementos.ElementoAtacante;
+import everlastingconflict.elementos.ElementoComplejo;
+import everlastingconflict.elementos.ElementoMovil;
+import everlastingconflict.elementos.ElementoVulnerable;
 import everlastingconflict.elementos.util.ElementosComunes;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.estados.StatusEffectCollection;
@@ -21,8 +24,6 @@ import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Elías
@@ -51,18 +52,41 @@ public class Unidad extends ElementoMovil {
     public static int tiempo_estandar = 10;
     public static int area_estandar = 100;
 
-    public Unidad(Unidad u) {
-        this(u.nombre);
+    public Unidad(Bestia b) {
+        this.nombre = b.nombre;
+        this.descripcion = b.descripcion;
+        this.botones = b.botones;
+        this.statusEffectCollection = b.statusEffectCollection;
+        this.hostil = this.movil = true;
+        this.ataque = b.ataque;
+        this.alcance = b.alcance;
+        this.cadencia = b.cadencia;
+        this.velocidad = b.velocidad;
+        this.vida = b.vida;
+        this.vida_max = b.vida_max;
+        this.sprite = b.sprite;
+        this.miniatura = b.miniatura;
+        this.icono = b.icono;
+        anchura_barra_vida = anchura = sprite.getWidth();
+        altura = sprite.getHeight();
+        this.x = b.x;
+        this.y = b.y;
+        this.sonido_combate = b.sonido_combate;
+        this.vision = b.vision;
     }
 
-    public Unidad(String n) {
+    public Unidad(Jugador aliado, Unidad u) {
+        this(aliado, u.nombre);
+    }
+
+    public Unidad(Jugador aliado, String n) {
         nombre = n;
         descripcion = "";
         statusEffectCollection = new StatusEffectCollection();
         botones = new ArrayList<>();
         //habilidades = new ArrayList<>();
         hostil = true;
-        Raza.unidad(this);
+        Raza.unidad(aliado, this);
         vida = vida_max;
         coste_poblacion = 1;
         cadencia_contador = 0;
@@ -76,7 +100,6 @@ public class Unidad extends ElementoMovil {
                 try {
                     sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
                 } catch (Exception e) {
-                    //Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             anchura = sprite.getWidth();
@@ -86,8 +109,8 @@ public class Unidad extends ElementoMovil {
         experiencia_al_morir = 15;
     }
 
-    public Unidad(String n, float x, float y) {
-        this(n);
+    public Unidad(Jugador aliado, String n, float x, float y) {
+        this(aliado, n);
         this.x = x;
         this.y = y;
     }
@@ -149,7 +172,7 @@ public class Unidad extends ElementoMovil {
                             //Unidad soluciona evento negativo
                             this.solucionar(p, aliado);
                         } else {
-                            this.enableBuilding(p);
+                            ((Edificio) objetivo).enable(this, p);
                         }
                     } else {
                         //Piloto embarca vehículo
@@ -287,7 +310,7 @@ public class Unidad extends ElementoMovil {
         if (canMove(p)) {
             if (edificio_construccion != null) {
                 //Cancelar Edificio
-                if (!p.getPlayerFromElement(this).raza.equals(RaceEnum.FENIX.getName())) {
+                if (!p.getPlayerFromElement(this).raza.equals(RaceEnum.FENIX)) {
                     p.getPlayerFromElement(this).addResources(edificio_construccion.coste);
                 }
                 edificio_construccion = null;
@@ -324,17 +347,8 @@ public class Unidad extends ElementoMovil {
 
     /*Fin de Métodos Cambiantes de Estado */
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
-    }
-
-    public void provocar(ElementoSimple provocador, float t) {
-        if (this.objetivo != null) {
-            this.objetivo = null;
-            this.statusBehaviour = StatusBehaviour.PARADO;
-        }
-        this.nombre_provocador = provocador.nombre;
-        this.provocado_tiempo_contador = this.provocado_tiempo = t;
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
     }
 
     public boolean puede_usar_habilidad() {
@@ -454,67 +468,4 @@ public class Unidad extends ElementoMovil {
         this.destruir(p, null, false);
     }
 
-    public void transformacion_torreta() {
-        Edificio torreta = (Edificio) objetivo;
-        switch (this.nombre) {
-            case "Artillero":
-                torreta.nombre = "Torreta demoledora";
-                torreta.ataque += 20;
-                torreta.cadencia += 0.5f;
-                break;
-            case "Amparador":
-                torreta.nombre = "Muro";
-                torreta.hostil = false;
-                break;
-            case "Ingeniero":
-                torreta.nombre = "Estación reparadora";
-                torreta.hostil = false;
-                break;
-            case "Armero":
-                torreta.nombre = "Ametralladora";
-                torreta.ataque -= 20;
-                torreta.cadencia -= 1f;
-                break;
-            case "Oteador":
-                torreta.nombre = "Torreta artillería";
-                torreta.ataque += 10;
-                torreta.alcance += 100;
-                torreta.cadencia += 1.0f;
-                break;
-            case "Explorador":
-                torreta.nombre = "Estación de vigilancia";
-                torreta.vision = 1750;
-                torreta.hostil = false;
-                break;
-            case "Corredor":
-                torreta.nombre = "Distorsionador temporal";
-                torreta.hostil = false;
-                break;
-        }
-        try {
-            torreta.sprite = new Animation(new Image[]{new Image("media/Torretas/" + torreta.nombre + ".png")}, 300, true);
-            torreta.icono = new Image("media/Torretas/" + torreta.nombre + "_icono.png");
-        } catch (SlickException ex) {
-            Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void enableBuilding(Partida p) {
-        Jugador aliado = p.getPlayerFromElement(this);
-        if (objetivo.nombre.equals("Torreta defensiva")) {
-            transformacion_torreta();
-        } else {
-            ((Edificio) objetivo).activo = true;
-            ((Edificio) objetivo).iniciarbotones(p);
-            objetivo.vida = objetivo.vida_max;
-        }
-        this.destruir(p, null, false);
-        boolean allBuildingsEnabled = aliado.edificios.stream().allMatch(e -> e.activo);
-        if (allBuildingsEnabled) {
-            // Makes no sense to keep creating enablers
-            Edificio ayuntamiento = aliado.edificios.stream().filter(e -> "Ayuntamiento".equals(e.nombre)).findFirst().get();
-            ayuntamiento.botones.removeIf(b -> "Activador".equals(b.elemento_nombre));
-            ayuntamiento.initButtonKeys();
-        }
-    }
 }

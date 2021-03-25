@@ -7,13 +7,12 @@ package everlastingconflict.elementos.implementacion;
 
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.relojes.Reloj;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -125,7 +124,7 @@ public class Bestias {
         } else {
             for (Bestia b : contenido) {
                 if (b.visible(p)) {
-                    b.dibujar(p, c, input, g);
+                    b.render(p, c, input, g);
                 }
             }
         }

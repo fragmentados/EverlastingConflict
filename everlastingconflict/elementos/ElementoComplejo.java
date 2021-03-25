@@ -11,7 +11,7 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.Raza;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -32,19 +32,19 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     public List<BotonComplejo> botones = new ArrayList<>();
 
     public void seleccionar() {
-        VentanaCombate.ui.seleccionar(this);
+        WindowCombat.ui.seleccionar(this);
     }
 
     public void seleccionar(boolean mayus) {
-        VentanaCombate.ui.seleccionar(this, mayus);
+        WindowCombat.ui.seleccionar(this, mayus);
     }
 
     public void deseleccionar() {
-        VentanaCombate.ui.deseleccionar(this);
+        WindowCombat.ui.deseleccionar(this);
     }
 
     public boolean seleccionada() {
-        return (VentanaCombate.ui.elementos.indexOf(this) != -1);
+        return (WindowCombat.ui.elementos.indexOf(this) != -1);
     }
 
     public void iniciarbotones(Partida p) {
@@ -84,8 +84,8 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);        
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
     }        
     
     @Override

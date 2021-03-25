@@ -33,11 +33,6 @@ public enum RaceEnum {
 
     public static final Map<String, RaceEnum> raceEnumMap = Collections.unmodifiableMap(initializeMapping());
 
-    public static List<String> getAllNames() {
-        List<String> allNames = raceEnumMap.entrySet().stream().map(e -> e.getKey()).collect(Collectors.toList());
-        return sortRaceNames(allNames);
-    }
-
     private static Map<String, RaceEnum> initializeMapping() {
         Map<String, RaceEnum> raceEnumMap = new HashMap<>();
         for (RaceEnum s : RaceEnum.values()) {
@@ -67,5 +62,9 @@ public enum RaceEnum {
     public static List<String> sortRaceNames(List<String> raceNames) {
         return raceNames.stream()
                 .map(r -> raceEnumMap.get(r)).sorted().map(r -> r.getName()).collect(Collectors.toList());
+    }
+
+    public static RaceEnum findByName(String name) {
+        return raceEnumMap.get(name);
     }
 }

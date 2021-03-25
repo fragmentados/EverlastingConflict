@@ -6,6 +6,7 @@
 package everlastingconflict.razas;
 
 import everlastingconflict.elementos.implementacion.Edificio;
+import everlastingconflict.elementos.implementacion.Habilidad;
 import everlastingconflict.elementos.implementacion.Tecnologia;
 import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.elementosvisuales.BotonComplejo;
@@ -175,6 +176,7 @@ public class Fenix {
         u.tiempo = Unidad.tiempo_estandar + 10;
         u.descripcion = "Unidad con gran capacidad defensiva que absorbe los ataques de los enemigos cercanos automáticamente";
         u.hostil = false;
+        u.isProyectileAttraction = true;
     }
 
     public static final void Cuervo(Unidad u) {
@@ -208,6 +210,7 @@ public class Fenix {
         e.hostil = true;
         e.descripcion = "Edificio central de la raza Fénix.";
         e.main = true;
+        e.unitCreator = true;
     }
 
     public static final void CuartelFenix(Edificio e) {
@@ -217,6 +220,7 @@ public class Fenix {
         e.tiempo = Edificio.tiempo_estandar;
         e.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
         e.descripcion = "Edificio encargado de la producción de las unidades Fénix.";
+        e.unitCreator = true;
     }
 
     public static final void CentroTecnologico(Edificio e) {
@@ -290,8 +294,8 @@ public class Fenix {
                 }
                 break;
             case "Sede":
-                e.botones.add(new BotonComplejo(new Unidad("Constructor")));
-                e.botones.add(new BotonComplejo(new Unidad("Recolector")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Constructor")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Recolector")));
                 break;            
         }
     }
@@ -306,6 +310,11 @@ public class Fenix {
             case "Fénix":
                 u.botones.add(new BotonComplejo("Resurrección"));
                 u.botones.get(u.botones.size() - 1).canBeUsed = Unidad.activacion_resurreccion;
+                break;
+            case "Cuervo":
+                u.botones.add(new BotonComplejo(new Habilidad("Motivar a las tropas")));
+                u.botones.add(new BotonComplejo(new Habilidad("Desmoralizar al enemigo")));
+                u.botones.add(new BotonComplejo(new Habilidad("Maniobra desesperada")));
                 break;
         }
     }

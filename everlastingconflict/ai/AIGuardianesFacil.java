@@ -6,13 +6,14 @@ import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 
 public class AIGuardianesFacil extends AI {
 
 
 
-    public AIGuardianesFacil(Integer t, boolean isLeader) {
-        super("AIGuardianes", RaceEnum.GUARDIANES.getName(), t, isLeader);
+    public AIGuardianesFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super("AIGuardianes", RaceEnum.GUARDIANES, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class AIGuardianesFacil extends AI {
 
     private void comportamientoAcademia(Partida p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
-            Unidad u = new Unidad("Artillero");
+            Unidad u = new Unidad(this,"Artillero");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 e.createUnit(p, this, u);
             }
@@ -81,7 +82,7 @@ public class AIGuardianesFacil extends AI {
             t.construir_anexo(p);
         }
         if (t.cola_construccion.isEmpty()) {
-            Unidad u = new Unidad("Patrulla");
+            Unidad u = new Unidad(this,"Patrulla");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 t.createUnit(p, this, u);
             }
@@ -98,7 +99,7 @@ public class AIGuardianesFacil extends AI {
         boolean allBuildingsEnabled = edificios.stream().allMatch(b -> b.activo);
         if (!allBuildingsEnabled && e.cola_construccion.isEmpty()) {
             //Reclutamiento de Unidades
-            Unidad u = new Unidad("Activador");
+            Unidad u = new Unidad(this,"Activador");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
                 e.createUnit(p, this, u);
             }

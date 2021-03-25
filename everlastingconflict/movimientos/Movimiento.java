@@ -34,7 +34,7 @@ public abstract class Movimiento {
             float y_final = puntos.get(0).y;
             float movimiento = 100 * Reloj.TIME_REGULAR_SPEED * unidad.velocidad * delta;
             if (unidad.statusEffectCollection.existe_estado(StatusEffectName.RALENTIZACION)) {
-                movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).contador) / 100;
+                movimiento *= (100 - unidad.statusEffectCollection.obtener_estado(StatusEffectName.RALENTIZACION).value) / 100;
             }
             float distancia_x = Math.abs(x_final - unidad.x);
             float distancia_y = Math.abs(y_final - unidad.y);

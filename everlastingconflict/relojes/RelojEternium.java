@@ -5,17 +5,15 @@
  */
 package everlastingconflict.relojes;
 
-import everlastingconflict.elementos.implementacion.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Elías
  */
 public class RelojEternium extends Reloj {
@@ -29,7 +27,7 @@ public class RelojEternium extends Reloj {
     public float fin_primer_cuarto = 3 * minsPerQuarter * 60;
     public float fin_segundo_cuarto = 2 * minsPerQuarter * 60;
     public float fin_tercer_cuarto = 1 * minsPerQuarter * 60;
-    
+
     public RelojEternium(Jugador jugadorAsociado) {
         this.jugadorAsociado = jugadorAsociado;
         contador_reloj = inicio_primer_cuarto;
@@ -81,11 +79,11 @@ public class RelojEternium extends Reloj {
             if ((ndivision == 4) && (contador_reloj <= 0)) {
                 contador_reloj = inicio_primer_cuarto;
                 ndivision = 1;
-                liberacion_temporal();
+                temporalRelease();
             } else if ((ndivision == 3) && (contador_reloj <= fin_tercer_cuarto)) {
                 contador_reloj = fin_tercer_cuarto;
                 ndivision = 4;
-                detencion_temporal();
+                temporalStop();
             } else if ((ndivision == 2) && (contador_reloj <= fin_segundo_cuarto)) {
                 contador_reloj = fin_segundo_cuarto;
                 ndivision = 3;
@@ -98,8 +96,8 @@ public class RelojEternium extends Reloj {
 
     @Override
     public void dibujar(Input input, Graphics g) {
-        this.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - 200;
-        this.y = VentanaCombate.playerY + 5;
+        this.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 - 200;
+        this.y = WindowCombat.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
         g.fillOval(this.x, this.y, this.anchura, this.altura);
         if (detener > 0) {
@@ -108,7 +106,8 @@ public class RelojEternium extends Reloj {
             g.setColor(Color.cyan);
         }
         g.drawOval(this.x, this.y, this.anchura, this.altura);
-        sprite.draw(this.x + this.anchura / 2 - sprite.getWidth() / 2, this.y + this.altura / 2 - sprite.getHeight() / 2);
+        sprite.draw(this.x + this.anchura / 2 - sprite.getWidth() / 2,
+                this.y + this.altura / 2 - sprite.getHeight() / 2);
         float anchuraPunto = 10, alturaPunto = 10;
         if (ndivision >= 1) {
             g.fillOval(this.x - 5, this.y + 30, anchuraPunto, alturaPunto);
@@ -167,27 +166,18 @@ public class RelojEternium extends Reloj {
         g.setColor(Color.black);
         g.drawString(tiempo, this.x + 65 - tiempo.length() * 10, this.y + 30);
         g.setColor(Color.white);
-        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
+        if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
             drawHint(g);
         }
     }
 
-    public void liberacion_temporal() {
-        for (Unidad u : this.jugadorAsociado.unidades) {
-            if (u.nombre.equals("Protector")) {
-                u.ataque = 0;
-            }
-        }
+    public void temporalRelease() {
+        this.jugadorAsociado.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(p -> p.isProyectileAttraction = false);
     }
 
-    public void detencion_temporal() {
-        for (Unidad u : this.jugadorAsociado.unidades) {
-            if (u.nombre.equals("Protector")) {
-                u.ataque = Unidad.ataque_estandar + 30;
-            } else {
-                u.parar();
-            }
-        }
+    public void temporalStop() {
+        this.jugadorAsociado.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(p -> p.isProyectileAttraction = true);
+        this.jugadorAsociado.unidades.stream().filter(u -> !"Protector".equals(u.nombre)).forEach(u -> u.parar());
     }
 
 }

@@ -8,6 +8,7 @@ package everlastingconflict.razas;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.gestion.Evento;
+import everlastingconflict.gestion.Jugador;
 
 public class Guardianes {
 
@@ -82,7 +83,8 @@ public class Guardianes {
         u.vision = Unidad.vision_estandar - 120;
         u.coste = 90;
         u.tiempo = Unidad.tiempo_estandar + 7;
-        u.descripcion = "Vehículo con la mayor potencia de fuego del arsenal de los Guardianes. Posee dos armas: una ametralladora pesada y un cañón penetrador.";
+        u.descripcion = "Vehículo con la mayor potencia de fuego del arsenal de los Guardianes. Posee dos armas: una " +
+                "ametralladora pesada y un cañón penetrador.";
         Guardianes.vehiculo(u);
         u.guardiansThreatLevelNeeded = 3;
     }
@@ -105,44 +107,51 @@ public class Guardianes {
     public static final void Artillero(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 20;
-        u.descripcion = "Piloto encargado de aumentar la capacidad ofensiva del arma principal del vehículo que maneja.Torreta mejorada: Torreta demoledora.";
+        u.descripcion = "Piloto encargado de aumentar la capacidad ofensiva del arma principal del vehículo que " +
+                "maneja.Torreta mejorada: Torreta demoledora.";
 
     }
 
     public static final void Explorador(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 20;
-        u.descripcion = "Piloto encargado de aumentar la visión del vehículo que maneja. Torreta mejorada: Estación de vigilancia.";
+        u.descripcion = "Piloto encargado de aumentar la visión del vehículo que maneja. Torreta mejorada: Estación " +
+                "de vigilancia.";
     }
 
     public static final void Corredor(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 30;
-        u.descripcion = "Piloto encargado de aumentar la velocidad del vehículo que maneja. Torreta mejorada: Distorsionador temporal.";
+        u.descripcion = "Piloto encargado de aumentar la velocidad del vehículo que maneja. Torreta mejorada: " +
+                "Distorsionador temporal.";
     }
 
     public static final void Ingeniero(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 30;
-        u.descripcion = "Piloto encargado de aumentar la vida del vehículo que maneja. Torreta mejorada: Estación reparadora.";
+        u.descripcion = "Piloto encargado de aumentar la vida del vehículo que maneja. Torreta mejorada: Estación " +
+                "reparadora.";
     }
 
     public static final void Armero(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 30;
-        u.descripcion = "Piloto encargado de reducir la cadencia del arma principal del vehículo que maneja. Torreta mejorada: Ametralladora.";
+        u.descripcion = "Piloto encargado de reducir la cadencia del arma principal del vehículo que maneja. Torreta " +
+                "mejorada: Ametralladora.";
     }
 
     public static final void Amparador(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 40;
-        u.descripcion = "Piloto encargado de aumentar la capacidad defensiva del vehículo que maneja. Torreta mejorada: Muro.";
+        u.descripcion = "Piloto encargado de aumentar la capacidad defensiva del vehículo que maneja. Torreta " +
+                "mejorada: Muro.";
     }
 
     public static final void Oteador(Unidad u) {
         Guardianes.piloto(u);
         u.coste = 50;
-        u.descripcion = "Piloto encargado de aumentar el alcance del arma principal del vehículo que maneja. Torreta mejorada: Torreta artillería.";
+        u.descripcion = "Piloto encargado de aumentar el alcance del arma principal del vehículo que maneja. Torreta " +
+                "mejorada: Torreta artillería.";
     }
 
     public static final void Pacificador(Unidad u) {
@@ -218,7 +227,7 @@ public class Guardianes {
         u.coste = 50;
         u.descripcion = "Unidad encargada de activar los edificios de los Guardianes.";
         u.piloto = false;
-        u.constructor = true;        
+        u.constructor = true;
     }
 
     public static final void Anexo(Edificio e) {
@@ -229,60 +238,64 @@ public class Guardianes {
         e.descripcion = "Edificio encargado de almacenar los vehículos de los Guardianes.";
     }
 
-    public static final void Taller(Edificio e) {        
+    public static final void Taller(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         ((Taller) e).maximo_anexos = 5;
         e.descripcion = "Edificio encargado de producir los vehículos de los Guardianes.";
         e.constructor = true;
         e.activo = false;
+        e.unitCreator = true;
     }
 
-    public static final void Pilotos(Edificio e) {        
+    public static final void Pilotos(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de entrenar a los pilotos de los Guardianes.";
         e.activo = false;
+        e.unitCreator = true;
     }
 
-    public static final void Ayuntamiento(Edificio e) {        
+    public static final void Ayuntamiento(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de gestionar los eventos positivos y negativos de los Guardianes.";
         e.constructor = true;
         e.radio_construccion = 1500f;
         e.main = true;
+        e.unitCreator = true;
     }
 
-    public static final void Templo(Edificio e) {        
+    public static final void Templo(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de entrenar a las unidades sagradas de los Guardianes.";
         e.activo = false;
+        e.unitCreator = true;
     }
 
-    public static final void Laboratorio(Edificio e) {        
+    public static final void Laboratorio(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de desarrollar las mejoras de los vehículos de Guardianes.";
         e.activo = false;
     }
 
-    public static final void Vaticano(Edificio e) {        
+    public static final void Vaticano(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de desarrollar las mejoras de las unidades sagradas de los Guardianes.";
         e.activo = false;
     }
 
-    public static final void Gubernamental(Edificio e) {        
+    public static final void Gubernamental(Edificio e) {
         e.vida_max = Edificio.vida_estandar;
-        e.vision = Edificio.vision_estandar;        
+        e.vision = Edificio.vision_estandar;
         e.descripcion = "Edificio encargado de desarrollar las mejoras económicas de los Guardianes.";
         e.activo = false;
     }
 
-    public static final void Torreta(Edificio e) { 
+    public static final void Torreta(Edificio e) {
         e.ataque = Unidad.ataque_estandar + 20;
         e.cadencia = Unidad.cadencia_estandar + 0.5f;
         e.alcance = Unidad.alcance_estandar;
@@ -317,37 +330,45 @@ public class Guardianes {
         }
     }
 
-    public static void iniciar_botones_edificio(Edificio e) {
+    public static void iniciar_botones_edificio(Jugador aliado, Edificio e) {
         switch (e.nombre) {
             case "Taller bélico":
                 e.botones.add(new BotonComplejo(new Edificio("Anexo")));
-                e.botones.add(new BotonComplejo(new Unidad("Patrulla")));
-                e.botones.add(new BotonComplejo(new Unidad("Acribillador")));
-                e.botones.add(new BotonComplejo(new Unidad("Tanque")));
-                e.botones.add(new BotonComplejo(new Unidad("Destructor")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Patrulla")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Acribillador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Tanque")));
+                if (SubRaceEnum.EJERCITO.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Unidad(aliado, "Destructor")));
+                }
                 break;
             case "Academia de pilotos":
-                e.botones.add(new BotonComplejo(new Unidad("Artillero")));
-                e.botones.add(new BotonComplejo(new Unidad("Explorador")));
-                e.botones.add(new BotonComplejo(new Unidad("Corredor")));
-                e.botones.add(new BotonComplejo(new Unidad("Ingeniero")));
-                e.botones.add(new BotonComplejo(new Unidad("Armero")));
-                e.botones.add(new BotonComplejo(new Unidad("Amparador")));
-                e.botones.add(new BotonComplejo(new Unidad("Oteador")));
+                if (SubRaceEnum.EJERCITO.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Unidad(aliado, "Artillero")));
+                }
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Explorador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Corredor")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Ingeniero")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Armero")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Amparador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Oteador")));
                 break;
             case "Ayuntamiento":
-                e.botones.add(new BotonComplejo(new Unidad("Activador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Activador")));
                 e.botones.add(new BotonComplejo(new Edificio("Torreta defensiva")));
-                e.botones.add(new BotonComplejo(new Evento("Decorar los parques")));
-                e.botones.add(new BotonComplejo(new Evento("Construir colegios")));
-                e.botones.add(new BotonComplejo(new Evento("Construir bloques de viviendas")));
-                e.botones.add(new BotonComplejo(new Evento("Sufragio universal")));
+                e.botones.add(new BotonComplejo(new Evento(aliado, "Decorar los parques")));
+                e.botones.add(new BotonComplejo(new Evento(aliado, "Construir colegios")));
+                if (SubRaceEnum.POLICIA.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Evento(aliado, "Construir bloques de viviendas")));
+                    e.botones.add(new BotonComplejo(new Evento(aliado, "Sufragio universal")));
+                }
                 break;
             case "Templo":
-                e.botones.add(new BotonComplejo(new Unidad("Pacificador")));
-                e.botones.add(new BotonComplejo(new Unidad("Silenciador")));
-                e.botones.add(new BotonComplejo(new Unidad("Inquisidor")));
-                e.botones.add(new BotonComplejo(new Unidad("Enviado celeste")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Pacificador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Silenciador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Inquisidor")));
+                if (SubRaceEnum.IGLESIA.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Unidad(aliado, "Enviado celeste")));
+                }
                 break;
             case "Edificio gubernamental":
                 e.botones.add(new BotonComplejo(new Tecnologia("Reforma gubernamental")));
@@ -361,7 +382,9 @@ public class Guardianes {
                 break;
             case "Vaticano":
                 e.botones.add(new BotonComplejo(new Tecnologia("Intervención divina")));
-                e.botones.add(new BotonComplejo(new Tecnologia("Armas bíblicas")));
+                if (SubRaceEnum.IGLESIA.equals(aliado.subRace)) {
+                    e.botones.add(new BotonComplejo(new Tecnologia("Armas bíblicas")));
+                }
                 break;
         }
     }

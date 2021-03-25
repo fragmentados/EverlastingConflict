@@ -14,7 +14,7 @@ package everlastingconflict.Experimento_Multiplayer_Real;
  */
 
 import everlastingconflict.ventanas.MensajeChat;
-import everlastingconflict.ventanas.VentanaPrincipal;
+import everlastingconflict.ventanas.WindowMain;
 import org.newdawn.slick.CanvasGameContainer;
 
 import javax.swing.*;
@@ -187,10 +187,10 @@ public class Client {
                             //VentanaPrincipal.ventanaMenu.otro_usuario_raza = msg.text;
                             break;
                         case Message.start_type:
-                            VentanaPrincipal.ventanaMenu.start = true;
+                            WindowMain.menuWindow.start = true;
                             break;
                         case Message.text_type:                            
-                            VentanaPrincipal.ventanaCombate.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
+                            WindowMain.combatWindow.anadir_mensaje_chat(new MensajeChat(msg.text.split("\n")[0], msg.text.split("\n")[1]));
                             break;
                     }
                     // if console mode print the message and add back the prompt

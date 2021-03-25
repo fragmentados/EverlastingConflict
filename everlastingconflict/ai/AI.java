@@ -11,6 +11,7 @@ import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.razas.RaceEnum;
+import everlastingconflict.razas.SubRaceEnum;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
@@ -22,46 +23,46 @@ public abstract class AI extends Jugador {
 
     public int npushear;
 
-    public AI(String n, String r, Integer t, boolean isLeader) {
-        super(n, r, t, isLeader);
+    public AI(String n, RaceEnum r, SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
+        super(n, r, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
-    public static AI crearAI(String r, Integer t, String dificultad, boolean isLeader) {
-        if (RaceEnum.CLARK.getName().equals(r)) {
+    public static AI crearAI(RaceEnum r, SubRaceEnum subRaceEnum, Integer t, String dificultad, boolean isLeader, boolean isJuggernaut) {
+        if (RaceEnum.CLARK.equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
-                    return new AIClarkFacil(t, isLeader);
+                    return new AIClarkFacil(subRaceEnum, t, isLeader, isJuggernaut);
             }
-        } else if (RaceEnum.ETERNIUM.getName().equals(r)) {
+        } else if (RaceEnum.ETERNIUM.equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
-                    return new AIEterniumFacil(t, isLeader);
+                    return new AIEterniumFacil(subRaceEnum, t, isLeader, isJuggernaut);
             }
-        } else if (RaceEnum.FENIX.getName().equals(r)) {
+        } else if (RaceEnum.FENIX.equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
-                    return new AIFenixNormal(t, isLeader);
+                    return new AIFenixNormal(subRaceEnum, t, isLeader, isJuggernaut);
                 case "Difícil":
-                    return new AIFenixFacil(t, isLeader);
+                    return new AIFenixFacil(subRaceEnum, t, isLeader, isJuggernaut);
             }
-        } else if (RaceEnum.GUARDIANES.getName().equals(r)) {
+        } else if (RaceEnum.GUARDIANES.equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
-                    return new AIGuardianesFacil(t, isLeader);
+                    return new AIGuardianesFacil(subRaceEnum, t, isLeader, isJuggernaut);
             }
-        } else if (RaceEnum.MAESTROS.getName().equals(r)) {
+        } else if (RaceEnum.MAESTROS.equals(r)) {
             switch(dificultad) {
                 case "Fácil":
                 case "Normal":
                 case "Difícil":
-                    return new AIMaestrosFacil(t, isLeader);
+                    return new AIMaestrosFacil(subRaceEnum, t, isLeader, isJuggernaut);
             }
         }
         return null;

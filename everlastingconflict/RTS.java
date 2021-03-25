@@ -5,8 +5,8 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.ventanas.VentanaCombate;
-import everlastingconflict.ventanas.VentanaPrincipal;
+import everlastingconflict.ventanas.WindowCombat;
+import everlastingconflict.ventanas.WindowMain;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -16,15 +16,15 @@ import java.awt.*;
 public class RTS {
 
     public static CanvasGameContainer canvas;
-    public static VentanaPrincipal mainController;
+    public static WindowMain mainController;
     public static JFrame mainFrame;
     public static final boolean DEBUG_MODE = false;
     
     public static void main(String[] args) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        VentanaCombate.VIEWPORT_SIZE_WIDTH = screenSize.width;
-        VentanaCombate.VIEWPORT_SIZE_HEIGHT = screenSize.height;
-        mainController = new VentanaPrincipal();
+        WindowCombat.VIEWPORT_SIZE_WIDTH = screenSize.width;
+        WindowCombat.VIEWPORT_SIZE_HEIGHT = screenSize.height;
+        mainController = new WindowMain();
         try {
             canvas = new CanvasGameContainer(mainController);
             canvas.getContainer().setShowFPS(false);

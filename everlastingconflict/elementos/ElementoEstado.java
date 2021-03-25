@@ -25,11 +25,11 @@ public abstract class ElementoEstado extends ElementoComplejo {
     public abstract void destruir(Partida p, ElementoAtacante atacante);
 
     public void comportamiento(Partida p, Graphics g, int delta) {
-        statusEffectCollection.comportamiento(delta);
+        statusEffectCollection.comportamiento(p, this, delta);
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
     }
 }

@@ -9,7 +9,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-public abstract class Ventana {
+public abstract class Window {
 
     public abstract void init(GameContainer container) throws SlickException;
 

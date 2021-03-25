@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Elías
  */
 public class Clark {
@@ -61,7 +60,13 @@ public class Clark {
                         switch (ncazador) {
                             case 2:
                                 //Amaestrador                                
-                                resultado = new Unidad("Amaestrador", x, y);
+                                resultado = new Unidad(aliado, "Amaestrador", x, y);
+                                break;
+                            case 3:
+                                if (SubRaceEnum.RUMIANTES.equals(aliado.subRace)) {
+                                    //Rumiante
+                                    resultado = new Unidad(aliado, "Rumiante", x, y);
+                                }
                                 break;
                         }
                         break;
@@ -69,13 +74,19 @@ public class Clark {
                         switch (ncazador) {
                             case 1:
                                 //Inspirador                                
-                                resultado = new Unidad("Inspirador", x, y);
+                                resultado = new Unidad(aliado, "Inspirador", x, y);
                                 break;
                         }
                         break;
                     case 2:
-                        //Regurgitador                        
-                        resultado = new Unidad("Regurgitador", x, y);
+                        //Escupidor
+                        resultado = new Unidad(aliado, "Escupidor", x, y);
+                        break;
+                    case 3:
+                        if (SubRaceEnum.REGURGITADORES.equals(aliado.subRace)) {
+                            //Regurgitador
+                            resultado = new Unidad(aliado, "Regurgitador", x, y);
+                        }
                         break;
                 }
                 break;
@@ -85,7 +96,7 @@ public class Clark {
                         switch (ncazador) {
                             case 1:
                                 //Defensor                                
-                                resultado = new Unidad("Defensor", x, y);
+                                resultado = new Unidad(aliado, "Defensor", x, y);
                                 break;
                         }
                         break;
@@ -93,11 +104,11 @@ public class Clark {
                         switch (ncazador) {
                             case 0:
                                 //Moldeador                                
-                                resultado = new Unidad("Moldeador", x, y);
+                                resultado = new Unidad(aliado, "Moldeador", x, y);
                                 break;
                             case 1:
                                 //Matriarca                                
-                                resultado = new Unidad("Matriarca", x, y);
+                                resultado = new Unidad(aliado, "Matriarca", x, y);
                                 break;
                         }
                         break;
@@ -108,8 +119,22 @@ public class Clark {
                     case 0:
                         switch (ncazador) {
                             case 0:
-                                //Desmembrador                                
-                                resultado = new Unidad("Desmembrador", x, y);
+                                //Desmembrador
+                                resultado = new Unidad(aliado, "Desmembrador", x, y);
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case 3:
+                switch (ndevorador) {
+                    case 0:
+                        switch (ncazador) {
+                            case 0:
+                                if (SubRaceEnum.DESPEDAZADORES.equals(aliado.subRace)) {
+                                    //Despedazador
+                                    resultado = new Unidad(aliado, "Despedazador", x, y);
+                                }
                                 break;
                         }
                         break;
@@ -143,7 +168,7 @@ public class Clark {
     }
 
     //Constructo CaC
-    public static void Depredador(Unidad u) {
+    public static void Depredador(Jugador aliado, Unidad u) {
         u.ataque = Clark.ataque_depredador;
         u.defensa = Unidad.defensa_estandar;
         u.vida_max = Unidad.vida_estandar;
@@ -153,11 +178,14 @@ public class Clark {
         u.vision = Unidad.vision_estandar + 100;
         u.tiempo = Unidad.tiempo_estandar - 8;
         u.coste = 100;
+        if (aliado.isJuggernaut) {
+            u.coste -= 10 * aliado.advantageMultiplier;
+        }
         u.descripcion = "Constructor cuerpo a cuerpo.";
     }
 
     //Constructor A Distancia    
-    public static void Devorador(Unidad u) {
+    public static void Devorador(Jugador aliado, Unidad u) {
         u.ataque = Unidad.ataque_estandar + 10;
         u.defensa = Unidad.defensa_estandar;
         u.vida_max = Unidad.vida_estandar - 30;
@@ -167,11 +195,14 @@ public class Clark {
         u.vision = Unidad.vision_estandar;
         u.tiempo = Unidad.tiempo_estandar - 8;
         u.coste = 100;
+        if (aliado.isJuggernaut) {
+            u.coste -= 10 * aliado.advantageMultiplier;
+        }
         u.descripcion = "Constructor a distancia.";
     }
 
     //Constructor Apoyo
-    public static void Cazador(Unidad u) {
+    public static void Cazador(Jugador aliado, Unidad u) {
         u.ataque = Unidad.ataque_estandar;
         u.defensa = Unidad.defensa_estandar + 1;
         u.vida_max = Unidad.vida_estandar - 30;
@@ -181,6 +212,9 @@ public class Clark {
         u.vision = Unidad.vision_estandar;
         u.tiempo = Unidad.tiempo_estandar - 8;
         u.coste = 100;
+        if (aliado.isJuggernaut) {
+            u.coste -= 10 * aliado.advantageMultiplier;
+        }
         u.descripcion = "Constructor de apoyo.";
     }
 
@@ -236,8 +270,21 @@ public class Clark {
         u.descripcion = "Unidad con gran capacidad ofensiva a poco alcance.";
     }
 
+    //Cac+CaC+CaC
+    public static void Despedazador(Unidad u) {
+        u.ataque = Unidad.ataque_estandar + 90;
+        u.defensa = Unidad.defensa_estandar;
+        u.vida_max = Unidad.vida_estandar;
+        u.alcance = Unidad.alcance_estandar - 90;
+        u.cadencia = Unidad.cadencia_estandar - 0.5f;
+        u.velocidad = Unidad.velocidad_estandar + 2f;
+        u.vision = Unidad.vision_estandar;
+        u.tiempo = Unidad.tiempo_estandar - 8;
+        u.descripcion = "Unidad con inmensa capacidad ofensiva a poco alcance. Puede cegar al enemigo";
+    }
+
     //Distancia+Distancia
-    public static void Regurgitador(Unidad u) {
+    public static void Escupidor(Unidad u) {
         u.ataque = Unidad.ataque_estandar + 60;
         u.area = Unidad.area_estandar;
         u.defensa = Unidad.defensa_estandar;
@@ -248,6 +295,21 @@ public class Clark {
         u.vision = Unidad.vision_estandar + 100;
         u.tiempo = Unidad.tiempo_estandar - 8;
         u.descripcion = "Unidad capaz de bombardear desde grandes distancias.";
+    }
+
+    //Distancia+Distancia+Distancia
+    public static void Regurgitador(Unidad u) {
+        u.ataque = Unidad.ataque_estandar + 70;
+        u.area = Unidad.area_estandar;
+        u.defensa = Unidad.defensa_estandar;
+        u.vida_max = Unidad.vida_estandar;
+        u.alcance = Unidad.alcance_estandar + 200;
+        u.cadencia = Unidad.cadencia_estandar - 0.5f;
+        u.velocidad = Unidad.velocidad_estandar;
+        u.vision = Unidad.vision_estandar + 200;
+        u.tiempo = Unidad.tiempo_estandar - 8;
+        u.descripcion = "Unidad a distancia definitiva con habilidad para aumentar drásticamente su velocidad de " +
+                "ataque durante un tiempo.";
     }
 
     //Apoyo+Apoyo
@@ -261,6 +323,21 @@ public class Clark {
         u.vision = Unidad.vision_estandar + 100;
         u.tiempo = Unidad.tiempo_estandar - 8;
         u.descripcion = "Unidad sin capacidad ofensiva con grandes habilidades";
+        u.hostil = false;
+    }
+
+    //Apoyo+Apoyo+Apoyo
+    public static void Rumiante(Unidad u) {
+        u.ataque = 0;
+        u.defensa = Unidad.defensa_estandar;
+        u.vida_max = Unidad.vida_estandar + 100;
+        u.alcance = Unidad.alcance_estandar + 200;
+        u.cadencia = 0;
+        u.velocidad = Unidad.velocidad_estandar;
+        u.vision = Unidad.vision_estandar + 100;
+        u.tiempo = Unidad.tiempo_estandar - 8;
+        u.descripcion = "Unidad sin capacidad ofensiva con supremas habilidades";
+        u.hostil = false;
     }
 
     //Cac+Distancia+Apoyo
@@ -284,14 +361,15 @@ public class Clark {
         e.coste = 0;
         e.descripcion = "Edificio central capaz de crear constructores e investigar tecnologías.";
         e.main = true;
+        e.unitCreator = true;
     }
 
-    public static void iniciar_botones_edificio(Edificio e) {
+    public static void iniciar_botones_edificio(Jugador aliado, Edificio e) {
         switch (e.nombre) {
             case "Primarca":
-                e.botones.add(new BotonComplejo(new Unidad("Depredador")));
-                e.botones.add(new BotonComplejo(new Unidad("Devorador")));
-                e.botones.add(new BotonComplejo(new Unidad("Cazador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Depredador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Devorador")));
+                e.botones.add(new BotonComplejo(new Unidad(aliado, "Cazador")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Asimilación mejorada")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Instintos primarios")));
                 e.botones.add(new BotonComplejo(new Tecnologia("Bioacero reforzado")));
@@ -303,8 +381,6 @@ public class Clark {
     static void iniciar_botones_unidad(Unidad u) {
         switch (u.nombre) {
             case "Depredador":
-                u.botones.add(new BotonComplejo("Fusion"));
-                break;
             case "Devorador":
                 u.botones.add(new BotonComplejo("Fusion"));
                 break;
@@ -325,6 +401,15 @@ public class Clark {
                 break;
             case "Inspirador":
                 u.botones.add(new BotonComplejo(new Habilidad("Alentar")));
+                break;
+            case "Despedazador":
+                u.botones.add(new BotonComplejo(new Habilidad("Cegar a la presa")));
+                break;
+            case "Regurgitador":
+                u.botones.add(new BotonComplejo(new Habilidad("Modo supremo")));
+                break;
+            case "Rumiante":
+                u.botones.add(new BotonComplejo(new Habilidad("Domesticacion experta")));
                 break;
         }
     }

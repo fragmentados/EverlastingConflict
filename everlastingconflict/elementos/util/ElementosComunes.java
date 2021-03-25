@@ -6,6 +6,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 
 public class ElementosComunes {
+    //Color
+    public static final Color UI_COLOR = new Color(0f, 0f, 0.6f, 1f);
     // Common sounds
     public static Sound CONSTRUCTION_SOUND;
     public static Sound UNIT_DEATH_SOUND;
@@ -28,11 +30,14 @@ public class ElementosComunes {
     public static Image DEPREDADOR_IMAGE;
     public static Image AMAESTRADOR_IMAGE;
     public static Image INSPIRADOR_IMAGE;
-    public static Image REGURGITADOR_IMAGE;
+    public static Image ESCUPIDOR_IMAGE;
     public static Image DEFENSOR_IMAGE;
     public static Image MOLDEADOR_IMAGE;
     public static Image DESMEMBRADOR_IMAGE;
     public static Image MATRIARCA_IMAGE;
+    public static Image DESPEDAZADOR_IMAGE;
+    public static Image REGURGITADOR_IMAGE;
+    public static Image RUMIANTE_IMAGE;
     // Day / Night Images
     public static Image DAY_IMAGE;
     public static Image NIGHT_IMAGE;
@@ -55,12 +60,15 @@ public class ElementosComunes {
         DEVORADOR_IMAGE = new Image("media/Iconos/Devorador.png");
         AMAESTRADOR_IMAGE = new Image("media/Iconos/Amaestrador.png");
         INSPIRADOR_IMAGE = new Image("media/Iconos/Inspirador.png");
-        REGURGITADOR_IMAGE = new Image("media/Iconos/Regurgitador.png");
+        ESCUPIDOR_IMAGE = new Image("media/Iconos/Escupidor.png");
         DEPREDADOR_IMAGE = new Image("media/Iconos/Depredador.png");
         DEFENSOR_IMAGE = new Image("media/Iconos/Defensor.png");
         MOLDEADOR_IMAGE = new Image("media/Iconos/Moldeador.png");
         DESMEMBRADOR_IMAGE = new Image("media/Iconos/Desmembrador.png");
         MATRIARCA_IMAGE = new Image("media/Iconos/Matriarca.png");
+        DESPEDAZADOR_IMAGE = new Image("media/Iconos/Despedazador.png");
+        REGURGITADOR_IMAGE = new Image("media/Iconos/Regurgitador.png");
+        RUMIANTE_IMAGE = new Image("media/Iconos/Rumiante.png");
         DAY_IMAGE = new Image("media/Iconos/Sol.png");
         NIGHT_IMAGE = new Image("media/Iconos/Luna.png");
         THREAT_IMAGE = new Image("media/Recursos/GuardianesAmenaza.png");

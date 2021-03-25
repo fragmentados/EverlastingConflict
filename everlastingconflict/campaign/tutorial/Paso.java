@@ -7,7 +7,7 @@ package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.RTS;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Input;
 
 /**
@@ -20,7 +20,7 @@ public class Paso {
 
     public Paso(String t) {
         texto = t;
-        this.texto = Partida.anadir_saltos_de_linea(this.texto, VentanaCombate.VIEWPORT_SIZE_WIDTH);
+        this.texto = Partida.anadir_saltos_de_linea(this.texto, WindowCombat.VIEWPORT_SIZE_WIDTH);
     }
 
     public Paso(String t, boolean requiresClick) {
@@ -30,7 +30,7 @@ public class Paso {
 
     public boolean comprobacion(Partida p) {
         Input input = RTS.canvas.getContainer().getInput();
-        return VentanaCombate.continuar.isHovered(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY());
+        return WindowCombat.continuar.isHovered(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY());
     }
 
     public void efecto(Partida p) {

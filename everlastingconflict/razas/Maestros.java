@@ -5,7 +5,9 @@
  */
 package everlastingconflict.razas;
 
+import everlastingconflict.elementos.implementacion.Manipulador;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.gestion.Jugador;
 
 /**
  *
@@ -78,7 +80,7 @@ public class Maestros {
         u.healer = true;
     }
 
-    public static void Manipulador(Unidad u) {
+    public static void Manipulador(Jugador aliado, Unidad u) {
         u.ataque = Unidad.ataque_estandar;
         u.defensa = Unidad.defensa_estandar + 2;
         u.vida_max = Unidad.vida_estandar + 900;
@@ -87,6 +89,16 @@ public class Maestros {
         u.velocidad = Unidad.velocidad_estandar - 0.1f;
         u.vision = Unidad.vision_estandar + 100;
         u.descripcion = "Unidad principal.";
+        ((Manipulador)u).mana_max = 200;
+        if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
+            ((Manipulador)u).poder_magico += 10;
+        } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
+            ((Manipulador)u).mana_max += 100;
+        } else {
+            u.ataque += 10;
+            u.cadencia -= 0.2f;
+        }
+        ((Manipulador)u).mana = ((Manipulador)u).mana_max;
     }
 
     public static void iniciar_botones_unidad(Unidad u) {

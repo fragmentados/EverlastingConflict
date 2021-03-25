@@ -12,7 +12,6 @@ import everlastingconflict.estados.StatusEffectCollection;
 import everlastingconflict.estadoscomportamiento.StatusBehaviour;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceEnum;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -24,21 +23,26 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Elías
  */
 public class Proyectil extends ElementoMovil {
 
     public ElementoAtacante origen;
     public boolean shouldHeal = false;
+    private static final int ATTRACTION_RADIUS = 200;
 
     public final void iniciar_datos(ElementoAtacante origen) {
         try {
-            this.sprite = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300, false);
-            this.izquierda = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_izquierda.png")}, 300, false);
-            this.derecha = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300, false);
-            this.arriba = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_arriba.png")}, 300, false);
-            this.abajo = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_abajo.png")}, 300, false);
+            this.sprite = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300,
+                    false);
+            this.izquierda = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_izquierda.png")},
+                    300, false);
+            this.derecha = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300,
+                    false);
+            this.arriba = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_arriba.png")}, 300,
+                    false);
+            this.abajo = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_abajo.png")}, 300,
+                    false);
         } catch (SlickException ex) {
             Logger.getLogger(Proyectil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,11 +81,11 @@ public class Proyectil extends ElementoMovil {
         if (objetivo.hitbox(this.x, this.y)) {
             if (shouldHeal) {
                 if (origen.heal(ataque, objetivo)) {
-                    ((ElementoMovil)origen).parar();
+                    ((ElementoMovil) origen).parar();
                 }
             } else if (origen.dano(p, "Físico", ataque, objetivo)) {
                 if (origen instanceof ElementoMovil) {
-                    ((ElementoMovil)origen).parar();
+                    ((ElementoMovil) origen).parar();
                 }
             }
             this.destruir(p, null);
@@ -91,17 +95,16 @@ public class Proyectil extends ElementoMovil {
     }
 
     public void checkTortuceAttraction(Partida p) {
-        if (!"Tortuga".equals(origen.nombre)) {
+        if (!objetivo.isProyectileAttraction) {
             List<Jugador> enemies = p.getEnemyPlayersFromElement(this.origen);
             for (Jugador enemy : enemies) {
-                if (RaceEnum.FENIX.getName().equals(enemy.raza)) {
-                    List<Unidad> turtles = enemy.unidades.stream().filter(u -> "Tortuga".equals(u.nombre)).collect(Collectors.toList());
-                    for (Unidad tortoise : turtles) {
-                        if (Math.abs(this.x - tortoise.x) <= 200 && Math.abs(this.y - tortoise.y) <= 200) {
-                            this.objetivo = tortoise;
-                            this.movimiento = null;
-                            return;
-                        }
+                List<Unidad> proyectileAttractors =
+                        enemy.unidades.stream().filter(u -> u.isProyectileAttraction).collect(Collectors.toList());
+                for (Unidad attractor : proyectileAttractors) {
+                    if (Math.abs(this.x - attractor.x) <= ATTRACTION_RADIUS && Math.abs(this.y - attractor.y) <= ATTRACTION_RADIUS) {
+                        this.objetivo = attractor;
+                        this.movimiento = null;
+                        return;
                     }
                 }
             }

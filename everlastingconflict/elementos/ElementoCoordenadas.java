@@ -8,26 +8,25 @@ package everlastingconflict.elementos;
 import everlastingconflict.RTS;
 import everlastingconflict.elementos.implementacion.Edificio;
 import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- *
  * @author Elías
  */
 public abstract class ElementoCoordenadas extends ElementoSimple {
 
     public float x, y;
     public int anchura, altura;
-    
+
     public boolean visible(Partida p) {
         return p.getEnemyPlayersFromElement(this).stream().anyMatch(player -> visibleByPlayer(player));
     }
@@ -49,12 +48,18 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
             }
         }
         for (Unidad u : j.unidades) {
-            if (u.alcance(u.vision / 2, this)) {
-                return true;
+            if (u.statusEffectCollection.existe_estado(StatusEffectName.CEGUERA)) {
+                if (u.alcance(5, this)) {
+                    return true;
+                }
+            } else {
+                if (u.alcance(u.vision / 2, this)) {
+                    return true;
+                }
             }
         }
         for (Vision v : j.visiones) {
-            if (v.forma.contains(new Rectangle2D.Float(x - anchura / 2, y - altura / 2, anchura, altura))) {
+            if (v.alcance(v.diameter / 2, this)) {
                 return true;
             }
         }
@@ -147,25 +152,27 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
 
     public boolean colision(Partida partida, float x, float y) {
         //Devuelve true si existe alguna otra unidad en las coordenadas especificadas
-        boolean colision = partida.players.stream().flatMap(p -> p.unidades.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
+        boolean colision =
+                partida.players.stream().flatMap(p -> p.unidades.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
         if (!colision) {
-            colision = partida.players.stream().flatMap(p -> p.edificios.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
+            colision =
+                    partida.players.stream().flatMap(p -> p.edificios.stream()).anyMatch(e -> e != this && e.en_rango(x - anchura / 2, y - altura / 2, x + anchura / 2, y + altura / 2));
         }
         return colision;
     }
 
-    public void dibujar(Partida p, Color c, Input input, Graphics g){
+    public void render(Partida p, Color c, Input input, Graphics g) {
         sprite.draw(x - anchura / 2, y - altura / 2);
         g.setColor(Color.black);
         if (RTS.DEBUG_MODE) {
             g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         }
         g.setColor(Color.white);
-        if (VentanaCombate.ui.elementos.indexOf(this) != -1)  {
+        if (WindowCombat.ui.elementos.indexOf(this) != -1) {
             circulo(g, c);
         }
-        if(this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())){
-            circulo_extendido(g,c);
+        if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
+            circulo_extendido(g, c);
         }
     }
 }

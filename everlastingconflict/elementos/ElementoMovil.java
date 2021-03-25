@@ -13,7 +13,7 @@ import everlastingconflict.movimientos.Mover;
 import everlastingconflict.movimientos.Movimiento;
 import everlastingconflict.movimientos.Recolectar;
 import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -46,8 +46,9 @@ public class ElementoMovil extends ElementoAtacante {
     public boolean canMove(Partida partida) {
         Jugador ally = partida.getPlayerFromElement(this);
         return movil && statusEffectCollection.allowsMove() && StatusBehaviour.allowsMove(statusBehaviour)
-                && (ally == null || !RaceEnum.ETERNIUM.getName().equals(ally.raza)
-                || VentanaCombate.eterniumWatch().ndivision != 4);
+                && (ally == null || !RaceEnum.ETERNIUM.equals(ally.raza)
+                || WindowCombat.eterniumWatch().ndivision != 4 || nombre.equals("Protector") || nombre.equals(
+                        "Erradicador"));
     }
 
     public void anadir_recoleccion(Partida partida, float x, float y) {
@@ -55,7 +56,7 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     public void anadir_movimiento(float x, float y) {
-        if (!VentanaCombate.mayus) {
+        if (!WindowCombat.mayus) {
             movimiento = new Mover(this, x, y);
         } else {
             if (movimiento != null) {
@@ -106,8 +107,8 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
         if (movimiento != null) {
             movimiento.dibujar_fin_movimiento(g);
         }

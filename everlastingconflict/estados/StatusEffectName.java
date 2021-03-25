@@ -1,7 +1,5 @@
 package everlastingconflict.estados;
 
-import jdk.net.SocketFlow;
-
 public enum StatusEffectName {
     STUN("Stun"),
     SILENCIO("Silencio"),
@@ -10,6 +8,7 @@ public enum StatusEffectName {
     INHABILITACION("Inhabilitación"),
     RALENTIZACION("Ralentización"),
     ATAQUE_POTENCIADO("Ataque potenciado"),
+    ATAQUE_DISMINUIDO("Ataque disminuido"),
     AMNESIA("Amnesia"),
     REGENERACION("Regeneración"),
     NECESIDAD("Tiempos de necesidad"),
@@ -17,7 +16,10 @@ public enum StatusEffectName {
     MEDITACION("Meditación"),
     SUPERVIVENCIA("Supervivencia"),
     DRENANTES("Impactos drenantes"),
-    DEFENSA("Defensa férrea");
+    DEFENSA("Defensa férrea"),
+    CEGUERA("Ceguera"),
+    MODO_SUPREMO("Modo supremo"),
+    PROVOCAR("Provocar");
 
     private String name;
 

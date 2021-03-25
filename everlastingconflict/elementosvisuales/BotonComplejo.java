@@ -20,8 +20,8 @@ import everlastingconflict.razas.RaceEnum;
 import everlastingconflict.relojes.Reloj;
 import everlastingconflict.ventanas.Mensaje;
 import everlastingconflict.ventanas.UI;
-import everlastingconflict.ventanas.VentanaCombate;
-import everlastingconflict.ventanas.VentanaPrincipal;
+import everlastingconflict.ventanas.WindowCombat;
+import everlastingconflict.ventanas.WindowMain;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -30,8 +30,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.ventanas.VentanaCombate.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.ventanas.VentanaCombate.playerY;
+import static everlastingconflict.elementos.util.ElementosComunes.UI_COLOR;
+import static everlastingconflict.ventanas.WindowCombat.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.ventanas.WindowCombat.playerY;
 
 /**
  *
@@ -196,7 +197,7 @@ public class BotonComplejo extends BotonSimple {
             return true;
         } else {
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-                return isHovered((int) VentanaCombate.playerX + input.getMouseX(), (int) VentanaCombate.playerY + input.getMouseY());
+                return isHovered((int) WindowCombat.playerX + input.getMouseX(), (int) WindowCombat.playerY + input.getMouseY());
             } else {
                 return false;
             }
@@ -259,14 +260,14 @@ public class BotonComplejo extends BotonSimple {
     public void renderExtendedInfo(Jugador aliado, Graphics g, ElementoComplejo origen) {
         if (canBeShown) {
             //Origen solo es necesario para botones del Manipulador
-            float xbotones = VentanaCombate.playerX + 600;
+            float xbotones = WindowCombat.playerX + 600;
             float ybotones = playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - 1;
             float anchura_contador = 565;
             float altura_contador = 200;
             float espacio_lineas = 20;
             float xcontador = xbotones + 1;
             float ycontador = ybotones - altura_contador;
-            g.setColor(VentanaCombate.ui.color);
+            g.setColor(UI_COLOR);
             g.fillRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
             g.setColor(Color.white);
             g.drawRect(xbotones, ybotones - altura_contador, anchura_contador, altura_contador);
@@ -278,7 +279,7 @@ public class BotonComplejo extends BotonSimple {
                     ElementoSimple elemento;
                     switch (elemento_tipo) {
                         case "Unidad":
-                            elemento = new Unidad(elemento_nombre);
+                            elemento = new Unidad(aliado, elemento_nombre);
                             break;
                         case "Edificio":
                             if (TALLER_NOMBRE.equals(elemento_nombre)) {
@@ -294,7 +295,7 @@ public class BotonComplejo extends BotonSimple {
                             elemento = new Habilidad(elemento_nombre);
                             break;
                         case "Evento":
-                            elemento = new Evento(elemento_nombre);
+                            elemento = new Evento(aliado, elemento_nombre);
                             break;
                         default:
                             elemento = null;
@@ -390,7 +391,7 @@ public class BotonComplejo extends BotonSimple {
                 if (texto == null) {
                     if (this.elemento_tipo.equals("Unidad")) {
                         //Crear Unidad  
-                        edificio.createUnit(partida, aliado, new Unidad(this.elemento_nombre));
+                        edificio.createUnit(partida, aliado, new Unidad(aliado, this.elemento_nombre));
                     } else {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio
@@ -404,9 +405,9 @@ public class BotonComplejo extends BotonSimple {
                                                 t.construir_anexo(partida);
                                             }
                                         } else {
-                                            VentanaPrincipal.ventanaCombate.edificio = contador_edificio;
-                                            VentanaPrincipal.ventanaCombate.edificio.vida = 0;
-                                            VentanaPrincipal.ventanaCombate.constructor = (ElementoAtacante) e;
+                                            WindowMain.combatWindow.edificio = contador_edificio;
+                                            WindowMain.combatWindow.edificio.vida = 0;
+                                            WindowMain.combatWindow.constructor = (ElementoAtacante) e;
                                         }
                                     }
                                 }
@@ -417,7 +418,7 @@ public class BotonComplejo extends BotonSimple {
                                 edificio.researchTechnology(partida, aliado, new Tecnologia(this.elemento_nombre));
                             } else {
                                 //Desbloquear Evento Positivo
-                                Evento evento = new Evento(this.elemento_nombre);
+                                Evento evento = new Evento(aliado, this.elemento_nombre);
                                 if (aliado.comprobacion_recursos(evento)) {
                                     aliado.eventos.anadir_evento(aliado, evento);
                                     evento.efecto(aliado);
@@ -468,7 +469,7 @@ public class BotonComplejo extends BotonSimple {
                         //Convertirse en unidad.
                         //e = new Unidad(this.elemento_nombre);
                         unidad.destruir(partida, null);
-                        Unidad nueva = new Unidad(this.elemento_nombre, unidad.x, unidad.y);
+                        Unidad nueva = new Unidad(aliado, this.elemento_nombre, unidad.x, unidad.y);
                         aliado.unidades.add(nueva);
                         nueva.seleccionar();
                     } else {
@@ -483,13 +484,13 @@ public class BotonComplejo extends BotonSimple {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < aliado.limite_cuarteles)) {
                                                     if (partida.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
-                                                        VentanaPrincipal.ventanaCombate.edificio = contador_edificio;
-                                                        VentanaPrincipal.ventanaCombate.edificio.vida = 0;
-                                                        VentanaPrincipal.ventanaCombate.constructor = contador;
+                                                        WindowMain.combatWindow.edificio = contador_edificio;
+                                                        WindowMain.combatWindow.edificio.vida = 0;
+                                                        WindowMain.combatWindow.constructor = contador;
                                                         break;
                                                     }
                                                 } else {
-                                                    VentanaPrincipal.ventanaCombate.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
+                                                    WindowMain.combatWindow.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
                                                 }
                                             }
                                         }
@@ -553,12 +554,12 @@ public class BotonComplejo extends BotonSimple {
             } else if ("Cuartel Fénix".equals(elemento_nombre)) {
                 enabled = aliado.cantidad_edificio(elemento_nombre) < aliado.limite_cuarteles;
             } else if (elemento_coste > 0) {
-                if (RaceEnum.MAESTROS.getName().equals(aliado.raza)) {
+                if (RaceEnum.MAESTROS.equals(aliado.raza)) {
                     Manipulador m = aliado.getManipulator();
                     enabled = m.mana >= this.elemento_coste;
                 } else {
                     enabled = aliado.getRecursos() >= this.elemento_coste;
-                    if (RaceEnum.GUARDIANES.getName().equals(aliado.raza)) {
+                    if (RaceEnum.GUARDIANES.equals(aliado.raza)) {
                         enabled = enabled && aliado.guardiansThreatLevel >= this.elementThreatLevelNeeded;
                     }
                 }

@@ -86,14 +86,14 @@ public class Taller extends Edificio {
     }
 
     @Override
-    public void checkProgressBar(Partida p, Jugador j) {
+    public void checkProgressBar(Partida p, Jugador aliado) {
         if (barra.terminado()) {
             if (cola_construccion.size() > 0) {
                 //System.out.println("Unidad creada");
                 if (cola_construccion.get(0) instanceof Unidad) {
                     mover_unidades_creadas(p);
                     Unidad u = (Unidad) cola_construccion.get(0);
-                    j.unidades.add(u);
+                    aliado.unidades.add(u);
                     unidades_creadas.add(u);
                     u.iniciarbotones(p);
                     Point2D.Float contador = new Point2D.Float(anexos.get(0).x, anexos.get(0).y);

@@ -11,7 +11,7 @@ import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -99,8 +99,8 @@ public class RelojMaestros extends Reloj {
 
     @Override
     public void dibujar(Input input, Graphics g) {
-        this.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 - 100;
-        this.y = VentanaCombate.playerY + 5;
+        this.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 - 100;
+        this.y = WindowCombat.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
         g.fillOval(this.x, this.y, this.anchura, this.altura);
         if (detener > 0) {
@@ -144,7 +144,7 @@ public class RelojMaestros extends Reloj {
         g.setColor(Color.black);
         g.drawString(tiempo, this.x + 65 - tiempo.length() * 10, this.y + 30);
         g.setColor(Color.white);
-        if (this.hitbox(VentanaCombate.playerX + input.getMouseX(), VentanaCombate.playerY + input.getMouseY())) {
+        if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
             drawHint(g);
         }
     }

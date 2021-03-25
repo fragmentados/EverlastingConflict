@@ -7,11 +7,12 @@ package everlastingconflict.relojes;
 
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.ventanas.VentanaCombate;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+
+import static everlastingconflict.elementos.util.ElementosComunes.UI_COLOR;
 
 /**
  *
@@ -53,7 +54,7 @@ public abstract class Reloj extends ElementoCoordenadas {
     public abstract void dibujar(Input input, Graphics g);
 
     public void drawHint(Graphics g) {
-        g.setColor(VentanaCombate.ui.color);
+        g.setColor(UI_COLOR);
         g.fillRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);
         g.setColor(Color.white);
         g.drawRect(this.x + this.anchura + 10, this.y, hintBoxWidth, hintBoxHeight);

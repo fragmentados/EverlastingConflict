@@ -7,6 +7,7 @@ package everlastingconflict.gestion;
 
 import everlastingconflict.elementos.ElementoCoordenadas;
 import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.razas.SubRaceEnum;
 import everlastingconflict.relojes.Reloj;
 import org.newdawn.slick.*;
 
@@ -25,12 +26,12 @@ public class Evento extends ElementoCoordenadas {
     public String nombre_elemento;
     public boolean positivo;
 
-    public final void iniciar_datos() {
+    public final void initData(Jugador aliado) {
         switch (nombre) {
             //Negativos
             case "Una racha criminal asola las calles":
                 efecto = 20;
-                cantidad_elemento = 2;
+                cantidad_elemento = (SubRaceEnum.POLICIA.equals(aliado.subRace)) ? 1 : 2;
                 nombre_elemento = "Patrulla";
                 tiempo_evento = tiempo_contador = 45f;
                 break;
@@ -38,13 +39,13 @@ public class Evento extends ElementoCoordenadas {
                 efecto = 35;
                 nombre_elemento = "Pacificador";
                 cantidad_elemento = 1;
-                tiempo_evento = tiempo_contador = 60f;
+                tiempo_evento = tiempo_contador = (SubRaceEnum.POLICIA.equals(aliado.subRace)) ? 75f : 60f;
                 break;
             case "Una revolución se acerca":
                 efecto = 50;
                 cantidad_elemento = 1;
                 nombre_elemento = "Silenciador";
-                tiempo_evento = tiempo_contador = 90f;
+                tiempo_evento = tiempo_contador = (SubRaceEnum.POLICIA.equals(aliado.subRace)) ? 120f : 90f;
                 break;
             //Positivos
             case "Decorar los parques":
@@ -82,9 +83,9 @@ public class Evento extends ElementoCoordenadas {
         }
     }
 
-    public Evento(String n) {
+    public Evento(Jugador aliado, String n) {
         this.nombre = n;
-        iniciar_datos();
+        initData(aliado);
     }
 
     public void efecto(Jugador j) {

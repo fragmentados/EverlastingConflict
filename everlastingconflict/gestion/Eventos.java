@@ -6,7 +6,7 @@
 package everlastingconflict.gestion;
 
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- *
  * @author Elías
  */
 class Comparador implements Comparator<Evento> {
@@ -127,12 +126,12 @@ public class Eventos {
 
     public void aparece_nuevo_evento(Jugador j) {
         if (j.guardiansThreatLevel == 3) {
-            anadir_evento(j, new Evento("Una revolución se acerca"));
+            anadir_evento(j, new Evento(j, "Una revolución se acerca"));
         } else {
             if (j.guardiansThreatLevel == 2) {
-                anadir_evento(j, new Evento("Manifestaciones en las plazas"));
+                anadir_evento(j, new Evento(j, "Manifestaciones en las plazas"));
             } else {
-                anadir_evento(j, new Evento("Una racha criminal asola las calles"));
+                anadir_evento(j, new Evento(j, "Una racha criminal asola las calles"));
             }
         }
         //Activar reloj
@@ -169,13 +168,14 @@ public class Eventos {
         g.setColor(Color.black);
         if (!desactivacion_permanente) {
             if (activo) {
-                g.drawString(Reloj.tiempo_a_string(tiempo_contador), VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2, VentanaCombate.playerY + 5);
+                g.drawString(Reloj.tiempo_a_string(tiempo_contador),
+                        WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2, WindowCombat.playerY + 5);
             }
         }
         for (int i = 0; i < contenido.size(); i++) {
             Evento e = contenido.get(i);
-            e.x = VentanaCombate.playerX + VentanaCombate.VIEWPORT_SIZE_WIDTH / 2 + 100 + (e.sprite.getWidth() + 10) * i;
-            e.y = VentanaCombate.playerY + 5;
+            e.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 + 100 + (e.sprite.getWidth() + 10) * i;
+            e.y = WindowCombat.playerY + 5;
             e.dibujar(g);
         }
     }

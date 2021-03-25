@@ -9,9 +9,10 @@ import everlastingconflict.elementos.ElementoAtacante;
 import everlastingconflict.elementos.ElementoSimple;
 import everlastingconflict.elementos.implementacion.*;
 import everlastingconflict.elementos.util.ElementosComunes;
+import everlastingconflict.estados.StatusEffectName;
 import everlastingconflict.razas.*;
 import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -32,7 +33,8 @@ public class Jugador {
     //Datos basicos
     public float x_inicial, y_inicial;
     public boolean verticalDown = true, horizontalRight = true;
-    public String nombre, raza;
+    public String nombre;
+    public RaceEnum raza;
     public SubRaceEnum subRace;
     public Color color;
     //RTS.Elementos
@@ -55,6 +57,8 @@ public class Jugador {
     public Integer team;
     public boolean isMainPlayer;
     public boolean isLeader = false;
+    public boolean isJuggernaut = false;
+    public int advantageMultiplier;
 
     public float getRecursos() {
         return recursos;
@@ -65,8 +69,13 @@ public class Jugador {
         checkButtonResources();
     }
 
+    public void diminishFenixPercentage() {
+        recursos -= 10;
+        checkButtonResources();
+    }
+
     public void removeResources(float amount) {
-        if (!raza.equals(RaceEnum.FENIX.getName())) {
+        if (!raza.equals(RaceEnum.FENIX)) {
             recursos -= amount;
             checkButtonResources();
         }
@@ -74,15 +83,15 @@ public class Jugador {
 
     public final int getInitialResources() {
         switch (raza) {
-            case "Fénix":
+            case FENIX:
                 return 10;
-            case "Eternium":
+            case ETERNIUM:
                 return 500;
-            case "Clark":
+            case CLARK:
                 return 300;
-            case "Maestros":
+            case MAESTROS:
                 return 0;
-            case "Guardianes":
+            case GUARDIANES:
                 eventos = new Eventos();
                 guardiansPeoplePercentage = 50;
                 guardiansThreatLevel = 1;
@@ -96,7 +105,7 @@ public class Jugador {
 
     }
 
-    public Jugador(String nombre, String raza, Integer team, boolean isLeader) {
+    public Jugador(String nombre, RaceEnum raza, Integer team, boolean isLeader) {
         this.nombre = nombre;
         this.raza = raza;
         unidades = new ArrayList<>();
@@ -112,12 +121,14 @@ public class Jugador {
         this.isLeader = isLeader;
     }
 
-    public Jugador(String nombre, String raza, Integer team, boolean isLeader, SubRaceEnum subRace) {
+    public Jugador(String nombre, RaceEnum raza, SubRaceEnum subRace, Integer team, boolean isLeader,
+                   boolean isJuggernaut) {
         this(nombre, raza, team, isLeader);
         this.subRace = subRace;
+        this.isJuggernaut = isJuggernaut;
     }
 
-    public void comprobacion_perforacion() {
+    public void perforationCheck() {
         List<String> resultado = new ArrayList<>();
         for (Edificio e : edificios) {
             if ((e.nombre.equals("Cámara de asimilación") || (e.nombre.equals("Teletransportador")))) {
@@ -135,7 +146,7 @@ public class Jugador {
 
     public boolean comprobacion_recursos(ElementoSimple e) {
         switch (raza) {
-            case "Guardianes":
+            case GUARDIANES:
                 return comprobacion_recursos_guardianes(e);
             default:
                 return recursos >= e.coste;
@@ -144,29 +155,36 @@ public class Jugador {
 
     public void initElements(Partida p) {
         switch (raza) {
-            case "Fénix":
+            case FENIX:
                 edificios.add(new Edificio("Sede", x_inicial, y_inicial));
-                unidades.add(new Unidad("Constructor", x_inicial, this.verticalOffset(y_inicial, 150)));
-                unidades.add(new Unidad("Recolector", this.horizontalOffset(x_inicial, 50), this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Constructor", x_inicial, this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Recolector", this.horizontalOffset(x_inicial, 50),
+                        this.verticalOffset(y_inicial, 150)));
                 break;
-            case "Eternium":
+            case ETERNIUM:
                 edificios.add(new Edificio("Mando Central", x_inicial, y_inicial));
-                unidades.add(new Unidad("Adepto", this.horizontalOffset(x_inicial, 50), this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Adepto", this.horizontalOffset(x_inicial, 50),
+                        this.verticalOffset(y_inicial, 150)));
                 break;
-            case "Clark":
+            case CLARK:
                 edificios.add(new Edificio("Primarca", x_inicial, y_inicial));
-                unidades.add(new Unidad("Depredador", this.horizontalOffset(x_inicial, -50), this.verticalOffset(y_inicial, 150)));
-                unidades.add(new Unidad("Devorador", this.horizontalOffset(x_inicial, 10), this.verticalOffset(y_inicial, 150)));
-                unidades.add(new Unidad("Cazador", this.horizontalOffset(x_inicial, 70), this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Depredador", this.horizontalOffset(x_inicial, -50),
+                        this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Devorador", this.horizontalOffset(x_inicial, 10),
+                        this.verticalOffset(y_inicial, 150)));
+                unidades.add(new Unidad(this, "Cazador", this.horizontalOffset(x_inicial, 70),
+                        this.verticalOffset(y_inicial, 150)));
                 break;
-            case "Maestros":
-                unidades.add(new Manipulador(x_inicial, y_inicial));
+            case MAESTROS:
+                unidades.add(new Manipulador(this, x_inicial, y_inicial));
                 break;
-            case "Guardianes":
+            case GUARDIANES:
                 edificios.add(new Edificio("Ayuntamiento", x_inicial, y_inicial));
-                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300), this.verticalOffset(y_inicial, 250)));
+                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300),
+                        this.verticalOffset(y_inicial, 250)));
                 edificios.add(new Edificio("Academia de pilotos", this.horizontalOffset(x_inicial, 200), y_inicial));
-                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300), this.verticalOffset(y_inicial, 400)));
+                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300),
+                        this.verticalOffset(y_inicial, 400)));
                 edificios.add(new Edificio("Templo", this.horizontalOffset(x_inicial, 400), y_inicial));
                 edificios.add(new Edificio("Laboratorio de I+D", this.horizontalOffset(x_inicial, 500), y_inicial));
                 edificios.add(new Edificio("Vaticano", this.horizontalOffset(x_inicial, 600), y_inicial));
@@ -178,14 +196,14 @@ public class Jugador {
             u.iniciarbotones(p);
         }
         for (Edificio e : edificios) {
-            if (!this.raza.equals(RaceEnum.GUARDIANES.getName()) || e.nombre.equals("Ayuntamiento")) {
+            if (!this.raza.equals(RaceEnum.GUARDIANES) || e.nombre.equals("Ayuntamiento")) {
                 e.iniciarbotones(p);
             }
         }
     }
 
     public void comportamiento_elementos(Partida p, Graphics g, int delta) {
-        if (this.raza.equals(RaceEnum.GUARDIANES.getName())) {
+        if (this.raza.equals(RaceEnum.GUARDIANES)) {
             this.addResources((this.guardiansPeoplePercentage / 100f) * delta * Reloj.TIME_REGULAR_SPEED * Guardianes.recursos_por_segundo);
             eventos.comportamiento(this, delta);
         }
@@ -222,12 +240,12 @@ public class Jugador {
 
     public void renderMainTeamElements(Partida p, Graphics g, Input input) {
         for (Recurso r : lista_recursos) {
-            r.dibujar(p, color, input, g);
+            r.render(p, color, input, g);
         }
         for (Edificio e : edificios) {
-            e.dibujar(p, color, input, g);
+            e.render(p, color, input, g);
         }
-        if (this.raza.equals(RaceEnum.MAESTROS.getName())) {
+        if (this.raza.equals(RaceEnum.MAESTROS)) {
             if (this.unidades.get(0) instanceof Manipulador) {
                 Manipulador m = (Manipulador) this.unidades.get(0);
                 m.drawXpCircle(g);
@@ -235,41 +253,44 @@ public class Jugador {
                 m.drawManaCircle(g);
             }
         }
-        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) && (VentanaCombate.eterniumWatch().ndivision == 4)) {
+        if (this.raza.equals(RaceEnum.ETERNIUM) && (WindowCombat.eterniumWatch().ndivision == 4)) {
             for (Unidad u : unidades) {
-                if (u.nombre.equals("Protector")) {
-                    u.dibujar(p, color, input, g);
+                if (u.nombre.equals("Protector") || u.nombre.equals("Erradicador")) {
+                    u.render(p, color, input, g);
                 } else {
                     Eternium.dibujar_detencion(u, color, g);
                 }
             }
         } else {
             for (Unidad u : unidades) {
-                u.dibujar(p, color, input, g);
+                u.render(p, color, input, g);
             }
         }
         for (ElementoEspecial e : elementos_especiales) {
-            e.dibujar(p, color, input, g);
+            e.render(p, color, input, g);
         }
-        if (raza.equals(RaceEnum.GUARDIANES.getName())) {
+        if (raza.equals(RaceEnum.GUARDIANES)) {
             eventos.dibujar(g);
         }
     }
 
     public void renderNonMainTeamElements(Partida p, Graphics g, Input input) {
-        lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.dibujar(p, color, input, g));
-        edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.dibujar(p, color, input, g));
-        if (this.raza.equals(RaceEnum.ETERNIUM.getName()) &&
-                (VentanaCombate.eterniumWatch() != null && VentanaCombate.eterniumWatch().ndivision == 4)) {
-            unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> Eternium.dibujar_detencion(u, color, g));
+        lista_recursos.stream().filter(r -> r.visibleByMainTeam(p)).forEach(r -> r.render(p, color, input, g));
+        edificios.stream().filter(e -> e.visibleByMainTeam(p)).forEach(e -> e.render(p, color, input, g));
+        if (this.raza.equals(RaceEnum.ETERNIUM) &&
+                (WindowCombat.eterniumWatch() != null && WindowCombat.eterniumWatch().ndivision == 4)) {
+            unidades.stream().filter(u -> u.visibleByMainTeam(p) && (u.nombre.equals("Protector") || u.nombre.equals(
+                    "Erradicador"))).forEach(u -> Eternium.dibujar_detencion(u, color, g));
+            unidades.stream().filter(u -> u.visibleByMainTeam(p) && !(u.nombre.equals("Protector") || u.nombre.equals("Erradicador")))
+                    .forEach(u -> u.render(p, color, input, g));
         } else {
-            unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.dibujar(p, color, input, g));
+            unidades.stream().filter(u -> u.visibleByMainTeam(p)).forEach(u -> u.render(p, color, input, g));
         }
     }
 
     public void renderResources(Graphics g, float x, float y) {
         switch (raza) {
-            case "Fénix":
+            case FENIX:
                 if (isLeader) {
                     ElementosComunes.LIDER_IMAGE.draw(x - 160, y, 20, 20);
                 }
@@ -285,8 +306,8 @@ public class Jugador {
                 ElementosComunes.POPULATION_IMAGE.draw(x + 30, y, 20, 20);
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 50, y);
                 break;
-            case "Clark":
-            case "Eternium":
+            case CLARK:
+            case ETERNIUM:
                 if (isLeader) {
                     ElementosComunes.LIDER_IMAGE.draw(x - 40, y, 20, 20);
                 }
@@ -299,7 +320,7 @@ public class Jugador {
                 g.drawString(Integer.toString(poblacion) + "/" + Integer.toString(poblacion_max), x + 90, y);
 
                 break;
-            case "Guardianes":
+            case GUARDIANES:
                 if (isLeader) {
                     ElementosComunes.LIDER_IMAGE.draw(x - 160, y, 20, 20);
                 }
@@ -418,8 +439,8 @@ public class Jugador {
     }
 
     public boolean isDefeated() {
-        if (RaceEnum.MAESTROS.getName().equals(this.raza)) {
-            return !unidades.get(0).nombre.equals("Manipulador");
+        if (RaceEnum.MAESTROS.equals(this.raza)) {
+            return unidades.stream().noneMatch(u -> u instanceof Manipulador);
         } else {
             return edificios.stream().noneMatch(e -> e.main);
         }
@@ -428,14 +449,15 @@ public class Jugador {
     public void renderVisibility(Graphics g, Color c, int desplazamiento) {
         g.setColor(c);
         unidades.forEach(u -> {
-            int alcance = u.vision + desplazamiento;
+            int alcance = (u.statusEffectCollection.existe_estado(StatusEffectName.CEGUERA)) ? 10 + desplazamiento :
+                    u.vision + desplazamiento;
             g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
         });
         edificios.forEach(u -> {
             int alcance = u.vision + desplazamiento;
             g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
         });
-        visiones.stream().forEach(v -> v.dibujar(g, desplazamiento));
+        visiones.stream().forEach(v -> v.dibujar(g, c, desplazamiento));
     }
 
     public float horizontalOffset(float initialValue, float offset) {
@@ -444,5 +466,67 @@ public class Jugador {
 
     public float verticalOffset(float initialValue, float offset) {
         return this.verticalDown ? initialValue + offset : initialValue - offset;
+    }
+
+    public void applyJuggernautEnhancements(Partida p, int numberOfEnemyPlayers) {
+        // A 1v1 juggernaut would make no changes
+        int advantageMultiplier = numberOfEnemyPlayers - 1;
+        this.advantageMultiplier = advantageMultiplier;
+        switch (raza) {
+            case FENIX:
+                // The fenix player starts with more resources
+                this.addResources(10 * advantageMultiplier);
+                break;
+            case ETERNIUM:
+                // The eternium player starts with more resources and with a certain number of buildings built
+                if (advantageMultiplier > 0) {
+                    this.edificios.add(new Edificio("Cámara de asimilación", this.horizontalOffset(this.x_inicial,
+                            400), this.verticalOffset(this.y_inicial, 200)));
+
+                }
+                if (advantageMultiplier > 1) {
+                    this.edificios.add(new Edificio("Teletransportador", this.horizontalOffset(this.x_inicial, 400),
+                            this.verticalOffset(this.y_inicial, 350)));
+                }
+                if (advantageMultiplier > 2) {
+                    this.edificios.add(new Edificio("Altar de los ancestros", this.horizontalOffset(this.x_inicial, 600),
+                            this.verticalOffset(this.y_inicial, 200)));
+                }
+                this.addResources(Eternium.recursos_refineria * advantageMultiplier);
+                break;
+            case CLARK:
+                // Add an extra set of basic units per disadvantage
+                // We also reduce the cost on 10 * disadvantage
+                for (int i = 0; i < advantageMultiplier; i++) {
+                    unidades.add(new Unidad(this, "Depredador", this.horizontalOffset(x_inicial, -50),
+                            this.verticalOffset(y_inicial, 150 + 75 * (i + 1))));
+                    unidades.add(new Unidad(this, "Devorador", this.horizontalOffset(x_inicial, 10),
+                            this.verticalOffset(y_inicial, 150 + 75 * (i + 1))));
+                    unidades.add(new Unidad(this, "Cazador", this.horizontalOffset(x_inicial, 70),
+                            this.verticalOffset(y_inicial, 150 + 75 * (i + 1))));
+                }
+                break;
+            case GUARDIANES:
+                // We automatically enable a number of buildings equal to the disadvantage
+                for (int i = 0; i < advantageMultiplier; i++) {
+                    this.edificios.get(i + 1).enable(null, p);
+                }
+                this.guardiansPeoplePercentage += 5 * advantageMultiplier;
+                break;
+            case MAESTROS:
+                // The manipulator will have higher stats based on his disadvantage
+                Manipulador m =
+                        (Manipulador) this.unidades.stream().filter(u -> u instanceof Manipulador).findFirst().orElse(null);
+                m.vida += 100 * advantageMultiplier;
+                m.vida_max += 100 * advantageMultiplier;
+                m.mana += 50 * advantageMultiplier;
+                m.mana_max += 50 * advantageMultiplier;
+                m.regeneracion_mana += 0.1 * advantageMultiplier;
+                m.poder_magico += 5 * advantageMultiplier;
+                m.ataque += 5 * advantageMultiplier;
+                m.cadencia -= 0.1 * advantageMultiplier;
+                m.defensa += 0.5 * advantageMultiplier;
+                break;
+        }
     }
 }

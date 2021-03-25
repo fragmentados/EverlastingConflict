@@ -5,14 +5,14 @@
  */
 package everlastingconflict.elementos;
 
+import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Partida;
-import everlastingconflict.ventanas.VentanaCombate;
+import everlastingconflict.ventanas.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 /**
- *
  * @author Elías
  */
 public abstract class ElementoVulnerable extends ElementoCoordenadas {
@@ -23,15 +23,19 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     public int defensa;
     public float experiencia_al_morir;
     public float escudo, escudoInicial;
-    
-    public int defensa_eternium() {
-        switch (VentanaCombate.eterniumWatch().ndivision) {
+    public boolean isProyectileAttraction = false;
+
+    public int getDefenseBasedOnEterniumWatch(Jugador aliado) {
+        boolean allyHasTemporalControl = aliado.hasTecnologyResearched("Control temporal");
+        switch (WindowCombat.eterniumWatch().ndivision) {
             case 1:
-                return (int) (this.defensa * (75f / 100f));
+                return allyHasTemporalControl ? (int) (this.defensa * (90f / 100f)) :
+                        (int) (this.defensa * (75f / 100f));
             case 2:
-                return this.defensa;
+                return allyHasTemporalControl ? (int) (this.defensa * (150f / 100f)) : this.defensa;
             case 3:
-                return (int) (this.defensa * (150f / 100f));
+                return allyHasTemporalControl ? (int) (this.defensa * (200f / 100f)) :
+                        (int) (this.defensa * (150f / 100f));
             default:
                 //N_cuarto = 4 -> Defensa mejorada
                 if (this.defensa == 0) {
@@ -60,9 +64,11 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.fillRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.fillRect(x_contador + i * anchura_mini_cuadrado, y_contador,
+                        anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.fillRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_mini_cuadrado, altura_barra_vida);
+                g.fillRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_mini_cuadrado,
+                        altura_barra_vida);
             }
         }
         g.setColor(Color.black);
@@ -72,9 +78,11 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.drawRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.drawRect(x_contador + i * anchura_mini_cuadrado, y_contador,
+                        anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.drawRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_mini_cuadrado, altura_barra_vida);
+                g.drawRect(x_contador + i * anchura_mini_cuadrado, y_contador, anchura_mini_cuadrado,
+                        altura_barra_vida);
             }
         }
         g.setColor(Color.white);
@@ -99,7 +107,8 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y,
+                        anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
                 g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
             }
@@ -111,7 +120,8 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
             if ((i + 1) * anchura_mini_cuadrado > anchura_contador) {
                 //Penúltimo cuadrado
                 float anchura_hasta_el_momento = i * anchura_mini_cuadrado;
-                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
+                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y,
+                        anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
                 g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
             }
@@ -120,11 +130,12 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     }
 
     @Override
-    public void dibujar(Partida p, Color c, Input input, Graphics g) {
-        super.dibujar(p, c, input, g);
+    public void render(Partida p, Color c, Input input, Graphics g) {
+        super.render(p, c, input, g);
         drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
         if (escudo > 0) {
-            drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial, this.y + this.altura / 2 + this.altura_barra_vida);
+            drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial,
+                    this.y + this.altura / 2 + this.altura_barra_vida);
         }
     }
 
