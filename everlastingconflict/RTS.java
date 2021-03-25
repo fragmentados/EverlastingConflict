@@ -5,8 +5,8 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.ventanas.WindowCombat;
-import everlastingconflict.ventanas.WindowMain;
+import everlastingconflict.windows.WindowCombat;
+import everlastingconflict.windows.WindowMain;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.SlickException;
 

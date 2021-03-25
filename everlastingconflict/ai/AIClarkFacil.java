@@ -5,14 +5,11 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.enums.RaceEnum;
+import everlastingconflict.races.enums.SubRaceEnum;
 
-/**
- *
- * @author Elías
- */
+
 public class AIClarkFacil extends AI {
 
     public AIClarkFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
@@ -20,12 +17,12 @@ public class AIClarkFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Partida p) {
+    public void decisiones_unidades(Game p) {
 
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
 
     }
 

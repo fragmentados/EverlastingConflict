@@ -5,13 +5,10 @@
  */
 package everlastingconflict.campaign;
 
-import everlastingconflict.gestion.Partida;
+import everlastingconflict.gestion.Game;
 
-/**
- *
- * @author Elías
- */
-public class Mission extends Partida{
+
+public class Mission extends Game {
             
         
 }

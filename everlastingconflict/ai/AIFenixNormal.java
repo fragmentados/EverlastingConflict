@@ -5,16 +5,14 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Tecnologia;
+import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Tecnologia;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.enums.SubRaceEnum;
 
-/**
- * @author Elías
- */
+
 public class AIFenixNormal extends AIFenixFacil {
 
     public AIFenixNormal(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
@@ -22,15 +20,15 @@ public class AIFenixNormal extends AIFenixFacil {
     }
 
     @Override
-    public void initElements(Partida p) {
+    public void initElements(Game p) {
         super.initElements(p);
         npushear = 5;
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
         for (Edificio e : edificios) {
-            if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+            if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                 switch (e.nombre) {
                     case "Cuartel Fénix":
                         comportamiento_cuartel(p, e);
@@ -50,7 +48,7 @@ public class AIFenixNormal extends AIFenixFacil {
         }
     }
 
-    public void comportamiento_centro_tecnologico(Partida p, Edificio e) {
+    public void comportamiento_centro_tecnologico(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             if (tecnologias.stream().noneMatch(t -> "Aumentar límite 1".equals(t.nombre))) {
                 Tecnologia t = new Tecnologia("Aumentar límite 1");

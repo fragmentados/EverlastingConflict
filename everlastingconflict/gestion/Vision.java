@@ -5,24 +5,22 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.elementos.ElementoCoordenadas;
-import everlastingconflict.relojes.Reloj;
+import everlastingconflict.elements.ElementoCoordenadas;
+import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-/**
- * @author Elías
- */
+
 public class Vision extends ElementoCoordenadas {
 
     public int diameter;
     public float tiempo_contador;
     public boolean fullVision = true;
 
-    public Vision(float x, float y, int radius, float t) {
+    public Vision(float x, float y, int diameter, float t) {
         this.x = x;
         this.y = y;
-        this.diameter = radius;
+        this.diameter = diameter;
         tiempo_contador = t;
     }
 

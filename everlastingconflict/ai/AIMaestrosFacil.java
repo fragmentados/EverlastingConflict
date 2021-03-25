@@ -1,10 +1,10 @@
 package everlastingconflict.ai;
 
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.enums.RaceEnum;
+import everlastingconflict.races.enums.SubRaceEnum;
 
 public class AIMaestrosFacil extends AI {
 
@@ -13,13 +13,13 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public final void initElements(Partida p) {
+    public final void initElements(Game p) {
         super.initElements(p);
         npushear = 5;
     }
 
     @Override
-    public void decisiones_unidades(Partida p) {
+    public void decisiones_unidades(Game p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 /*case "Activador":
@@ -30,7 +30,7 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 /*case "Ayuntamiento":

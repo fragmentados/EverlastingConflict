@@ -5,15 +5,15 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Tecnologia;
-import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Recurso;
+import everlastingconflict.elements.impl.Tecnologia;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.enums.RaceEnum;
+import everlastingconflict.races.enums.SubRaceEnum;
 
 public class AIEterniumFacil extends AI {
 
@@ -26,7 +26,7 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void initElements(Partida p) {
+    public void initElements(Game p) {
         super.initElements(p);
         x_asimilacion = x_inicial;
         y_asimilacion = this.verticalOffset(y_inicial, 210);
@@ -41,7 +41,7 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Partida p) {
+    public void decisiones_unidades(Game p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Adepto":
@@ -52,9 +52,9 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
         for (Edificio e : edificios) {
-            if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+            if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                 switch (e.nombre) {
                     case "Mando Central":
                         comportamiento_mando(p, e);
@@ -67,8 +67,8 @@ public class AIEterniumFacil extends AI {
         }
     }
 
-    public void comportamiento_adepto(Partida p, Unidad u) {
-        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
+    public void comportamiento_adepto(Game p, Unidad u) {
+        if (u.behaviour.equals(BehaviourEnum.PARADO)) {
             Recurso r = p.closestResource(null, this.nombre, "Hierro", u.x, u.y);
             if (r != null) {
                 Edificio contador = new Edificio("Refinería");
@@ -78,7 +78,7 @@ public class AIEterniumFacil extends AI {
         }
     }
 
-    public void comportamiento_altar(Partida p, Edificio e) {
+    public void comportamiento_altar(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             for (BotonComplejo b : e.botones) {
                 Tecnologia t = new Tecnologia(b.elemento_nombre);
@@ -88,7 +88,7 @@ public class AIEterniumFacil extends AI {
         }
     }
 
-    public void comportamiento_mando(Partida p, Edificio e) {
+    public void comportamiento_mando(Game p, Edificio e) {
         //Construcción de Edificios
         if (e.edificio_construccion == null) {
             if (this.cantidad_edificio("Cámara de asimilación") == 0) {

@@ -5,15 +5,12 @@
  */
 package everlastingconflict;
 
-import everlastingconflict.elementos.ElementoComplejo;
+import everlastingconflict.elements.ElementoComplejo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Elías
- */
+
 public class ControlGroup {
 
     public List<ElementoComplejo> contenido;

@@ -5,16 +5,14 @@
  */
 package everlastingconflict.elementosvisuales;
 
-import everlastingconflict.gestion.Partida;
+import everlastingconflict.gestion.Game;
 import org.newdawn.slick.*;
 
 import java.util.List;
 
-import static everlastingconflict.elementos.util.ElementosComunes.UI_COLOR;
+import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
 
-/**
- * @author Elías
- */
+
 public class ComboBox {
 
     public float x, y;
@@ -34,7 +32,7 @@ public class ComboBox {
         try {
             deployButton = new BotonSimple(new Image("media/Desplegar.png")) {
                 @Override
-                public void efecto() {
+                public void effect() {
                     isDeployed = !isDeployed;
                 }
             };
@@ -144,10 +142,8 @@ public class ComboBox {
         g.setColor(Color.white);
     }
 
-    public void checkIfItsClicked(Input input) {
-        if (deployButton.isHovered(input.getMouseX(), input.getMouseY())) {
-            deployButton.efecto();
-        }
+    public void checkIfItsClicked(Input input) throws SlickException {
+        deployButton.checkIfItsClicked(input);
     }
 
     public void renderHoveredDescription(Input input, Graphics g) {
@@ -157,7 +153,7 @@ public class ComboBox {
             float xDescription = this.x + this.width + this.deployButton.anchura + 10;
             float widthDescription = optionHovered.description.length() * 10 < 400 ?
                     optionHovered.description.length() * 10 : 400;
-            String descriptionFormatted = Partida.anadir_saltos_de_linea(optionHovered.description, widthDescription);
+            String descriptionFormatted = Game.anadir_saltos_de_linea(optionHovered.description, widthDescription);
             float heightDescription = (descriptionFormatted.chars().filter(ch -> ch == '\n').count() + 1) * 20;
             g.setColor(UI_COLOR);
             g.fillRect(xDescription, this.y, widthDescription, heightDescription);

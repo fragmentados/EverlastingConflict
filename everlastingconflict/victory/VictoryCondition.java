@@ -1,7 +1,7 @@
 package everlastingconflict.victory;
 
+import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.gestion.Partida;
 
 public interface VictoryCondition {
 
@@ -13,5 +13,5 @@ public interface VictoryCondition {
         return new AnhilationVictoryCondition();
     }
 
-    boolean isDefeated(Partida partida, Jugador jugador);
+    boolean isDefeated(Game game, Jugador jugador);
 }

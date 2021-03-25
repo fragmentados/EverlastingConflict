@@ -5,30 +5,27 @@
  */
 package everlastingconflict.elementosvisuales;
 
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.implementacion.Habilidad;
-import everlastingconflict.elementos.implementacion.Manipulador;
-import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.elementos.util.ElementosComunes;
-import everlastingconflict.estados.StatusEffect;
-import everlastingconflict.estados.StatusEffectName;
+import everlastingconflict.elements.ElementoComplejo;
+import everlastingconflict.elements.impl.Habilidad;
+import everlastingconflict.elements.impl.Manipulador;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.elements.util.ElementosComunes;
+import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Maestros;
-import everlastingconflict.relojes.RelojMaestros;
-import everlastingconflict.ventanas.UI;
-import everlastingconflict.ventanas.WindowCombat;
+import everlastingconflict.races.Maestros;
+import everlastingconflict.status.Status;
+import everlastingconflict.status.StatusName;
+import everlastingconflict.watches.RelojMaestros;
+import everlastingconflict.windows.UI;
+import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.Graphics;
 
 import java.util.List;
 
-import static everlastingconflict.ventanas.WindowCombat.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.ventanas.WindowCombat.playerY;
+import static everlastingconflict.windows.WindowCombat.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.windows.WindowCombat.playerY;
 
-/**
- *
- * @author Elías
- */
+
 public class BotonManipulador extends BotonComplejo {
 
     public String requisito;
@@ -52,10 +49,10 @@ public class BotonManipulador extends BotonComplejo {
     }
 
     @Override
-    public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Partida partida) {
+    public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Game game) {
         if (canBeUsed && !isPassiveAbility) {
             if (e instanceof Manipulador) {
-                Jugador aliado = partida.getPlayerFromElement(e);
+                Jugador aliado = game.getPlayerFromElement(e);
                 Manipulador m = (Manipulador) e;
                 if (texto == null) {
                     if (!m.enhancementButtons.isEmpty()) {
@@ -63,13 +60,13 @@ public class BotonManipulador extends BotonComplejo {
                         m.applyEnhancement("Habilidades", this);
                     } else {
                         if (m.puede_usar_habilidad()) {
-                            new Habilidad(this.elemento_nombre).activacion(partida, m);
+                            new Habilidad(this.elemento_nombre).activacion(game, m);
                         }
                     }
                 } else {
                     switch (texto) {
                         case "Habilidades":
-                            m.getSkillsToUnlock(partida.getPlayerFromElement(e));
+                            m.getSkillsToUnlock(game.getPlayerFromElement(e));
                             break;
                         case "Atributos":
                             m.obtener_botones_atributos();
@@ -91,7 +88,7 @@ public class BotonManipulador extends BotonComplejo {
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Cauterización automática":
-                            m.statusEffectCollection.anadir_estado(new StatusEffect(StatusEffectName.REGENERACION));
+                            m.statusCollection.anadir_estado(new Status(StatusName.REGENERACION));
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Entrenamiento avanzado":
@@ -100,7 +97,7 @@ public class BotonManipulador extends BotonComplejo {
                             Maestros.velocidad_exterminatore += 0.2f;
                             Maestros.area_magum += 25;
                             Maestros.ataque_medicum += 5;
-                            for (Unidad u : partida.getPlayerFromElement(m).unidades) {
+                            for (Unidad u : game.getPlayerFromElement(m).unidades) {
                                 switch (u.nombre) {
                                     case "Pugnator":
                                         u.cadencia -= 0.1f;
@@ -190,7 +187,7 @@ public class BotonManipulador extends BotonComplejo {
                             m2.reduccion_enfriamiento = m.reduccion_enfriamiento;
                             m2.botones = m.botones;
                             m2.initButtonKeys();
-                            partida.getPlayerFromElement(m).unidades.add(m2);
+                            game.getPlayerFromElement(m).unidades.add(m2);
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Eficiencia energética":

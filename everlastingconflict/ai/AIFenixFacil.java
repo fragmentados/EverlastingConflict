@@ -5,22 +5,19 @@
  */
 package everlastingconflict.ai;
 
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Recurso;
-import everlastingconflict.elementos.implementacion.Tecnologia;
-import everlastingconflict.elementos.implementacion.Unidad;
+import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Fenix;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Recurso;
+import everlastingconflict.elements.impl.Tecnologia;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.Fenix;
+import everlastingconflict.races.enums.SubRaceEnum;
 
-import static everlastingconflict.razas.RaceEnum.FENIX;
+import static everlastingconflict.races.enums.RaceEnum.FENIX;
 
-/**
- *
- * @author Elías
- */
+
 public class AIFenixFacil extends AI {
 
     public float xcuartel, ycuartel;
@@ -33,7 +30,7 @@ public class AIFenixFacil extends AI {
     }
 
     @Override
-    public void initElements(Partida p) {
+    public void initElements(Game p) {
         super.initElements(p);
         xcuartel = this.horizontalOffset(x_inicial, 210);
         ycuartel = y_inicial;
@@ -48,7 +45,7 @@ public class AIFenixFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Partida p) {
+    public void decisiones_unidades(Game p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Recolector":
@@ -65,9 +62,9 @@ public class AIFenixFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
         for (Edificio e : edificios) {
-            if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+            if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                 switch (e.nombre) {
                     case "Cuartel Fénix":
                         comportamiento_cuartel(p, e);
@@ -85,8 +82,8 @@ public class AIFenixFacil extends AI {
         }
     }
 
-    public void comportamiento_constructor(Partida p, Unidad u) {
-        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
+    public void comportamiento_constructor(Game p, Unidad u) {
+        if (u.behaviour.equals(BehaviourEnum.PARADO)) {
             if (this.cantidad_edificio("Cuartel Fénix") < this.limite_cuarteles) {
                 Edificio contador = new Edificio("Cuartel Fénix");
                 contador.vida = 0;
@@ -108,8 +105,8 @@ public class AIFenixFacil extends AI {
         }
     }
 
-    public void comportamiento_recolector(Partida p, Unidad u) {
-        if (u.statusBehaviour.equals(StatusBehaviour.PARADO)) {
+    public void comportamiento_recolector(Game p, Unidad u) {
+        if (u.behaviour.equals(BehaviourEnum.PARADO)) {
             Recurso r = p.closestResource(null, this.nombre, "Civiles", u.x, u.y);
             if (r != null) {
                 u.recolectar(p, r);
@@ -121,7 +118,7 @@ public class AIFenixFacil extends AI {
         }
     }
 
-    public void comportamiento_cuartel(Partida p, Edificio e) {
+    public void comportamiento_cuartel(Game p, Edificio e) {
         if (e.unidad_actual != null) {
             if (e.unidad_actual.equals("Tigre") && Fenix.boton_cuartel_halcon) {
                 for (BotonComplejo b : e.botones) {
@@ -152,7 +149,7 @@ public class AIFenixFacil extends AI {
         }
     }
 
-    public void comportamiento_academia(Partida p, Edificio e) {
+    public void comportamiento_academia(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             for (BotonComplejo b : e.botones) {
                 Tecnologia t = new Tecnologia(b.elemento_nombre);
@@ -162,7 +159,7 @@ public class AIFenixFacil extends AI {
         }
     }
 
-    public void comportamiento_sede(Partida p, Edificio e) {
+    public void comportamiento_sede(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             for (BotonComplejo b : e.botones) {
                 if (b.elemento_nombre.equals("Recolector")) {

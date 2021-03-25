@@ -1,12 +1,12 @@
 package everlastingconflict.ai;
 
-import everlastingconflict.elementos.implementacion.Edificio;
-import everlastingconflict.elementos.implementacion.Taller;
-import everlastingconflict.elementos.implementacion.Unidad;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.razas.SubRaceEnum;
+import everlastingconflict.behaviour.BehaviourEnum;
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Taller;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Game;
+import everlastingconflict.races.enums.RaceEnum;
+import everlastingconflict.races.enums.SubRaceEnum;
 
 public class AIGuardianesFacil extends AI {
 
@@ -17,13 +17,13 @@ public class AIGuardianesFacil extends AI {
     }
 
     @Override
-    public final void initElements(Partida p) {
+    public final void initElements(Game p) {
         super.initElements(p);
         npushear = 5;
     }
 
     @Override
-    public void decisiones_unidades(Partida p) {
+    public void decisiones_unidades(Game p) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Activador":
@@ -36,7 +36,7 @@ public class AIGuardianesFacil extends AI {
         }
     }
 
-    private void comportamientoArtillero(Partida p, Unidad u) {
+    private void comportamientoArtillero(Game p, Unidad u) {
         this.unidades
                 .stream().filter(patrulla -> "Patrulla".equals(patrulla.nombre) && !patrulla.movil
                         && this.unidades
@@ -46,10 +46,10 @@ public class AIGuardianesFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Partida p) {
+    public void decisiones_edificios(Game p) {
         for (Edificio e : edificios) {
             if (e.activo) {
-                if (!StatusBehaviour.CONSTRUYENDOSE.equals(e.statusBehaviour)) {
+                if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                     switch (e.nombre) {
                         case "Ayuntamiento":
                             comportamientoAyuntamiento(p, e);
@@ -66,7 +66,7 @@ public class AIGuardianesFacil extends AI {
         }
     }
 
-    private void comportamientoAcademia(Partida p, Edificio e) {
+    private void comportamientoAcademia(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             Unidad u = new Unidad(this,"Artillero");
             if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
@@ -75,9 +75,9 @@ public class AIGuardianesFacil extends AI {
         }
     }
 
-    private void comportamientoTaller(Partida p, Taller t) {
+    private void comportamientoTaller(Game p, Taller t) {
         boolean isAnexusUnderConstruction = t.anexos.stream()
-                .anyMatch(a -> StatusBehaviour.CONSTRUYENDOSE.equals(a.statusBehaviour));
+                .anyMatch(a -> BehaviourEnum.CONSTRUYENDOSE.equals(a.behaviour));
         if (!isAnexusUnderConstruction) {
             t.construir_anexo(p);
         }
@@ -89,13 +89,13 @@ public class AIGuardianesFacil extends AI {
         }
     }
 
-    public void comportamientoActivador(Partida p, Unidad u) {
-        if (!StatusBehaviour.EMBARCANDO.equals(u.statusBehaviour)) {
+    public void comportamientoActivador(Game p, Unidad u) {
+        if (!BehaviourEnum.EMBARCANDO.equals(u.behaviour)) {
             edificios.stream().filter(b -> !b.activo).findFirst().ifPresent(b -> u.embarcar(b));
         }
     }
 
-    public void comportamientoAyuntamiento(Partida p, Edificio e) {
+    public void comportamientoAyuntamiento(Game p, Edificio e) {
         boolean allBuildingsEnabled = edificios.stream().allMatch(b -> b.activo);
         if (!allBuildingsEnabled && e.cola_construccion.isEmpty()) {
             //Reclutamiento de Unidades

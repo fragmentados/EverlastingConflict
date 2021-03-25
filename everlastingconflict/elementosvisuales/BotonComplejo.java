@@ -5,23 +5,23 @@
  */
 package everlastingconflict.elementosvisuales;
 
-import everlastingconflict.elementos.ElementoAtacante;
-import everlastingconflict.elementos.ElementoComplejo;
-import everlastingconflict.elementos.ElementoSimple;
-import everlastingconflict.elementos.implementacion.*;
-import everlastingconflict.estados.StatusEffectName;
-import everlastingconflict.estadoscomportamiento.StatusBehaviour;
+import everlastingconflict.behaviour.BehaviourEnum;
+import everlastingconflict.elements.ElementoAtacante;
+import everlastingconflict.elements.ElementoComplejo;
+import everlastingconflict.elements.ElementoSimple;
+import everlastingconflict.elements.impl.*;
 import everlastingconflict.gestion.Evento;
+import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.gestion.Partida;
-import everlastingconflict.razas.Clark;
-import everlastingconflict.razas.Fusion;
-import everlastingconflict.razas.RaceEnum;
-import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.Mensaje;
-import everlastingconflict.ventanas.UI;
-import everlastingconflict.ventanas.WindowCombat;
-import everlastingconflict.ventanas.WindowMain;
+import everlastingconflict.races.Clark;
+import everlastingconflict.races.Fusion;
+import everlastingconflict.races.enums.RaceEnum;
+import everlastingconflict.status.StatusName;
+import everlastingconflict.watches.Reloj;
+import everlastingconflict.windows.Mensaje;
+import everlastingconflict.windows.UI;
+import everlastingconflict.windows.WindowCombat;
+import everlastingconflict.windows.WindowMain;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
@@ -29,15 +29,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static everlastingconflict.elementos.implementacion.Taller.TALLER_NOMBRE;
-import static everlastingconflict.elementos.util.ElementosComunes.UI_COLOR;
-import static everlastingconflict.ventanas.WindowCombat.VIEWPORT_SIZE_HEIGHT;
-import static everlastingconflict.ventanas.WindowCombat.playerY;
+import static everlastingconflict.elements.impl.Taller.TALLER_NOMBRE;
+import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
+import static everlastingconflict.windows.WindowCombat.VIEWPORT_SIZE_HEIGHT;
+import static everlastingconflict.windows.WindowCombat.playerY;
 
-/**
- *
- * @author Elías
- */
+
 public class BotonComplejo extends BotonSimple {
 
     public String elemento_nombre, elemento_tipo;
@@ -188,6 +185,9 @@ public class BotonComplejo extends BotonSimple {
                 break;
             case "Ayuda Fusión":
                 descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.\n";
+                break;
+            case "Ayuda piloto":
+                descripcion = "Muestra una guía informativa de qué combinaciones producen qué torretas en la embarcación.\n";
                 break;
         }
     }
@@ -364,7 +364,7 @@ public class BotonComplejo extends BotonSimple {
                 }
             }
             if (descripcion != null) {
-                g.drawString(Partida.anadir_saltos_de_linea(descripcion, anchura_contador), xcontador, ycontador);
+                g.drawString(Game.anadir_saltos_de_linea(descripcion, anchura_contador), xcontador, ycontador);
             }
         }
     }
@@ -381,9 +381,9 @@ public class BotonComplejo extends BotonSimple {
         }
     }
 
-    public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Partida partida) {
+    public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Game game) {
         //e representa el elemento desde el cual se activa el botón          
-        Jugador aliado = partida.getPlayerFromElement(e);
+        Jugador aliado = game.getPlayerFromElement(e);
         this.resolucion_contador = BotonComplejo.resolucion;
         if (canBeUsed) {
             if (e instanceof Edificio) {
@@ -391,18 +391,18 @@ public class BotonComplejo extends BotonSimple {
                 if (texto == null) {
                     if (this.elemento_tipo.equals("Unidad")) {
                         //Crear Unidad  
-                        edificio.createUnit(partida, aliado, new Unidad(aliado, this.elemento_nombre));
+                        edificio.createUnit(game, aliado, new Unidad(aliado, this.elemento_nombre));
                     } else {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio
-                            if (!edificio.statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
+                            if (!edificio.behaviour.equals(BehaviourEnum.CONSTRUYENDO)) {
                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                 if (edificio.constructor) {
                                     if (aliado.comprobacion_recursos(contador_edificio)) {
                                         if (edificio instanceof Taller) {
                                             if (elemento_nombre.equals("Anexo")) {
                                                 Taller t = (Taller) edificio;
-                                                t.construir_anexo(partida);
+                                                t.construir_anexo(game);
                                             }
                                         } else {
                                             WindowMain.combatWindow.edificio = contador_edificio;
@@ -415,7 +415,7 @@ public class BotonComplejo extends BotonSimple {
                         } else {
                             if (this.elemento_tipo.equals("Tecnología")) {
                                 //Investigar Tecnología
-                                edificio.researchTechnology(partida, aliado, new Tecnologia(this.elemento_nombre));
+                                edificio.researchTechnology(game, aliado, new Tecnologia(this.elemento_nombre));
                             } else {
                                 //Desbloquear Evento Positivo
                                 Evento evento = new Evento(aliado, this.elemento_nombre);
@@ -436,7 +436,7 @@ public class BotonComplejo extends BotonSimple {
                         case "Tortuga":
                         case "Cuervo":
                             edificio.unidad_actual = texto;
-                            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
+                            edificio.behaviour = BehaviourEnum.CONSTRUYENDO;
                             break;
                         case "Reanudar":
                             texto = "Detener";
@@ -445,7 +445,7 @@ public class BotonComplejo extends BotonSimple {
                             } catch (SlickException ex) {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            edificio.statusBehaviour = StatusBehaviour.CONSTRUYENDO;
+                            edificio.behaviour = BehaviourEnum.CONSTRUYENDO;
                             break;
                         case "Detener":
                             texto = "Reanudar";
@@ -455,7 +455,7 @@ public class BotonComplejo extends BotonSimple {
                                 Logger.getLogger(BotonComplejo.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             edificio.detener_produccion();
-                            edificio.statusBehaviour = StatusBehaviour.DETENIDO;
+                            edificio.behaviour = BehaviourEnum.DETENIDO;
                             break;
                         case "Ayuda Fusión":
                             edificio.mostrarAyudaFusion = !edificio.mostrarAyudaFusion;
@@ -468,7 +468,7 @@ public class BotonComplejo extends BotonSimple {
                     if (this.elemento_tipo.equals("Unidad")) {
                         //Convertirse en unidad.
                         //e = new Unidad(this.elemento_nombre);
-                        unidad.destruir(partida, null);
+                        unidad.destruir(game, null);
                         Unidad nueva = new Unidad(aliado, this.elemento_nombre, unidad.x, unidad.y);
                         aliado.unidades.add(nueva);
                         nueva.seleccionar();
@@ -479,11 +479,11 @@ public class BotonComplejo extends BotonSimple {
                                 if (e2 instanceof Unidad) {
                                     Unidad contador = (Unidad) e2;
                                     if (contador.constructor) {
-                                        if (!contador.statusBehaviour.equals(StatusBehaviour.CONSTRUYENDO)) {
-                                            if (!contador.statusEffectCollection.existe_estado(StatusEffectName.AMNESIA)) {
+                                        if (!contador.behaviour.equals(BehaviourEnum.CONSTRUYENDO)) {
+                                            if (!contador.statusCollection.existe_estado(StatusName.AMNESIA)) {
                                                 Edificio contador_edificio = new Edificio(this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < aliado.limite_cuarteles)) {
-                                                    if (partida.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
+                                                    if (game.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
                                                         WindowMain.combatWindow.edificio = contador_edificio;
                                                         WindowMain.combatWindow.edificio.vida = 0;
                                                         WindowMain.combatWindow.constructor = contador;
@@ -501,7 +501,7 @@ public class BotonComplejo extends BotonSimple {
                             if (this.elemento_tipo.equals("Habilidad")) {
                                 //Activar habilidad
                                 if (unidad.puede_usar_habilidad()) {
-                                    new Habilidad(this.elemento_nombre).activacion(partida, unidad);
+                                    new Habilidad(this.elemento_nombre).activacion(game, unidad);
                                 }
                             }
                         }
@@ -515,10 +515,13 @@ public class BotonComplejo extends BotonSimple {
                                     contador.add((Unidad) e2);
                                 }
                             }
-                            Clark.iniciarFusion(partida, new Fusion(contador));
+                            Clark.iniciarFusion(game, new Fusion(contador));
                             break;
                         case "Detener":
                             unidad.parar();
+                            break;
+                        case "Ayuda piloto":
+                            unidad.mostrarAyudaPiloto = !unidad.mostrarAyudaPiloto;
                             break;
                     }
                 }

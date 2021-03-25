@@ -5,15 +5,12 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.relojes.Reloj;
-import everlastingconflict.elementos.implementacion.Edificio;
+import everlastingconflict.watches.Reloj;
+import everlastingconflict.elements.impl.Edificio;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-/**
- *
- * @author Elías
- */
+
 public class ProgressBar {
 
     public int anchura;

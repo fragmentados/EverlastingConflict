@@ -5,8 +5,8 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.relojes.Reloj;
-import everlastingconflict.ventanas.WindowCombat;
+import everlastingconflict.watches.Reloj;
+import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -15,9 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * @author Elías
- */
+
 class Comparador implements Comparator<Evento> {
 
     Comparador() {

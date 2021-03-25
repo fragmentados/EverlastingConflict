@@ -5,20 +5,17 @@
  */
 package everlastingconflict.elementosvisuales;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
+import everlastingconflict.windows.WindowCombat;
+import org.newdawn.slick.*;
 
-/**
- *
- * @author Elías
- */
+
 public class BotonSimple {
 
     public Image sprite;
     public float x, y, altura, anchura;
     public boolean canBeUsed = true;
     public String texto;
+    public String tag;
 
     public BotonSimple() {
 
@@ -40,6 +37,11 @@ public class BotonSimple {
         this(t);
         this.x = x;
         this.y = y;
+    }
+
+    public BotonSimple(String t, String tag, float x, float y) {
+        this(t, x, y);
+        this.tag = tag;
     }
 
     public boolean isHovered(float x, float y) {
@@ -64,6 +66,9 @@ public class BotonSimple {
                 float y_contador = y + this.altura / 2 - 7;
                 g.drawString(texto, x_contador, y_contador);
             }
+            if (tag != null) {
+                g.drawString(tag, x + anchura - tag.length() * 8, y - 16);
+            }
             g.setColor(new Color(0f, 0.6f, 0.8f, 0.5f));
             g.drawRect(x, y, anchura, altura);
             g.fillRect(x, y, anchura, altura);
@@ -71,7 +76,21 @@ public class BotonSimple {
         }
     }
 
-    public void efecto() {
+    public void checkIfItsClicked(Input input) throws SlickException {
+        if (isHovered(input.getMouseX(),
+                input.getMouseY())) {
+            effect();
+        }
+    }
+
+    public void checkIfItsClickedInCombat(Input input) throws SlickException {
+        if (isHovered((int) WindowCombat.playerX + input.getMouseX(),
+                (int) WindowCombat.playerY + input.getMouseY())) {
+            effect();
+        }
+    }
+
+    public void effect() throws SlickException {
 
     }
 }

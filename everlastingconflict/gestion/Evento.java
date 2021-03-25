@@ -5,19 +5,16 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.elementos.ElementoCoordenadas;
+import everlastingconflict.elements.ElementoCoordenadas;
 import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.razas.SubRaceEnum;
-import everlastingconflict.relojes.Reloj;
+import everlastingconflict.races.enums.SubRaceEnum;
+import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Elías
- */
+
 public class Evento extends ElementoCoordenadas {
 
     public float tiempo_evento, tiempo_contador;
