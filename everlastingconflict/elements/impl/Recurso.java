@@ -41,9 +41,9 @@ public class Recurso extends ElementoComplejo {
         }
         Image[] images = new Image[imageList.size()];
         imageList.toArray(images);
-        sprite = new Animation(images, 450, false);
-        anchura = sprite.getWidth();
-        altura = sprite.getHeight();
+        animation = new Animation(images, 450, false);
+        anchura = animation.getWidth();
+        altura = animation.getHeight();
         anchura_barra_vida = anchura;
     }
 
@@ -70,7 +70,7 @@ public class Recurso extends ElementoComplejo {
                     capturador = null;
                 }
                 vida = 0;
-                this.sprite.setAutoUpdate(false);
+                this.animation.setAutoUpdate(false);
             }
         }
     }
@@ -79,6 +79,8 @@ public class Recurso extends ElementoComplejo {
         if (this.vida < Recurso.vida_civiles) {
             if ((this.vida + (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta) >= Recurso.vida_civiles) {
                 gatherer.movil = true;
+                gatherer.animation.restart();
+                gatherer.animation.setAutoUpdate(false);
                 this.vida = Recurso.vida_civiles;
                 this.capturar(game, playerGatherer);
             } else {
@@ -86,6 +88,7 @@ public class Recurso extends ElementoComplejo {
                     playerGatherer.lista_recursos.add(this);
                     game.recursos.remove(this);
                     gatherer.movil = false;
+                    gatherer.animation.setAutoUpdate(true);
                 }
                 this.vida += (Recurso.vida_civiles / Recurso.tiempo_captura) * Reloj.TIME_REGULAR_SPEED * delta;
             }
@@ -96,19 +99,19 @@ public class Recurso extends ElementoComplejo {
         j.addResources(10);
         capturador = j.nombre;
         j.visiones.add(new Vision(this.x, this.y, 450, 0));
-        this.sprite.setAutoUpdate(true);
+        this.animation.setAutoUpdate(true);
     }
 
     @Override
     public void render(Game p, Color c, Input input, Graphics g) {
         //super.dibujar(p, c, input, g);
-        sprite.draw(x - anchura / 2, y - altura / 2);
+        animation.draw(x - anchura / 2, y - altura / 2);
         g.setColor(Color.black);
         if (DEBUG_MODE) {
             g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         }
         g.setColor(Color.white);
-        if (WindowCombat.ui.elementos.indexOf(this) != -1 ||
+        if (WindowCombat.ui.elements.indexOf(this) != -1 ||
                 (this.nombre.equals("Vision") && this.capturador != null)
                 || (this.hitbox(WindowCombat.playerX + input.getMouseX(),
                 WindowCombat.playerY + input.getMouseY()))) {

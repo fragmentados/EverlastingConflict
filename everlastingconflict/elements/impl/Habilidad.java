@@ -15,7 +15,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Vision;
 import everlastingconflict.races.Clark;
 import everlastingconflict.status.Status;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.WindowCombat;
 import everlastingconflict.windows.WindowMain;
@@ -44,7 +44,7 @@ public class Habilidad extends ElementoSimple {
         descripcion = "";
         initData();
         try {
-            sprite = new Animation(new Image[]{new Image("media/Iconos/" + nombre + ".png")}, new int[]{300}, false);
+            animation = new Animation(new Image[]{new Image("media/Iconos/" + nombre + ".png")}, new int[]{300}, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
         } catch (SlickException ex) {
             Logger.getLogger(Habilidad.class.getName()).log(Level.SEVERE, null, ex);
@@ -417,7 +417,7 @@ public class Habilidad extends ElementoSimple {
                     break;
                 case "Pesadilla":
                     ((Unidad) objetivo).parar();
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.STUN,
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.STUN,
                             10));
                     break;
                 case "Protección":
@@ -443,19 +443,19 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Regeneración":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.REGENERACION, 10f));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.REGENERACION, 10f));
                     break;
                 case "Teletransporte":
                     m.x = objetivo.x;
                     m.y = objetivo.y;
                     break;
                 case "Erosión":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.EROSION));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.EROSION));
                     break;
                 case "Trampa solar":
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ENEMY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        ((Unidad) e).statusCollection.anadir_estado(new Status(StatusName.SNARE, 10));
+                        ((Unidad) e).statusCollection.addStatus(new Status(StatusNameEnum.SNARE, 10));
                         if (((Unidad) e).isMoving()) {
                             ((Unidad) e).parar();
                         }
@@ -478,7 +478,7 @@ public class Habilidad extends ElementoSimple {
                 case "Motivar a las tropas":
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ALLY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        ((Unidad) e).statusCollection.anadir_estado(new Status(StatusName.ATAQUE_POTENCIADO, 15f, 10));
+                        ((Unidad) e).statusCollection.addStatus(new Status(StatusNameEnum.ATAQUE_POTENCIADO, 15f, 10));
                     }
                     break;
                 case "Maniobra desesperada":
@@ -492,7 +492,7 @@ public class Habilidad extends ElementoSimple {
                 case "Desmoralizar al enemigo":
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ENEMY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        ((Unidad) e).statusCollection.anadir_estado(new Status(StatusName.ATAQUE_DISMINUIDO, 15f, 10));
+                        ((Unidad) e).statusCollection.addStatus(new Status(StatusNameEnum.ATAQUE_DISMINUIDO, 15f, 10));
                     }
                     break;
                 case "Cambiar modo":
@@ -532,7 +532,7 @@ public class Habilidad extends ElementoSimple {
                     break;
                 case "Provocar":
                 case "Presencia abrumadora":
-                    ((Unidad) origen).statusCollection.anadir_estado(new Status(StatusName.PROVOCAR, 10));
+                    ((Unidad) origen).statusCollection.addStatus(new Status(StatusNameEnum.PROVOCAR, 10));
                     origen.isProyectileAttraction = true;
                     break;
                 case "Parálisis temporal":
@@ -545,10 +545,10 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Tiempos de necesidad":
-                    ((Unidad) origen).statusCollection.anadir_estado(new Status(StatusName.NECESIDAD, 10));
+                    ((Unidad) origen).statusCollection.addStatus(new Status(StatusNameEnum.NECESIDAD, 10));
                     break;
                 case "Ansia de supervivencia":
-                    ((Unidad) origen).statusCollection.anadir_estado(new Status(StatusName.SUPERVIVENCIA, 10));
+                    ((Unidad) origen).statusCollection.addStatus(new Status(StatusNameEnum.SUPERVIVENCIA, 10));
                     break;
                 case "Eclipse Amanecer":
                     RelojMaestros relojMaestros = WindowCombat.masterWatch();
@@ -559,33 +559,27 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Meditar":
-                    if (((Unidad) origen).statusCollection.existe_estado(StatusName.MEDITACION)) {
-                        ((Manipulador) origen).regeneracion_mana -= 2;
-                        ((Unidad) origen).statusCollection.forceRemoveStatus(StatusName.MEDITACION);
-                    } else {
-                        ((Manipulador) origen).regeneracion_mana += 2;
-                        ((Unidad) origen).statusCollection.anadir_estado(new Status(StatusName.MEDITACION));
-                    }
+                    ((Manipulador) origen).meditation();
                     break;
                 case "Impactos drenantes":
-                    ((Unidad) origen).statusCollection.anadir_estado(new Status(StatusName.DRENANTES, 10f));
+                    ((Unidad) origen).statusCollection.addStatus(new Status(StatusNameEnum.DRENANTES, 10f));
                     break;
                 case "Pacifismo":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.PACIFISMO, 10f));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.PACIFISMO, 10f));
                     break;
                 case "Silencio":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.SILENCIO, 10f));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.SILENCIO, 10f));
                     break;
                 case "Defensa férrea":
                     Unidad objetivo_u = (Unidad) objetivo;
-                    if (objetivo_u.statusCollection.existe_estado(StatusName.DEFENSA)) {
+                    if (objetivo_u.statusCollection.containsStatus(StatusNameEnum.DEFENSA)) {
                         objetivo_u.defensa /= 2;
                         objetivo_u.velocidad *= 2;
-                        objetivo_u.statusCollection.forceRemoveStatus(StatusName.DEFENSA);
+                        objetivo_u.statusCollection.forceRemoveStatus(StatusNameEnum.DEFENSA);
                     } else {
                         objetivo_u.defensa *= 2;
                         objetivo_u.velocidad /= 2;
-                        objetivo_u.statusCollection.anadir_estado(new Status(StatusName.DEFENSA));
+                        objetivo_u.statusCollection.addStatus(new Status(StatusNameEnum.DEFENSA));
                     }
                     break;
                 case "Intervención divina":
@@ -599,16 +593,17 @@ public class Habilidad extends ElementoSimple {
                     }
                     break;
                 case "Cegar a la presa":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.CEGUERA, 10));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.CEGUERA, 10));
                     break;
                 case "Modo supremo":
-                    ((Unidad) objetivo).statusCollection.anadir_estado(new Status(StatusName.MODO_SUPREMO, 15));
+                    ((Unidad) objetivo).statusCollection.addStatus(new Status(StatusNameEnum.MODO_SUPREMO, 15));
                     ((Unidad) objetivo).ataque += 50;
                     ((Unidad) objetivo).cadencia = 0.8f;
                     ((Unidad) objetivo).cadencia_contador = 0f;
                     break;
                 case "Domesticacion experta":
-                    Bestias bestias = p.bestias.stream().filter(be -> be.contenido.contains(objetivo)).findFirst().orElse(null);
+                    Bestias bestias =
+                            p.bestias.stream().filter(be -> be.contenido.contains(objetivo)).findFirst().orElse(null);
                     if (bestias != null) {
                         p.bestias.remove(bestias);
                         aliado.unidades.addAll(bestias.contenido.stream().map(b -> new Unidad(b)).collect(Collectors.toList()));
@@ -627,7 +622,7 @@ public class Habilidad extends ElementoSimple {
         if (origen instanceof Manipulador) {
             Manipulador mani = (Manipulador) origen;
             if (mani.fuerzas_mixtas) {
-                mani.statusCollection.anadir_estado(new Status(StatusName.ATAQUE_POTENCIADO, 15f,
+                mani.statusCollection.addStatus(new Status(StatusNameEnum.ATAQUE_POTENCIADO, 15f,
                         10));
             }
         }

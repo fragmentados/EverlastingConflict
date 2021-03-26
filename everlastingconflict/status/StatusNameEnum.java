@@ -1,6 +1,6 @@
 package everlastingconflict.status;
 
-public enum StatusName {
+public enum StatusNameEnum {
     STUN("Stun"),
     SILENCIO("Silencio"),
     PACIFISMO("Pacifismo"),
@@ -23,7 +23,7 @@ public enum StatusName {
 
     private String name;
 
-    StatusName(String name) {
+    StatusNameEnum(String name) {
         this.name = name;
     }
 
@@ -31,16 +31,16 @@ public enum StatusName {
         return name;
     }
 
-    public static boolean allowsAttack(StatusName status) {
-        return !StatusName.STUN.equals(status)
-                && !StatusName.PACIFISMO.equals(status)
-                && !StatusName.MEDITACION.equals(status)
-                && !StatusName.SUPERVIVENCIA.equals(status);
+    public static boolean allowsAttack(StatusNameEnum status) {
+        return !StatusNameEnum.STUN.equals(status)
+                && !StatusNameEnum.PACIFISMO.equals(status)
+                && !StatusNameEnum.MEDITACION.equals(status)
+                && !StatusNameEnum.SUPERVIVENCIA.equals(status);
     }
 
-    public static boolean allowsMove(StatusName status) {
-        return !StatusName.STUN.equals(status)
-                && !StatusName.SNARE.equals(status)
-                && !StatusName.MEDITACION.equals(status);
+    public static boolean allowsMove(StatusNameEnum status) {
+        return !StatusNameEnum.STUN.equals(status)
+                && !StatusNameEnum.SNARE.equals(status)
+                && !StatusNameEnum.MEDITACION.equals(status);
     }
 }

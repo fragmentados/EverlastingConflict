@@ -1,9 +1,9 @@
 package everlastingconflict.elements.util;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
+import org.newdawn.slick.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ElementosComunes {
     //Color
@@ -14,7 +14,8 @@ public class ElementosComunes {
     public static Sound BUILDING_DEATH_SOUND;
     public static Sound VICTORY_SOUND;
     public static Sound DEFEAT_SOUND;
-    public static Sound BACKGROUND_MUSIC_SOUND;
+
+    public static List<Sound> BSOS = new ArrayList<>();
     // Image for resource drawing
     public static Image POPULATION_IMAGE;
     public static Image FENIX_CUARTEL;
@@ -22,6 +23,7 @@ public class ElementosComunes {
     public static Image MONEY_IMAGE;
     public static Image THREAT_IMAGE;
     // Colors for map drawing
+    public static Color NO_VISIBLE_COLOR = new Color(0.1f, 0.1f, 0.05f, 1f);
     public static Color HALF_VISIBLE_COLOR = new Color(0.2f, 0.2f, 0.05f, 1f);
     public static Color FULL_VISIBLE_COLOR = new Color(0.3f, 0.3f, 0.1f, 1f);
     // Images used for fusion help
@@ -54,20 +56,22 @@ public class ElementosComunes {
     public static Image GUTLING_IMAGE;
     public static Image ARTILLERY_IMAGE;
     public static Image DEMOLISHER_IMAGE;
+    public static Image BEAST_DEATH_IMAGE;
     // Day / Night Images
     public static Image DAY_IMAGE;
     public static Image NIGHT_IMAGE;
     // Victory condition icons
     public static Image LIDER_IMAGE;
+    // Eternium DETENTION image
+    public static Animation ETERNIUM_DETENTION;
 
 
-    public static void init() throws SlickException {
+    public static void initSimpleResources() throws SlickException {
         CONSTRUCTION_SOUND = new Sound("media/Sonidos/Construccion.wav");
         UNIT_DEATH_SOUND = new Sound("media/Sonidos/MuerteUnidad.wav");
         BUILDING_DEATH_SOUND = new Sound("media/Sonidos/MuerteEdificio.ogg");
         VICTORY_SOUND = new Sound("media/Sonidos/Victoria.ogg");
         DEFEAT_SOUND = new Sound("media/Sonidos/Derrota.wav");
-        //BACKGROUND_MUSIC_SOUND = new Sound("media/Sonidos/MusicaFondo.ogg");
         POPULATION_IMAGE = new Image("media/Recursos/Poblacion.png");
         FENIX_CUARTEL = new Image("media/Recursos/CuartelFenix.png");
         FENIX_UNIDADES_NO_CONSTRUCTORAS = new Image("media/Recursos/FenixUnidadesNoConstructoras.png");
@@ -89,7 +93,6 @@ public class ElementosComunes {
         NIGHT_IMAGE = new Image("media/Iconos/Luna.png");
         THREAT_IMAGE = new Image("media/Recursos/GuardianesAmenaza.png");
         LIDER_IMAGE = new Image("media/Lider.png");
-
         ARTILLERO_IMAGE = new Image("media/Iconos/Artillero.png");
         EXPLORADOR_IMAGE = new Image("media/Iconos/Explorador.png");
         CORREDOR_IMAGE = new Image("media/Iconos/Corredor.png");
@@ -105,5 +108,14 @@ public class ElementosComunes {
         GUTLING_IMAGE = new Image("media/Torretas/Ametralladora_icono.png");
         ARTILLERY_IMAGE = new Image("media/Torretas/Torreta artillería_icono.png");
         DEMOLISHER_IMAGE = new Image("media/Torretas/Torreta demoledora_icono.png");
+        ETERNIUM_DETENTION = new Animation(new Image[]{new Image("media/Unidades/Detención.png")}, new int[]{300},
+                false);
+        BEAST_DEATH_IMAGE = new Image("media/Unidades/Muerte.png");
+    }
+
+    public static void initBackGroundMusics() throws SlickException {
+        for (int i = 1; i < 4; i++) {
+            BSOS.add(new Sound("media/Sonidos/BSO/BSO" + i + ".ogg"));
+        }
     }
 }

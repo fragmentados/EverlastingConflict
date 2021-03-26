@@ -128,8 +128,8 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
     public void render(GameContainer container, Graphics g) throws SlickException {
         super.render(container, g);
         Input input = container.getInput();
-        mapCombo.render(input, g);
-        gameModeCombo.render(input, g);
+        mapCombo.render( g);
+        gameModeCombo.render( g);
         for (int i = (playerSelections.size() - 1); i >= 0; i--) {
             playerSelections.get(i).render(input, g);
         }

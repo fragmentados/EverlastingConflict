@@ -26,7 +26,7 @@ public class AIFenixNormal extends AIFenixFacil {
     }
 
     @Override
-    public void decisiones_edificios(Game p) {
+    public void decisiones_edificios(Game p, int delta) {
         for (Edificio e : edificios) {
             if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                 switch (e.nombre) {

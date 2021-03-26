@@ -7,7 +7,9 @@ package everlastingconflict.elements;
 
 import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.gestion.Game;
+import everlastingconflict.status.Status;
 import everlastingconflict.status.StatusCollection;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -26,7 +28,22 @@ public abstract class ElementoEstado extends ElementoComplejo {
     }
 
     @Override
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
+        g.setColor(Color.black);
+        float xStatus = (this.x - this.anchura / 2) + 2;
+        for (Status status : statusCollection.contenido) {
+            if (status.time > 0) {
+                g.drawRect(xStatus - 2, this.y + this.altura / 2 + 5, 21, 21);
+                status.icon.draw(xStatus, this.y + this.altura / 2 + 6, 20, 20);
+                xStatus += 20;
+            }
+        }
+        g.setColor(Color.white);
+    }
+
+    @Override
     public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+        this.render(this.animation, p, c, input, g);
     }
 }

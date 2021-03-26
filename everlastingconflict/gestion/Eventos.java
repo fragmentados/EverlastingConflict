@@ -172,7 +172,7 @@ public class Eventos {
         }
         for (int i = 0; i < contenido.size(); i++) {
             Evento e = contenido.get(i);
-            e.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 + 100 + (e.sprite.getWidth() + 10) * i;
+            e.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 + 100 + (e.animation.getWidth() + 10) * i;
             e.y = WindowCombat.playerY + 5;
             e.dibujar(g);
         }

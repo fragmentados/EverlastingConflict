@@ -12,7 +12,7 @@ import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.status.Status;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.*;
@@ -55,6 +55,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public boolean constructor;
     public boolean hostil;
     public boolean healer;
+    public float delay = 0;
 
     //public List<Arma> armas = new ArrayList<>();
     public float obtener_distancia(ElementoCoordenadas e) {
@@ -265,23 +266,23 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
             }
         }
-        if (this.statusCollection.existe_estado(StatusName.DRENANTES)) {
+        if (this.statusCollection.containsStatus(StatusNameEnum.DRENANTES)) {
             Manipulador m = (Manipulador) this;
             if (m.mana >= 10) {
                 ataque_contador += 15;
                 m.mana -= 10;
             }
         }
-        if (this.statusCollection.existe_estado(StatusName.ATAQUE_POTENCIADO)) {
-            ataque_contador += this.statusCollection.obtener_estado(StatusName.ATAQUE_POTENCIADO).value;
-            this.statusCollection.forceRemoveStatus(StatusName.ATAQUE_POTENCIADO);
+        if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
+            ataque_contador += this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
+            this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_POTENCIADO);
         }
-        if (this.statusCollection.existe_estado(StatusName.ATAQUE_DISMINUIDO)) {
-            ataque_contador -= this.statusCollection.obtener_estado(StatusName.ATAQUE_DISMINUIDO).value;
+        if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
+            ataque_contador -= this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
             if (ataque_contador < 0) {
                 ataque_contador = 0;
             }
-            this.statusCollection.forceRemoveStatus(StatusName.ATAQUE_DISMINUIDO);
+            this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_DISMINUIDO);
         }
         float cantidad_dano = (ataque_contador - defensa_contador);
         if (!(e instanceof Unidad) || ((Unidad) e).puede_ser_danado()) {
@@ -314,7 +315,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
             }
             if (m.disparo_helado && e instanceof Unidad) {
                 Unidad unidad = (Unidad) e;
-                unidad.statusCollection.anadir_estado(new Status(StatusName.RALENTIZACION, 5f,
+                unidad.statusCollection.addStatus(new Status(StatusNameEnum.RALENTIZACION, 5f,
                         35f));
             }
         }
@@ -357,16 +358,16 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public boolean heal(int ataque_contador, ElementoVulnerable e) {
         //e representa el objetivo de la curacion
         if (healer) {
-            if (this.statusCollection.existe_estado(StatusName.ATAQUE_POTENCIADO)) {
-                ataque_contador += this.statusCollection.obtener_estado(StatusName.ATAQUE_POTENCIADO).value;
-                this.statusCollection.forceRemoveStatus(StatusName.ATAQUE_POTENCIADO);
+            if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
+                ataque_contador += this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
+                this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_POTENCIADO);
             }
-            if (this.statusCollection.existe_estado(StatusName.ATAQUE_DISMINUIDO)) {
-                ataque_contador -= this.statusCollection.obtener_estado(StatusName.ATAQUE_DISMINUIDO).value;
+            if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
+                ataque_contador -= this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
                 if (ataque_contador < 0) {
                     ataque_contador = 0;
                 }
-                this.statusCollection.forceRemoveStatus(StatusName.ATAQUE_DISMINUIDO);
+                this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_DISMINUIDO);
             }
             if (ataque_contador > 0) {
                 if (e.vida + ataque_contador >= e.vida_max) {
@@ -390,8 +391,8 @@ public abstract class ElementoAtacante extends ElementoEstado {
     }
 
     @Override
-    public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
         g.setColor(Color.black);
         if (DEBUG_MODE && hostil) {
             if (alcance > 0) {
@@ -400,6 +401,11 @@ public abstract class ElementoAtacante extends ElementoEstado {
             }
         }
         g.setColor(Color.white);
+    }
+
+    @Override
+    public void render(Game p, Color c, Input input, Graphics g) {
+        this.render(this.animation, p, c, input, g);
     }
 
     @Override

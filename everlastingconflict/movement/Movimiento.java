@@ -8,7 +8,7 @@ package everlastingconflict.movement;
 import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elements.ElementoMovil;
 import everlastingconflict.gestion.Game;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -30,8 +30,8 @@ public abstract class Movimiento {
             float x_final = puntos.get(0).x;
             float y_final = puntos.get(0).y;
             float movimiento = 100 * Reloj.TIME_REGULAR_SPEED * unidad.velocidad * delta;
-            if (unidad.statusCollection.existe_estado(StatusName.RALENTIZACION)) {
-                movimiento *= (100 - unidad.statusCollection.obtener_estado(StatusName.RALENTIZACION).value) / 100;
+            if (unidad.statusCollection.containsStatus(StatusNameEnum.RALENTIZACION)) {
+                movimiento *= (100 - unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.RALENTIZACION).value) / 100;
             }
             float distancia_x = Math.abs(x_final - unidad.x);
             float distancia_y = Math.abs(y_final - unidad.y);
@@ -45,7 +45,8 @@ public abstract class Movimiento {
                 movimientoy = movimiento;
             }
             boolean horizontal = (movimientox > movimientoy);
-            unidad.sprite.update(delta);
+            // TODO NOT NEEDED UNTIL WE HAVE ANIMATIONS PER MOVE
+            //unidad.animation.update(delta);
             if (unidad.x < x_final) {
                 if (unidad.x + movimientox >= x_final) {
                     unidad.x = x_final;
@@ -54,7 +55,7 @@ public abstract class Movimiento {
                 }
                 if (horizontal) {
                     if (unidad.derecha != null) {
-                        unidad.sprite = unidad.derecha;
+                        unidad.animation = unidad.derecha;
                     }
                 }
             } else {
@@ -67,7 +68,7 @@ public abstract class Movimiento {
                 }
                 if (horizontal) {
                     if (unidad.izquierda != null) {
-                        unidad.sprite = unidad.izquierda;
+                        unidad.animation = unidad.izquierda;
                     }
                 }
             }
@@ -79,7 +80,7 @@ public abstract class Movimiento {
                 }
                 if (!horizontal) {
                     if (unidad.abajo != null) {
-                        unidad.sprite = unidad.abajo;
+                        unidad.animation = unidad.abajo;
                     }
                 }
             } else {
@@ -92,7 +93,7 @@ public abstract class Movimiento {
                 }
                 if (!horizontal) {
                     if (unidad.arriba != null) {
-                        unidad.sprite = unidad.arriba;
+                        unidad.animation = unidad.arriba;
                     }
                 }
             }

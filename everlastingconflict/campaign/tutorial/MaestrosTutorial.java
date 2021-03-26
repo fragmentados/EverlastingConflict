@@ -11,7 +11,7 @@ import everlastingconflict.elements.impl.Habilidad;
 import everlastingconflict.elements.impl.Manipulador;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.WindowCombat;
 
@@ -66,7 +66,7 @@ public class MaestrosTutorial extends GuidedGame {
         steps.add(new GameStep("Prueba a utilizar la habilidad Meditación ahora.", false) {
             @Override
             public boolean check(Game p) {
-                return p.getMainPlayer().unidades.get(0).statusCollection.existe_estado(StatusName.MEDITACION);
+                return p.getMainPlayer().unidades.get(0).statusCollection.containsStatus(StatusNameEnum.MEDITACION);
             }
         });
         steps.add(new GameStep("Como podrás comprobar, tu Manipulador es ahora incapaz de moverse, pero su " +

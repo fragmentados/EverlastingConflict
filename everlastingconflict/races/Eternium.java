@@ -12,9 +12,6 @@ import everlastingconflict.elements.impl.Tecnologia;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.SubRaceEnum;
-import everlastingconflict.windows.WindowCombat;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
 
 public class Eternium {
@@ -23,26 +20,6 @@ public class Eternium {
     public static int ataque_ancestro = Unidad.ataque_estandar + 34;
     public static final int MAX_UNIT_PER_QUEUE = 5;
     public static int recursos_refineria = 70;
-
-    public static void dibujar_detencion(Unidad u, Color c, Graphics g) {
-        WindowCombat.detencion.draw(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-        g.setColor(Color.black);
-        g.drawRect(u.x - u.anchura / 2, u.y - u.altura / 2, u.anchura, u.altura);
-        g.setColor(Color.white);
-        g.setColor(Color.white);
-        //Dibujar barra de vida
-        g.drawRect(u.x - u.anchura / 2, u.y + u.altura / 2, u.anchura_barra_vida, u.altura_barra_vida);
-        g.setColor(c);
-        g.fillRect(u.x - u.anchura / 2, u.y + u.altura / 2, u.anchura_barra_vida * (u.vida / u.vida_max),
-                u.altura_barra_vida);
-        g.setColor(Color.white);
-        //g.setColor(Color.red);
-        //g.fillRect(x + anchura_barra_vida * (vida / vida_max), y + altura, anchura_barra_vida - (anchura_barra_vida
-        // * (vida / vida_max)), altura_barra_vida);
-        if (WindowCombat.ui.elementos.indexOf(u) != -1) {
-            u.circulo(g, c);
-        }
-    }
 
     //Unidades
     public static void Adepto(Jugador aliado, Unidad u) {
@@ -55,12 +32,12 @@ public class Eternium {
         u.vision = Unidad.vision_estandar + 100;
         u.coste = aliado.hasTecnologyResearched("Aprendizaje económico") ? 25 : 50;
         u.tiempo = Unidad.tiempo_estandar;
-        u.botones.add(new BotonComplejo(new Edificio("Refinería")));
+        u.botones.add(new BotonComplejo(new Edificio(aliado, "Refinería")));
         u.constructor = true;
         u.descripcion = "Unidad básica de ataque a distancia.";
     }
 
-    public static void Guerrero(Unidad u) {
+    public static void Guerrero(Jugador aliado, Unidad u) {
         u.ataque = Eternium.ataque_guerrero;
         u.defensa = Unidad.defensa_estandar + 3;
         u.vida_max = Unidad.vida_estandar + 80;
@@ -70,12 +47,12 @@ public class Eternium {
         u.vision = Unidad.vision_estandar;
         u.coste = 125;
         u.tiempo = Unidad.tiempo_estandar + 5;
-        u.botones.add(new BotonComplejo(new Edificio("Refinería")));
+        u.botones.add(new BotonComplejo(new Edificio(aliado, "Refinería")));
         u.constructor = true;
         u.descripcion = "Unidad capaz de recibir grandes daños antes de ser destruida.";
     }
 
-    public static void Ancestro(Unidad u) {
+    public static void Ancestro(Jugador aliado, Unidad u) {
         u.ataque = Eternium.ataque_ancestro;
         u.defensa = Unidad.defensa_estandar + 1;
         u.vida_max = Unidad.vida_estandar + 50;
@@ -85,12 +62,12 @@ public class Eternium {
         u.vision = Unidad.vision_estandar - 50;
         u.coste = 200;
         u.tiempo = Unidad.tiempo_estandar + 10;
-        u.botones.add(new BotonComplejo(new Edificio("Refinería")));
+        u.botones.add(new BotonComplejo(new Edificio(aliado, "Refinería")));
         u.constructor = true;
         u.descripcion = "Unidad con gran capacidad ofensiva y con la habilidad para alterar el tiempo.";
     }
 
-    public static void Protector(Unidad u) {
+    public static void Protector(Jugador aliado, Unidad u) {
         u.ataque = 0;
         u.defensa = 2;
         u.vida_max = Unidad.vida_estandar + 100;
@@ -100,13 +77,13 @@ public class Eternium {
         u.vision = Unidad.vision_estandar;
         u.coste = 100;
         u.tiempo = Unidad.tiempo_estandar + 10;
-        u.botones.add(new BotonComplejo(new Edificio("Refinería")));
+        u.botones.add(new BotonComplejo(new Edificio(aliado, "Refinería")));
         u.constructor = true;
         u.hostil = false;
         u.descripcion = "Unidad defensiva que atrae los proyectiles enemigos durante la detención temporal.";
     }
 
-    public static void Erradicador(Unidad u) {
+    public static void Erradicador(Jugador aliado, Unidad u) {
         u.ataque = Unidad.ataque_estandar + 30;
         u.defensa = 2;
         u.vida_max = Unidad.vida_estandar;
@@ -116,7 +93,7 @@ public class Eternium {
         u.vision = Unidad.vision_estandar;
         u.coste = 80;
         u.tiempo = Unidad.tiempo_estandar + 2;
-        u.botones.add(new BotonComplejo(new Edificio("Refinería")));
+        u.botones.add(new BotonComplejo(new Edificio(aliado, "Refinería")));
         u.constructor = true;
         u.descripcion = "Unidad especializada en el combate cuerpo a cuerpo inmune a la detención temporal.";
     }
@@ -176,9 +153,9 @@ public class Eternium {
                 } else if (SubRaceEnum.ERRADICARDORES.equals(aliado.subRace)) {
                     e.botones.add(new BotonComplejo(new Unidad(aliado, "Erradicador")));
                 }
-                e.botones.add(new BotonComplejo(new Edificio("Cámara de asimilación")));
-                e.botones.add(new BotonComplejo(new Edificio("Teletransportador")));
-                e.botones.add(new BotonComplejo(new Edificio("Altar de los ancestros")));
+                e.botones.add(new BotonComplejo(new Edificio(aliado, "Cámara de asimilación")));
+                e.botones.add(new BotonComplejo(new Edificio(aliado, "Teletransportador")));
+                e.botones.add(new BotonComplejo(new Edificio(aliado, "Altar de los ancestros")));
                 break;
             case "Altar de los ancestros":
                 e.botones.add(new BotonComplejo(new Tecnologia("Catalización extrema")));

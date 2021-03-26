@@ -5,6 +5,7 @@
  */
 package everlastingconflict;
 
+import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.windows.WindowCombat;
 import everlastingconflict.windows.WindowMain;
 import org.newdawn.slick.CanvasGameContainer;
@@ -12,7 +13,9 @@ import org.newdawn.slick.SlickException;
 
 import javax.swing.*;
 import java.awt.*;
- 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class RTS {
 
     public static CanvasGameContainer canvas;
@@ -21,6 +24,13 @@ public class RTS {
     public static final boolean DEBUG_MODE = false;
     
     public static void main(String[] args) {
+        // Launch new thread for loading bsos
+        new Thread(() -> {
+            try {
+                ElementosComunes.initBackGroundMusics();
+            } catch (SlickException e) {
+            }
+        }).start();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         WindowCombat.VIEWPORT_SIZE_WIDTH = screenSize.width;
         WindowCombat.VIEWPORT_SIZE_HEIGHT = screenSize.height;
@@ -36,6 +46,12 @@ public class RTS {
             canvas.start();
             mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainFrame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    // call terminate
+                    WindowMain.exit(canvas.getContainer());
+                }
+            });
             canvas.getContainer().setFullscreen(true);
         } catch (SlickException e) {
         }

@@ -31,16 +31,16 @@ public class Proyectil extends ElementoMovil {
 
     public final void iniciar_datos(ElementoAtacante origen) {
         try {
-            this.sprite = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300,
-                    false);
+            this.animation = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300,
+                    true);
             this.izquierda = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_izquierda.png")},
-                    300, false);
+                    300, true);
             this.derecha = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_derecha.png")}, 300,
-                    false);
+                    true);
             this.arriba = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_arriba.png")}, 300,
-                    false);
+                    true);
             this.abajo = new Animation(new Image[]{new Image("media/Proyectiles/" + nombre + "_abajo.png")}, 300,
-                    false);
+                    true);
         } catch (SlickException ex) {
             Logger.getLogger(Proyectil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -62,7 +62,8 @@ public class Proyectil extends ElementoMovil {
         this.y = this.origen.y;
         this.velocidad = 3.0f;
         iniciar_datos(origen);
-
+        this.anchura = this.animation.getWidth();
+        this.altura = this.animation.getHeight();
     }
 
     @Override

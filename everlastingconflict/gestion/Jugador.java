@@ -15,7 +15,7 @@ import everlastingconflict.races.Guardianes;
 import everlastingconflict.races.Raza;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.Color;
@@ -170,18 +170,18 @@ public class Jugador {
     public void initElements(Game p) {
         switch (raza) {
             case FENIX:
-                edificios.add(new Edificio("Sede", x_inicial, y_inicial));
+                edificios.add(new Edificio(this, "Sede", x_inicial, y_inicial));
                 unidades.add(new Unidad(this, "Constructor", x_inicial, this.verticalOffset(y_inicial, 150)));
                 unidades.add(new Unidad(this, "Recolector", this.horizontalOffset(x_inicial, 50),
                         this.verticalOffset(y_inicial, 150)));
                 break;
             case ETERNIUM:
-                edificios.add(new Edificio("Mando Central", x_inicial, y_inicial));
+                edificios.add(new Edificio(this, "Mando Central", x_inicial, y_inicial));
                 unidades.add(new Unidad(this, "Adepto", this.horizontalOffset(x_inicial, 50),
                         this.verticalOffset(y_inicial, 150)));
                 break;
             case CLARK:
-                edificios.add(new Edificio("Primarca", x_inicial, y_inicial));
+                edificios.add(new Edificio(this, "Primarca", x_inicial, y_inicial));
                 unidades.add(new Unidad(this, "Depredador", this.horizontalOffset(x_inicial, -50),
                         this.verticalOffset(y_inicial, 150)));
                 unidades.add(new Unidad(this, "Devorador", this.horizontalOffset(x_inicial, 10),
@@ -193,16 +193,16 @@ public class Jugador {
                 unidades.add(new Manipulador(this, x_inicial, y_inicial));
                 break;
             case GUARDIANES:
-                edificios.add(new Edificio("Ayuntamiento", x_inicial, y_inicial));
-                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300),
+                edificios.add(new Edificio(this, "Ayuntamiento", x_inicial, y_inicial));
+                edificios.add(new Taller(this, "Taller bélico", this.horizontalOffset(x_inicial, 300),
                         this.verticalOffset(y_inicial, 250)));
-                edificios.add(new Edificio("Academia de pilotos", this.horizontalOffset(x_inicial, 200), y_inicial));
-                edificios.add(new Taller("Taller bélico", this.horizontalOffset(x_inicial, 300),
+                edificios.add(new Edificio(this, "Academia de pilotos", this.horizontalOffset(x_inicial, 200), y_inicial));
+                edificios.add(new Taller(this, "Taller bélico", this.horizontalOffset(x_inicial, 300),
                         this.verticalOffset(y_inicial, 400)));
-                edificios.add(new Edificio("Templo", this.horizontalOffset(x_inicial, 400), y_inicial));
-                edificios.add(new Edificio("Laboratorio de I+D", this.horizontalOffset(x_inicial, 500), y_inicial));
-                edificios.add(new Edificio("Vaticano", this.horizontalOffset(x_inicial, 600), y_inicial));
-                edificios.add(new Edificio("Edificio gubernamental", this.horizontalOffset(x_inicial, 700), y_inicial));
+                edificios.add(new Edificio(this, "Templo", this.horizontalOffset(x_inicial, 400), y_inicial));
+                edificios.add(new Edificio(this, "Laboratorio de I+D", this.horizontalOffset(x_inicial, 500), y_inicial));
+                edificios.add(new Edificio(this, "Vaticano", this.horizontalOffset(x_inicial, 600), y_inicial));
+                edificios.add(new Edificio(this, "Edificio gubernamental", this.horizontalOffset(x_inicial, 700), y_inicial));
                 break;
         }
         for (Unidad u : unidades) {
@@ -272,7 +272,7 @@ public class Jugador {
                 if (u.nombre.equals("Protector") || u.nombre.equals("Erradicador")) {
                     u.render(p, color, input, g);
                 } else {
-                    Eternium.dibujar_detencion(u, color, g);
+                    u.render(ElementosComunes.ETERNIUM_DETENTION, p, color, input, g);
                 }
             }
         } else {
@@ -294,9 +294,9 @@ public class Jugador {
         if (this.raza.equals(RaceEnum.ETERNIUM) &&
                 (WindowCombat.eterniumWatch() != null && WindowCombat.eterniumWatch().ndivision == 4)) {
             unidades.stream().filter(u -> u.isVisibleByMainTeam(p) && (u.nombre.equals("Protector") || u.nombre.equals(
-                    "Erradicador"))).forEach(u -> Eternium.dibujar_detencion(u, color, g));
+                    "Erradicador"))).forEach(u -> u.render(p, color, input, g));
             unidades.stream().filter(u -> u.isVisibleByMainTeam(p) && !(u.nombre.equals("Protector") || u.nombre.equals("Erradicador")))
-                    .forEach(u -> u.render(p, color, input, g));
+                    .forEach(u -> u.render(ElementosComunes.ETERNIUM_DETENTION, p, color, input, g));
         } else {
             unidades.stream().filter(u -> u.isVisibleByMainTeam(p)).forEach(u -> u.render(p, color, input, g));
         }
@@ -459,7 +459,7 @@ public class Jugador {
     public void renderVisibility(Graphics g, Color c, int desplazamiento) {
         g.setColor(c);
         unidades.forEach(u -> {
-            int alcance = (u.statusCollection.existe_estado(StatusName.CEGUERA)) ? 10 + desplazamiento :
+            int alcance = (u.statusCollection.containsStatus(StatusNameEnum.CEGUERA)) ? 10 + desplazamiento :
                     u.vision + desplazamiento;
             g.fillOval(u.x - alcance / 2, u.y - alcance / 2, alcance, alcance);
         });
@@ -490,16 +490,16 @@ public class Jugador {
             case ETERNIUM:
                 // The eternium player starts with more resources and with a certain number of buildings built
                 if (advantageMultiplier > 0) {
-                    this.edificios.add(new Edificio("Cámara de asimilación", this.horizontalOffset(this.x_inicial,
+                    this.edificios.add(new Edificio(this, "Cámara de asimilación", this.horizontalOffset(this.x_inicial,
                             400), this.verticalOffset(this.y_inicial, 200)));
 
                 }
                 if (advantageMultiplier > 1) {
-                    this.edificios.add(new Edificio("Teletransportador", this.horizontalOffset(this.x_inicial, 400),
+                    this.edificios.add(new Edificio(this, "Teletransportador", this.horizontalOffset(this.x_inicial, 400),
                             this.verticalOffset(this.y_inicial, 350)));
                 }
                 if (advantageMultiplier > 2) {
-                    this.edificios.add(new Edificio("Altar de los ancestros", this.horizontalOffset(this.x_inicial, 600),
+                    this.edificios.add(new Edificio(this, "Altar de los ancestros", this.horizontalOffset(this.x_inicial, 600),
                             this.verticalOffset(this.y_inicial, 200)));
                 }
                 this.addResources(Eternium.recursos_refineria * advantageMultiplier);
@@ -538,5 +538,9 @@ public class Jugador {
                 m.defensa += 0.5 * advantageMultiplier;
                 break;
         }
+    }
+
+    public float getDelay() {
+        return 0f;
     }
 }

@@ -20,12 +20,12 @@ public class WindowMenuChallenges extends WindowMenuBasic {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        volver = new BotonSimple("Volver", WindowCombat.responsiveX(40), WindowCombat.responsiveY(85));
-        aceptar = new BotonSimple("Aceptar", WindowCombat.responsiveX(45), WindowCombat.responsiveY(85));
+        volver = new BotonSimple("Volver", WindowCombat.responsiveX(43), WindowCombat.responsiveY(50));
+        aceptar = new BotonSimple("Aceptar", WindowCombat.responsiveX(47), WindowCombat.responsiveY(50));
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - 60, 0);
         raceCombo = new ComboBox("Raza:",
                 Arrays.stream(RaceEnum.values()).map(r -> new ComboBoxOption(r.getName(), r.getDescription(),
-                        r.getImagePath())).collect(Collectors.toList()),
+                        r.getImagePath(), r.getColor())).collect(Collectors.toList()),
                 WindowCombat.responsiveX(45), WindowCombat.responsiveY(40));
     }
 
@@ -65,10 +65,9 @@ public class WindowMenuChallenges extends WindowMenuBasic {
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         super.render(container, g);
-        Input input = container.getInput();
-        raceCombo.render(input, g);
         volver.render(g);
         aceptar.render(g);
         salir.render(g);
+        raceCombo.render(g);
     }
 }

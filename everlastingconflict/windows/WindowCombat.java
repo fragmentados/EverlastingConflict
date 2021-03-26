@@ -79,9 +79,6 @@ public class WindowCombat extends Window {
     private List<Mensaje> mensajes;
     //RTS.Relojes
     private static List<Reloj> relojes = new ArrayList<>();
-    public static Image detencion;
-    //Muerte Bestias
-    public static Image muerte;
     //Habilidades
     public ElementoComplejo elemento_habilidad;
     public Habilidad habilidad;
@@ -96,10 +93,11 @@ public class WindowCombat extends Window {
     //Zoom
     public float zoomLevel = 1f;
     public static final float zoomStep = 0.0625f;
-    //Music
-    public Sound ambientMusic;
     public static ElementoCoordenadas elementHighlighted = null;
     public static int highlightRadius = 50;
+    //Music
+    public static List<Sound> LOCAL_BSOS;
+    public static Sound CURRENT_BSO;
 
     public static void initWatches() {
         relojes = new ArrayList<>();
@@ -177,14 +175,12 @@ public class WindowCombat extends Window {
         atacar = new Image("media/Cursores/atacar.png");
         construccion = new Image("media/Edificios/construccion.png");
         mensajes = new ArrayList<>();
-        detencion = new Image("media/Unidades/Detención.png");
-        muerte = new Image("media/Unidades/Muerte.png");
         ui = new UI();
         optionsMenuButtons = new ArrayList<>();
         optionsMenuButtons.add(new BotonSimple("Volver al menu") {
             @Override
             public void effect() throws SlickException {
-                WindowMain.windowSwitch(container, game, "Menu");
+                endGameAndReturnToMenu(container);
             }
         });
         optionsMenuButtons.add(new BotonSimple("Salir") {
@@ -193,7 +189,7 @@ public class WindowCombat extends Window {
                 WindowMain.exit(container);
             }
         });
-        //ElementosComunes.BACKGROUND_MUSIC_SOUND.loop(1f, 0.1f);
+        LOCAL_BSOS = new ArrayList<>();
     }
 
     public void coordenadas_errores() {
@@ -212,15 +208,15 @@ public class WindowCombat extends Window {
     }
 
     public void dibujar_edificio(Graphics g, Edificio edificio) {
-        int anchura = edificio.sprite.getWidth();
-        int altura = edificio.sprite.getHeight();
+        int anchura = edificio.animation.getWidth();
+        int altura = edificio.animation.getHeight();
         float posx, posy;
         posx = edificio.x - anchura / 2;
         posy = edificio.y - altura / 2;
         if (edificio.vida == 0) {
             g.setColor(new Color(0f, 1f, 0f, 0.8f));
             g.fillRect(posx, posy, anchura, altura);
-            edificio.sprite.draw(posx, posy);
+            edificio.animation.draw(posx, posy);
         }
 //        } else {
 //            construccion.draw(edificio.x - anchura / 2, edificio.y - altura / 2, edificio.anchura, edificio.altura);
@@ -232,8 +228,8 @@ public class WindowCombat extends Window {
     }
 
     public void dibujar_preview_edificio(Graphics g, Edificio edificio, Input input) {
-        int anchura = edificio.sprite.getWidth();
-        int altura = edificio.sprite.getHeight();
+        int anchura = edificio.animation.getWidth();
+        int altura = edificio.animation.getHeight();
         //Dibujar edificio construcción                
         float posx, posy;
         posx = playerX + input.getMouseX() - anchura / 2;
@@ -269,7 +265,7 @@ public class WindowCombat extends Window {
                 g.fillRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
             }
         }
-        edificio.sprite.draw(posx, posy);
+        edificio.animation.draw(posx, posy);
     }
 
     public void renderVisibility(Graphics g, Color c, int desplazamiento) {
@@ -327,7 +323,7 @@ public class WindowCombat extends Window {
 
     public void handleRightClick(float x, float y) {
         if (ui.allElementsAreControlledByMainPlayer(game)) {
-            for (ElementoSimple e : ui.elementos) {
+            for (ElementoSimple e : ui.elements) {
                 if (e instanceof Edificio) {
                     Edificio contador = (Edificio) e;
                     contador.reunion_x = x;
@@ -393,7 +389,7 @@ public class WindowCombat extends Window {
                     }
                 }
             }
-            List<Unidad> unitsSelected = ui.elementos.stream()
+            List<Unidad> unitsSelected = ui.elements.stream()
                     .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
                     .map(e -> (Unidad) e).collect(Collectors.toList());
             elementCircle = game.getElementAttackedAtPosition(x, y, unitsSelected);
@@ -446,6 +442,11 @@ public class WindowCombat extends Window {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
+        if (!LOCAL_BSOS.isEmpty() && CURRENT_BSO == null) {
+            CURRENT_BSO = LOCAL_BSOS.remove(0);
+        } else if (LOCAL_BSOS.isEmpty()) {
+            LOCAL_BSOS.addAll(ElementosComunes.BSOS);
+        }
         Input input = container.getInput();
         // On esc we enable / disable the options menu
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
@@ -502,7 +503,7 @@ public class WindowCombat extends Window {
                 }
             }
             //Controlar que presionen botones mediante teclas
-            for (ElementoComplejo e : ui.seleccion_actual) {
+            for (ElementoComplejo e : ui.currentSelectionPage) {
                 List<BotonComplejo> botones;
                 if (!(e instanceof Manipulador) || ((Manipulador) e).enhancementButtons.isEmpty()) {
                     botones = e.botones;
@@ -512,7 +513,7 @@ public class WindowCombat extends Window {
                 if (botones != null) {
                     botones.stream()
                             .filter(b -> input.isKeyPressed(b.tecla))
-                            .forEach(b -> b.resolucion(ui.elementos, e, game));
+                            .forEach(b -> b.resolucion(ui.elements, e, game));
                 }
             }
             //Comportamientos
@@ -551,7 +552,7 @@ public class WindowCombat extends Window {
                                 break;
                             }
                         }
-                        controlGroupGroups.add(new ControlGroup(ui.elementos, numberKey));
+                        controlGroupGroups.add(new ControlGroup(ui.elements, numberKey));
                     } else {
                         handleControlGroupSelection(numberKey);
                     }
@@ -593,7 +594,7 @@ public class WindowCombat extends Window {
                     }
                 }
                 if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT)) {
-                    ui.handleLeftClick(input, game, x_click, y_click, mayus);
+                    ui.handleLeftClick(input, game, x_click, y_click);
                     click = false;
                 } else if ((edificio != null)) {
                     //Decidir la localización de un edificio
@@ -671,30 +672,29 @@ public class WindowCombat extends Window {
                         y_click = y_final;
                         y_final = contador;
                     }
+                    List<ElementoComplejo> unitsToSelect = new ArrayList<>();
                     for (Unidad u : mainPlayer.unidades) {
                         if (u.en_rango(x_click, y_click, x_final, y_final)) {
                             if (ctrl) {
                                 for (Unidad u2 : mainPlayer.unidades) {
                                     if (u2 != u) {
                                         if (u2.nombre.equals(u.nombre)) {
-                                            if (!u2.seleccionada()) {
-                                                u2.seleccionar();
+                                            if (unitsToSelect.indexOf(u2) == -1) {
+                                                unitsToSelect.add(u2);
                                             }
                                         }
                                     }
                                 }
                             }
-                            u.seleccionar();
+                            unitsToSelect.add(u);
                         }
                     }
-                    boolean seleccionar_edificios = true;
-                    for (ElementoComplejo e : ui.elementos) {
-                        if (e instanceof Unidad) {
-                            seleccionar_edificios = false;
-                            break;
-                        }
+                    if (!unitsToSelect.isEmpty()) {
+                        ui.selectAll(unitsToSelect);
                     }
-                    if (seleccionar_edificios) {
+                    // Units selected have priority over buildings selected
+                    boolean squareSelectBuildings = ui.elements.stream().noneMatch(e -> e instanceof Unidad);
+                    if (squareSelectBuildings) {
                         for (Edificio e : mainPlayer.edificios) {
                             if (e.en_rango(x_click, y_click, x_final, y_final)) {
                                 if (ctrl) {
@@ -758,11 +758,11 @@ public class WindowCombat extends Window {
         for (ControlGroup c : controlGroupGroups) {
             if (c.tecla == numberKey) {
                 boolean cambiar_perspectiva = true;
-                if (ui.elementos.isEmpty()) {
+                if (ui.elements.isEmpty()) {
                     cambiar_perspectiva = false;
                 }
-                for (int j = 0; j < ui.elementos.size(); j++) {
-                    if (ui.elementos.get(j) != c.contenido.get(j)) {
+                for (int j = 0; j < ui.elements.size(); j++) {
+                    if (ui.elements.get(j) != c.contenido.get(j)) {
                         cambiar_perspectiva = false;
                         break;
                     }
@@ -812,7 +812,7 @@ public class WindowCombat extends Window {
     }
 
     private void handleAttackMove(Input input, GameContainer container) {
-        List<Unidad> unitsSelected = ui.elementos.stream()
+        List<Unidad> unitsSelected = ui.elements.stream()
                 .filter(e -> (e instanceof Unidad) && !(e instanceof Bestia))
                 .map(e -> (Unidad) e).collect(Collectors.toList());
         // First try to attack the element on the cursor
@@ -829,6 +829,9 @@ public class WindowCombat extends Window {
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
+        if (CURRENT_BSO != null && !CURRENT_BSO.playing()) {
+            CURRENT_BSO.play(1f, 0.1f);
+        }
         Jugador mainPlayer = game.getMainPlayer();
         Input input = container.getInput();
         //invertir.dibujar(g);
@@ -905,12 +908,12 @@ public class WindowCombat extends Window {
                 }
                 g.setColor(Color.white);
             }
-            ui.renderUI(game, g, controlGroupGroups);
+            ui.render(game, g, controlGroupGroups);
             if (attackMoveModeEnabled) {
                 g.setColor(Color.red);
-                if (ui.seleccion_actual.get(0) instanceof Unidad) {
-                    if (((Unidad) ui.seleccion_actual.get(0)).area > 0) {
-                        Unidad unidad = (Unidad) ui.seleccion_actual.get(0);
+                if (ui.currentSelectionPage.get(0) instanceof Unidad) {
+                    if (((Unidad) ui.currentSelectionPage.get(0)).area > 0) {
+                        Unidad unidad = (Unidad) ui.currentSelectionPage.get(0);
                         g.drawOval(playerX + input.getMouseX() - unidad.area,
                                 playerY + input.getMouseY() - unidad.area, unidad.area * 2, unidad.area * 2);
                     }
@@ -928,7 +931,7 @@ public class WindowCombat extends Window {
             BotonComplejo hoveredButton = ui.obtainHoveredButton(playerX + input.getMouseX(),
                     playerY + input.getMouseY());
             if (hoveredButton != null) {
-                hoveredButton.renderExtendedInfo(game.getMainPlayer(), g, ui.seleccion_actual.get(0));
+                hoveredButton.renderExtendedInfo(game.getMainPlayer(), g, ui.currentSelectionPage.get(0));
             }
             //Evento seleccionado Guardián
             Jugador guardianPlayer = game.getPlayerByRace(RaceEnum.GUARDIANES);
@@ -1011,6 +1014,9 @@ public class WindowCombat extends Window {
         derrota = null;
         ElementosComunes.VICTORY_SOUND.stop();
         ElementosComunes.DEFEAT_SOUND.stop();
+        if (CURRENT_BSO != null) {
+            CURRENT_BSO.stop();
+        }
         RTS.mainController.windowSwitch(container, new Game(), "Menu");
     }
 

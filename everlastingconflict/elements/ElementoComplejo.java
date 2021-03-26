@@ -12,10 +12,7 @@ import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Raza;
 import everlastingconflict.windows.WindowCombat;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +38,7 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     }
 
     public boolean seleccionada() {
-        return (WindowCombat.ui.elementos.indexOf(this) != -1);
+        return (WindowCombat.ui.elements.indexOf(this) != -1);
     }
 
     public void iniciarbotones(Game p) {
@@ -81,8 +78,13 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     }
 
     @Override
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
+    }
+
+    @Override
     public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+        this.render(this.animation, p, c, input, g);
     }        
     
     @Override

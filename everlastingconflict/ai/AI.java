@@ -44,10 +44,10 @@ public abstract class AI extends Jugador {
         } else if (RaceEnum.FENIX.equals(r)) {
             switch (dificultad) {
                 case "Fácil":
-                case "Normal":
-                    return new AIFenixNormal(subRaceEnum, t, isLeader, isJuggernaut);
-                case "Difícil":
                     return new AIFenixFacil(subRaceEnum, t, isLeader, isJuggernaut);
+                case "Normal":
+                case "Difícil":
+                    return new AIFenixNormal(subRaceEnum, t, isLeader, isJuggernaut);
             }
         } else if (RaceEnum.GUARDIANES.equals(r)) {
             switch (dificultad) {
@@ -97,18 +97,18 @@ public abstract class AI extends Jugador {
     public void comportamiento_unidades(Game p, Graphics g, int delta) {
         super.comportamiento_unidades(p, g, delta);
         pushear(p);
-        this.decisiones_unidades(p);
+        this.decisiones_unidades(p, delta);
     }
 
-    public abstract void decisiones_unidades(Game p);
+    public abstract void decisiones_unidades(Game p, int delta);
 
     @Override
     public void comportamiento_edificios(Game p, Graphics g, int delta) {
         super.comportamiento_edificios(p, g, delta);
-        this.decisiones_edificios(p);
+        this.decisiones_edificios(p, delta);
     }
 
-    public abstract void decisiones_edificios(Game p);
+    public abstract void decisiones_edificios(Game p, int delta);
 
     @Override
     public void avisar_ataque(Game p, ElementoAtacante atacante) {

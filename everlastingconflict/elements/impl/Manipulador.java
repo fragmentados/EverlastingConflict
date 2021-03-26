@@ -14,7 +14,7 @@ import everlastingconflict.races.Raza;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.status.Status;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.Mensaje;
@@ -256,9 +256,8 @@ public class Manipulador extends Unidad {
         }
         this.initButtonKeys();
         iniciar_imagenes_manipulador();
-        if (this.statusCollection.existe_estado(StatusName.MEDITACION)) {
-            this.regeneracion_mana -= 2;
-            this.statusCollection.forceRemoveStatus(StatusName.MEDITACION);
+        if (this.statusCollection.containsStatus(StatusNameEnum.MEDITACION)) {
+            removeMeditation();
         }
     }
 
@@ -273,12 +272,12 @@ public class Manipulador extends Unidad {
 
     public final void iniciar_imagenes_manipulador() {
         try {
-            sprite = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")},
+            animation = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")},
                     new int[]{300}, false);
             icono = new Image("media/Manipulador/" + nombre + nivel + "_icono.png");
             miniatura = new Image("media/Miniaturas/Prueba.png");
-            anchura = sprite.getWidth();
-            altura = sprite.getHeight();
+            anchura = animation.getWidth();
+            altura = animation.getHeight();
             anchura_barra_vida = anchura;
             //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
@@ -343,13 +342,13 @@ public class Manipulador extends Unidad {
         if (this.mana < this.mana_max) {
             recoverMana(aliado, Reloj.TIME_REGULAR_SPEED * regeneracion_mana * delta);
         }
-        if (statusCollection.existe_estado(StatusName.MEDITACION) && this.nivel == 1) {
+        if (statusCollection.containsStatus(StatusNameEnum.MEDITACION) && this.nivel == 1) {
             this.aumentar_experiencia(Reloj.TIME_REGULAR_SPEED * 5 * delta);
         }
         if (Manipulador.alentar) {
             for (Unidad u : aliado.unidades) {
                 if (!u.nombre.equals("Manipulador") && u.alcance(200, this)) {
-                    u.statusCollection.anadir_estado(new Status(StatusName.ATAQUE_POTENCIADO, 0, 1));
+                    u.statusCollection.addStatus(new Status(StatusNameEnum.ATAQUE_POTENCIADO, 0, 1));
                 }
             }
         }
@@ -445,6 +444,28 @@ public class Manipulador extends Unidad {
                 .stream().sorted((b1, b2) -> !b1.isPassiveAbility && b2.isPassiveAbility ? -1
                         : b1.isPassiveAbility && !b2.isPassiveAbility ? 1 : 0).collect(Collectors.toList());
         this.initButtonKeys();
+    }
+
+    public void meditation() {
+        if (statusCollection.containsStatus(StatusNameEnum.MEDITACION)) {
+            removeMeditation();
+        } else {
+            regeneracion_mana += 2;
+            statusCollection.addStatus(new Status(StatusNameEnum.MEDITACION));
+            try {
+                aditionalSprite = new Animation(new Image[]{new Image(
+                        "media/Manipulador/Meditacion1.png"), new Image(
+                        "media/Manipulador/Meditacion2.png"), new Image(
+                        "media/Manipulador/Meditacion3.png")}, new int[]{300, 300, 300}, true);
+            } catch (SlickException e) {
+            }
+        }
+    }
+
+    private void removeMeditation() {
+        regeneracion_mana -= 2;
+        statusCollection.forceRemoveStatus(StatusNameEnum.MEDITACION);
+        aditionalSprite = null;
     }
 
 }

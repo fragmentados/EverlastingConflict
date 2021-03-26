@@ -16,6 +16,6 @@ public class TorreVision extends Recurso {
         p.recursos.remove(this);
         capturador = j.nombre;
         j.visiones.add(new Vision(this.x, this.y, 1000, 0));
-        this.sprite.setAutoUpdate(true);
+        this.animation.setAutoUpdate(true);
     }
 }

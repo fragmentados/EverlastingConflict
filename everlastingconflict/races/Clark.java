@@ -45,111 +45,113 @@ public class Clark {
     }
 
     public static Unidad resolverFusion(Game p, Fusion f) {
-        int ndepredador = (int) f.contenido.stream().filter(u -> "Depredador".equals(u.nombre)).count();
-        int ndevorador = (int) f.contenido.stream().filter(u -> "Devorador".equals(u.nombre)).count();
-        int ncazador = (int) f.contenido.stream().filter(u -> "Cazador".equals(u.nombre)).count();
-        float x = f.contenido.get(0).x, y = f.contenido.get(0).y;
-        Jugador aliado = p.getPlayerFromElement(f.contenido.get(0));
-        int tamano = f.contenido.size();
         Unidad resultado = null;
-        switch (ndepredador) {
-            case 0:
-                switch (ndevorador) {
-                    case 0:
-                        switch (ncazador) {
-                            case 2:
-                                //Amaestrador                                
-                                resultado = new Unidad(aliado, "Amaestrador", x, y);
-                                break;
-                            case 3:
-                                if (SubRaceEnum.RUMIANTES.equals(aliado.subRace)) {
-                                    //Rumiante
-                                    resultado = new Unidad(aliado, "Rumiante", x, y);
-                                }
-                                break;
-                        }
-                        break;
-                    case 1:
-                        switch (ncazador) {
-                            case 1:
-                                //Inspirador                                
-                                resultado = new Unidad(aliado, "Inspirador", x, y);
-                                break;
-                        }
-                        break;
-                    case 2:
-                        //Escupidor
-                        resultado = new Unidad(aliado, "Escupidor", x, y);
-                        break;
-                    case 3:
-                        if (SubRaceEnum.REGURGITADORES.equals(aliado.subRace)) {
-                            //Regurgitador
-                            resultado = new Unidad(aliado, "Regurgitador", x, y);
-                        }
-                        break;
-                }
-                break;
-            case 1:
-                switch (ndevorador) {
-                    case 0:
-                        switch (ncazador) {
-                            case 1:
-                                //Defensor                                
-                                resultado = new Unidad(aliado, "Defensor", x, y);
-                                break;
-                        }
-                        break;
-                    case 1:
-                        switch (ncazador) {
-                            case 0:
-                                //Moldeador                                
-                                resultado = new Unidad(aliado, "Moldeador", x, y);
-                                break;
-                            case 1:
-                                //Matriarca                                
-                                resultado = new Unidad(aliado, "Matriarca", x, y);
-                                break;
-                        }
-                        break;
-                }
-                break;
-            case 2:
-                switch (ndevorador) {
-                    case 0:
-                        switch (ncazador) {
-                            case 0:
-                                //Desmembrador
-                                resultado = new Unidad(aliado, "Desmembrador", x, y);
-                                break;
-                        }
-                        break;
-                }
-                break;
-            case 3:
-                switch (ndevorador) {
-                    case 0:
-                        switch (ncazador) {
-                            case 0:
-                                if (SubRaceEnum.DESPEDAZADORES.equals(aliado.subRace)) {
-                                    //Despedazador
-                                    resultado = new Unidad(aliado, "Despedazador", x, y);
-                                }
-                                break;
-                        }
-                        break;
-                }
-                break;
-        }
-        if (resultado != null) {
-            for (int i = 0; i < tamano; i++) {
-                f.contenido.get(0).destruir(p, null, false);
-                f.contenido.remove(0);
+        if (!f.contenido.isEmpty()) {
+            int ndepredador = (int) f.contenido.stream().filter(u -> "Depredador".equals(u.nombre)).count();
+            int ndevorador = (int) f.contenido.stream().filter(u -> "Devorador".equals(u.nombre)).count();
+            int ncazador = (int) f.contenido.stream().filter(u -> "Cazador".equals(u.nombre)).count();
+            float x = f.contenido.get(0).x, y = f.contenido.get(0).y;
+            Jugador aliado = p.getPlayerFromElement(f.contenido.get(0));
+            int tamano = f.contenido.size();
+            switch (ndepredador) {
+                case 0:
+                    switch (ndevorador) {
+                        case 0:
+                            switch (ncazador) {
+                                case 2:
+                                    //Amaestrador
+                                    resultado = new Unidad(aliado, "Amaestrador", x, y);
+                                    break;
+                                case 3:
+                                    if (SubRaceEnum.RUMIANTES.equals(aliado.subRace)) {
+                                        //Rumiante
+                                        resultado = new Unidad(aliado, "Rumiante", x, y);
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            switch (ncazador) {
+                                case 1:
+                                    //Inspirador
+                                    resultado = new Unidad(aliado, "Inspirador", x, y);
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            //Escupidor
+                            resultado = new Unidad(aliado, "Escupidor", x, y);
+                            break;
+                        case 3:
+                            if (SubRaceEnum.REGURGITADORES.equals(aliado.subRace)) {
+                                //Regurgitador
+                                resultado = new Unidad(aliado, "Regurgitador", x, y);
+                            }
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch (ndevorador) {
+                        case 0:
+                            switch (ncazador) {
+                                case 1:
+                                    //Defensor
+                                    resultado = new Unidad(aliado, "Defensor", x, y);
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            switch (ncazador) {
+                                case 0:
+                                    //Moldeador
+                                    resultado = new Unidad(aliado, "Moldeador", x, y);
+                                    break;
+                                case 1:
+                                    //Matriarca
+                                    resultado = new Unidad(aliado, "Matriarca", x, y);
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (ndevorador) {
+                        case 0:
+                            switch (ncazador) {
+                                case 0:
+                                    //Desmembrador
+                                    resultado = new Unidad(aliado, "Desmembrador", x, y);
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (ndevorador) {
+                        case 0:
+                            switch (ncazador) {
+                                case 0:
+                                    if (SubRaceEnum.DESPEDAZADORES.equals(aliado.subRace)) {
+                                        //Despedazador
+                                        resultado = new Unidad(aliado, "Despedazador", x, y);
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
             }
-            resultado.behaviour = BehaviourEnum.EMERGIENDO;
-            resultado.vida = 0;
-            aliado.unidades.add(resultado);
-            aliado.unidades.get(aliado.unidades.size() - 1).iniciarbotones(p);
-            aliado.unidades.get(aliado.unidades.size() - 1).seleccionar();
+            if (resultado != null) {
+                for (int i = 0; i < tamano; i++) {
+                    f.contenido.get(0).destruir(p, null, false);
+                    f.contenido.remove(0);
+                }
+                resultado.behaviour = BehaviourEnum.EMERGIENDO;
+                resultado.vida = 0;
+                aliado.unidades.add(resultado);
+                aliado.unidades.get(aliado.unidades.size() - 1).iniciarbotones(p);
+                aliado.unidades.get(aliado.unidades.size() - 1).seleccionar();
+            }
         }
         return resultado;
     }

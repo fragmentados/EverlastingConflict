@@ -14,11 +14,7 @@ import java.util.List;
 
 public class StatusCollection {
 
-    public List<Status> contenido;
-
-    public StatusCollection() {
-        contenido = new ArrayList<>();
-    }
+    public List<Status> contenido = new ArrayList<>();
 
     public void comportamiento(Game game, ElementoEstado elementAffectedByStatus, int delta) {
         for (int i = 0; i < contenido.size(); i++) {
@@ -30,23 +26,23 @@ public class StatusCollection {
         }
     }
 
-    public Status obtener_estado(StatusName status) {
+    public Status getStatusByBasicInfo(StatusNameEnum status) {
         return contenido.stream()
                 .filter(s -> status.equals(s.name))
                 .findFirst().orElse(null);
     }
 
-    public boolean existe_estado(StatusName status) {
+    public boolean containsStatus(StatusNameEnum status) {
         return contenido.stream().anyMatch(s -> status.equals(s.name));
     }
 
-    public void anadir_estado(Status e) {
+    public void addStatus(Status e) {
         boolean anadir = true;
         for (Status es : contenido) {
             if (es.name.equals(e.name)) {
                 if (e.value >= es.value) {
-                    contenido.remove(es);                                        
-                }else{
+                    contenido.remove(es);
+                } else {
                     anadir = false;
                 }
                 break;
@@ -57,24 +53,25 @@ public class StatusCollection {
         }
     }
 
-    public void forceRemoveStatus(StatusName status) {
+    public void forceRemoveStatus(StatusNameEnum status) {
         contenido.removeIf(s -> status.equals(s.name));
     }
 
-    public void removeStatusByTime(Game game, ElementoEstado elementAffectedByStatus, StatusName statusName) {
-        this.forceRemoveStatus(statusName);
-        if (StatusName.MODO_SUPREMO.equals(statusName)) {
+    public void removeStatusByTime(Game game, ElementoEstado elementAffectedByStatus,
+                                   StatusNameEnum StatusNameEnum) {
+        this.forceRemoveStatus(StatusNameEnum);
+        if (StatusNameEnum.MODO_SUPREMO.equals(StatusNameEnum)) {
             elementAffectedByStatus.destruir(game, null);
-        } else if (StatusName.PROVOCAR.equals(statusName)) {
+        } else if (StatusNameEnum.PROVOCAR.equals(StatusNameEnum)) {
             elementAffectedByStatus.isProyectileAttraction = false;
         }
     }
 
     public boolean allowsAttack() {
-        return contenido.stream().allMatch(s -> StatusName.allowsAttack(s.name));
+        return contenido.stream().allMatch(s -> StatusNameEnum.allowsAttack(s.name));
     }
 
     public boolean allowsMove() {
-        return contenido.stream().allMatch(s -> StatusName.allowsMove(s.name));
+        return contenido.stream().allMatch(s -> StatusNameEnum.allowsMove(s.name));
     }
 }

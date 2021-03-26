@@ -17,12 +17,12 @@ public class AIClarkFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Game p) {
+    public void decisiones_unidades(Game p, int delta) {
 
     }
 
     @Override
-    public void decisiones_edificios(Game p) {
+    public void decisiones_edificios(Game p, int delta) {
 
     }
 

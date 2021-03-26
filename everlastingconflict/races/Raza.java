@@ -18,7 +18,6 @@ import org.newdawn.slick.Image;
 public class Raza {
 
 
-
     public static void obtener_experiencia_bestia(Bestia b) {
         b.experiencia_al_morir = b.recompensa;
     }
@@ -196,16 +195,16 @@ public class Raza {
                 Eternium.Adepto(aliado, u);
                 break;
             case "Guerrero":
-                Eternium.Guerrero(u);
+                Eternium.Guerrero(aliado, u);
                 break;
             case "Ancestro":
-                Eternium.Ancestro(u);
+                Eternium.Ancestro(aliado, u);
                 break;
             case "Protector":
-                Eternium.Protector(u);
+                Eternium.Protector(aliado, u);
                 break;
             case "Erradicador":
-                Eternium.Erradicador(u);
+                Eternium.Erradicador(aliado, u);
                 break;
             //Maestros
             case "Manipulador":
@@ -325,7 +324,7 @@ public class Raza {
         u.botones.add(new BotonComplejo("Detener"));
         switch (aliado.raza) {
             case FENIX:
-                Fenix.iniciar_botones_unidad(u);
+                Fenix.iniciar_botones_unidad(aliado, u);
                 break;
             case CLARK:
                 Clark.iniciar_botones_unidad(u);

@@ -38,7 +38,7 @@ public class WindowMenu extends WindowMenuBasic {
         aceptar.canBeUsed = volver.canBeUsed = false;
         raceTutorial = new ComboBox("Raza:",
                 Arrays.stream(RaceEnum.values()).map(r -> new ComboBoxOption(r.getName(), r.getDescription(),
-                        r.getImagePath())).collect(Collectors.toList()),
+                        r.getImagePath(), r.getColor())).collect(Collectors.toList()),
                 WindowCombat.responsiveX(45), WindowCombat.responsiveY(40));
         tutorialImage = new Image("media/" + raceTutorial.optionSelected.text + ".png");
     }
@@ -106,7 +106,7 @@ public class WindowMenu extends WindowMenuBasic {
         if (tutorialMode) {
             tutorialImage.draw(WindowCombat.responsiveX(35), WindowCombat.responsiveY(45));
             g.drawString(Game.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceTutorial.optionSelected.text).getDescription(), 500), WindowCombat.responsiveX(50), WindowCombat.responsiveY(50));
-            raceTutorial.render(input, g);
+            raceTutorial.render( g);
         }
     }
 

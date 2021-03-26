@@ -13,7 +13,8 @@ public abstract class ElementoSimple {
 
     //Tecnologia Habilidad
     public String nombre, descripcion;   //Identificador
-    public Animation sprite;
+    public Animation animation;
+    public Animation aditionalSprite;
     public Image icono;
     public int coste;
     public int guardiansThreatLevelNeeded;

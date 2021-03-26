@@ -21,15 +21,15 @@ public class Taller extends Edificio {
     public List<Edificio> anexos;
     public float maximo_anexos;
 
-    public Taller(String n) {
-        super(n);
+    public Taller(Jugador aliado, String n) {
+        super(aliado, n);
         unidades_creadas = new ArrayList<>();
         anexos = new ArrayList<>();
-
+        this.delay = aliado.getDelay();
     }
 
-    public Taller(String n, float x, float y) {
-        this(n);
+    public Taller(Jugador aliado, String n, float x, float y) {
+        this(aliado, n);
         this.cambiar_coordenadas(x, y);
     }
 
@@ -103,7 +103,7 @@ public class Taller extends Edificio {
 
     public boolean construir_anexo(Game p) {
         if (this.anexos.size() < maximo_anexos) {
-            Edificio edificio = new Edificio("Anexo");
+            Edificio edificio = new Edificio(p.getPlayerFromElement(this), "Anexo");
             edificio.vida = 0;
             float x_contador = this.x - this.anchura / 2 - edificio.anchura / 2;
             for (Edificio ed : anexos) {

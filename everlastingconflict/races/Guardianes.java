@@ -335,7 +335,7 @@ public class Guardianes {
     public static void iniciar_botones_edificio(Jugador aliado, Edificio e) {
         switch (e.nombre) {
             case "Taller bélico":
-                e.botones.add(new BotonComplejo(new Edificio("Anexo")));
+                e.botones.add(new BotonComplejo(new Edificio(aliado,"Anexo")));
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Patrulla")));
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Acribillador")));
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Tanque")));
@@ -356,7 +356,7 @@ public class Guardianes {
                 break;
             case "Ayuntamiento":
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Activador")));
-                e.botones.add(new BotonComplejo(new Edificio("Torreta defensiva")));
+                e.botones.add(new BotonComplejo(new Edificio(aliado,"Torreta defensiva")));
                 e.botones.add(new BotonComplejo(new Evento(aliado, "Decorar los parques")));
                 e.botones.add(new BotonComplejo(new Evento(aliado, "Construir colegios")));
                 if (SubRaceEnum.POLICIA.equals(aliado.subRace)) {

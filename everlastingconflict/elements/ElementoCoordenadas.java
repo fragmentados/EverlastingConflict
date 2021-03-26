@@ -11,8 +11,9 @@ import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.gestion.Vision;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.windows.WindowCombat;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -50,7 +51,7 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
             }
         }
         for (Unidad u : j.unidades) {
-            if (u.statusCollection.existe_estado(StatusName.CEGUERA)) {
+            if (u.statusCollection.containsStatus(StatusNameEnum.CEGUERA)) {
                 if (u.alcance(5, this)) {
                     return true;
                 }
@@ -163,18 +164,25 @@ public abstract class ElementoCoordenadas extends ElementoSimple {
         return colision;
     }
 
-    public void render(Game p, Color c, Input input, Graphics g) {
-        sprite.draw(x - anchura / 2, y - altura / 2);
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        sprite.draw(x - anchura / 2, y - altura / 2, anchura, altura);
+        if (aditionalSprite != null) {
+            aditionalSprite.draw(x - anchura / 2, y - altura / 2, anchura, altura);
+        }
         g.setColor(Color.black);
         if (RTS.DEBUG_MODE) {
             g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         }
         g.setColor(Color.white);
-        if (WindowCombat.ui.elementos.indexOf(this) != -1) {
+        if (WindowCombat.ui.elements.indexOf(this) != -1) {
             circulo(g, c);
         }
         if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
             circulo_extendido(g, c);
         }
+    }
+
+    public void render(Game p, Color c, Input input, Graphics g) {
+        this.render(this.animation, p, c, input, g);
     }
 }

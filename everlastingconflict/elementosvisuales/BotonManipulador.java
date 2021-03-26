@@ -14,7 +14,7 @@ import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Maestros;
 import everlastingconflict.status.Status;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.UI;
 import everlastingconflict.windows.WindowCombat;
@@ -88,7 +88,7 @@ public class BotonManipulador extends BotonComplejo {
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Cauterización automática":
-                            m.statusCollection.anadir_estado(new Status(StatusName.REGENERACION));
+                            m.statusCollection.addStatus(new Status(StatusNameEnum.REGENERACION));
                             m.applyEnhancement("Habilidades", this);
                             break;
                         case "Entrenamiento avanzado":

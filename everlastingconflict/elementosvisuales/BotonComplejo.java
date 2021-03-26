@@ -16,7 +16,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Clark;
 import everlastingconflict.races.Fusion;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.Mensaje;
 import everlastingconflict.windows.UI;
@@ -184,10 +184,15 @@ public class BotonComplejo extends BotonSimple {
                 descripcion += "Tiene una gran vida y defensa y absorbe automáticamente los ataques enemigos.";
                 break;
             case "Ayuda Fusión":
-                descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.\n";
+                descripcion = "Muestra una guía informativa de qué combinaciones producen qué unidades en la fusión.";
                 break;
             case "Ayuda piloto":
-                descripcion = "Muestra una guía informativa de qué combinaciones producen qué torretas en la embarcación.\n";
+                descripcion = "Muestra una guía informativa de qué combinaciones producen qué torretas en la " +
+                        "embarcación.";
+                break;
+            case "Fusion":
+                descripcion = "Con varias unidades básicas seleccionadas las fusiona en una unidad más avanzada en " +
+                        "función del tipo y número de unidades que se utilicen";
                 break;
         }
     }
@@ -197,7 +202,8 @@ public class BotonComplejo extends BotonSimple {
             return true;
         } else {
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-                return isHovered((int) WindowCombat.playerX + input.getMouseX(), (int) WindowCombat.playerY + input.getMouseY());
+                return isHovered((int) WindowCombat.playerX + input.getMouseX(),
+                        (int) WindowCombat.playerY + input.getMouseY());
             } else {
                 return false;
             }
@@ -283,9 +289,9 @@ public class BotonComplejo extends BotonSimple {
                             break;
                         case "Edificio":
                             if (TALLER_NOMBRE.equals(elemento_nombre)) {
-                                elemento = new Taller(elemento_nombre);
+                                elemento = new Taller(aliado, elemento_nombre);
                             } else {
-                                elemento = new Edificio(elemento_nombre);
+                                elemento = new Edificio(aliado, elemento_nombre);
                             }
                             break;
                         case "Tecnología":
@@ -333,7 +339,8 @@ public class BotonComplejo extends BotonSimple {
                         if (elemento instanceof Evento) {
                             Evento evento = (Evento) elemento;
                             if (evento.positivo) {
-                                g.drawString("Beneficio: +" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
+                                g.drawString("Beneficio: +" + Integer.toString(evento.efecto) + "%", xcontador,
+                                        ycontador);
                             } else {
                                 g.drawString("Efecto: -" + Integer.toString(evento.efecto) + "%", xcontador, ycontador);
                             }
@@ -345,14 +352,16 @@ public class BotonComplejo extends BotonSimple {
                             if (!evento.positivo) {
                                 for (Evento e : aliado.eventos.contenido) {
                                     if (e.nombre.equals(evento.nombre)) {
-                                        g.drawString("Tiempo restante: " + Reloj.tiempo_a_string(e.tiempo_contador), xcontador, ycontador);
+                                        g.drawString("Tiempo restante: " + Reloj.tiempo_a_string(e.tiempo_contador),
+                                                xcontador, ycontador);
                                         break;
                                     }
                                 }
                             }
                         }
                         if (elemento instanceof Unidad) {
-                            g.drawString("Población: " + Integer.toString(((Unidad) elemento).coste_poblacion), xcontador, ycontador);
+                            g.drawString("Población: " + Integer.toString(((Unidad) elemento).coste_poblacion),
+                                    xcontador, ycontador);
                         }
                         xcontador = xbotones + 1;
                         ycontador += espacio_lineas;
@@ -396,7 +405,7 @@ public class BotonComplejo extends BotonSimple {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio
                             if (!edificio.behaviour.equals(BehaviourEnum.CONSTRUYENDO)) {
-                                Edificio contador_edificio = new Edificio(this.elemento_nombre);
+                                Edificio contador_edificio = new Edificio(aliado, this.elemento_nombre);
                                 if (edificio.constructor) {
                                     if (aliado.comprobacion_recursos(contador_edificio)) {
                                         if (edificio instanceof Taller) {
@@ -480,8 +489,8 @@ public class BotonComplejo extends BotonSimple {
                                     Unidad contador = (Unidad) e2;
                                     if (contador.constructor) {
                                         if (!contador.behaviour.equals(BehaviourEnum.CONSTRUYENDO)) {
-                                            if (!contador.statusCollection.existe_estado(StatusName.AMNESIA)) {
-                                                Edificio contador_edificio = new Edificio(this.elemento_nombre);
+                                            if (!contador.statusCollection.containsStatus(StatusNameEnum.AMNESIA)) {
+                                                Edificio contador_edificio = new Edificio(aliado, this.elemento_nombre);
                                                 if (!contador_edificio.nombre.equals("Cuartel Fénix") || (aliado.cantidad_elemento(contador_edificio) < aliado.limite_cuarteles)) {
                                                     if (game.getPlayerFromElement(e).comprobacion_recursos(contador_edificio)) {
                                                         WindowMain.combatWindow.edificio = contador_edificio;
@@ -490,7 +499,8 @@ public class BotonComplejo extends BotonSimple {
                                                         break;
                                                     }
                                                 } else {
-                                                    WindowMain.combatWindow.anadir_mensaje(new Mensaje("Debes aumentar el límite de Cuarteles"));
+                                                    WindowMain.combatWindow.anadir_mensaje(new Mensaje("Debes " +
+                                                            "aumentar el límite de Cuarteles"));
                                                 }
                                             }
                                         }
@@ -553,7 +563,8 @@ public class BotonComplejo extends BotonSimple {
         if (!this.isPassiveAbility) {
             boolean enabled = this.canBeUsed;
             if ("Tecnología".equals(elemento_tipo)) {
-                enabled = aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
+                enabled =
+                        aliado.tecnologias.stream().noneMatch(t -> t.nombre.equals(elemento_nombre)) && aliado.getRecursos() >= this.elemento_coste;
             } else if ("Cuartel Fénix".equals(elemento_nombre)) {
                 enabled = aliado.cantidad_edificio(elemento_nombre) < aliado.limite_cuarteles;
             } else if (elemento_coste > 0) {

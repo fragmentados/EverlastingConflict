@@ -28,9 +28,9 @@ public class GuardianesChallenge extends Challenge {
         jugador.unidades.add(new Unidad(jugador, "Amparador", 700, 100));
         jugador.unidades.add(new Unidad(jugador, "Oteador", 800, 100));
         jugador.eventos.desactivacion_permanente = true;
-        jugador.edificios.add(new Edificio("Torreta defensiva", 400, 200));
+        jugador.edificios.add(new Edificio(jugador, "Torreta defensiva", 400, 200));
         for (int i = 0; i < 2; i++) {
-            jugador.edificios.add(new Edificio("Torreta defensiva", 400 + 80 * i, 280));
+            jugador.edificios.add(new Edificio(jugador, "Torreta defensiva", 400 + 80 * i, 280));
         }
         this.players.remove(1);
         this.players.add(new AIGuardianesChallenge());

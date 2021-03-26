@@ -105,11 +105,16 @@ public class ElementoMovil extends ElementoAtacante {
     }
 
     @Override
-    public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
         if (movimiento != null && p.getMainPlayer().equals(p.getPlayerFromElement(this))) {
             movimiento.dibujar_fin_movimiento(g);
         }
+    }
+
+    @Override
+    public void render(Game p, Color c, Input input, Graphics g) {
+        this.render(this.animation, p, c, input, g);
     }
 
     public boolean isMoving() {

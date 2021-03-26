@@ -11,11 +11,14 @@ import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Raza;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.Mensaje;
 import everlastingconflict.windows.WindowMain;
 import org.newdawn.slick.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Bestia extends Unidad {
@@ -33,8 +36,19 @@ public class Bestia extends Unidad {
 
     public final void iniciar_imagenes_bestias() {
         try {
+            Integer imageIndex = 1;
+            List<Image> imageList = new ArrayList<>();
+            try {
+                do {
+                    imageList.add(new Image("media/Unidades/" + nombre + imageIndex + ".png"));
+                    imageIndex++;
+                } while (imageIndex < 4);
+            } catch (Exception e) {
+            }
+            Image[] images = new Image[imageList.size()];
+            imageList.toArray(images);
+            animation = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
-            sprite = new Animation(new Image[]{new Image("media/Unidades/" + nombre + ".png")}, new int[]{300}, false);
             sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
             miniatura = new Image("media/Miniaturas/Prueba.png");
         } catch (SlickException e) {
@@ -47,8 +61,8 @@ public class Bestia extends Unidad {
         nombre = n;
         Raza.bestia(this);
         this.iniciar_imagenes_bestias();
-        anchura = sprite.getWidth();
-        altura = sprite.getHeight();
+        anchura = animation.getWidth();
+        altura = animation.getHeight();
         anchura_barra_vida = anchura;
         vida = vida_max;
     }
@@ -168,7 +182,7 @@ public class Bestia extends Unidad {
                 }
                 break;
         }
-        if (statusCollection.existe_estado(StatusName.EROSION)) {
+        if (statusCollection.containsStatus(StatusNameEnum.EROSION)) {
             disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
         }
         statusCollection.comportamiento(p, this, delta);

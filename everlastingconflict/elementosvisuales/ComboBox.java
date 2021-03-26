@@ -98,10 +98,12 @@ public class ComboBox {
         return null;
     }
 
-    public void renderOption(Graphics g, ComboBoxOption o, float x, float y) {
+    public void renderOption(Graphics g, ComboBoxOption option, float x, float y) {
         float xOptionText = x;
-        if (o.equals(optionSelected)) {
+        if (option.equals(optionSelected)) {
             g.setColor(new Color(0f, 0f, 0.8f, 0.8f));
+        } else if (option.color != null) {
+            g.setColor(option.color);
         } else {
             g.setColor(Color.white);
         }
@@ -109,18 +111,21 @@ public class ComboBox {
         g.setColor(Color.black);
         g.drawRect(x, y, width + deployButton.anchura + 1, height);
 
-        if (o.sprite != null) {
-            o.sprite.draw(x, y, 30, 30);
+        if (option.sprite != null) {
+            option.sprite.draw(x, y, 30, 30);
             xOptionText += 30;
         }
-        g.drawString(o.text, xOptionText, height == 20 ? y : y + height / 4);
+        g.drawString(option.text, xOptionText, height == 20 ? y : y + height / 4);
     }
 
-    public void render(Input input, Graphics g) {
+    public void render(Graphics g) {
         float xOptionText = this.x;
         g.setColor(Color.white);
         if (label != null) {
             g.drawString(label, x - label.length() * 10, y);
+        }
+        if (optionSelected.color != null) {
+            g.setColor(optionSelected.color);
         }
         g.fillRect(x, y, width, height);
         g.setColor(Color.black);

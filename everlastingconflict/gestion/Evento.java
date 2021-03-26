@@ -5,8 +5,8 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.elements.ElementoCoordenadas;
 import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.elements.ElementoCoordenadas;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.*;
@@ -72,7 +72,7 @@ public class Evento extends ElementoCoordenadas {
         }
         try {
             icono = new Image("media/Eventos/" + nombre + ".png");
-            sprite = new Animation(new Image[]{icono}, 300, false);
+            animation = new Animation(new Image[]{icono}, 300, false);
             anchura = icono.getWidth();
             altura = icono.getHeight();
         } catch (SlickException ex) {
@@ -106,7 +106,7 @@ public class Evento extends ElementoCoordenadas {
     }
 
     public void dibujar(Graphics g) {
-        sprite.draw(x, y);
+        animation.draw(x, y);
         if (positivo) {
             g.setColor(Color.green);
         } else {

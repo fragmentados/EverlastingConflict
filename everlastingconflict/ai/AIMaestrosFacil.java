@@ -19,7 +19,7 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Game p) {
+    public void decisiones_unidades(Game p, int delta) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 /*case "Activador":
@@ -30,7 +30,7 @@ public class AIMaestrosFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Game p) {
+    public void decisiones_edificios(Game p, int delta) {
         for (Edificio e : edificios) {
             switch (e.nombre) {
                 /*case "Ayuntamiento":

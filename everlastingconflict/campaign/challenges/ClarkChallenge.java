@@ -3,7 +3,6 @@ package everlastingconflict.campaign.challenges;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.watches.Reloj;
 import everlastingconflict.watches.RelojEternium;
 import everlastingconflict.windows.WindowCombat;
 
@@ -26,8 +25,10 @@ public class ClarkChallenge extends Challenge {
         despedazador.hostil = false;
         jugador.unidades.add(despedazador);
         jugador.unidades.add(new Unidad(jugador, "Devorador", 300, 200));
+        jugador.unidades.add(new Unidad(jugador, "Devorador", 380, 200));
         this.players.get(1).unidades.add(new Unidad(jugador, "Ancestro", 600, 600));
-        Reloj reloj = new RelojEternium(this.players.get(1));
+        RelojEternium reloj = new RelojEternium(this.players.get(1), 0.2f);
+        reloj.contador_reloj = reloj.fin_segundo_cuarto;
         reloj.ndivision = 3;
         WindowCombat.createWatch(reloj);
         for (Unidad unidad : jugador.unidades) {

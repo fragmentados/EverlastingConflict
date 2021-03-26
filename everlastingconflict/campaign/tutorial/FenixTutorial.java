@@ -125,7 +125,7 @@ public class FenixTutorial extends GuidedGame {
     public void initElements() {
         super.initElements();
         Jugador jugador = getMainPlayer();
-        jugador.edificios.add(new Edificio("Cuartel Fénix", 200, 600));
+        jugador.edificios.add(new Edificio(jugador, "Cuartel Fénix", 200, 600));
         jugador.edificios.get(1).iniciarbotones(this);
         jugador.edificios.get(1).botones.get(1).canBeUsed = true;
         jugador.edificios.get(1).botones.get(2).canBeUsed = true;

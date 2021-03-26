@@ -20,7 +20,7 @@
  import everlastingconflict.races.enums.RaceEnum;
  import everlastingconflict.status.Status;
  import everlastingconflict.status.StatusCollection;
- import everlastingconflict.status.StatusName;
+ import everlastingconflict.status.StatusNameEnum;
  import everlastingconflict.watches.Reloj;
  import everlastingconflict.windows.Mensaje;
  import everlastingconflict.windows.WindowCombat;
@@ -83,7 +83,7 @@
              }
              Image[] images = new Image[imageList.size()];
              imageList.toArray(images);
-             sprite = new Animation(images, 450, false);
+             animation = new Animation(images, 450, false);
              icono = new Image("media/Iconos/" + nombre + ".png");
              miniatura = new Image("media/Miniaturas/Prueba.png");
              if (!activo) {
@@ -94,7 +94,7 @@
          }
      }
 
-     public Edificio(String n) {
+     public Edificio(Jugador aliado, String n) {
          this.nombre = n;
          this.behaviour = BehaviourEnum.PARADO;
          this.descripcion = "";
@@ -107,8 +107,8 @@
          if (nombre.equals("Mando Central")) {
              cantidad_produccion = new ArrayList<>();
          }
-         this.anchura = this.sprite.getWidth();
-         this.altura = this.sprite.getHeight();
+         this.anchura = this.animation.getWidth();
+         this.altura = this.animation.getHeight();
          this.anchura_barra_vida = this.anchura;
          this.altura_barra_vida = 5;
          recurso_int = Edificio.tiempo_mineria;
@@ -116,15 +116,16 @@
          this.reunion_x = this.x;
          this.reunion_y = this.y + this.altura + this.altura_barra_vida + barra.altura;
          experiencia_al_morir = 50;
+         this.delay = aliado.getDelay();
      }
 
-     public Edificio(String n, float x, float y) {
-         this(n);
+     public Edificio(Jugador aliado, String n, float x, float y) {
+         this(aliado, n);
          cambiar_coordenadas(x, y);
      }
 
-     public Edificio(Edificio e) {
-         this(e.nombre, e.x, e.y);
+     public Edificio(Jugador aliado, Edificio e) {
+         this(aliado, e.nombre, e.x, e.y);
      }
 
      public final void cambiar_coordenadas(float x, float y) {
@@ -342,7 +343,7 @@
 
      @Override
      public void render(Game p, Color c, Input input, Graphics g) {
-         if (WindowCombat.ui.elementos.indexOf(this) != -1 && unitCreator) {
+         if (WindowCombat.ui.elements.indexOf(this) != -1 && unitCreator) {
              renderRallyPoint(g);
          }
          this.chechAnimationStatus(p);
@@ -358,10 +359,10 @@
          if (!behaviour.equals(BehaviourEnum.CONSTRUYENDOSE)) {
              // Eternium collecting buildings only animate when they all work
              if (this.nombre.equals("Cámara de asimilación") || this.nombre.equals("Teletransportador") || this.nombre.equals("Refinería")) {
-                 this.sprite.setAutoUpdate(p.getPlayerFromElement(this).perforacion);
+                 this.animation.setAutoUpdate(p.getPlayerFromElement(this).perforacion);
              } else {
                  // Other buildings animate when they are creating something
-                 this.sprite.setAutoUpdate(barra.isActive());
+                 this.animation.setAutoUpdate(barra.isActive());
              }
          }
      }
@@ -417,7 +418,7 @@
              for (Jugador enemy : enemies) {
                  for (Unidad u : enemy.unidades) {
                      if (this.alcance(200, u)) {
-                         u.statusCollection.anadir_estado(new Status(StatusName.RALENTIZACION, 1f,
+                         u.statusCollection.addStatus(new Status(StatusNameEnum.RALENTIZACION, 1f,
                                  40f));
                      }
                  }
@@ -488,8 +489,8 @@
 
      public List<Rectangle2D> obtener_intersecciones(Game game, Input input) {
          List<Rectangle2D> intersecciones = new ArrayList<>();
-         int anchura_contador = this.sprite.getWidth();
-         int altura_contador = this.sprite.getHeight();
+         int anchura_contador = this.animation.getWidth();
+         int altura_contador = this.animation.getHeight();
          float posx, posy;
          posx = WindowCombat.playerX + input.getMouseX() - anchura_contador / 2;
          posy = WindowCombat.playerY + input.getMouseY() - altura_contador / 2;
@@ -548,8 +549,8 @@
              Ellipse2D circulo = new Ellipse2D.Float(constructor.x - ((Edificio) constructor).radio_construccion / 2,
                      constructor.y - ((Edificio) constructor).radio_construccion / 2,
                      ((Edificio) constructor).radio_construccion, ((Edificio) constructor).radio_construccion);
-             int anchura_contador = this.sprite.getWidth();
-             int altura_contador = this.sprite.getHeight();
+             int anchura_contador = this.animation.getWidth();
+             int altura_contador = this.animation.getHeight();
              float posx = WindowCombat.playerX + input.getMouseX() - anchura_contador / 2;
              float posy = WindowCombat.playerY + input.getMouseY() - altura_contador / 2;
              Rectangle re = new Rectangle((int) posx, (int) posy, anchura_contador, altura_contador);
@@ -619,7 +620,7 @@
                  break;
          }
          try {
-             sprite = new Animation(new Image[]{new Image("media/Torretas/" + nombre + ".png")}, 300, true);
+             animation = new Animation(new Image[]{new Image("media/Torretas/" + nombre + ".png")}, 300, true);
              icono = new Image("media/Torretas/" + nombre + "_icono.png");
          } catch (SlickException ex) {
              Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);

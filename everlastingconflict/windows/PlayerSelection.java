@@ -35,12 +35,12 @@ public class PlayerSelection {
         }
         raceCombo = new ComboBox("Raza:",
                 Arrays.stream(RaceEnum.values()).map(r -> new ComboBoxOption(r.getName(), r.getDescription(),
-                        r.getImagePath())).collect(Collectors.toList()),
+                        r.getImagePath(), r.getColor())).collect(Collectors.toList()),
                 x + 200, y);
         subRaceCombo = new ComboBox("SubRaza:",
-                SubRaceEnum.findByRace(RaceEnum.FENIX.getName()).stream().map(r -> new ComboBoxOption(r.getName(),
-                        r.getDescription(),
-                        r.getImagePath())).collect(Collectors.toList()),
+                SubRaceEnum.findByRace(RaceEnum.FENIX.getName()).stream().map(sr -> new ComboBoxOption(sr.getName(),
+                        sr.getDescription(),
+                        sr.getImagePath())).collect(Collectors.toList()),
                 x + 450, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
                 .boxed().map(n -> new ComboBoxOption(n.toString())).collect(Collectors.toList()), x + 700, y);
@@ -103,20 +103,20 @@ public class PlayerSelection {
 
     public void render(Input input, Graphics g) {
         if (isActiveCombo != null) {
-            isActiveCombo.render(input, g);
+            isActiveCombo.render(g);
         }
         if (isPlayerActive()) {
-            raceCombo.render(input, g);
-            subRaceCombo.render(input, g);
+            raceCombo.render(g);
+            subRaceCombo.render(g);
             if (!WindowMenuPlayerSelection.isJuggernautGame()) {
-                teamCombo.render(input, g);
+                teamCombo.render(g);
             } else {
-                juggernautCombo.render(input, g);
+                juggernautCombo.render(g);
             }
             if (WindowMenuPlayerSelection.isLeaderGame()) {
-                leaderCombo.render(input, g);
+                leaderCombo.render(g);
             }
-            difficultyCombo.render(input, g);
+            difficultyCombo.render(g);
         }
     }
 

@@ -18,7 +18,7 @@ import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Raza;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.status.StatusCollection;
-import everlastingconflict.status.StatusName;
+import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.*;
 
@@ -63,11 +63,11 @@ public class Unidad extends ElementoMovil {
         this.velocidad = b.velocidad;
         this.vida = b.vida;
         this.vida_max = b.vida_max;
-        this.sprite = b.sprite;
+        this.animation = b.animation;
         this.miniatura = b.miniatura;
         this.icono = b.icono;
-        anchura_barra_vida = anchura = sprite.getWidth();
-        altura = sprite.getHeight();
+        anchura_barra_vida = anchura = animation.getWidth();
+        altura = animation.getHeight();
         this.x = b.x;
         this.y = b.y;
         this.sonido_combate = b.sonido_combate;
@@ -97,15 +97,16 @@ public class Unidad extends ElementoMovil {
             this.iniciar_imagenes();
             if (ataque > 0) {
                 try {
-                    sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
+                    sonido_combate = new Sound("media/Sonidos/Ataque/" + nombre + "Ataque.ogg");
                 } catch (Exception e) {
                 }
             }
-            anchura = sprite.getWidth();
-            altura = sprite.getHeight();
+            anchura = animation.getWidth();
+            altura = animation.getHeight();
         }
         anchura_barra_vida = anchura;
         experiencia_al_morir = 15;
+        delay = aliado.getDelay();
     }
 
     public Unidad(Jugador aliado, String n, float x, float y) {
@@ -116,7 +117,18 @@ public class Unidad extends ElementoMovil {
 
     public final void iniciar_imagenes() {
         try {
-            sprite = new Animation(new Image[]{new Image("media/Unidades/" + nombre + ".png")}, new int[]{300}, false);
+            Integer imageIndex = 1;
+            List<Image> imageList = new ArrayList<>();
+            try {
+                do {
+                    imageList.add(new Image("media/Unidades/" + nombre + imageIndex + ".png"));
+                    imageIndex++;
+                } while (imageIndex < 4);
+            } catch (Exception e) {
+            }
+            Image[] images = new Image[imageList.size()];
+            imageList.toArray(images);
+            animation = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
             miniatura = new Image("media/Miniaturas/Prueba.png");
             //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
@@ -146,12 +158,12 @@ public class Unidad extends ElementoMovil {
         super.comportamiento(p, g, delta);
         Jugador aliado = p.getPlayerFromElement(this);
         List<Jugador> enemies = p.getEnemyPlayersFromElement(this);
-        if (statusCollection.existe_estado(StatusName.REGENERACION)) {
+        if (statusCollection.containsStatus(StatusNameEnum.REGENERACION)) {
             if (this.vida < this.vida_max) {
                 aumentar_vida(Reloj.TIME_REGULAR_SPEED * delta);
             }
         }
-        if (statusCollection.existe_estado(StatusName.EROSION)) {
+        if (statusCollection.containsStatus(StatusNameEnum.EROSION)) {
             disminuir_vida(p, Reloj.TIME_REGULAR_SPEED * delta * vida_max / 5);
         }
         for (Jugador enemy : enemies) {
@@ -190,6 +202,13 @@ public class Unidad extends ElementoMovil {
                         if (p.belongsToMainPlayer(this)) {
                             ElementosComunes.CONSTRUCTION_SOUND.playAt(1f, 1f, x, y, 0f);
                         }
+                        try {
+                            aditionalSprite = new Animation(new Image[]{new Image(
+                                    "media/Construccion1.png"), new Image(
+                                    "media/Construccion2.png")}, 450, true);
+                        } catch (SlickException e) {
+                            e.printStackTrace();
+                        }
                         this.movil = false;
                         if (edificio_construccion.nombre.equals("Refinería")) {
                             for (Recurso r : p.recursos) {
@@ -210,7 +229,8 @@ public class Unidad extends ElementoMovil {
                             behaviour = BehaviourEnum.PARADO;
                             this.movil = true;
                             edificio_construccion = null;
-                            this.enableBuildingButtons();
+                            aditionalSprite = null;
+                            this.checkButtonResources(aliado);
                         } else {
                             edificio_construccion.vida += (edificio_construccion.vida_max / edificio_construccion.tiempo) * Reloj.TIME_REGULAR_SPEED * delta;
                         }
@@ -328,7 +348,8 @@ public class Unidad extends ElementoMovil {
     public void recolectar(Game p, Recurso r) {
         behaviour = BehaviourEnum.RECOLECTANDO;
         recurso = r;
-        anadir_recoleccion(p, getCoordinateForBuildingCreation(this.x, recurso.x, recurso.anchura, this.anchura), getCoordinateForBuildingCreation(this.y, recurso.y, recurso.altura, this.altura));
+        anadir_recoleccion(p, getCoordinateForBuildingCreation(this.x, recurso.x, recurso.anchura, this.anchura),
+                getCoordinateForBuildingCreation(this.y, recurso.y, recurso.altura, this.altura));
     }
 
     public void atacar(Game p, ElementoVulnerable atacada) {
@@ -348,18 +369,23 @@ public class Unidad extends ElementoMovil {
 
     /*Fin de Métodos Cambiantes de Estado */
     @Override
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
+    }
+
+    @Override
     public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+        this.render(this.animation, p, c, input, g);
     }
 
     public boolean puede_usar_habilidad() {
-        if (statusCollection.existe_estado(StatusName.STUN)) {
+        if (statusCollection.containsStatus(StatusNameEnum.STUN)) {
             return false;
         }
-        if (statusCollection.existe_estado(StatusName.SILENCIO)) {
+        if (statusCollection.containsStatus(StatusNameEnum.SILENCIO)) {
             return false;
         }
-        if (statusCollection.existe_estado(StatusName.NECESIDAD)) {
+        if (statusCollection.containsStatus(StatusNameEnum.NECESIDAD)) {
             return false;
         }
         if (behaviour.equals(BehaviourEnum.EMERGIENDO)) {
@@ -369,10 +395,10 @@ public class Unidad extends ElementoMovil {
     }
 
     public boolean puede_ser_danado() {
-        if (statusCollection.existe_estado(StatusName.NECESIDAD)) {
+        if (statusCollection.containsStatus(StatusNameEnum.NECESIDAD)) {
             return false;
         }
-        if (statusCollection.existe_estado(StatusName.SUPERVIVENCIA)) {
+        if (statusCollection.containsStatus(StatusNameEnum.SUPERVIVENCIA)) {
             return false;
         }
         return true;
@@ -395,7 +421,8 @@ public class Unidad extends ElementoMovil {
         return false;
     }
 
-    protected float getCoordinateForBuildingCreation(float initialValue, float maxValue, float buildingOffset, float unitOffset) {
+    protected float getCoordinateForBuildingCreation(float initialValue, float maxValue, float buildingOffset,
+                                                     float unitOffset) {
         float result;
         if (maxValue > initialValue + buildingOffset / 2) {
             result = maxValue - buildingOffset / 2 - unitOffset / 2;

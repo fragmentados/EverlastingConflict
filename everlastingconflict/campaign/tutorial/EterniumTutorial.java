@@ -152,7 +152,7 @@ public class EterniumTutorial extends GuidedGame {
         WindowCombat.createWatch(new RelojEternium(getMainPlayer()));
         jugador.unidades.add(new Unidad(jugador, "Erradicador", 800, 600));
         jugador.unidades.add(new Unidad(jugador, "Protector", 900, 600));
-        jugador.edificios.add(new Edificio("Altar de los ancestros", 1000, 600));
+        jugador.edificios.add(new Edificio(jugador, "Altar de los ancestros", 1000, 600));
         jugador.unidades.get(1).iniciarbotones(this);
         jugador.unidades.get(2).iniciarbotones(this);
         jugador.edificios.get(1).iniciarbotones(this);

@@ -6,28 +6,35 @@
 package everlastingconflict.status;
 
 import everlastingconflict.watches.Reloj;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 
 public class Status {
 
-    public StatusName name;
+    public StatusNameEnum name;
     public float time, timeCounter;
     //Variable para el uso del estado: Por ejemplo, porcentaje de ralentización de movimiento.
     public float value;
+    public Image icon;
 
-    public Status(StatusName status, float t, float c) {
-        this(status, t);
+    public Status(StatusNameEnum name) {
+        //Constructor de estados permanentes
+        this.name = name;
+        try {
+            this.icon = new Image("media/Stats/" + name.getName() + ".png");
+        } catch (SlickException e) {
+        }
+    }
+
+    public Status(StatusNameEnum name, float t, float c) {
+        this(name, t);
         this.value = c;
     }
 
-    public Status(StatusName status, float t) {
-        this(status);
+    public Status(StatusNameEnum name, float t) {
+        this(name);
         timeCounter = time = t;
-    }
-
-    public Status(StatusName status) {
-        //Constructor de estados permanentes
-        name = status;
     }
 
     public boolean comportamiento(int delta) {

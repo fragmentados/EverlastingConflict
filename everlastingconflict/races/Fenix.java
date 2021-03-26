@@ -5,12 +5,12 @@
  */
 package everlastingconflict.races;
 
+import everlastingconflict.behaviour.BehaviourEnum;
+import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elements.impl.Edificio;
 import everlastingconflict.elements.impl.Habilidad;
 import everlastingconflict.elements.impl.Tecnologia;
 import everlastingconflict.elements.impl.Unidad;
-import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.SubRaceEnum;
 import org.newdawn.slick.Animation;
@@ -298,12 +298,12 @@ public class Fenix {
         }
     }
 
-    public static void iniciar_botones_unidad(Unidad u) {
+    public static void iniciar_botones_unidad(Jugador aliado, Unidad u) {
         switch (u.nombre) {
             case "Constructor":
-                u.botones.add(new BotonComplejo(new Edificio("Cuartel Fénix")));
-                u.botones.add(new BotonComplejo(new Edificio("Centro tecnológico")));
-                u.botones.add(new BotonComplejo(new Edificio("Academia")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado,"Cuartel Fénix")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado,"Centro tecnológico")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado,"Academia")));
                 break;
             case "Fénix":
                 u.botones.add(new BotonComplejo("Resurrección"));

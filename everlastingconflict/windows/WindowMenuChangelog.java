@@ -9,13 +9,19 @@ import org.newdawn.slick.SlickException;
 public class WindowMenuChangelog extends WindowMenuBasic {
 
     public BotonSimple volver, salir;
-    public String changelog;
+    public String changelog = "";
 
     @Override
     public void init(GameContainer container) throws SlickException {
         volver = new BotonSimple("Volver", WindowCombat.responsiveX(40), WindowCombat.responsiveY(85));
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - 60, 0);
-        changelog = "0.5\n\n";
+        changelog += "0.5.1\n\n";
+        changelog += "- Mejoras visuales : Iconos de estados, Feedback de construccion, meditacion y recoleccion\n";
+        changelog += "- Mejoras de selección de elementos en la UI\n";
+        changelog += "- Bajada la dificultad de las IAs fáciles añadiendo un delay de 10 segundos en las acciones\n";
+        changelog += "- Música de fondo\n";
+        changelog += "--------------------------------------------------------------\n";
+        changelog += "0.5\n\n";
         changelog += "- Modo de combate juggernaut : Todos los jugadores aliados contra el juggernaut que tiene una ventaja en función del número de enemigos\n";
         changelog += "- Corregido bug por el que no sonaba la destrucción de edificios\n";
         changelog += "- Modo de juego nuevo : Desafíos, partidas cortas en las que la habilidad permite al jugador ganar frente a una desventaja numérica\n";

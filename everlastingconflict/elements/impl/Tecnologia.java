@@ -30,7 +30,7 @@ public class Tecnologia extends ElementoSimple {
 
     public final void iniciarimagenes() {
         try {
-            sprite = new Animation(new Image[]{new Image("media/Tecnologías/" + nombre + ".png")}, new int[]{300},
+            animation = new Animation(new Image[]{new Image("media/Tecnologías/" + nombre + ".png")}, new int[]{300},
                     false);
             icono = new Image("media/Tecnologías/" + nombre + ".png");
         } catch (SlickException e) {

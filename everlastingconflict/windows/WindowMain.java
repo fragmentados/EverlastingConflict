@@ -56,7 +56,7 @@ public class WindowMain extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        ElementosComunes.init();
+        ElementosComunes.initSimpleResources();
         windowSwitch(container, new Game(), "Menu");
     }
 
@@ -65,7 +65,7 @@ public class WindowMain extends BasicGame {
         try {
             currentWindow.update(container, delta);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             //throw ex;
         }
     }
@@ -75,7 +75,7 @@ public class WindowMain extends BasicGame {
         try {
             currentWindow.render(container, g);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             //throw ex;
         }
     }

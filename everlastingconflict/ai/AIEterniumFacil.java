@@ -41,7 +41,7 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void decisiones_unidades(Game p) {
+    public void decisiones_unidades(Game p, int delta) {
         for (Unidad u : unidades) {
             switch (u.nombre) {
                 case "Adepto":
@@ -52,7 +52,7 @@ public class AIEterniumFacil extends AI {
     }
 
     @Override
-    public void decisiones_edificios(Game p) {
+    public void decisiones_edificios(Game p, int delta) {
         for (Edificio e : edificios) {
             if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
                 switch (e.nombre) {
@@ -71,7 +71,7 @@ public class AIEterniumFacil extends AI {
         if (u.behaviour.equals(BehaviourEnum.PARADO)) {
             Recurso r = p.closestResource(null, this.nombre, "Hierro", u.x, u.y);
             if (r != null) {
-                Edificio contador = new Edificio("Refinería");
+                Edificio contador = new Edificio(this, "Refinería");
                 contador.vida = 0;
                 u.construir(p, contador, r.x, r.y);
             }
@@ -92,19 +92,19 @@ public class AIEterniumFacil extends AI {
         //Construcción de Edificios
         if (e.edificio_construccion == null) {
             if (this.cantidad_edificio("Cámara de asimilación") == 0) {
-                Edificio contador = new Edificio("Cámara de asimilación");
+                Edificio contador = new Edificio(this, "Cámara de asimilación");
                 contador.vida = 0;
                 e.construir(p, contador, x_asimilacion, y_asimilacion);
                 return;
             }
             if (this.cantidad_edificio("Teletransportador") == 0) {
-                Edificio contador = new Edificio("Teletransportador");
+                Edificio contador = new Edificio(this, "Teletransportador");
                 contador.vida = 0;
                 e.construir(p, contador, x_transporte, y_transporte);
                 return;
             }
             if (this.cantidad_edificio("Altar de los ancestros") == 0) {
-                Edificio contador = new Edificio("Altar de los ancestros");
+                Edificio contador = new Edificio(this, "Altar de los ancestros");
                 contador.vida = 0;
                 e.construir(p, contador, x_altar, y_altar);
                 return;

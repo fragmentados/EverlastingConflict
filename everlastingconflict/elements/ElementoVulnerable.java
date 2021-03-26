@@ -8,6 +8,7 @@ package everlastingconflict.elements;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.windows.WindowCombat;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -128,13 +129,18 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     }
 
     @Override
-    public void render(Game p, Color c, Input input, Graphics g) {
-        super.render(p, c, input, g);
+    public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+        super.render(sprite, p, c, input, g);
         drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
         if (escudo > 0) {
             drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial,
                     this.y + this.altura / 2 + this.altura_barra_vida);
         }
+    }
+
+    @Override
+    public void render(Game p, Color c, Input input, Graphics g) {
+        this.render(this.animation, p, c, input, g);
     }
 
     public abstract void destruir(Game p, ElementoAtacante atacante);
