@@ -116,7 +116,9 @@
          this.reunion_x = this.x;
          this.reunion_y = this.y + this.altura + this.altura_barra_vida + barra.altura;
          experiencia_al_morir = 50;
-         this.delay = aliado.getDelay();
+         if (aliado != null) {
+             this.delay = aliado.getDelay();
+         }
      }
 
      public Edificio(Jugador aliado, String n, float x, float y) {

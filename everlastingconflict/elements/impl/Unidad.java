@@ -106,7 +106,9 @@ public class Unidad extends ElementoMovil {
         }
         anchura_barra_vida = anchura;
         experiencia_al_morir = 15;
-        delay = aliado.getDelay();
+        if (aliado != null) {
+            delay = aliado.getDelay();
+        }
     }
 
     public Unidad(Jugador aliado, String n, float x, float y) {

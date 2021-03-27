@@ -22,7 +22,7 @@ public class RTS {
     public static WindowMain mainController;
     public static JFrame mainFrame;
     public static final boolean DEBUG_MODE = false;
-    
+
     public static void main(String[] args) {
         // Launch new thread for loading bsos
         new Thread(() -> {

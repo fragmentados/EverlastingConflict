@@ -45,12 +45,12 @@ import static everlastingconflict.windows.UI.anchura_miniatura;
 
 public class WindowCombat extends Window {
 
-    public Game game;
+    public static Game game;
     public static UI ui;
     public boolean ctrl, deseleccionar;
     public static boolean mayus;
-    public static boolean optionsMenuEnabled;
-    public static List<BotonSimple> optionsMenuButtons = new ArrayList<>();
+    public static boolean pauseMenuEnabled;
+    public static List<BotonSimple> pauseMenuButtons = new ArrayList<>();
     //Atacar
     public boolean attackMoveModeEnabled;
     public Image atacar;
@@ -164,7 +164,7 @@ public class WindowCombat extends Window {
     @Override
     public void init(GameContainer container) throws SlickException {
         playerX = playerY = 0;
-        optionsMenuEnabled = false;
+        pauseMenuEnabled = false;
         container.setShowFPS(false);
         container.setVSync(true);
         if (!(game instanceof GuidedGame)) {
@@ -176,20 +176,24 @@ public class WindowCombat extends Window {
         construccion = new Image("media/Edificios/construccion.png");
         mensajes = new ArrayList<>();
         ui = new UI();
-        optionsMenuButtons = new ArrayList<>();
-        optionsMenuButtons.add(new BotonSimple("Volver al menu") {
+        pauseMenuButtons = new ArrayList<>();
+        pauseMenuButtons.add(new BotonSimple("Volver") {
             @Override
             public void effect() throws SlickException {
-                endGameAndReturnToMenu(container);
+                endGameAndReturnToPreviousWindow(container);
             }
         });
-        optionsMenuButtons.add(new BotonSimple("Salir") {
+        pauseMenuButtons.add(new BotonSimple("Salir") {
             @Override
             public void effect() throws SlickException {
                 WindowMain.exit(container);
             }
         });
         LOCAL_BSOS = new ArrayList<>();
+        if (CURRENT_BSO != null) {
+            CURRENT_BSO.stop();
+        }
+        CURRENT_BSO = null;
     }
 
     public void coordenadas_errores() {
@@ -448,21 +452,14 @@ public class WindowCombat extends Window {
             LOCAL_BSOS.addAll(ElementosComunes.BSOS);
         }
         Input input = container.getInput();
-        // On esc we enable / disable the options menu
+        // On esc we enable / disable the pause menu
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            optionsMenuEnabled = !optionsMenuEnabled;
-            if (optionsMenuEnabled) {
-                for (BotonSimple optionMenuButton : optionsMenuButtons) {
-                    optionMenuButton.x = playerX + WindowCombat.responsiveX(45);
-                    optionMenuButton.y =
-                            playerY + WindowCombat.responsiveY(50 + 10 * optionsMenuButtons.indexOf(optionMenuButton));
-                }
-            }
+            pauseMenuEnabled = !pauseMenuEnabled;
         }
-        if (optionsMenuEnabled) {
+        if (pauseMenuEnabled) {
             // Check options buttons pressed
             if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-                for (BotonSimple optionMenuButton : optionsMenuButtons) {
+                for (BotonSimple optionMenuButton : pauseMenuButtons) {
                     optionMenuButton.checkIfItsClickedInCombat(input);
                 }
             }
@@ -582,7 +579,7 @@ public class WindowCombat extends Window {
                 y_click = (int) playerY + input.getMouseY();
                 if (continuar.isHovered(x_click, y_click)) {
                     if (!(game instanceof GuidedGame) || ((GuidedGame) game).steps.isEmpty() || victoria != null || derrota != null) {
-                        endGameAndReturnToMenu(container);
+                        endGameAndReturnToPreviousWindow(container);
                     }
                 }
                 click = true;
@@ -967,11 +964,20 @@ public class WindowCombat extends Window {
                     elementHighlighted.y - (elementHighlighted.altura + highlightRadius) / 2,
                     elementHighlighted.anchura + highlightRadius, elementHighlighted.altura + highlightRadius);
         }
-        if (optionsMenuEnabled) {
-            g.drawString("JUEGO PAUSADO", playerX + WindowCombat.responsiveX(46),
-                    playerY + WindowCombat.responsiveY(40));
-            optionsMenuButtons.forEach(b -> b.render(g));
+        if (pauseMenuEnabled) {
+            renderPauseMenu(g);
         }
+    }
+
+    private void renderPauseMenu(Graphics g) {
+        g.drawString("JUEGO PAUSADO", playerX + WindowCombat.middleScreenX("JUEGO PAUSADO"),
+                playerY + WindowCombat.responsiveY(30));
+        for (BotonSimple optionMenuButton : pauseMenuButtons) {
+            optionMenuButton.x = playerX + WindowCombat.middleScreenX(optionMenuButton.texto);
+            optionMenuButton.y =
+                    playerY + WindowCombat.responsiveY(40 + 10 * pauseMenuButtons.indexOf(optionMenuButton));
+        }
+        pauseMenuButtons.forEach(b -> b.render(g));
     }
 
     private void displayVictory() throws SlickException {
@@ -1009,7 +1015,7 @@ public class WindowCombat extends Window {
         return false;
     }
 
-    private void endGameAndReturnToMenu(GameContainer container) throws SlickException {
+    private void endGameAndReturnToPreviousWindow(GameContainer container) throws SlickException {
         victoria = null;
         derrota = null;
         ElementosComunes.VICTORY_SOUND.stop();
@@ -1017,7 +1023,15 @@ public class WindowCombat extends Window {
         if (CURRENT_BSO != null) {
             CURRENT_BSO.stop();
         }
-        RTS.mainController.windowSwitch(container, new Game(), "Menu");
+        if (WindowMain.previousWindow != null) {
+            RTS.mainController.windowSwitch(container, WindowMain.previousWindow);
+        } else {
+            RTS.mainController.windowSwitch(container, "Menu");
+        }
+    }
+
+    public static float middleScreenX(String text) {
+        return VIEWPORT_SIZE_WIDTH / 2 - (text.length() * 10) / 2;
     }
 
     public static float responsiveX(float percentage) {

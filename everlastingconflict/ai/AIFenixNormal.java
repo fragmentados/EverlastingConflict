@@ -9,6 +9,7 @@ import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elements.impl.Edificio;
 import everlastingconflict.elements.impl.Tecnologia;
+import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.races.enums.SubRaceEnum;
 
@@ -23,6 +24,23 @@ public class AIFenixNormal extends AIFenixFacil {
     public void initElements(Game p) {
         super.initElements(p);
         npushear = 5;
+    }
+
+    @Override
+    public void decisiones_unidades(Game p, int delta) {
+        for (Unidad u : unidades) {
+            switch (u.nombre) {
+                case "Recolector":
+                    comportamiento_recolector(p, u);
+                    break;
+                case "Constructor":
+                    comportamiento_constructor(p, u);
+                    break;
+                default:
+                    //Unidad Militar
+                    //comportamiento_militar(p, u);
+            }
+        }
     }
 
     @Override

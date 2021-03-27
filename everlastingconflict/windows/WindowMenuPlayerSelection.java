@@ -13,6 +13,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.gui.TextField;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
     public static ComboBox gameModeCombo;
     public List<PlayerSelection> playerSelections = new ArrayList<>();
     private ComboBox mapCombo;
-    public boolean start;
+    public TextField userTextField;
 
     public static boolean isLeaderGame() {
         return GameModeEnum.LEADER.label.equals(WindowMenuPlayerSelection.gameModeCombo.optionSelected.text);
@@ -39,7 +40,8 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
         return this.playerSelections.stream().filter(ps -> ps.isMainPlayer).findFirst().orElse(null);
     }
 
-    public void start(GameContainer container) {
+    @Override
+    public void startGame(GameContainer container) {
         try {
             Jugador mainPlayer = new Jugador("Prueba",
                     RaceEnum.findByName(getMainPlayerSelection().raceCombo.optionSelected.text),
@@ -58,19 +60,23 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
             players.add(0, mainPlayer);
             Game game = new Game(players, MapEnum.findByName(mapCombo.optionSelected.text),
                     GameModeEnum.findByLabel(WindowMenuPlayerSelection.gameModeCombo.optionSelected.text));
-            WindowMain.windowSwitch(container, game, "Combat");
+            WindowCombat.game = game;
+            WindowMain.windowSwitch(container, "Combat", "PlayerSelection");
         } catch (SlickException ex) {
         }
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
+        super.init(container);
+        userTextField = new TextField(container, container.getDefaultFont(), (int) WindowCombat.responsiveX(20),
+                (int) WindowCombat.responsiveY(50), 100, 20);
         playerSelections = new ArrayList<>();
         playerSelections.add(new PlayerSelection(WindowCombat.responsiveX(20), WindowCombat.responsiveY(50), true));
         playerSelections.add(new PlayerSelection(WindowCombat.responsiveX(20), WindowCombat.responsiveY(55),
                 false));
         playerSelections.get(1).teamCombo.optionSelected = playerSelections.get(1).teamCombo.options.get(1);
-        salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - 60, 0);
+        salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - "Salir".length() * 10, 0);
         volver = new BotonSimple("Volver", WindowCombat.responsiveX(40), WindowCombat.responsiveY(85));
         aceptar = new BotonSimple("Aceptar", WindowCombat.responsiveX(45), WindowCombat.responsiveY(85));
         mapCombo = new ComboBox("Mapa:", Arrays.stream(MapEnum.values()).map(m -> new ComboBoxOption(m.getName(),
@@ -78,24 +84,21 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
                 WindowCombat.responsiveX(25), WindowCombat.responsiveY(40));
         gameModeCombo = new ComboBox("Condición de victoria:",
                 Arrays.stream(GameModeEnum.values()).map(v -> new ComboBoxOption(v.label, v.description)).collect(Collectors.toList()), WindowCombat.responsiveX(55), WindowCombat.responsiveY(40));
+        WindowMenuBasic.subTitle = "COMBATE";
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         super.update(container, delta);
         Input input = container.getInput();
-        if (start) {
-            start(container);
-            start = false;
-        }
         //Boton izquierdo
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
             if (aceptar.isHovered(input.getMouseX(), input.getMouseY())) {
-                start = true;
+                startGame(container);
             } else if (salir.isHovered(input.getMouseX(), input.getMouseY())) {
                 WindowMain.exit(container);
             } else if (volver.isHovered(input.getMouseX(), input.getMouseY())) {
-                WindowMain.windowSwitch(container, null, "Menu");
+                WindowMain.windowSwitch(container, "Menu");
             }
             mapCombo.checkIfItsClicked(input);
             gameModeCombo.checkIfItsClicked(input);
@@ -128,15 +131,14 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
     public void render(GameContainer container, Graphics g) throws SlickException {
         super.render(container, g);
         Input input = container.getInput();
-        mapCombo.render( g);
-        gameModeCombo.render( g);
+        mapCombo.render(g);
+        gameModeCombo.render(g);
         for (int i = (playerSelections.size() - 1); i >= 0; i--) {
             playerSelections.get(i).render(input, g);
         }
         salir.render(g);
         volver.render(g);
         aceptar.render(g);
-        g.drawString(WindowMenuBasic.usuario.getText(), WindowCombat.responsiveX(20), WindowCombat.responsiveY(50));
         for (int i = 0; i < playerSelections.size(); i++) {
             g.drawString("Jugador nº " + (i + 1), WindowCombat.responsiveX(10),
                     WindowCombat.responsiveY(50 + 5 * i));

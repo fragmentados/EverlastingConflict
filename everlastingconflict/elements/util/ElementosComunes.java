@@ -26,6 +26,7 @@ public class ElementosComunes {
     public static Color NO_VISIBLE_COLOR = new Color(0.1f, 0.1f, 0.05f, 1f);
     public static Color HALF_VISIBLE_COLOR = new Color(0.2f, 0.2f, 0.05f, 1f);
     public static Color FULL_VISIBLE_COLOR = new Color(0.3f, 0.3f, 0.1f, 1f);
+    public static Color MENU_COLOR = new Color(90, 82, 82);
     // Images used for fusion help
     public static Image CAZADOR_IMAGE;
     public static Image DEVORADOR_IMAGE;
