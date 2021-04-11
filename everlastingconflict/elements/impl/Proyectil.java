@@ -7,6 +7,7 @@ package everlastingconflict.elements.impl;
 
 import everlastingconflict.behaviour.BehaviourEnum;
 import everlastingconflict.elements.ElementoAtacante;
+import everlastingconflict.elements.ElementoEstado;
 import everlastingconflict.elements.ElementoMovil;
 import everlastingconflict.elements.ElementoVulnerable;
 import everlastingconflict.gestion.Game;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 public class Proyectil extends ElementoMovil {
 
     public ElementoAtacante origen;
-    public boolean shouldHeal = false;
     private static final int ATTRACTION_RADIUS = 200;
 
     public final void iniciar_datos(ElementoAtacante origen) {
@@ -75,25 +75,29 @@ public class Proyectil extends ElementoMovil {
     @Override
     public void comportamiento(Game p, Graphics g, int delta) {
         if (!BehaviourEnum.DESTRUIDO.equals(behaviour)) {
-            if (movimiento != null) {
-                movimiento.resolucion(p, delta);
-                checkTortuceAttraction(p);
-            }
-            if (objetivo.hitbox(this.x, this.y)) {
-                if (shouldHeal) {
-                    boolean isObjectiveFullHealed = origen.heal(ataque, objetivo);
-                    if (isObjectiveFullHealed) {
-                        ((ElementoMovil) origen).parar();
-                    }
-                } else {
-                    boolean isObjectiveDestroyed = origen.dano(p, "Físico", ataque, objetivo);
-                    if (isObjectiveDestroyed && origen instanceof ElementoMovil) {
-                        ((ElementoMovil) origen).parar();
-                    }
-                }
+            if (objetivo instanceof ElementoEstado && ((ElementoEstado) objetivo).behaviour.equals(BehaviourEnum.DESTRUIDO)) {
                 this.destruir(p, null);
             } else {
-                anadir_movimiento(objetivo.x, objetivo.y);
+                if (movimiento != null) {
+                    movimiento.resolucion(p, delta);
+                    checkTortuceAttraction(p);
+                }
+                if (objetivo.hitbox(this.x, this.y)) {
+                    if (origen.healer && !origen.hostil) {
+                        boolean isObjectiveFullHealed = origen.heal(ataque, objetivo);
+                        if (isObjectiveFullHealed) {
+                            ((ElementoMovil) origen).parar();
+                        }
+                    } else {
+                        boolean isObjectiveDestroyed = origen.dealDamage(p, "Físico", ataque, objetivo);
+                        if (isObjectiveDestroyed && origen instanceof ElementoMovil) {
+                            ((ElementoMovil) origen).parar();
+                        }
+                    }
+                    this.destruir(p, null);
+                } else {
+                    anadir_movimiento(objetivo.x, objetivo.y);
+                }
             }
         }
     }

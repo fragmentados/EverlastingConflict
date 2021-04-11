@@ -1,5 +1,11 @@
 package everlastingconflict.races.enums;
 
+import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.elements.impl.Manipulador;
+import everlastingconflict.elements.impl.Taller;
+import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Alianza;
 import org.newdawn.slick.Color;
 
 import java.util.Collections;
@@ -27,7 +33,10 @@ public enum RaceEnum {
             "individuos restantes. " +
             "Por ello llegan a los planetas con un solo individuo pero a medida que esté va combatiendo y mejorando " +
             "obtiene poderosas habilidades y se vuelve más fuerte que la unidad de cualquier raza", "media/Razas" +
-            "/Maestros.png", new Color(83, 20, 90));
+            "/Maestros.png", new Color(83, 20, 90)),
+    ALIANZA("Alianza", "La alianza estelar son humanos desarrollados en otro planeta, TitanPrime, más avanzados " +
+            "tecnológicamente pero con menor población. Por esta razón tienen menos unidades pero son más poderosas " +
+            "que las de los Guardianes o los Fénix.", "media/Razas/Alianza.png", new Color(193, 199, 98));
 
     private String name;
     private String description;
@@ -74,5 +83,59 @@ public enum RaceEnum {
 
     public static RaceEnum findByName(String name) {
         return raceEnumMap.get(name);
+    }
+
+    public void initElements(Jugador ally) {
+        switch (this) {
+            case FENIX:
+                ally.edificios.add(new Edificio(ally, "Sede", ally.x_inicial, ally.y_inicial));
+                ally.unidades.add(new Unidad(ally, "Constructor", ally.x_inicial,
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                ally.unidades.add(new Unidad(ally, "Recolector", ally.horizontalOffset(ally.x_inicial, 50),
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                ally.unidades.add(new Unidad(ally, "Halcón", ally.x_inicial,
+                        ally.verticalOffset(ally.y_inicial, 200)));
+                ally.unidades.add(new Unidad(ally, "Fénix", ally.horizontalOffset(ally.x_inicial, 50),
+                        ally.verticalOffset(ally.y_inicial, 200)));
+                break;
+            case ETERNIUM:
+                ally.edificios.add(new Edificio(ally, "Mando Central", ally.x_inicial, ally.y_inicial));
+                ally.unidades.add(new Unidad(ally, "Adepto", ally.horizontalOffset(ally.x_inicial, 50),
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                break;
+            case CLARK:
+                ally.edificios.add(new Edificio(ally, "Primarca", ally.x_inicial, ally.y_inicial));
+                ally.unidades.add(new Unidad(ally, "Depredador", ally.horizontalOffset(ally.x_inicial, -50),
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                ally.unidades.add(new Unidad(ally, "Devorador", ally.horizontalOffset(ally.x_inicial, 10),
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                ally.unidades.add(new Unidad(ally, "Cazador", ally.horizontalOffset(ally.x_inicial, 70),
+                        ally.verticalOffset(ally.y_inicial, 150)));
+                break;
+            case MAESTROS:
+                ally.unidades.add(new Manipulador(ally, ally.x_inicial, ally.y_inicial));
+                break;
+            case GUARDIANES:
+                ally.edificios.add(new Edificio(ally, "Ayuntamiento", ally.x_inicial, ally.y_inicial));
+                ally.edificios.add(new Taller(ally, "Taller bélico", ally.horizontalOffset(ally.x_inicial, 300),
+                        ally.verticalOffset(ally.y_inicial, 250)));
+                ally.edificios.add(new Edificio(ally, "Academia de pilotos",
+                        ally.horizontalOffset(ally.x_inicial, 200), ally.y_inicial));
+                ally.edificios.add(new Taller(ally, "Taller bélico", ally.horizontalOffset(ally.x_inicial, 300),
+                        ally.verticalOffset(ally.y_inicial, 400)));
+                ally.edificios.add(new Edificio(ally, "Templo", ally.horizontalOffset(ally.x_inicial, 400),
+                        ally.y_inicial));
+                ally.edificios.add(new Edificio(ally, "Laboratorio de I+D",
+                        ally.horizontalOffset(ally.x_inicial, 500), ally.y_inicial));
+                ally.edificios.add(new Edificio(ally, "Vaticano", ally.horizontalOffset(ally.x_inicial, 600),
+                        ally.y_inicial));
+                ally.edificios.add(new Edificio(ally, "Edificio gubernamental",
+                        ally.horizontalOffset(ally.x_inicial, 700), ally.y_inicial));
+                break;
+            case ALIANZA:
+                ally.edificios.add(new Edificio(ally, "Nave", ally.x_inicial, ally.y_inicial));
+                Alianza.initElements();
+                break;
+        }
     }
 }

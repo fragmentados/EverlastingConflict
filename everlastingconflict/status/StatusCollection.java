@@ -5,7 +5,9 @@
  */
 package everlastingconflict.status;
 
+import everlastingconflict.elements.ElementoAtacante;
 import everlastingconflict.elements.ElementoEstado;
+import everlastingconflict.elements.impl.Manipulador;
 import everlastingconflict.gestion.Game;
 
 import java.util.ArrayList;
@@ -73,5 +75,27 @@ public class StatusCollection {
 
     public boolean allowsMove() {
         return contenido.stream().allMatch(s -> StatusNameEnum.allowsMove(s.name));
+    }
+
+    public int checkAttackStatusEffects(ElementoAtacante elementAttacking, int damageToDeal) {
+        if (containsStatus(StatusNameEnum.DRENANTES)) {
+            Manipulador m = (Manipulador) elementAttacking;
+            if (m.mana >= 10) {
+                damageToDeal += 15;
+                m.mana -= 10;
+            }
+        }
+        if (containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
+            damageToDeal += getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
+            forceRemoveStatus(StatusNameEnum.ATAQUE_POTENCIADO);
+        }
+        if (containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
+            damageToDeal -= getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
+            if (damageToDeal < 0) {
+                damageToDeal = 0;
+            }
+            forceRemoveStatus(StatusNameEnum.ATAQUE_DISMINUIDO);
+        }
+        return damageToDeal;
     }
 }

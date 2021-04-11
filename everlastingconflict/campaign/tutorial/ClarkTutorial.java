@@ -160,7 +160,7 @@ public class ClarkTutorial extends GuidedGame {
     public void initElements() {
         super.initElements();
         Jugador jugador = getMainPlayer();
-        bestias.add(new Bestias("Grupo1", 600, 200));
+        bestias.add(new Bestias("Alphas", 600, 200));
         jugador.unidades.add(new Unidad(jugador, "Despedazador", 800, 600));
         jugador.unidades.add(new Unidad(jugador, "Regurgitador", 900, 600));
         jugador.unidades.add(new Unidad(jugador, "Rumiante", 1000, 600));

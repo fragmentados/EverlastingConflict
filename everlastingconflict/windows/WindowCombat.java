@@ -16,10 +16,12 @@ import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Alianza;
 import everlastingconflict.races.Clark;
 import everlastingconflict.races.Fusion;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.watches.Reloj;
+import everlastingconflict.watches.RelojAlianza;
 import everlastingconflict.watches.RelojEternium;
 import everlastingconflict.watches.RelojMaestros;
 import org.lwjgl.input.Mouse;
@@ -55,7 +57,7 @@ public class WindowCombat extends Window {
     public boolean attackMoveModeEnabled;
     public Image atacar;
     //Construccion
-    public Edificio edificio;
+    public static Edificio edificio;
     public ElementoAtacante constructor;
     public Image construccion;
     //Scroll Mapa
@@ -84,6 +86,7 @@ public class WindowCombat extends Window {
     public Habilidad habilidad;
     //Tutorial y Fin de Partida
     public static BotonSimple continuar = new BotonSimple("Continuar");
+    public static BotonComplejo selectMainElementButton;
     //Movimiento pantalla
     public float x_movimiento = -1, y_movimiento = -1;
     //Animaciones
@@ -111,6 +114,14 @@ public class WindowCombat extends Window {
         Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojEternium).findFirst().orElse(null);
         if (relojEncontrado != null) {
             return (RelojEternium) relojEncontrado;
+        }
+        return null;
+    }
+
+    public static RelojAlianza alianceWatch() {
+        Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojAlianza).findFirst().orElse(null);
+        if (relojEncontrado != null) {
+            return (RelojAlianza) relojEncontrado;
         }
         return null;
     }
@@ -194,6 +205,9 @@ public class WindowCombat extends Window {
             CURRENT_BSO.stop();
         }
         CURRENT_BSO = null;
+        selectMainElementButton = new BotonComplejo(ElementosComunes.getMainElementImage(game.getMainPlayer()));
+        selectMainElementButton.tecla = Input.KEY_F1;
+        selectMainElementButton.tecla_string = "F1";
     }
 
     public void coordenadas_errores() {
@@ -335,7 +349,8 @@ public class WindowCombat extends Window {
                 } else {
                     if (e instanceof Unidad) {
                         Unidad u = (Unidad) e;
-                        List<Recurso> resourcesToCheck = "Recolector".equals(u.nombre) ? game.getGameCivilTowns()
+                        List<Recurso> resourcesToCheck = "Recolector".equals(u.nombre) ?
+                                game.getCivilTownsAndVisionTowers()
                                 : game.getVisionTowers();
                         for (Recurso r : resourcesToCheck) {
                             if (r.hitbox(x, y)) {
@@ -399,10 +414,22 @@ public class WindowCombat extends Window {
             elementCircle = game.getElementAttackedAtPosition(x, y, unitsSelected);
             if (elementCircle == null) {
                 if (!unitsSelected.isEmpty()) {
+                    playMainUnitTypeSound();
                     pathing_prueba(true, unitsSelected, x, y);
                 }
             } else {
                 timeCircleCounter = timeCircle;
+            }
+        }
+    }
+
+    public void playMainUnitTypeSound() {
+        Unidad mainUnit = (Unidad) ui.currentSelectionPage.get(0);
+        if (ElementosComunes.UNIT_MOVEMENT_SOUNDS.containsKey(mainUnit.nombre)) {
+            if (!ElementosComunes.UNIT_MOVEMENT_SOUNDS.get(mainUnit.nombre).get(0).playing()) {
+                Sound currentSound = ElementosComunes.UNIT_MOVEMENT_SOUNDS.get(mainUnit.nombre).remove(0);
+                currentSound.play();
+                ElementosComunes.UNIT_MOVEMENT_SOUNDS.get(mainUnit.nombre).add(currentSound);
             }
         }
     }
@@ -464,10 +491,13 @@ public class WindowCombat extends Window {
                 }
             }
         } else {
+            selectMainElementButton.x = playerX;
+            selectMainElementButton.y =
+                    playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - selectMainElementButton.altura;
             Jugador mainPlayer = game.getMainPlayer();
             ctrl = input.isKeyDown(Input.KEY_LCONTROL);
             mayus = input.isKeyDown(Input.KEY_LSHIFT);
-            // Mensajes
+            // mensajes
             List<Mensaje> messagesToBeRemoved = new ArrayList<>();
             for (Mensaje m : mensajes) {
                 if (m.comprobar_mensaje(delta)) {
@@ -484,7 +514,12 @@ public class WindowCombat extends Window {
                 displayDefeat();
             }
             //Relojes
-            relojes.stream().forEach(r -> r.avanzar_reloj(delta));
+            relojes.stream().forEach(r -> {
+                try {
+                    r.avanzar_reloj(game, delta);
+                } catch (SlickException e) {
+                }
+            });
             //Comprobar fusiones
             for (int j = 0; j < Clark.fusiones.size(); j++) {
                 Fusion f = Clark.fusiones.get(j);
@@ -557,6 +592,10 @@ public class WindowCombat extends Window {
             }
             //Rueda del ratón: Zoom
             mouseWheelZoom(input);
+            // In case F1 pressed we select the main element
+            if (input.isKeyPressed(Input.KEY_F1)) {
+                mainPlayer.selectMainElement();
+            }
             //Tabulación
             if (input.isKeyPressed(Input.KEY_TAB)) {
                 ui.siguiente_seleccion();
@@ -590,12 +629,25 @@ public class WindowCombat extends Window {
                         }
                     }
                 }
-                if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT)) {
+                Reloj relojClickado = relojes.stream().filter(r -> r.hitbox(WindowCombat.playerX + input.getMouseX(),
+                        WindowCombat.playerY + input.getMouseY())).findFirst().orElse(null);
+                if (selectMainElementButton.isHovered(WindowCombat.playerX + input.getMouseX(),
+                        WindowCombat.playerY + input.getMouseY())) {
+                    game.getMainPlayer().selectMainElement();
+                    click = false;
+                } else if (relojClickado != null) {
+                    relojClickado.handleLeftClick();
+                    click = false;
+                } else if (y_click >= ((int) playerY + VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT)) {
                     ui.handleLeftClick(input, game, x_click, y_click);
                     click = false;
                 } else if ((edificio != null)) {
-                    //Decidir la localización de un edificio
-                    if (!constructor.nombre.equals("No hay")) {
+                    if (edificio.nombre.equals("Nave")) {
+                        // Decidimos el punto de aterrizaje de la nave
+                        Alianza.selectLandingCoordinates(game.getPlayerFromElement(edificio), x_click, y_click);
+                        edificio = null;
+                        click = false;
+                    } else if (!constructor.nombre.equals("No hay")) {
                         if (edificio.construible(constructor, game, input, x_click, y_click)) {
                             if (edificio.nombre.equals("Refinería") || edificio.nombre.equals("Centro de " +
                                     "restauración")) {
@@ -930,13 +982,12 @@ public class WindowCombat extends Window {
             if (hoveredButton != null) {
                 hoveredButton.renderExtendedInfo(game.getMainPlayer(), g, ui.currentSelectionPage.get(0));
             }
-            //Evento seleccionado Guardián
-            Jugador guardianPlayer = game.getPlayerByRace(RaceEnum.GUARDIANES);
-            if (guardianPlayer != null) {
-                Evento evento_seleccionado = guardianPlayer.getSelectedEvent(playerX + input.getMouseX(),
+            //Event hovered Guardián
+            if (RaceEnum.GUARDIANES.equals(mainPlayer.raza)) {
+                Evento eventHovered = mainPlayer.getHoveredEvent(playerX + input.getMouseX(),
                         playerY + input.getMouseY());
-                if (evento_seleccionado != null) {
-                    new BotonComplejo(evento_seleccionado).renderExtendedInfo(guardianPlayer, g, null);
+                if (eventHovered != null) {
+                    new BotonComplejo(eventHovered).renderExtendedInfo(mainPlayer, g, null);
                 }
             }
             //Guided Game steps
@@ -964,6 +1015,7 @@ public class WindowCombat extends Window {
                     elementHighlighted.y - (elementHighlighted.altura + highlightRadius) / 2,
                     elementHighlighted.anchura + highlightRadius, elementHighlighted.altura + highlightRadius);
         }
+        selectMainElementButton.render(g);
         if (pauseMenuEnabled) {
             renderPauseMenu(g);
         }

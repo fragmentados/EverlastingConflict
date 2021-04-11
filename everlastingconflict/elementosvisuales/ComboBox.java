@@ -119,7 +119,7 @@ public class ComboBox {
     }
 
     public void render(Graphics g) {
-        float xOptionText = this.x;
+        float xOptionText = this.x + 2;
         g.setColor(Color.white);
         if (label != null) {
             g.drawString(label, x - label.length() * 10, y);
@@ -158,7 +158,7 @@ public class ComboBox {
             float xDescription = this.x + this.width + this.deployButton.anchura + 10;
             float widthDescription = optionHovered.description.length() * 10 < 400 ?
                     optionHovered.description.length() * 10 : 400;
-            String descriptionFormatted = Game.anadir_saltos_de_linea(optionHovered.description, widthDescription);
+            String descriptionFormatted = Game.formatTextToFitWidth(optionHovered.description, widthDescription);
             float heightDescription = (descriptionFormatted.chars().filter(ch -> ch == '\n').count() + 1) * 20;
             g.setColor(UI_COLOR);
             g.fillRect(xDescription, this.y, widthDescription, heightDescription);

@@ -14,6 +14,7 @@
  import everlastingconflict.gestion.Game;
  import everlastingconflict.gestion.Jugador;
  import everlastingconflict.gestion.ProgressBar;
+ import everlastingconflict.races.Alianza;
  import everlastingconflict.races.Eternium;
  import everlastingconflict.races.Fenix;
  import everlastingconflict.races.Raza;
@@ -39,6 +40,8 @@
  import java.util.logging.Level;
  import java.util.logging.Logger;
 
+ import static everlastingconflict.behaviour.BehaviourEnum.DESPEGANDO;
+
 
  public class Edificio extends ElementoAtacante {
 
@@ -53,12 +56,13 @@
      public float ed_x, ed_y;
      //Atributo para el primarca
      public boolean mostrarAyudaFusion = false;
-     public List<Integer> cantidad_produccion;
+     public List<Integer> cantidad_produccion = new ArrayList<>();
      public float radio_construccion;
      public boolean activo = true;
      public boolean unitCreator = false;
      public boolean main = false;
      public Image spriteDisabled;
+     public boolean isVisible = true;
 
      //Valores estáticos
      public static final int tiempo_mineria = 10;
@@ -99,14 +103,11 @@
          this.behaviour = BehaviourEnum.PARADO;
          this.descripcion = "";
          this.statusCollection = new StatusCollection();
-         Raza.edificio(this);
+         Raza.edificio(aliado, this);
          initImages();
          vida = vida_max;
          this.botones = new ArrayList<>();
          cola_construccion = new ArrayList<>();
-         if (nombre.equals("Mando Central")) {
-             cantidad_produccion = new ArrayList<>();
-         }
          this.anchura = this.animation.getWidth();
          this.altura = this.animation.getHeight();
          this.anchura_barra_vida = this.anchura;
@@ -145,7 +146,7 @@
                      .flatMap(e -> e.botones.stream())
                      .filter(b -> b.elemento_nombre.equals(t.nombre)).forEach(b -> b.canBeUsed = false);
              if (cola_construccion.isEmpty()) {
-                 barra.activar(t.tiempo);
+                 barra.activar(t.tiempo, this);
              }
              cola_construccion.add(t);
              j.tecnologias.add(t);
@@ -213,34 +214,31 @@
 
      public void createUnit(Game game, Jugador jugador, Unidad unidadACrear) {
          if (jugador.comprobacion_recursos(unidadACrear)) {
-             if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
-                 if (!jugador.raza.equals(RaceEnum.FENIX)) {
-                     jugador.removeResources(unidadACrear.coste);
+             if (!jugador.raza.equals(RaceEnum.FENIX)) {
+                 jugador.removeResources(unidadACrear.coste);
+             }
+             if (!jugador.raza.equals(RaceEnum.FENIX) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
+                 setInitialCoordinatesForCreatedUnit(unidadACrear);
+                 if (cola_construccion.isEmpty()) {
+                     barra.activar(unidadACrear.tiempo, this);
                  }
-                 if (!jugador.raza.equals(RaceEnum.FENIX) || !unidadACrear.constructor || (jugador.cantidad_no_militar() < Fenix.limite_unidades_no_militares)) {
-                     setInitialCoordinatesForCreatedUnit(unidadACrear);
-                     jugador.poblacion += unidadACrear.coste_poblacion;
-                     if (cola_construccion.isEmpty()) {
-                         barra.activar(unidadACrear.tiempo);
-                     }
-                     if (this.nombre.equals("Mando Central")) {
-                         mandoCentralCrearUnidad(jugador, unidadACrear);
-                     } else {
-                         cola_construccion.add(unidadACrear);
-                     }
+                 if (this.nombre.equals("Mando Central")) {
+                     mandoCentralCrearUnidad(jugador, unidadACrear);
+                 } else {
+                     cola_construccion.add(unidadACrear);
                  }
              }
          }
      }
 
-     private void setInitialCoordinatesForCreatedUnit(Unidad unitToCreate) {
+     public void setInitialCoordinatesForCreatedUnit(Unidad unitToCreate) {
          float x = getCoordinateForCreateUnit(this.x, reunion_x, anchura);
          float y = getCoordinateForCreateUnit(this.y, reunion_y, altura);
          unitToCreate.x = x;
          unitToCreate.y = y;
      }
 
-     protected float getCoordinateForCreateUnit(float initialValue, float maxValue, float buildingOffset) {
+     public float getCoordinateForCreateUnit(float initialValue, float maxValue, float buildingOffset) {
          float result;
          if (maxValue > initialValue + buildingOffset / 2) {
              result = initialValue + buildingOffset / 2;
@@ -263,7 +261,7 @@
      }
 
      public void detener_produccion() {
-         barra.desactivar();
+         barra.desactivar(this);
          cola_construccion = new ArrayList<>();
      }
 
@@ -290,13 +288,13 @@
      public void eliminar_cola(ElementoSimple e) {
          if (e == cola_construccion.get(0)) {
              if (cola_construccion.size() != 1) {
-                 barra.activar(cola_construccion.get(0).tiempo);
+                 barra.activar(cola_construccion.get(0).tiempo, this);
              }
          }
          cola_construccion.remove(e);
          if (cola_construccion.isEmpty()) {
              barra.progreso = 0;
-             barra.desactivar();
+             barra.desactivar(this);
          }
      }
 
@@ -304,7 +302,7 @@
          if (barra.terminado()) {
              if (cola_construccion.size() > 0) {
                  if (cola_construccion.get(0) instanceof Unidad) {
-                     if (this.nombre.equals("Mando Central")) {
+                     if (this.nombre.equals("Mando Central") || "Nave".equals(this.nombre)) {
                          for (int i = 0; i < cantidad_produccion.get(0); i++) {
                              Unidad unidad = (Unidad) cola_construccion.get(0);
                              Unidad u = new Unidad(aliado, unidad);
@@ -345,27 +343,22 @@
 
      @Override
      public void render(Game p, Color c, Input input, Graphics g) {
-         if (WindowCombat.ui.elements.indexOf(this) != -1 && unitCreator) {
-             renderRallyPoint(g);
-         }
-         this.chechAnimationStatus(p);
-         super.render(p, c, input, g);
-         if (!activo) {
-             spriteDisabled.draw(x - anchura / 2, y - altura / 2);
-         }
-         barra.dibujar(g);
+         this.render(animation, p, c, input, g);
      }
 
-     private void chechAnimationStatus(Game p) {
-         // Cant be under construction
-         if (!behaviour.equals(BehaviourEnum.CONSTRUYENDOSE)) {
-             // Eternium collecting buildings only animate when they all work
-             if (this.nombre.equals("Cámara de asimilación") || this.nombre.equals("Teletransportador") || this.nombre.equals("Refinería")) {
-                 this.animation.setAutoUpdate(p.getPlayerFromElement(this).perforacion);
-             } else {
-                 // Other buildings animate when they are creating something
-                 this.animation.setAutoUpdate(barra.isActive());
+     @Override
+     public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
+         if (isVisible) {
+             if (WindowCombat.ui.elements.indexOf(this) != -1 && unitCreator) {
+                 renderRallyPoint(g);
              }
+             super.render(sprite, p, c, input, g);
+             if (!activo) {
+                 spriteDisabled.draw(x - anchura / 2, y - altura / 2);
+             }
+             barra.dibujar(g);
+         } else {
+             Alianza.LANDING_ANIMATION.draw(x - anchura / 2, y - altura / 2);
          }
      }
 
@@ -460,7 +453,8 @@
                          if (recurso_int - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
                              recurso_int = Edificio.tiempo_mineria;
                              aliado.addResources(Eternium.recursos_refineria);
-                             WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + Eternium.recursos_refineria, Color.green, x, y - altura / 2 - 20, 2f));
+                             WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + Eternium.recursos_refineria,
+                                     Color.green, x, y - altura / 2 - 20, 2f));
                          } else {
                              recurso_int -= Reloj.TIME_REGULAR_SPEED * delta;
                          }
@@ -483,6 +477,17 @@
                      this.destruir(p, null);
                  }
                  break;
+         }
+         if (DESPEGANDO.equals(behaviour)) {
+             behaviourTimer -= Reloj.TIME_REGULAR_SPEED * delta;
+             if (behaviourTimer <= 0) {
+                 behaviourTimer = 0;
+                 if (WindowCombat.alianceWatch().ndivision == 2) {
+                     Alianza.shipTakeOff(aliado, this);
+                 } else {
+                     Alianza.shipLanding(aliado, this);
+                 }
+             }
          }
          for (BotonComplejo b : botones) {
              b.comportamiento(delta);
@@ -576,7 +581,8 @@
          boolean allBuildingsEnabled = aliado.edificios.stream().allMatch(e -> e.activo);
          if (allBuildingsEnabled) {
              // Makes no sense to keep creating enablers
-             Edificio ayuntamiento = aliado.edificios.stream().filter(e -> "Ayuntamiento".equals(e.nombre)).findFirst().get();
+             Edificio ayuntamiento =
+                     aliado.edificios.stream().filter(e -> "Ayuntamiento".equals(e.nombre)).findFirst().get();
              ayuntamiento.botones.removeIf(b -> "Activador".equals(b.elemento_nombre));
              ayuntamiento.initButtonKeys();
          }
@@ -628,4 +634,5 @@
              Logger.getLogger(Unidad.class.getName()).log(Level.SEVERE, null, ex);
          }
      }
+
  }

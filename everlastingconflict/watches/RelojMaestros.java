@@ -35,7 +35,7 @@ public class RelojMaestros extends Reloj {
         hintBoxText = "Este reloj representa el tiempo que tarda en pasar del día a la noche."
                 + " El Manipulador tendrá habilidades diferentes en cuanto cambie el reloj."
                 + " También hay unidades que son más fuertes en el día o en la noche.";
-        hintBoxText = Game.anadir_saltos_de_linea(this.hintBoxText, hintBoxWidth);
+        hintBoxText = Game.formatTextToFitWidth(this.hintBoxText, hintBoxWidth);
         anchura = 80;
         altura = 80;
     }
@@ -63,7 +63,7 @@ public class RelojMaestros extends Reloj {
     }
 
     @Override
-    public void avanzar_reloj(int delta) {
+    public void avanzar_reloj(Game game, int delta) {
         if (detener > 0) {
             if ((detener_contador - Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 detener = 0;
@@ -148,6 +148,11 @@ public class RelojMaestros extends Reloj {
         if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
             drawHint(g);
         }
+    }
+
+    @Override
+    public void handleLeftClick() {
+
     }
 
 }

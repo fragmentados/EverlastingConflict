@@ -10,9 +10,8 @@ import everlastingconflict.elements.impl.*;
 import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Maestros;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.status.Status;
-import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.*;
@@ -23,19 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static everlastingconflict.RTS.DEBUG_MODE;
-
-
-class Arma {
-
-    public int ataque;
-    public int area;
-    public int alcance;
-    public float cadenca, cadencia_contador;
-
-    public int ataque_contador;
-    public float ataque_tiempo_contador;
-    public float ataque_tiempo;
-}
 
 public abstract class ElementoAtacante extends ElementoEstado {
 
@@ -53,11 +39,10 @@ public abstract class ElementoAtacante extends ElementoEstado {
     public ElementoVulnerable objetivo;
 
     public boolean constructor;
-    public boolean hostil;
+    public boolean hostil = true;
     public boolean healer;
     public float delay = 0;
 
-    //public List<Arma> armas = new ArrayList<>();
     public float obtener_distancia(ElementoCoordenadas e) {
         float distancia_x = Math.abs(this.x - e.x);
         float distancia_y = Math.abs(this.y - e.y);
@@ -173,9 +158,7 @@ public abstract class ElementoAtacante extends ElementoEstado {
 
     public void disparar_proyectil(Game p, int ataque_contador, ElementoVulnerable objetivo) {
         Proyectil proyectil = new Proyectil(this, objetivo, ataque_contador);
-        proyectil.shouldHeal = healer;
         p.proyectiles.add(proyectil);
-        cadencia_contador = cadencia;
     }
 
     public void ataque(Game p) {
@@ -185,51 +168,51 @@ public abstract class ElementoAtacante extends ElementoEstado {
                     sonido_combate.playAt(1.0f, 0.1f, x, y, 0f);
                 }
                 int attack = getAttack(p);
-                Set<ElementoVulnerable> elementsAffected = getElementsAffected(p);
-                for (ElementoVulnerable u : elementsAffected) {
-                    if (u.alcance(objetivo.x, objetivo.y, area)) {
-                        //dano(p, "Físico", ataque_contador, u);
-                        disparar_proyectil(p, attack, u);
-                    }
+                if (this.alcance == Unidad.MELEE_RANGE) {
+                    // Melee units won't fire proyectiles
+                    dealDamage(p, "Físico", attack, objetivo);
+                } else {
+                    disparar_proyectil(p, attack, objetivo);
                 }
+                cadencia_contador = cadencia;
             }
         }
     }
 
-    private Set<ElementoVulnerable> getElementsAffected(Game p) {
-        if (healer) {
-            return getElementsToHeal(p);
-        } else {
-            return getElementsToAttack(p);
-        }
-    }
-
-    private Set<ElementoVulnerable> getElementsToAttack(Game p) {
+    private Set<ElementoVulnerable> getElementsToAttackBasedOnArea(Game p, ElementoVulnerable elementAttacked) {
         Set<ElementoVulnerable> elementsToBeAttacked = new HashSet<>();
-        elementsToBeAttacked.add(this.objetivo);
+        elementsToBeAttacked.add(elementAttacked);
         if (area > 0) {
             //Dañan a todos los elementos menos al objetivo
-            if (objetivo instanceof Bestia) {
+            if (elementAttacked instanceof Bestia) {
                 for (Bestias be : p.bestias) {
-                    if (be.contenido.indexOf(objetivo) != -1) {
-                        elementsToBeAttacked.addAll(be.contenido);
+                    if (be.contenido.indexOf(elementAttacked) != -1) {
+                        elementsToBeAttacked.addAll(be.contenido.stream().filter(b -> b.alcance(elementAttacked.x,
+                                elementAttacked.y, area)).collect(Collectors.toList()));
                         break;
                     }
                 }
             } else {
                 List<Jugador> enemies = p.getEnemyPlayersFromElement(this);
                 for (Jugador enemy : enemies) {
-                    elementsToBeAttacked.addAll(enemy.unidades);
-                    elementsToBeAttacked.addAll(enemy.edificios);
+                    elementsToBeAttacked.addAll(enemy.unidades.stream().filter(u -> u.alcance(elementAttacked.x,
+                            elementAttacked.y, area)).collect(Collectors.toList()));
+                    elementsToBeAttacked.addAll(enemy.edificios.stream().filter(e -> e.alcance(elementAttacked.x,
+                            elementAttacked.y, area)).collect(Collectors.toList()));
                 }
             }
         }
         return elementsToBeAttacked;
     }
 
-    private Set<ElementoVulnerable> getElementsToHeal(Game p) {
-        return p.getPlayerFromElement(this).unidades
+    private Set<ElementoVulnerable> getElementsToHealBasedOnArea(Game p, ElementoVulnerable elementAttacked) {
+        Set<ElementoVulnerable> elementsToHeal = p.getPlayerFromElement(this).unidades
                 .stream().filter(u -> u.vida < u.vida_max).collect(Collectors.toSet());
+        if (area > 0) {
+            elementsToHeal = elementsToHeal.stream().filter(e -> e.alcance(elementAttacked.x,
+                    elementAttacked.y, area)).collect(Collectors.toSet());
+        }
+        return elementsToHeal;
     }
 
     private int getAttack(Game p) {
@@ -241,100 +224,43 @@ public abstract class ElementoAtacante extends ElementoEstado {
         }
     }
 
-    public boolean dano(Game game, String tipo, int ataque_contador, ElementoVulnerable e) {
-        //e representa el objetivo del ataque
+    public boolean dealDamage(Game game, String damageType, int attackAmount, ElementoVulnerable elementAttacked) {
         Jugador aliado = game.getPlayerFromElement(this);
-        Jugador enemigo = game.getPlayerFromElement(e);
-        int defensa_contador;
-        if (!(e instanceof Bestia) && (enemigo != null && RaceEnum.ETERNIUM.equals(enemigo.raza))) {
-            defensa_contador = e.getDefenseBasedOnEterniumWatch(enemigo);
-        } else {
-            defensa_contador = e.defensa;
-        }
-        if (aliado != null && RaceEnum.MAESTROS.equals(aliado.raza)) {
-            if (Manipulador.alentar) {
-                Manipulador m = null;
-                for (Unidad u : aliado.unidades) {
-                    if (u.nombre.equals("Manipulador")) {
-                        m = (Manipulador) u;
-                    }
-                }
-                if (m != null) {
-                    if (this.alcance(200, m)) {
-                        ataque_contador += 5;
-                    }
-                }
+        Jugador enemigo = game.getPlayerFromElement(elementAttacked);
+        // Check increases of attack
+        attackAmount = Maestros.getAttackAmountBasedOnManipulatorEffects(aliado, this, attackAmount);
+        attackAmount = this.statusCollection.checkAttackStatusEffects(this, attackAmount);
+        Set<ElementoVulnerable> elementsToDamage = getElementsToAttackBasedOnArea(game, elementAttacked);
+        for (ElementoVulnerable elementToDamage : elementsToDamage) {
+            // Do the actual damage
+            float damageToDeal = (attackAmount - elementToDamage.getDefense(enemigo));
+            elementToDamage.receiveDamage(damageToDeal);
+            if (this instanceof Manipulador) {
+                ((Manipulador) this).checkDamageDealtEffects(damageType, damageToDeal, elementToDamage);
+            } else if (elementToDamage instanceof Manipulador) {
+                ((Manipulador) elementToDamage).checkDamageReceivedEffects();
+            }
+            if (elementToDamage.vida <= 0) {
+                //Destruir e
+                elementToDamage.destruir(game, this);
+            } else {
+                warnAttackedUnitOfAttack(game, elementToDamage);
             }
         }
-        if (this.statusCollection.containsStatus(StatusNameEnum.DRENANTES)) {
-            Manipulador m = (Manipulador) this;
-            if (m.mana >= 10) {
-                ataque_contador += 15;
-                m.mana -= 10;
+        // If the attack also heals we check the elements that should be healed
+        if (healer) {
+            Set<ElementoVulnerable> elementsToHeal = getElementsToHealBasedOnArea(game, elementAttacked);
+            for (ElementoVulnerable elementToHeal : elementsToHeal) {
+                this.heal(attackAmount, elementToHeal);
             }
         }
-        if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
-            ataque_contador += this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
-            this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_POTENCIADO);
+        if (enemigo != null) {
+            enemigo.avisar_ataque(game, this);
         }
-        if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
-            ataque_contador -= this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
-            if (ataque_contador < 0) {
-                ataque_contador = 0;
-            }
-            this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_DISMINUIDO);
-        }
-        float cantidad_dano = (ataque_contador - defensa_contador);
-        if (!(e instanceof Unidad) || ((Unidad) e).puede_ser_danado()) {
-            if (e instanceof Unidad) {
-                if (((Unidad) e).escudo > 0) {
-                    float contador = cantidad_dano - ((Unidad) e).escudo;
-                    ((Unidad) e).escudo -= cantidad_dano;
-                    if (((Unidad) e).escudo < 0) {
-                        ((Unidad) e).escudo = 0;
-                    }
-                    cantidad_dano = contador;
-                }
-            }
-            if (cantidad_dano > 0) {
-                e.vida -= cantidad_dano;
-            }
-            if (enemigo != null) {
-                enemigo.avisar_ataque(game, this);
-            }
-        }
-        if (this instanceof Manipulador) {
-            Manipulador m = (Manipulador) this;
-            //Robo de vida
-            if (m.robo_vida && tipo.equals("Físico")) {
-                m.aumentar_vida(cantidad_dano * 0.35f);
-            }
-            //Succion de hechizo
-            if (m.succion_hechizo && tipo.equals("Mágico")) {
-                m.aumentar_vida(cantidad_dano * 0.25f);
-            }
-            if (m.disparo_helado && e instanceof Unidad) {
-                Unidad unidad = (Unidad) e;
-                unidad.statusCollection.addStatus(new Status(StatusNameEnum.RALENTIZACION, 5f,
-                        35f));
-            }
-        }
-        if (e instanceof Manipulador) {
-            Manipulador m = (Manipulador) e;
-            if (m.vida <= (m.vida_max * 0.35)) {
-                if (!m.ultimo_recurso_activado) {
-                    m.ultimo_recurso_cantidad = m.defensa;
-                    m.defensa *= 2;
-                    m.ultimo_recurso_activado = true;
-                }
-            }
-        }
-        //cadencia_contador = cadencia;
-        if (e.vida <= 0) {
-            //Destruir e
-            e.destruir(game, this);
-            return true;
-        }
+        return elementAttacked.vida <= 0;
+    }
+
+    public void warnAttackedUnitOfAttack(Game game, ElementoVulnerable e) {
         if (e instanceof Unidad) {
             Unidad uatacada = (Unidad) e;
             if (uatacada.objetivo == null && this.isVisibleByEnemy(game)) {
@@ -352,33 +278,15 @@ public abstract class ElementoAtacante extends ElementoEstado {
                 }
             }
         }
-        return false;
     }
 
-    public boolean heal(int ataque_contador, ElementoVulnerable e) {
+    public boolean heal(int attackAmount, ElementoVulnerable e) {
         //e representa el objetivo de la curacion
         if (healer) {
-            if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
-                ataque_contador += this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
-                this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_POTENCIADO);
-            }
-            if (this.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
-                ataque_contador -= this.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
-                if (ataque_contador < 0) {
-                    ataque_contador = 0;
-                }
-                this.statusCollection.forceRemoveStatus(StatusNameEnum.ATAQUE_DISMINUIDO);
-            }
-            if (ataque_contador > 0) {
-                if (e.vida + ataque_contador >= e.vida_max) {
-                    e.vida = e.vida_max;
-                    return true;
-                } else {
-                    e.vida += ataque_contador;
-                }
-            }
+            attackAmount = this.statusCollection.checkAttackStatusEffects(this, attackAmount);
+            e.heal(attackAmount);
         }
-        return false;
+        return e.vida == e.vida_max;
     }
 
     public boolean canAttack(Game game) {

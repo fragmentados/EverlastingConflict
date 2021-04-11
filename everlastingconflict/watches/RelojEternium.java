@@ -41,7 +41,7 @@ public class RelojEternium extends Reloj {
                 + " En la segunda fase las capacidades militares del ejercito estan al 100%"
                 + " En la tercera fase las capacidades militares del ejercito estan al 150%"
                 + " En la cuarta fase las unidades Eternium no pueden moverse ni atacar";
-        hintBoxText = Game.anadir_saltos_de_linea(this.hintBoxText, hintBoxWidth);
+        hintBoxText = Game.formatTextToFitWidth(this.hintBoxText, hintBoxWidth);
         anchura = 80;
         altura = 80;
     }
@@ -73,7 +73,7 @@ public class RelojEternium extends Reloj {
     }
 
     @Override
-    public void avanzar_reloj(int delta) {
+    public void avanzar_reloj(Game game, int delta) {
         if (detener > 0) {
             if ((detener_contador - Reloj.TIME_REGULAR_SPEED * delta) <= 0) {
                 detener = 0;
@@ -176,6 +176,11 @@ public class RelojEternium extends Reloj {
         if (this.hitbox(WindowCombat.playerX + input.getMouseX(), WindowCombat.playerY + input.getMouseY())) {
             drawHint(g);
         }
+    }
+
+    @Override
+    public void handleLeftClick() {
+
     }
 
     public void temporalRelease() {

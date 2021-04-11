@@ -263,7 +263,7 @@ public class Clark {
         u.ataque = Unidad.ataque_estandar + 60;
         u.defensa = Unidad.defensa_estandar;
         u.vida_max = Unidad.vida_estandar;
-        u.alcance = Unidad.alcance_estandar - 10;
+        u.alcance = Unidad.MELEE_RANGE;
         u.cadencia = Unidad.cadencia_estandar - 0.5f;
         u.velocidad = Unidad.velocidad_estandar + 0.1f;
         u.vision = Unidad.vision_estandar + 100;
@@ -276,7 +276,7 @@ public class Clark {
         u.ataque = Unidad.ataque_estandar + 90;
         u.defensa = Unidad.defensa_estandar;
         u.vida_max = Unidad.vida_estandar;
-        u.alcance = Unidad.alcance_estandar - 90;
+        u.alcance = Unidad.MELEE_RANGE;
         u.cadencia = Unidad.cadencia_estandar - 0.5f;
         u.velocidad = Unidad.velocidad_estandar + 2f;
         u.vision = Unidad.vision_estandar;
@@ -411,6 +411,59 @@ public class Clark {
                 break;
             case "Rumiante":
                 u.botones.add(new BotonComplejo(new Habilidad("Domesticacion experta")));
+                break;
+        }
+    }
+
+    public static void unidad(Jugador aliado, Unidad u) {
+        switch (u.nombre) {
+            case "Depredador":
+                Clark.Depredador(aliado, u);
+                break;
+            case "Regurgitador":
+                Clark.Regurgitador(u);
+                break;
+            case "Devorador":
+                Clark.Devorador(aliado, u);
+                break;
+            case "Cazador":
+                Clark.Cazador(aliado, u);
+                break;
+            case "Moldeador":
+                Clark.Moldeador(u);
+                break;
+            case "Defensor":
+                Clark.Defensor(u);
+                break;
+            case "Inspirador":
+                Clark.Inspirador(u);
+                break;
+            case "Desmembrador":
+                Clark.Desmembrador(u);
+                break;
+            case "Despedazador":
+                Clark.Despedazador(u);
+                break;
+            case "Escupidor":
+                Clark.Escupidor(u);
+                break;
+            case "Amaestrador":
+                Clark.Amaestrador(u);
+                break;
+            case "Matriarca":
+                Clark.Matriarca(u);
+                break;
+            case "Rumiante":
+                Clark.Rumiante(u);
+                break;
+        }
+    }
+
+    public static void edificio(Jugador aliado, Edificio e) {
+        switch (e.nombre) {
+            //Clark
+            case "Primarca":
+                Clark.Primarca(e);
                 break;
         }
     }

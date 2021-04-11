@@ -67,233 +67,46 @@ public class Raza {
     }
 
     public static void unidad(Jugador aliado, Unidad u) {
-        switch (u.nombre) {
-            //Fenix
-            case "Recolector":
-                Fenix.Recolector(u);
-                break;
-            case "Constructor":
-                Fenix.Constructor(u);
-                break;
-            case "Soldado":
-                Fenix.Soldado(u);
-                break;
-            case "Minero":
-                Fenix.Minero(u);
-            case "Sniper":
-                Fenix.Sniper(u);
-                break;
-            case "Tigre":
-                Fenix.Tigre(u);
-                break;
-            case "Halcón":
-                Fenix.Halcon(u);
-                break;
-            case "Fénix":
-                Fenix.Fenix(u);
-                break;
-            case "Oso":
-                Fenix.Oso(u);
-                break;
-            case "Tortuga":
-                Fenix.Tortuga(u);
-                break;
-            case "Cuervo":
-                Fenix.Cuervo(u);
-                break;
-            //Guardianes
-            case "Patrulla":
-                Guardianes.Patrulla(u);
-                break;
-            case "Tanque":
-                Guardianes.Tanque(u);
-                break;
-            case "Destructor":
-                Guardianes.Destructor(u);
-                break;
-            case "Artillero":
-                Guardianes.Artillero(u);
-                break;
-            case "Corredor":
-                Guardianes.Corredor(u);
-                break;
-            case "Amparador":
-                Guardianes.Amparador(u);
-                break;
-            case "Ingeniero":
-                Guardianes.Ingeniero(u);
-                break;
-            case "Armero":
-                Guardianes.Armero(u);
-                break;
-            case "Oteador":
-                Guardianes.Oteador(u);
-                break;
-            case "Explorador":
-                Guardianes.Explorador(u);
-                break;
-            case "Pacificador":
-                Guardianes.Pacificador(u);
-                break;
-            case "Silenciador":
-                Guardianes.Silenciador(u);
-                break;
-            case "Inquisidor":
-                Guardianes.Inquisidor(u);
-                break;
-            case "Activador":
-                Guardianes.Activador(u);
-                break;
-            case "Acribillador":
-                Guardianes.Acribillador(u);
-                break;
-            case "Enviado celeste":
-                Guardianes.Enviado(u);
-                break;
-            //Clark   
-            case "Depredador":
-                Clark.Depredador(aliado, u);
-                break;
-            case "Regurgitador":
-                Clark.Regurgitador(u);
-                break;
-            case "Devorador":
-                Clark.Devorador(aliado, u);
-                break;
-            case "Cazador":
-                Clark.Cazador(aliado, u);
-                break;
-            case "Moldeador":
-                Clark.Moldeador(u);
-                break;
-            case "Defensor":
-                Clark.Defensor(u);
-                break;
-            case "Inspirador":
-                Clark.Inspirador(u);
-                break;
-            case "Desmembrador":
-                Clark.Desmembrador(u);
-                break;
-            case "Despedazador":
-                Clark.Despedazador(u);
-                break;
-            case "Escupidor":
-                Clark.Escupidor(u);
-                break;
-            case "Amaestrador":
-                Clark.Amaestrador(u);
-                break;
-            case "Matriarca":
-                Clark.Matriarca(u);
-                break;
-            case "Rumiante":
-                Clark.Rumiante(u);
-                break;
-            //Eternium
-            case "Adepto":
-                Eternium.Adepto(aliado, u);
-                break;
-            case "Guerrero":
-                Eternium.Guerrero(aliado, u);
-                break;
-            case "Ancestro":
-                Eternium.Ancestro(aliado, u);
-                break;
-            case "Protector":
-                Eternium.Protector(aliado, u);
-                break;
-            case "Erradicador":
-                Eternium.Erradicador(aliado, u);
-                break;
-            //Maestros
-            case "Manipulador":
-                Maestros.Manipulador(aliado, u);
-                break;
-            case "Pugnator":
-                Maestros.Pugnator(u);
-                break;
-            case "Sagittarius":
-                Maestros.Saggitarius(u);
-                break;
-            case "Exterminatore":
-                Maestros.Exterminatore(u);
-                break;
-            case "Medicum":
-                Maestros.Medicum(u);
-                break;
-            case "Magum":
-                Maestros.Magum(u);
-                break;
+        if (aliado != null) {
+            switch (aliado.raza) {
+                case FENIX:
+                    Fenix.unidad(aliado, u);
+                    break;
+                case ETERNIUM:
+                    Eternium.unidad(aliado, u);
+                    break;
+                case CLARK:
+                    Clark.unidad(aliado, u);
+                    break;
+                case GUARDIANES:
+                    Guardianes.unidad(aliado, u);
+                    break;
+                case MAESTROS:
+                    Maestros.unidad(aliado, u);
+                    break;
+                case ALIANZA:
+                    Alianza.unidad(aliado, u);
+            }
+            Raza.obtener_experiencia_unidad(u);
         }
-        Raza.obtener_experiencia_unidad(u);
     }
 
-    public static void edificio(Edificio e) {
-        switch (e.nombre) {
-            //Fénix
-            case "Centro de restauración":
-                Fenix.Centro(e);
+    public static void edificio(Jugador aliado, Edificio e) {
+        switch (aliado.raza) {
+            case FENIX:
+                Fenix.edificio(aliado, e);
                 break;
-            case "Cuartel Fénix":
-                Fenix.CuartelFenix(e);
+            case ETERNIUM:
+                Eternium.edificio(aliado, e);
                 break;
-            case "Centro tecnológico":
-                Fenix.CentroTecnologico(e);
+            case CLARK:
+                Clark.edificio(aliado, e);
                 break;
-            case "Academia":
-                Fenix.Academia(e);
+            case ALIANZA:
+                Alianza.edificio(aliado, e);
                 break;
-            case "Sede":
-                Fenix.Sede(e);
-                break;
-            //Guardianes
-            case "Taller bélico":
-                Guardianes.Taller(e);
-                break;
-            case "Anexo":
-                Guardianes.Anexo(e);
-                break;
-            case "Academia de pilotos":
-                Guardianes.Pilotos(e);
-                break;
-            case "Ayuntamiento":
-                Guardianes.Ayuntamiento(e);
-                break;
-            case "Templo":
-                Guardianes.Templo(e);
-                break;
-            case "Laboratorio de I+D":
-                Guardianes.Laboratorio(e);
-                break;
-            case "Vaticano":
-                Guardianes.Vaticano(e);
-                break;
-            case "Edificio gubernamental":
-                Guardianes.Gubernamental(e);
-                break;
-            case "Torreta defensiva":
-                Guardianes.Torreta(e);
-                break;
-            //Eternium   
-            case "Mando Central":
-                Eternium.MandoCentral(e);
-                break;
-            case "Refinería":
-                Eternium.Refineria(e);
-                break;
-            case "Altar de los ancestros":
-                Eternium.Altar(e);
-                break;
-            case "Cámara de asimilación":
-                Eternium.Camara(e);
-                break;
-            case "Teletransportador":
-                Eternium.Teletransportador(e);
-                break;
-            //Clark
-            case "Primarca":
-                Clark.Primarca(e);
+            case GUARDIANES:
+                Guardianes.edificio(aliado, e);
                 break;
         }
         Raza.obtener_experiencia_edificio(e);
@@ -303,16 +116,19 @@ public class Raza {
         Jugador aliado = p.getPlayerFromElement(e);
         switch (aliado.raza) {
             case FENIX:
-                Fenix.iniciar_botones_edificio(e, aliado);
+                Fenix.iniciar_botones_edificio(aliado, e);
                 break;
             case CLARK:
                 Clark.iniciar_botones_edificio(aliado, e);
                 break;
             case ETERNIUM:
-                Eternium.iniciar_botones_edificio(e, aliado);
+                Eternium.iniciar_botones_edificio(aliado, e);
                 break;
             case GUARDIANES:
                 Guardianes.iniciar_botones_edificio(aliado, e);
+                break;
+            case ALIANZA:
+                Alianza.iniciar_botones_edificio(aliado, e);
                 break;
         }
         e.initButtonKeys();

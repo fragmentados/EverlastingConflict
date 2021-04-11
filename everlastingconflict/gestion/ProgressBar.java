@@ -5,8 +5,8 @@
  */
 package everlastingconflict.gestion;
 
-import everlastingconflict.watches.Reloj;
 import everlastingconflict.elements.impl.Edificio;
+import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -35,18 +35,21 @@ public class ProgressBar {
         activo = false;
     }
 
-    public void activar(float m) {
+    public void activar(float m, Edificio edificio) {
         activo = true;
         progreso = 0;
         maximo = m;
+        edificio.animation.setAutoUpdate(true);
     }
 
     public boolean isActive() {
         return activo;
     }
 
-    public void desactivar() {
+    public void desactivar(Edificio edificio) {
         activo = false;
+        edificio.animation.restart();
+        edificio.animation.setAutoUpdate(false);
     }
 
     public void aumentar_progreso(int delta) {

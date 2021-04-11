@@ -136,7 +136,7 @@ public class MaestrosTutorial extends GuidedGame {
         ATTRIBUTES_BUTTON.remainingClicks = 0;
         getMainPlayer().unidades.get(0).initButtonKeys();
         bestias = new ArrayList<>();
-        bestias.add(new Bestias("Grupo1", 500, 200));
+        bestias.add(new Bestias("Alphas", 500, 200));
         WindowCombat.createWatch(new RelojMaestros(getMainPlayer()));
     }
 

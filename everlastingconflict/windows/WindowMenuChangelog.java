@@ -21,12 +21,16 @@ public class WindowMenuChangelog extends WindowMenuBasic {
     @Override
     public void init(GameContainer container) throws SlickException {
         super.init(container);
-        volver = new BotonSimple("Volver", WindowCombat.middleScreenX("Volver"), WindowCombat.responsiveY(90));
-        anterior = new BotonSimple("Anterior", WindowCombat.responsiveX(40), WindowCombat.responsiveY(85));
-        siguiente = new BotonSimple("Siguiente", WindowCombat.responsiveX(50), WindowCombat.responsiveY(85));
+        volver = new BotonSimple("Volver", WindowCombat.middleScreenX("Volver"), WindowCombat.responsiveY(95));
+        anterior = new BotonSimple("Anterior", WindowCombat.responsiveX(40), WindowCombat.responsiveY(90));
+        siguiente = new BotonSimple("Siguiente", WindowCombat.responsiveX(50), WindowCombat.responsiveY(90));
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - "Salir".length() * 10, 0);
         changelogList = new ArrayList();
-        changelogList.add("0.5.2\n\n- Mejoras visuales en la interfaz: Cambiado color de fondo, Navegacion entre pantallas con ESC y Enter\n " +
+        changelogList.add("0.6\n\n- Versión inicial de la Sexta Raza: Alianza Estelar!\n" +
+                "- Implementado desembarco de tropas de la Alianza Estelar y sus dos primeras unidades\n" +
+                "- Mejorada gestión de las unidades cuerpo a cuerpo para no disparar proyectiles\n" +
+                "- Mejorada gestión de animaciones de edificios\n");
+        changelogList.add("0.5.2\n\n- Mejoras visuales en la interfaz: Cambiado color de fondo, Navegacion entre pantallas con ESC y Enter\n" +
                 "Mejorada ventana de changelog para permitir paginar entre las versiones con anterior y siguiente\n" +
                 "Añadido subtitulo a las pantallas de Combate / Tutorial / Desafios\n");
         changelogList.add("0.5.1\n\n- Mejoras visuales : Iconos de estados, Feedback de construccion, meditacion y " +
@@ -81,7 +85,7 @@ public class WindowMenuChangelog extends WindowMenuBasic {
 
     public void enablePageButtons() {
         anterior.canBeUsed = currentIndex > 0;
-        siguiente.canBeUsed = changelogList.size() >= (currentIndex + pageSize);
+        siguiente.canBeUsed = changelogList.size() > (currentIndex + pageSize);
     }
 
     @Override

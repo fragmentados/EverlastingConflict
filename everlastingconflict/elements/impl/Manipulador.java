@@ -8,6 +8,7 @@ package everlastingconflict.elements.impl;
 import everlastingconflict.elementosvisuales.BotonComplejo;
 import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.elements.ElementoAtacante;
+import everlastingconflict.elements.ElementoVulnerable;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Raza;
@@ -466,6 +467,32 @@ public class Manipulador extends Unidad {
         regeneracion_mana -= 2;
         statusCollection.forceRemoveStatus(StatusNameEnum.MEDITACION);
         aditionalSprite = null;
+    }
+
+    public void checkDamageDealtEffects(String damageType, float damageAmount, ElementoVulnerable elementDamaged) {
+        //Robo de vida
+        if (robo_vida && damageType.equals("Físico")) {
+            aumentar_vida(damageAmount * 0.35f);
+        }
+        //Succion de hechizo
+        if (succion_hechizo && damageType.equals("Mágico")) {
+            aumentar_vida(damageAmount * 0.25f);
+        }
+        if (disparo_helado && elementDamaged instanceof Unidad) {
+            Unidad unidad = (Unidad) elementDamaged;
+            unidad.statusCollection.addStatus(new Status(StatusNameEnum.RALENTIZACION, 5f,
+                    35f));
+        }
+    }
+
+    public void checkDamageReceivedEffects() {
+        if (vida <= (vida_max * 0.35)) {
+            if (!ultimo_recurso_activado) {
+                ultimo_recurso_cantidad = defensa;
+                defensa *= 2;
+                ultimo_recurso_activado = true;
+            }
+        }
     }
 
 }

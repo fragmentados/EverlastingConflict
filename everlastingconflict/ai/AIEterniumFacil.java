@@ -120,17 +120,11 @@ public class AIEterniumFacil extends AI {
         if (this.perforacion && (altar == null || !altar.cola_construccion.isEmpty())) {
             //Reclutamiento de Unidades
             Unidad u = new Unidad(this, "Ancestro");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.createUnit(p, this, u);
-            }
+            e.createUnit(p, this, u);
             u = new Unidad(this, "Guerrero");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.createUnit(p, this, u);
-            }
+            e.createUnit(p, this, u);
             u = new Unidad(this, "Adepto");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.createUnit(p, this, u);
-            }
+            e.createUnit(p, this, u);
         }
     }
 

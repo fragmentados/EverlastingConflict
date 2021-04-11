@@ -24,8 +24,8 @@ public class FenixChallenge extends Challenge {
         Recurso civiles = new Recurso("Civiles", 600, 400);
         civiles.vida = Recurso.vida_civiles;
         jugador.lista_recursos.add(civiles);
-        this.players.get(1).unidades.add(new Unidad(jugador, "Patrulla", 600, 600));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Patrulla", 650, 600));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Patrulla", 600, 600));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Patrulla", 650, 600));
         for (Unidad unidad : this.players.get(1).unidades) {
             unidad.movil = unidad.hostil = true;
         }

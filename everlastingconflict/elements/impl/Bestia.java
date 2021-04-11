@@ -145,7 +145,9 @@ public class Bestia extends Unidad {
             case ATACANDO:
                 float distancia = calcular_distancia();
                 if (distancia >= Bestia.distancia_maxima) {
+                    // Go back to origin place
                     if (canMove(p)) {
+                        this.objetivo = null;
                         this.mover(p, x_inicial, y_inicial);
                     }
                 } else {

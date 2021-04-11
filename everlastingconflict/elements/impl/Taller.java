@@ -35,22 +35,19 @@ public class Taller extends Edificio {
 
     @Override
     public void createUnit(Game game, Jugador jugador, Unidad unidadACrear) {
-        if(jugador.comprobacion_recursos(unidadACrear)){
-            if ((jugador.poblacion + unidadACrear.coste_poblacion) <= jugador.poblacion_max) {
-                if (unidades_creadas.size() < anexos.size()) {
-                    //Cálculo de coordenadas iniciales de la unidad                
+        if (jugador.comprobacion_recursos(unidadACrear)) {
+            if (unidades_creadas.size() < anexos.size()) {
+                //Cálculo de coordenadas iniciales de la unidad
 //                    Point2D resultado = obtener_punto_salida();
 //                    u.x = (int) resultado.getX();
 //                    u.y = (int) resultado.getY();
-                    unidadACrear.x = this.x;
-                    unidadACrear.y = this.y;
-                    //Añadir la unidad a la cola                                        
-                    jugador.poblacion += unidadACrear.coste_poblacion;
-                    if (cola_construccion.isEmpty()) {
-                        barra.activar(unidadACrear.tiempo);
-                    }
-                    cola_construccion.add(unidadACrear);
+                unidadACrear.x = this.x;
+                unidadACrear.y = this.y;
+                //Añadir la unidad a la cola
+                if (cola_construccion.isEmpty()) {
+                    barra.activar(unidadACrear.tiempo, this);
                 }
+                cola_construccion.add(unidadACrear);
             }
         }
     }

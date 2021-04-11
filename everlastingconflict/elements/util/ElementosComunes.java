@@ -1,13 +1,17 @@
 package everlastingconflict.elements.util;
 
+import everlastingconflict.elements.enums.UnitNameEnum;
+import everlastingconflict.gestion.Jugador;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ElementosComunes {
     //Color
-    public static final Color UI_COLOR = new Color(0f, 0f, 0.6f, 1f);
+    public static final Color UI_COLOR = new Color(113, 113, 187);
     // Common sounds
     public static Sound CONSTRUCTION_SOUND;
     public static Sound UNIT_DEATH_SOUND;
@@ -17,7 +21,6 @@ public class ElementosComunes {
 
     public static List<Sound> BSOS = new ArrayList<>();
     // Image for resource drawing
-    public static Image POPULATION_IMAGE;
     public static Image FENIX_CUARTEL;
     public static Image FENIX_UNIDADES_NO_CONSTRUCTORAS;
     public static Image MONEY_IMAGE;
@@ -65,6 +68,15 @@ public class ElementosComunes {
     public static Image LIDER_IMAGE;
     // Eternium DETENTION image
     public static Animation ETERNIUM_DETENTION;
+    public static Image MINIATURE_IMAGE;
+    // Main Element Icon
+    public static Image FENIX_MAIN_ELEMENT;
+    public static Image CLARK_MAIN_ELEMENT;
+    public static Image ETERNIUM_MAIN_ELEMENT;
+    public static Image GUARDIANES_MAIN_ELEMENT;
+    public static Image MAESTROS_MAIN_ELEMENT;
+    public static Image ALIANZA_MAIN_ELEMENT;
+    public static Map<String, List<Sound>> UNIT_MOVEMENT_SOUNDS = new HashMap<>();
 
 
     public static void initSimpleResources() throws SlickException {
@@ -73,7 +85,6 @@ public class ElementosComunes {
         BUILDING_DEATH_SOUND = new Sound("media/Sonidos/MuerteEdificio.ogg");
         VICTORY_SOUND = new Sound("media/Sonidos/Victoria.ogg");
         DEFEAT_SOUND = new Sound("media/Sonidos/Derrota.wav");
-        POPULATION_IMAGE = new Image("media/Recursos/Poblacion.png");
         FENIX_CUARTEL = new Image("media/Recursos/CuartelFenix.png");
         FENIX_UNIDADES_NO_CONSTRUCTORAS = new Image("media/Recursos/FenixUnidadesNoConstructoras.png");
         MONEY_IMAGE = new Image("media/Recursos/IconoDinero.png");
@@ -112,11 +123,54 @@ public class ElementosComunes {
         ETERNIUM_DETENTION = new Animation(new Image[]{new Image("media/Unidades/Detención.png")}, new int[]{300},
                 false);
         BEAST_DEATH_IMAGE = new Image("media/Unidades/Muerte.png");
+        MINIATURE_IMAGE = new Image("media/Miniaturas/Prueba.png");
+        FENIX_MAIN_ELEMENT = new Image("media/Iconos/Sede.png");
+        CLARK_MAIN_ELEMENT = new Image("media/Iconos/Primarca.png");
+        ETERNIUM_MAIN_ELEMENT = new Image("media/Iconos/Mando Central.png");
+        GUARDIANES_MAIN_ELEMENT = new Image("media/Iconos/Ayuntamiento.png");
+        MAESTROS_MAIN_ELEMENT = new Image("media/Manipulador/Manipulador1_icono.png");
+        ALIANZA_MAIN_ELEMENT = new Image("media/Iconos/Nave.png");
+        initUnitMovementSounds();
+    }
+
+    public static void initUnitMovementSounds() {
+        for (UnitNameEnum unit : UnitNameEnum.values()) {
+            List<Sound> sounds = new ArrayList<>();
+            int soundCounter = 1;
+            while (soundCounter < 10) {
+                try {
+                    sounds.add(new Sound("media/Sonidos/Movimiento/" + unit.nombre + soundCounter++ + ".wav"));
+                } catch (Exception e) {
+                    break;
+                }
+            }
+            if (!sounds.isEmpty()) {
+                UNIT_MOVEMENT_SOUNDS.put(unit.nombre, sounds);
+            }
+        }
     }
 
     public static void initBackGroundMusics() throws SlickException {
         for (int i = 1; i < 4; i++) {
             BSOS.add(new Sound("media/Sonidos/BSO/BSO" + i + ".ogg"));
         }
+    }
+
+    public static Image getMainElementImage(Jugador mainPlayer) {
+        switch (mainPlayer.raza) {
+            case FENIX:
+                return FENIX_MAIN_ELEMENT;
+            case ETERNIUM:
+                return ETERNIUM_MAIN_ELEMENT;
+            case CLARK:
+                return CLARK_MAIN_ELEMENT;
+            case ALIANZA:
+                return ALIANZA_MAIN_ELEMENT;
+            case MAESTROS:
+                return MAESTROS_MAIN_ELEMENT;
+            case GUARDIANES:
+                return GUARDIANES_MAIN_ELEMENT;
+        }
+        return null;
     }
 }

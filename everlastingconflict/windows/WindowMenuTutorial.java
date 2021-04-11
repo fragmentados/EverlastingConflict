@@ -66,7 +66,7 @@ public class WindowMenuTutorial extends WindowMenuBasic {
         aceptar.render(g);
         salir.render(g);
         raceImage.draw(WindowCombat.responsiveX(35), WindowCombat.responsiveY(45));
-        g.drawString(Game.anadir_saltos_de_linea(RaceEnum.raceEnumMap.get(raceCombo.optionSelected.text).getDescription(), 500), WindowCombat.responsiveX(50), WindowCombat.responsiveY(50));
+        g.drawString(Game.formatTextToFitWidth(RaceEnum.raceEnumMap.get(raceCombo.optionSelected.text).getDescription(), 500), WindowCombat.responsiveX(50), WindowCombat.responsiveY(50));
         raceCombo.render(g);
     }
 

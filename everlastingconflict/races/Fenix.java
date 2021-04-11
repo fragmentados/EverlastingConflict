@@ -13,12 +13,6 @@ import everlastingconflict.elements.impl.Tecnologia;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.SubRaceEnum;
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Fenix {
@@ -33,54 +27,6 @@ public class Fenix {
     public static boolean boton_cuartel_tigre = false;
     public static boolean boton_cuartel_halcon = false;
 
-    public Fenix() {
-
-    }
-
-    //Unidades Prueba
-    public static final void Soldado(Unidad u) {
-        u.ataque = Unidad.ataque_estandar;
-        u.defensa = Unidad.defensa_estandar;
-        u.vida_max = Unidad.vida_estandar;
-        u.alcance = Unidad.alcance_estandar;
-        u.cadencia = Unidad.cadencia_estandar;
-        u.velocidad = Unidad.velocidad_estandar;
-        u.coste = 10;
-        u.tiempo = Unidad.tiempo_estandar;
-        u.vision = Unidad.vision_estandar;
-        try {
-            u.arriba = new Animation(new Image[]{new Image("media/Unidades/SoldadoArr1.png"), new Image("media/Unidades/SoldadoArr2.png")}, new int[]{300, 300}, false);
-            u.abajo = new Animation(new Image[]{new Image("media/Unidades/SoldadoAba1.png"), new Image("media/Unidades/SoldadoAba2.png")}, new int[]{300, 300}, false);
-            u.izquierda = new Animation(new Image[]{new Image("media/Unidades/SoldadoIzq1.png"), new Image("media/Unidades/SoldadoIzq2.png")}, new int[]{300, 300}, false);
-            u.derecha = new Animation(new Image[]{new Image("media/Unidades/SoldadoDer1.png"), new Image("media/Unidades/SoldadoDer2.png")}, new int[]{300, 300}, false);
-        } catch (SlickException ex) {
-            Logger.getLogger(Fenix.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public static final void Sniper(Unidad u) {
-        u.ataque = 20;
-        u.vida_max = 70;
-        u.alcance = 200;
-        u.cadencia = 230;
-        u.velocidad = Unidad.velocidad_estandar;
-        u.coste = 20;
-        u.tiempo = 1500;
-        u.vision = Unidad.vision_estandar - 100;
-    }
-
-    public static final void Minero(Unidad u) {
-        u.ataque = 0;
-        u.vida_max = Unidad.vida_estandar;
-        u.alcance = Unidad.alcance_estandar;
-        u.cadencia = Unidad.cadencia_estandar;
-        u.velocidad = Unidad.velocidad_estandar;
-        u.coste = 10;
-        u.tiempo = Unidad.tiempo_estandar;
-        u.vision = Unidad.vision_estandar - 100;
-        u.constructor = true;
-    }
-
     public static final void Recolector(Unidad u) {
         u.ataque = 0;
         u.vida_max = Unidad.vida_estandar;
@@ -92,7 +38,8 @@ public class Fenix {
         u.vision = Unidad.vision_estandar - 100;
         u.constructor = true;
         u.hostil = false;
-        u.descripcion = "Unidad encargada de influir en las ciudades civiles con el fin de que se unan a la causa Fénix.";
+        u.descripcion = "Unidad encargada de influir en las ciudades civiles con el fin de que se unan a la causa " +
+                "Fénix.";
     }
 
     public static final void Constructor(Unidad u) {
@@ -146,7 +93,8 @@ public class Fenix {
         u.vision = Unidad.vision_estandar - 100;
         u.coste = 30;
         u.tiempo = Unidad.tiempo_estandar + 15;
-        u.descripcion = "Unidad final con gran capacidad defensiva. Es capaz de volver a la vida tras recibir grandes daños.";
+        u.descripcion = "Unidad final con gran capacidad defensiva. Es capaz de volver a la vida tras recibir grandes" +
+                " daños.";
     }
 
     public static final void Oso(Unidad u) {
@@ -172,7 +120,8 @@ public class Fenix {
         u.vision = Unidad.vision_estandar - 100;
         u.coste = 30;
         u.tiempo = Unidad.tiempo_estandar + 10;
-        u.descripcion = "Unidad con gran capacidad defensiva que absorbe los ataques de los enemigos cercanos automáticamente";
+        u.descripcion = "Unidad con gran capacidad defensiva que absorbe los ataques de los enemigos cercanos " +
+                "automáticamente";
         u.hostil = false;
         u.isProyectileAttraction = true;
     }
@@ -235,9 +184,9 @@ public class Fenix {
         e.vision = Unidad.vision_estandar;
         e.tiempo = Edificio.tiempo_estandar + 3;
         e.descripcion = "Edificio encargado de desbloquear las unidades Fénix.";
-    }    
+    }
 
-    public static void iniciar_botones_edificio(Edificio e, Jugador aliado) {
+    public static void iniciar_botones_edificio(Jugador aliado, Edificio e) {
         switch (e.nombre) {
             case "Cuartel Fénix":
                 e.botones.add(new BotonComplejo("Detener"));
@@ -294,16 +243,16 @@ public class Fenix {
             case "Sede":
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Constructor")));
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Recolector")));
-                break;            
+                break;
         }
     }
 
     public static void iniciar_botones_unidad(Jugador aliado, Unidad u) {
         switch (u.nombre) {
             case "Constructor":
-                u.botones.add(new BotonComplejo(new Edificio(aliado,"Cuartel Fénix")));
-                u.botones.add(new BotonComplejo(new Edificio(aliado,"Centro tecnológico")));
-                u.botones.add(new BotonComplejo(new Edificio(aliado,"Academia")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado, "Cuartel Fénix")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado, "Centro tecnológico")));
+                u.botones.add(new BotonComplejo(new Edificio(aliado, "Academia")));
                 break;
             case "Fénix":
                 u.botones.add(new BotonComplejo("Resurrección"));
@@ -313,6 +262,57 @@ public class Fenix {
                 u.botones.add(new BotonComplejo(new Habilidad("Motivar a las tropas")));
                 u.botones.add(new BotonComplejo(new Habilidad("Desmoralizar al enemigo")));
                 u.botones.add(new BotonComplejo(new Habilidad("Maniobra desesperada")));
+                break;
+        }
+    }
+
+    public static void unidad(Jugador aliado, Unidad u) {
+        switch (u.nombre) {
+            //Fenix
+            case "Recolector":
+                Fenix.Recolector(u);
+                break;
+            case "Constructor":
+                Fenix.Constructor(u);
+                break;
+            case "Tigre":
+                Fenix.Tigre(u);
+                break;
+            case "Halcón":
+                Fenix.Halcon(u);
+                break;
+            case "Fénix":
+                Fenix.Fenix(u);
+                break;
+            case "Oso":
+                Fenix.Oso(u);
+                break;
+            case "Tortuga":
+                Fenix.Tortuga(u);
+                break;
+            case "Cuervo":
+                Fenix.Cuervo(u);
+                break;
+        }
+    }
+
+    public static void edificio(Jugador aliado, Edificio e) {
+        switch (e.nombre) {
+            //Fénix
+            case "Centro de restauración":
+                Fenix.Centro(e);
+                break;
+            case "Cuartel Fénix":
+                Fenix.CuartelFenix(e);
+                break;
+            case "Centro tecnológico":
+                Fenix.CentroTecnologico(e);
+                break;
+            case "Academia":
+                Fenix.Academia(e);
+                break;
+            case "Sede":
+                Fenix.Sede(e);
                 break;
         }
     }

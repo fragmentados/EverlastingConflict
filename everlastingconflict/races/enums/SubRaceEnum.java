@@ -19,7 +19,10 @@ public enum SubRaceEnum {
     POLICIA("Policia", RaceEnum.GUARDIANES.getName(), "Facción centrada en los eventos y en la tecnologia", "media/Razas/Policia.png"),
     INVOCADOR("Invocador", RaceEnum.MAESTROS.getName(), "Facción centrada en las habilidades de invocación", "media/Razas/Invocador.png"),
     HECHICERO("Hechicero", RaceEnum.MAESTROS.getName(), "Facción centrada en las habilidades que infligen daño", "media/Razas/Hechicero.png"),
-    LUCHADOR("Luchador", RaceEnum.MAESTROS.getName(), "Facción centrada en el combate directo con el manipulador", "media/Razas/Luchador.png");
+    LUCHADOR("Luchador", RaceEnum.MAESTROS.getName(), "Facción centrada en el combate directo con el manipulador", "media/Razas/Luchador.png"),
+    ALMIRANTES("Almirantes", RaceEnum.ALIANZA.getName(), "Facción centrada en la ofensiva y en los vehículos", "media/Razas/Almirantes.png"),
+    COLONIZADORES("Colonizadores", RaceEnum.ALIANZA.getName(), "Facción centrada en la defensa", "media/Razas/Colonizadores.png"),
+    EXPLORADORES("Exploradores", RaceEnum.ALIANZA.getName(), "Facción centrada en el vuelo de la nave", "media/Razas/Exploradores.png");
 
     private String name;
     private String race;

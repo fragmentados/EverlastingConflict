@@ -14,7 +14,7 @@ public class Bestias {
     public static final void Alpha(Bestia u) {
         u.ataque = Unidad.ataque_estandar - 4;
         u.vida_max = Unidad.vida_estandar;
-        u.alcance = Unidad.alcance_estandar - 90;
+        u.alcance = Unidad.MELEE_RANGE;
         u.cadencia = Unidad.cadencia_estandar + 0.5f;
         u.velocidad = Unidad.velocidad_estandar - 0.1f;
         u.recompensa = 50;

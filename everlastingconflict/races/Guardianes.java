@@ -390,4 +390,90 @@ public class Guardianes {
                 break;
         }
     }
+
+    public static void unidad(Jugador aliado, Unidad u) {
+        switch (u.nombre) {
+            case "Patrulla":
+                Guardianes.Patrulla(u);
+                break;
+            case "Tanque":
+                Guardianes.Tanque(u);
+                break;
+            case "Destructor":
+                Guardianes.Destructor(u);
+                break;
+            case "Artillero":
+                Guardianes.Artillero(u);
+                break;
+            case "Corredor":
+                Guardianes.Corredor(u);
+                break;
+            case "Amparador":
+                Guardianes.Amparador(u);
+                break;
+            case "Ingeniero":
+                Guardianes.Ingeniero(u);
+                break;
+            case "Armero":
+                Guardianes.Armero(u);
+                break;
+            case "Oteador":
+                Guardianes.Oteador(u);
+                break;
+            case "Explorador":
+                Guardianes.Explorador(u);
+                break;
+            case "Pacificador":
+                Guardianes.Pacificador(u);
+                break;
+            case "Silenciador":
+                Guardianes.Silenciador(u);
+                break;
+            case "Inquisidor":
+                Guardianes.Inquisidor(u);
+                break;
+            case "Activador":
+                Guardianes.Activador(u);
+                break;
+            case "Acribillador":
+                Guardianes.Acribillador(u);
+                break;
+            case "Enviado celeste":
+                Guardianes.Enviado(u);
+                break;
+        }
+    }
+
+    public static void edificio(Jugador aliado, Edificio e) {
+        switch (e.nombre) {
+            //Guardianes
+            case "Taller bélico":
+                Guardianes.Taller(e);
+                break;
+            case "Anexo":
+                Guardianes.Anexo(e);
+                break;
+            case "Academia de pilotos":
+                Guardianes.Pilotos(e);
+                break;
+            case "Ayuntamiento":
+                Guardianes.Ayuntamiento(e);
+                break;
+            case "Templo":
+                Guardianes.Templo(e);
+                break;
+            case "Laboratorio de I+D":
+                Guardianes.Laboratorio(e);
+                break;
+            case "Vaticano":
+                Guardianes.Vaticano(e);
+                break;
+            case "Edificio gubernamental":
+                Guardianes.Gubernamental(e);
+                break;
+            case "Torreta defensiva":
+                Guardianes.Torreta(e);
+                break;
+        }
+    }
 }

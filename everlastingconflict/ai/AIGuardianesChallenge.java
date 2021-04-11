@@ -8,7 +8,7 @@ import everlastingconflict.races.enums.SubRaceEnum;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import static everlastingconflict.races.enums.RaceEnum.GUARDIANES;
+import static everlastingconflict.races.enums.RaceEnum.FENIX;
 import static everlastingconflict.watches.Reloj.TIME_REGULAR_SPEED;
 
 public class AIGuardianesChallenge extends Jugador {
@@ -16,7 +16,7 @@ public class AIGuardianesChallenge extends Jugador {
     float pushDelay = 0;
 
     public AIGuardianesChallenge() {
-        super("AIGuardianesChallenge", GUARDIANES, SubRaceEnum.POLICIA, 2, false, false);
+        super("AIGuardianesChallenge", FENIX, SubRaceEnum.OSO, 2, false, false);
         this.color = Color.red;
     }
 

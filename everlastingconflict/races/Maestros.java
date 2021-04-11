@@ -5,9 +5,11 @@
  */
 package everlastingconflict.races;
 
+import everlastingconflict.elements.ElementoAtacante;
 import everlastingconflict.elements.impl.Manipulador;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 
 
@@ -39,7 +41,8 @@ public class Maestros {
         u.cadencia = Unidad.cadencia_estandar + 0.3f;
         u.velocidad = Unidad.velocidad_estandar;
         u.vision = Unidad.vision_estandar + 60;
-        u.descripcion = "Unidad provista de arco y flechas de energía. Alta precisión y daño de ataque pero igual de alta fragilidad.";
+        u.descripcion = "Unidad provista de arco y flechas de energía. Alta precisión y daño de ataque pero igual de " +
+                "alta fragilidad.";
     }
 
     public static void Exterminatore(Unidad u) {
@@ -62,7 +65,8 @@ public class Maestros {
         u.velocidad = Unidad.velocidad_estandar - 0.5f;
         u.vision = Unidad.vision_estandar;
         u.area = Maestros.area_magum;
-        u.descripcion = "Unidad con capacidad ofensiva a distancia de área. Especialmente efectivo contra grandes grupos de unidades pequeñas.";
+        u.descripcion = "Unidad con capacidad ofensiva a distancia de área. Especialmente efectivo contra grandes " +
+                "grupos de unidades pequeñas.";
     }
 
     public static void Medicum(Unidad u) {
@@ -87,22 +91,62 @@ public class Maestros {
         u.velocidad = Unidad.velocidad_estandar - 0.1f;
         u.vision = Unidad.vision_estandar + 100;
         u.descripcion = "Unidad principal.";
-        ((Manipulador)u).mana_max = 200;
+        ((Manipulador) u).mana_max = 200;
         if (SubRaceEnum.HECHICERO.equals(aliado.subRace)) {
-            ((Manipulador)u).poder_magico += 10;
+            ((Manipulador) u).poder_magico += 10;
         } else if (SubRaceEnum.INVOCADOR.equals(aliado.subRace)) {
-            ((Manipulador)u).mana_max += 100;
+            ((Manipulador) u).mana_max += 100;
         } else {
             u.ataque += 10;
             u.cadencia -= 0.2f;
         }
-        ((Manipulador)u).mana = ((Manipulador)u).mana_max;
+        ((Manipulador) u).mana = ((Manipulador) u).mana_max;
     }
 
     public static void iniciar_botones_unidad(Unidad u) {
         switch (u.nombre) {
 
         }
+    }
+
+    public static void unidad(Jugador aliado, Unidad u) {
+        switch (u.nombre) {
+            //Maestros
+            case "Manipulador":
+                Maestros.Manipulador(aliado, u);
+                break;
+            case "Pugnator":
+                Maestros.Pugnator(u);
+                break;
+            case "Sagittarius":
+                Maestros.Saggitarius(u);
+                break;
+            case "Exterminatore":
+                Maestros.Exterminatore(u);
+                break;
+            case "Medicum":
+                Maestros.Medicum(u);
+                break;
+            case "Magum":
+                Maestros.Magum(u);
+                break;
+        }
+    }
+
+    public static int getAttackAmountBasedOnManipulatorEffects(Jugador aliado, ElementoAtacante elementAttacking,
+                                                        int attackAmount) {
+        if (aliado != null && RaceEnum.MAESTROS.equals(aliado.raza) && !(elementAttacking instanceof Manipulador)) {
+            if (Manipulador.alentar) {
+                Manipulador m =
+                        aliado.unidades.stream().filter(u -> u instanceof Manipulador).map(u -> (Manipulador) u).findFirst().orElse(null);
+                if (m != null) {
+                    if (elementAttacking.alcance(200, m)) {
+                        attackAmount += 5;
+                    }
+                }
+            }
+        }
+        return attackAmount;
     }
 
 }

@@ -69,9 +69,7 @@ public class AIGuardianesFacil extends AI {
     private void comportamientoAcademia(Game p, Edificio e) {
         if (e.cola_construccion.isEmpty()) {
             Unidad u = new Unidad(this,"Artillero");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.createUnit(p, this, u);
-            }
+            e.createUnit(p, this, u);
         }
     }
 
@@ -83,9 +81,7 @@ public class AIGuardianesFacil extends AI {
         }
         if (t.cola_construccion.isEmpty()) {
             Unidad u = new Unidad(this,"Patrulla");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                t.createUnit(p, this, u);
-            }
+            t.createUnit(p, this, u);
         }
     }
 
@@ -100,9 +96,7 @@ public class AIGuardianesFacil extends AI {
         if (!allBuildingsEnabled && e.cola_construccion.isEmpty()) {
             //Reclutamiento de Unidades
             Unidad u = new Unidad(this,"Activador");
-            if (this.poblacion_max - this.poblacion >= u.coste_poblacion) {
-                e.createUnit(p, this, u);
-            }
+            e.createUnit(p, this, u);
         }
     }
 }

@@ -6,11 +6,9 @@
 package everlastingconflict.watches;
 
 import everlastingconflict.elements.ElementoCoordenadas;
+import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.*;
 
 import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
 
@@ -46,7 +44,7 @@ public abstract class Reloj extends ElementoCoordenadas {
 
     public abstract float tiempo_restante();
     
-    public abstract void avanzar_reloj(int delta);
+    public abstract void avanzar_reloj(Game game, int delta) throws SlickException;
     
     public abstract void dibujar(Input input, Graphics g);
 
@@ -66,4 +64,6 @@ public abstract class Reloj extends ElementoCoordenadas {
         }
         return false;
     }
+
+    public abstract void handleLeftClick();
 }

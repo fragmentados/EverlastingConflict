@@ -40,7 +40,7 @@ public class Bestias {
     }
 
     //x e y representan el centro del grupo
-    public final void Grupo1(float x, float y) {
+    public final void Alphas(float x, float y) {
         contenido.add(new Bestia("Alpha", x, y));
         int distancia = contenido.get(0).anchura + 10;
         contenido.add(new Bestia("Alpha", x - distancia, y));
@@ -48,7 +48,7 @@ public class Bestias {
         tiempo = 60;
     }
 
-    public final void Grupo2(float x, float y) {
+    public final void Betas(float x, float y) {
         Bestia contador = new Bestia("Beta");
         int distancia = contador.anchura + 10;
         contenido.add(new Bestia("Beta", x - (distancia / 2), y));
@@ -56,12 +56,12 @@ public class Bestias {
         tiempo = 120;
     }
 
-    public final void Grupo3(float x, float y) {
+    public final void Gamma(float x, float y) {
         contenido.add(new Bestia("Gamma", x, y));
         tiempo = 180;
     }
 
-    public final void Grupo4(float x, float y) {
+    public final void Ommegas(float x, float y) {
         Bestia contador = new Bestia("Ommega");
         int distancia = contador.anchura + 10;
         contenido.add(new Bestia("Ommega", x - (distancia / 2), y));
@@ -76,17 +76,17 @@ public class Bestias {
         this.x = x;
         this.y = y;
         switch (n) {
-            case "Grupo1":
-                Grupo1(x, y);
+            case "Alphas":
+                Alphas(x, y);
                 break;
-            case "Grupo2":
-                Grupo2(x, y);
+            case "Betas":
+                Betas(x, y);
                 break;
-            case "Grupo3":
-                Grupo3(x, y);
+            case "Gamma":
+                Gamma(x, y);
                 break;
-            case "Grupo4":
-                Grupo4(x, y);
+            case "Ommega":
+                Ommegas(x, y);
                 break;
         }
         tiempo_contador = tiempo;

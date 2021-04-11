@@ -44,6 +44,8 @@ public abstract class GuidedGame extends Game {
             return new EterniumTutorial();
         } else if(RaceEnum.GUARDIANES.getName().equals(race)) {
             return new GuardianesTutorial();
+        } else if(RaceEnum.ALIANZA.getName().equals(race)){
+            return new AlianzaTutorial();
         } else {
             return new MaestrosTutorial();
         }

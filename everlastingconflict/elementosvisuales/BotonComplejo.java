@@ -13,6 +13,7 @@ import everlastingconflict.elements.impl.*;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Alianza;
 import everlastingconflict.races.Clark;
 import everlastingconflict.races.Fusion;
 import everlastingconflict.races.enums.RaceEnum;
@@ -51,6 +52,9 @@ public class BotonComplejo extends BotonSimple {
     public boolean canBeShown = true;
     public boolean isPassiveAbility = false;
 
+    public BotonComplejo(Image im) {
+        super(im);
+    }
 
     public BotonComplejo(String t) {
         //Boton que posee sólo texto
@@ -373,7 +377,7 @@ public class BotonComplejo extends BotonSimple {
                 }
             }
             if (descripcion != null) {
-                g.drawString(Game.anadir_saltos_de_linea(descripcion, anchura_contador), xcontador, ycontador);
+                g.drawString(Game.formatTextToFitWidth(descripcion, anchura_contador), xcontador, ycontador);
             }
         }
     }
@@ -468,6 +472,15 @@ public class BotonComplejo extends BotonSimple {
                             break;
                         case "Ayuda Fusión":
                             edificio.mostrarAyudaFusion = !edificio.mostrarAyudaFusion;
+                            break;
+                        case "Granadero":
+                        case "Luchadora":
+                        case Alianza.RESOURCES:
+                            Alianza.unitToDesembarc = texto;
+                            try {
+                                WindowCombat.alianceWatch().updateSprite();
+                            } catch (SlickException ex) {
+                            }
                             break;
                     }
                 }

@@ -43,15 +43,15 @@ public class PlayerSelection {
                         sr.getImagePath())).collect(Collectors.toList()),
                 x + 450, y);
         teamCombo = new ComboBox("Equipo:", IntStream.rangeClosed(1, 4)
-                .boxed().map(n -> new ComboBoxOption(n.toString())).collect(Collectors.toList()), x + 700, y);
+                .boxed().map(n -> new ComboBoxOption(n.toString())).collect(Collectors.toList()), x + 750, y);
         difficultyCombo = new ComboBox("Dificultad:",
-                Arrays.asList("Fácil", "Normal", "Difícil").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()), x + 850, y);
+                Arrays.asList("Fácil", "Normal", "Difícil").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()), x + 950, y);
         leaderCombo = new ComboBox("Lider:",
                 Arrays.asList("No", "Sí").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()),
-                x + 1100, y);
+                x + 1150, y);
         juggernautCombo = new ComboBox("Juggernaut:",
                 Arrays.asList("No", "Sí").stream().map(pt -> new ComboBoxOption(pt)).collect(Collectors.toList()),
-                x + 1100, y);
+                x + 1160, y);
     }
 
     public boolean isLeader() {
@@ -116,7 +116,9 @@ public class PlayerSelection {
             if (WindowMenuPlayerSelection.isLeaderGame()) {
                 leaderCombo.render(g);
             }
-            difficultyCombo.render(g);
+            if (!isMainPlayer) {
+                difficultyCombo.render(g);
+            }
         }
     }
 

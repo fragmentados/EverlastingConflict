@@ -46,6 +46,7 @@ public class Unidad extends ElementoMovil {
     public static int ataque_estandar = 10;
     public static float cadencia_estandar = 1.5f;
     public static int alcance_estandar = 100;
+    public static int MELEE_RANGE = 10;
     public static float velocidad_estandar = 1.5f;
     public static int vision_estandar = 700;
     public static int tiempo_estandar = 10;
@@ -97,7 +98,7 @@ public class Unidad extends ElementoMovil {
             this.iniciar_imagenes();
             if (ataque > 0) {
                 try {
-                    sonido_combate = new Sound("media/Sonidos/Ataque/" + nombre + "Ataque.ogg");
+                    sonido_combate = new Sound("media/Sonidos/Ataque/" + nombre + ".ogg");
                 } catch (Exception e) {
                 }
             }
@@ -311,7 +312,6 @@ public class Unidad extends ElementoMovil {
             if (this.seleccionada()) {
                 this.deseleccionar();
             }
-            p.getPlayerFromElement(this).poblacion -= this.coste_poblacion;
             p.getPlayerFromElement(this).unidades.remove(this);
             Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             if (shouldPlaySound) {

@@ -15,6 +15,7 @@ import everlastingconflict.elements.impl.*;
 import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Alianza;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.status.Status;
@@ -33,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static everlastingconflict.elements.util.ElementosComunes.MINIATURE_IMAGE;
 import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
 import static everlastingconflict.windows.WindowCombat.*;
 
@@ -185,8 +187,8 @@ public class UI {
     public void renderElementOnMinimap(Graphics g, ElementoComplejo e) {
         float anchura = anchura_mini * (e.anchura / WindowCombat.WORLD_SIZE_X);
         float altura = altura_mini * (e.altura / WindowCombat.WORLD_SIZE_Y);
-        float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / WindowCombat.WORLD_SIZE_X);
-        float y = y_mini + (altura_mini - altura) * ((e.y - e.altura / 2) / WindowCombat.WORLD_SIZE_Y);
+        float x = x_mini + (anchura_mini - anchura) * ((e.x - anchura / 2) / WindowCombat.WORLD_SIZE_X);
+        float y = y_mini + (altura_mini - altura) * ((e.y - altura / 2) / WindowCombat.WORLD_SIZE_Y);
         g.fillRect(x, y, anchura, altura);
     }
 
@@ -341,6 +343,7 @@ public class UI {
     }
 
     private void renderUnitDetailedInfo(Graphics g, Game game, Unidad unidad, float x, float y) {
+        Jugador aliado = game.getPlayerFromElement(unidad);
         DecimalFormat d = new DecimalFormat();
         //Estadísticas
         int ataque, defensa;
@@ -350,9 +353,9 @@ public class UI {
                     x + 10 + Integer.toString((int) unidad.vida).length() * 10 + 10 + Integer.toString((int) unidad.vida_max).length() * 10 + 10, y + 50 + unidad.icono.getHeight() + 10);
             g.setColor(Color.white);
         }
-        if (!(unidad instanceof Bestia) && (game.getPlayerFromElement(unidad).raza.equals(RaceEnum.ETERNIUM))) {
-            ataque = unidad.getAttackBasedOnEterniumWatch(game.getPlayerFromElement(unidad));
-            defensa = unidad.getDefenseBasedOnEterniumWatch(game.getPlayerFromElement(unidad));
+        if (!(unidad instanceof Bestia) && (RaceEnum.ETERNIUM.equals(aliado.raza))) {
+            ataque = unidad.getAttackBasedOnEterniumWatch(aliado);
+            defensa = unidad.getDefenseBasedOnEterniumWatch(aliado);
         } else {
             ataque = unidad.ataque;
             defensa = unidad.defensa;
@@ -366,11 +369,11 @@ public class UI {
                 ataque = 0;
             }
         }
-        if (game.getPlayerFromElement(unidad) != null) {
-            if (game.getPlayerFromElement(unidad).raza.equals(RaceEnum.MAESTROS)) {
+        if (aliado != null) {
+            if (RaceEnum.MAESTROS.equals(aliado.raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
-                    for (Unidad u : game.getPlayerFromElement(unidad).unidades) {
+                    for (Unidad u : aliado.unidades) {
                         if (u.nombre.equals("Manipulador")) {
                             m = (Manipulador) u;
                         }
@@ -684,17 +687,16 @@ public class UI {
         return null;
     }
 
-    public void render(Game p, Graphics g, List<ControlGroup> controlGroupGroups) {
+    public void render(Game game, Graphics g, List<ControlGroup> controlGroupGroups) {
         float initialY = WindowCombat.playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI_HEIGHT - 1;
         g.setColor(UI_COLOR);
         g.fillRect(WindowCombat.playerX, initialY, WindowCombat.VIEWPORT_SIZE_WIDTH - 1, UI_HEIGHT);
         //Primer Rectángulo: Miniatura.        
         if (!elements.isEmpty()) {
-            Image miniatura = currentSelectionPage.get(0).miniatura;
-            //g.setColor(new Color(0.1f, 0.1f, 0.1f, 0.7f));
-            //g.fillRect(MapaCampo.playerX, MapaCampo.playerY + MapaCampo.VIEWPORT_SIZE_Y, anchura_miniatura,
-            // UI_HEIGHT);
-            miniatura.draw(WindowCombat.playerX, initialY);
+            // TODO HAVE SEVERAL MINIATURE IMAGES PER RACE
+            //Image miniatura = currentSelectionPage.get(0).miniatura;
+            //miniatura.draw(WindowCombat.playerX, initialY);
+            MINIATURE_IMAGE.draw(WindowCombat.playerX, initialY);
         }
         g.setColor(Color.white);
         g.drawRect(WindowCombat.playerX, initialY, anchura_miniatura, UI_HEIGHT);
@@ -702,7 +704,7 @@ public class UI {
         g.drawRect(WindowCombat.playerX + anchura_miniatura, initialY, anchura_seleccion, UI_HEIGHT);
         if (!elements.isEmpty()) {
             if (elements.size() == 1) {
-                renderComplexElement(p, g, WindowCombat.playerX + anchura_miniatura, initialY, anchura_seleccion);
+                renderComplexElement(game, g, WindowCombat.playerX + anchura_miniatura, initialY, anchura_seleccion);
             } else {
                 ant.x = sig.x = WindowCombat.playerX + anchura_miniatura + 5;
                 ant.y = initialY + 5;
@@ -727,6 +729,12 @@ public class UI {
             }
         }
         //Tercer Rectángulo: Botones
+        renderButtons(g, game, initialY);
+        renderMinimap(game, g, initialY);
+        renderControlGroups(g, controlGroupGroups, initialY);
+    }
+
+    public void renderButtons(Graphics g, Game p, float initialY) {
         g.drawRect(WindowCombat.playerX + anchura_miniatura + anchura_seleccion, initialY, anchura_botones,
                 UI_HEIGHT);
         if (!currentSelectionPage.isEmpty() && this.allElementsAreControlledByMainPlayer(p)) {
@@ -751,7 +759,7 @@ public class UI {
                     boton.render(g);
                     if (e instanceof Edificio) {
                         Edificio edificio = (Edificio) e;
-                        if ((edificio.unidad_actual != null) && (edificio.unidad_actual.equals(boton.texto))) {
+                        if ((edificio.unidad_actual != null) && (edificio.unidad_actual.equals(boton.texto)) || Alianza.unitToDesembarc.equals(boton.texto)) {
                             g.setColor(Color.green);
                             g.fillRect(boton.x, boton.y + boton.altura, boton.anchura, 5);
                             g.setColor(Color.white);
@@ -760,8 +768,6 @@ public class UI {
                 }
             }
         }
-        renderMinimap(p, g, initialY);
-        renderControlGroups(g, controlGroupGroups, initialY);
     }
 
     public void renderControlGroups(Graphics g, List<ControlGroup> controlGroups, float initialY) {

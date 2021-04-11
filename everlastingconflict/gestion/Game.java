@@ -11,6 +11,7 @@ import everlastingconflict.elements.ElementoVulnerable;
 import everlastingconflict.elements.impl.*;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.victory.GameModeEnum;
+import everlastingconflict.watches.RelojAlianza;
 import everlastingconflict.watches.RelojEternium;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.MapEnum;
@@ -19,10 +20,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static everlastingconflict.windows.WindowCombat.*;
@@ -38,7 +36,7 @@ public class Game {
     public GameModeEnum gameMode = GameModeEnum.ANHILATION;
     public boolean isShadowOfWarEnabled = true;
 
-    public static String anadir_saltos_de_linea(String texto, float anchura) {
+    public static String formatTextToFitWidth(String texto, float anchura) {
         String resultText = "";
         String initialText = texto;
         String currentLine, remainingText;
@@ -159,64 +157,7 @@ public class Game {
         WindowCombat.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
         WindowCombat.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
         initPlayerCoordinates(width, height);
-        float sextox = width / 6;
-        float sextoy = height / 6;
-        if (existsPlayerWithRace(RaceEnum.CLARK) || existsPlayerWithRace(RaceEnum.MAESTROS)) {
-            //Alphas
-            bestias.add(new Bestias("Grupo1", sextox, sextoy));
-            bestias.add(new Bestias("Grupo1", sextox * 3, sextoy));
-            bestias.add(new Bestias("Grupo1", sextox * 5, sextoy));
-            bestias.add(new Bestias("Grupo1", sextox, sextoy * 3));
-            bestias.add(new Bestias("Grupo1", sextox, sextoy * 5));
-            bestias.add(new Bestias("Grupo1", sextox * 5, sextoy * 3));
-            bestias.add(new Bestias("Grupo1", sextox * 5, sextoy * 5));
-            bestias.add(new Bestias("Grupo1", sextox * 3, sextoy * 5));
-            //Betas
-            bestias.add(new Bestias("Grupo2", sextox * 3, sextoy * 2));
-            bestias.add(new Bestias("Grupo2", sextox * 3, sextoy * 4));
-            bestias.add(new Bestias("Grupo2", sextox * 2, sextoy * 3));
-            bestias.add(new Bestias("Grupo2", sextox * 4, sextoy * 3));
-            //Gamma
-            bestias.add(new Bestias("Grupo3", sextox * 3, sextoy * 3));
-            //Ommegas
-            bestias.add(new Bestias("Grupo4", sextox * 2, sextoy * 2));
-            bestias.add(new Bestias("Grupo4", sextox * 4, sextoy * 2));
-            bestias.add(new Bestias("Grupo4", sextox * 2, sextoy * 4));
-            bestias.add(new Bestias("Grupo4", sextox * 4, sextoy * 4));
-        }
-        if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
-            recursos.add(new Recurso("Hierro", sextox * 2, sextoy));
-            recursos.add(new Recurso("Hierro", sextox * 4, sextoy));
-            recursos.add(new Recurso("Hierro", sextox, sextoy * 2));
-            recursos.add(new Recurso("Hierro", sextox * 5, sextoy * 2));
-            recursos.add(new Recurso("Hierro", sextox, sextoy * 4));
-            recursos.add(new Recurso("Hierro", sextox * 5, sextoy * 4));
-            recursos.add(new Recurso("Hierro", sextox * 2, sextoy * 5));
-            recursos.add(new Recurso("Hierro", sextox * 4, sextoy * 5));
-        }
-        if (existsPlayerWithRace(RaceEnum.FENIX)) {
-            if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
-                recursos.add(new Recurso("Civiles", sextox, sextoy));
-                recursos.add(new Recurso("Civiles", sextox * 3, sextoy));
-                recursos.add(new Recurso("Civiles", sextox * 5, sextoy));
-                recursos.add(new Recurso("Civiles", sextox, sextoy * 3));
-                recursos.add(new Recurso("Civiles", sextox, sextoy * 5));
-                recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 3));
-                recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 5));
-                recursos.add(new Recurso("Civiles", sextox * 3, sextoy * 5));
-            } else {
-                recursos.add(new Recurso("Civiles", sextox * 2, sextoy));
-                recursos.add(new Recurso("Civiles", sextox * 4, sextoy));
-                recursos.add(new Recurso("Civiles", sextox, sextoy * 2));
-                recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 2));
-                recursos.add(new Recurso("Civiles", sextox, sextoy * 4));
-                recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 4));
-                recursos.add(new Recurso("Civiles", sextox * 2, sextoy * 5));
-                recursos.add(new Recurso("Civiles", sextox * 4, sextoy * 5));
-            }
-        }
-        // Torre de vigilancia en medio del mapa
-        recursos.add(new TorreVision("Vision", map.getWidth() / 2, map.getHeight() / 2));
+        initResources(width, height);
         // Inicializar relojes
         WindowCombat.initWatches();
         if (existsPlayerWithRace(RaceEnum.MAESTROS)) {
@@ -224,6 +165,9 @@ public class Game {
         }
         if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
             WindowCombat.createWatch(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
+        }
+        if (existsPlayerWithRace(RaceEnum.ALIANZA)) {
+            WindowCombat.createWatch(new RelojAlianza(this.getPlayerByRace(RaceEnum.ALIANZA)));
         }
         initPlayerColors();
         /*getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
@@ -233,6 +177,58 @@ public class Game {
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));*/
         players.forEach(p -> p.initElements(this));
+    }
+
+    private void initResources(float width, float height) {
+        float sextox = width / 6;
+        float sextoy = height / 6;
+        float visionTowerOffset = 120;
+        if (existsPlayerWithRace(RaceEnum.CLARK) || existsPlayerWithRace(RaceEnum.MAESTROS)) {
+            // Alphas
+            bestias.add(new Bestias("Alphas", sextox * 2, sextoy));
+            bestias.add(new Bestias("Alphas", sextox * 4, sextoy));
+            bestias.add(new Bestias("Alphas", sextox * 2, sextoy * 5));
+            bestias.add(new Bestias("Alphas", sextox * 4, sextoy * 5));
+            // Betas
+            bestias.add(new Bestias("Betas", sextox * 2, sextoy * 2));
+            bestias.add(new Bestias("Betas", sextox * 4, sextoy * 2));
+            bestias.add(new Bestias("Betas", sextox * 2, sextoy * 4));
+            bestias.add(new Bestias("Betas", sextox * 4, sextoy * 4));
+            // Gamma
+            bestias.add(new Bestias("Gamma", sextox * 3, sextoy * 2));
+            bestias.add(new Bestias("Gamma", sextox * 3, sextoy * 4));
+            // Ommegas
+            bestias.add(new Bestias("Ommega", sextox * 2, sextoy * 3));
+            bestias.add(new Bestias("Ommega", sextox * 4, sextoy * 3));
+        }
+        if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
+            recursos.add(new Recurso("Hierro", sextox - visionTowerOffset, sextoy * 2));
+            recursos.add(new Recurso("Hierro", sextox * 5 + visionTowerOffset, sextoy * 2));
+            recursos.add(new Recurso("Hierro", sextox - visionTowerOffset, sextoy * 4));
+            recursos.add(new Recurso("Hierro", sextox * 5 + visionTowerOffset, sextoy * 4));
+            recursos.add(new Recurso("Hierro", sextox * 2, sextoy * 2));
+            recursos.add(new Recurso("Hierro", sextox * 4, sextoy * 2));
+            recursos.add(new Recurso("Hierro", sextox * 2, sextoy * 4));
+            recursos.add(new Recurso("Hierro", sextox * 4, sextoy * 4));
+            recursos.add(new Recurso("Hierro", sextox * 3, sextoy * 3 - visionTowerOffset));
+        }
+        if (existsPlayerWithRace(RaceEnum.FENIX)) {
+            recursos.add(new Recurso("Civiles", sextox, sextoy));
+            recursos.add(new Recurso("Civiles", sextox * 3, sextoy));
+            recursos.add(new Recurso("Civiles", sextox * 5, sextoy));
+            recursos.add(new Recurso("Civiles", sextox, sextoy * 3));
+            recursos.add(new Recurso("Civiles", sextox * 3, sextoy * 3 + visionTowerOffset));
+            recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 3));
+            recursos.add(new Recurso("Civiles", sextox, sextoy * 5));
+            recursos.add(new Recurso("Civiles", sextox * 3, sextoy * 5));
+            recursos.add(new Recurso("Civiles", sextox * 5, sextoy * 5));
+        }
+        // Torres de vigilancia
+        recursos.add(new TorreVision("Vision", sextox, sextoy * 2));
+        recursos.add(new TorreVision("Vision", sextox, sextoy * 4));
+        recursos.add(new TorreVision("Vision", sextox * 5, sextoy * 2));
+        recursos.add(new TorreVision("Vision", sextox * 5, sextoy * 4));
+        recursos.add(new TorreVision("Vision", sextox * 3, sextoy * 3));
     }
 
     private void initPlayerCoordinates(float width, float height) {
@@ -295,7 +291,7 @@ public class Game {
             for (Proyectil p : proyectiles) {
                 p.comportamiento(this, g, delta);
             }
-        } catch (Exception e) {
+        } catch (ConcurrentModificationException e) {
             //e.printStackTrace();
         }
         players.forEach(p -> p.comportamiento_elementos(this, g, delta));
@@ -347,7 +343,8 @@ public class Game {
         // Every player allies against the juggernaut
         Jugador juggernautPlayer = this.players.stream().filter(p -> p.isJuggernaut).findFirst().orElse(null);
         juggernautPlayer.team = 1;
-        List<Jugador> nonJuggernautPlayers = this.players.stream().filter(p -> !p.isJuggernaut).collect(Collectors.toList());
+        List<Jugador> nonJuggernautPlayers =
+                this.players.stream().filter(p -> !p.isJuggernaut).collect(Collectors.toList());
         nonJuggernautPlayers.forEach(p -> p.team = 2);
         juggernautPlayer.applyJuggernautEnhancements(this, nonJuggernautPlayers.size());
     }
@@ -428,8 +425,8 @@ public class Game {
         return players.stream().anyMatch(p -> p.lista_recursos.contains(r));
     }
 
-    public List<Recurso> getGameCivilTowns() {
-        return this.recursos.stream().filter(r -> r.nombre.equals("Civiles")).collect(Collectors.toList());
+    public List<Recurso> getCivilTownsAndVisionTowers() {
+        return this.recursos.stream().filter(r -> (r.nombre.equals("Civiles") || r.nombre.equals("Vision"))).collect(Collectors.toList());
     }
 
     public List<Recurso> getVisionTowers() {

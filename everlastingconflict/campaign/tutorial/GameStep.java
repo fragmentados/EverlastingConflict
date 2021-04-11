@@ -21,7 +21,7 @@ public class GameStep {
 
     public GameStep(String t) {
         text = t;
-        this.text = Game.anadir_saltos_de_linea(this.text, WindowCombat.VIEWPORT_SIZE_WIDTH);
+        this.text = Game.formatTextToFitWidth(this.text, WindowCombat.VIEWPORT_SIZE_WIDTH);
         requiresClick = true;
     }
 

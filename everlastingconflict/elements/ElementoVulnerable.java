@@ -5,8 +5,11 @@
  */
 package everlastingconflict.elements;
 
+import everlastingconflict.elements.impl.Bestia;
+import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
@@ -43,6 +46,16 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
                     return (int) (this.defensa * (500f / 100f));
                 }
         }
+    }
+
+    public int getDefense(Jugador aliado) {
+        int defense;
+        if (!(this instanceof Bestia) && (aliado != null && RaceEnum.ETERNIUM.equals(aliado.raza))) {
+            defense = getDefenseBasedOnEterniumWatch(aliado);
+        } else {
+            defense = defensa;
+        }
+        return defense;
     }
 
     public void dibujar_mini_barra(Graphics g, float x_contador, float y_contador, Color c) {
@@ -144,4 +157,32 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     }
 
     public abstract void destruir(Game p, ElementoAtacante atacante);
+
+    public void receiveDamage(float damageToDeal) {
+        if (!(this instanceof Unidad) || ((Unidad) this).puede_ser_danado()) {
+            if (this instanceof Unidad) {
+                if (((Unidad) this).escudo > 0) {
+                    float contador = damageToDeal - ((Unidad) this).escudo;
+                    ((Unidad) this).escudo -= damageToDeal;
+                    if (((Unidad) this).escudo < 0) {
+                        ((Unidad) this).escudo = 0;
+                    }
+                    damageToDeal = contador;
+                }
+            }
+            if (damageToDeal > 0) {
+                this.vida -= damageToDeal;
+            }
+        }
+    }
+
+    public void heal(int amountToHeal) {
+        if (amountToHeal > 0) {
+            if (vida + amountToHeal >= vida_max) {
+                vida = vida_max;
+            } else {
+                vida += amountToHeal;
+            }
+        }
+    }
 }

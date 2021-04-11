@@ -106,8 +106,8 @@ public class Recurso extends ElementoComplejo {
     public void render(Game p, Color c, Input input, Graphics g) {
         //super.dibujar(p, c, input, g);
         animation.draw(x - anchura / 2, y - altura / 2);
-        g.setColor(Color.black);
         if (DEBUG_MODE) {
+            g.setColor(Color.black);
             g.drawRect(x - anchura / 2, y - altura / 2, anchura, altura);
         }
         g.setColor(Color.white);

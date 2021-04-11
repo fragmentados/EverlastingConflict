@@ -142,7 +142,7 @@ public class Eternium {
         e.descripcion = "Edificio encargado de investigar las nuevas tecnologías.";
     }
 
-    public static void iniciar_botones_edificio(Edificio e, Jugador aliado) {
+    public static void iniciar_botones_edificio(Jugador aliado, Edificio e) {
         switch (e.nombre) {
             case "Mando Central":
                 e.botones.add(new BotonComplejo(new Unidad(aliado, "Adepto")));
@@ -174,6 +174,48 @@ public class Eternium {
         switch (u.nombre) {
             case "Ancestro":
                 u.botones.add(new BotonComplejo(new Habilidad("Parálisis temporal")));
+                break;
+        }
+    }
+
+    public static void unidad(Jugador aliado, Unidad u) {
+        switch (u.nombre) {
+            //Eternium
+            case "Adepto":
+                Eternium.Adepto(aliado, u);
+                break;
+            case "Guerrero":
+                Eternium.Guerrero(aliado, u);
+                break;
+            case "Ancestro":
+                Eternium.Ancestro(aliado, u);
+                break;
+            case "Protector":
+                Eternium.Protector(aliado, u);
+                break;
+            case "Erradicador":
+                Eternium.Erradicador(aliado, u);
+                break;
+        }
+    }
+
+    public static void edificio(Jugador aliado, Edificio e) {
+        switch (e.nombre) {
+            //Eternium
+            case "Mando Central":
+                Eternium.MandoCentral(e);
+                break;
+            case "Refinería":
+                Eternium.Refineria(e);
+                break;
+            case "Altar de los ancestros":
+                Eternium.Altar(e);
+                break;
+            case "Cámara de asimilación":
+                Eternium.Camara(e);
+                break;
+            case "Teletransportador":
+                Eternium.Teletransportador(e);
                 break;
         }
     }

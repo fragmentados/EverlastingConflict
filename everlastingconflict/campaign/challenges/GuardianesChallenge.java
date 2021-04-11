@@ -34,12 +34,13 @@ public class GuardianesChallenge extends Challenge {
         }
         this.players.remove(1);
         this.players.add(new AIGuardianesChallenge());
-        this.players.get(1).unidades.add(new Unidad(jugador, "Fénix", 600, 600));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Fénix", 650, 600));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Fénix", 700, 600));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Halcón", 600, 700));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Halcón", 650, 700));
-        this.players.get(1).unidades.add(new Unidad(jugador, "Halcón", 700, 700));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Fénix", 600, 600));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Fénix", 675, 600));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Fénix", 750, 600));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Halcón", 600, 700));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Halcón", 650, 700));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Halcón", 700, 700));
+        this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Halcón", 750, 700));
         for (Unidad u : jugador.unidades) {
             u.iniciarbotones(this);
         }

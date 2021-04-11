@@ -18,6 +18,7 @@ import org.newdawn.slick.Input;
 public abstract class ElementoEstado extends ElementoComplejo {
 
     public BehaviourEnum behaviour;
+    public float behaviourTimer = 0;
     public StatusCollection statusCollection;
 
     @Override

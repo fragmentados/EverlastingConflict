@@ -38,11 +38,11 @@ public class MaestrosChallenge extends Challenge {
         manipulador.learnSkill(new BotonManipulador(new Habilidad("Lluvia de estrellas"), RelojMaestros.nombre_noche));
         manipulador.initButtonKeys();
         mainPlayer.unidades.add(manipulador);
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 600, 600));
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 650, 600));
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 700, 600));
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 600, 700));
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 650, 700));
-        opposingPlayer.unidades.add(new Unidad(mainPlayer, "Despedazador", 700, 700));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 600, 600));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 650, 600));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 700, 600));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 600, 700));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 650, 700));
+        opposingPlayer.unidades.add(new Unidad(this.players.get(1), "Despedazador", 700, 700));
     }
 }

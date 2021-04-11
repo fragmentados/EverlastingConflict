@@ -413,7 +413,7 @@ public class Habilidad extends ElementoSimple {
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Deflagración":
-                    m.dano(p, "Mágico", 200 + (int) m.poder_magico, objetivo);
+                    m.dealDamage(p, "Mágico", 200 + (int) m.poder_magico, objetivo);
                     break;
                 case "Pesadilla":
                     ((Unidad) objetivo).parar();
@@ -427,13 +427,13 @@ public class Habilidad extends ElementoSimple {
                 case "Lluvia de estrellas":
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ENEMY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        m.dano(p, "Mágico", 50 + (int) (m.poder_magico * 0.5f), e);
+                        m.dealDamage(p, "Mágico", 50 + (int) (m.poder_magico * 0.5f), e);
                     }
                     break;
                 case "Meteoro":
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ENEMY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        m.dano(p, "Mágico", 65 + (int) (m.poder_magico * 0.7f), e);
+                        m.dealDamage(p, "Mágico", 65 + (int) (m.poder_magico * 0.7f), e);
                     }
                     break;
                 case "Apocalipsis":
@@ -486,7 +486,7 @@ public class Habilidad extends ElementoSimple {
                     objetivo.destruir(p, (ElementoAtacante) origen);
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ENEMY_UNIT, 500f);
                     for (ElementoComplejo e : elementos_area) {
-                        ((ElementoAtacante) origen).dano(p, "Mágico", 200, e);
+                        ((ElementoAtacante) origen).dealDamage(p, "Mágico", 200, e);
                     }
                     break;
                 case "Desmoralizar al enemigo":
@@ -589,7 +589,7 @@ public class Habilidad extends ElementoSimple {
                     }
                     elementos_area = p.getElementsAffectedByArea(origen, objetivo.x, objetivo.y, ALLY_UNIT, area);
                     for (ElementoComplejo e : elementos_area) {
-                        ((Unidad) origen).dano(p, "Mágico", 30, e);
+                        ((Unidad) origen).dealDamage(p, "Mágico", 30, e);
                     }
                     break;
                 case "Cegar a la presa":

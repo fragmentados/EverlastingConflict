@@ -13,7 +13,8 @@ public enum BehaviourEnum {
     ATACANDO,
     DETENIDO,
     PROYECTIL,
-    DESTRUIDO;
+    DESTRUIDO,
+    DESPEGANDO;
 
     public static boolean allowsAttack(BehaviourEnum behaviour) {
         return !BehaviourEnum.EMERGIENDO.equals(behaviour);

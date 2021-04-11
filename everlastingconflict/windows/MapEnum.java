@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum MapEnum {
-    SMALL("Small(2000 x 2000)", 2000, 2000, 2),
-    MEDIUM("Medium(4000 x 4000)", 4000, 4000, 4),
-    LARGE("Large(6000 x 6000)", 6000, 6000, 6);
+    SMALL("Small", 4000f, 4000f, 2),
+    MEDIUM("Medium", 6000f, 6000f, 4),
+    LARGE("Large", 8000f, 8000f, 6);
 
     String name;
-    int width;
-    int height;
+    float width;
+    float height;
     int maxPlayers;
 
-    MapEnum(String name, int width, int height, int maxPlayers) {
-        this.name = name;
+    MapEnum(String name, float width, float height, int maxPlayers) {
         this.width = width;
         this.height = height;
+        this.name = name + "(" + (int) this.width + " x " + (int) this.height + ")";
         this.maxPlayers = maxPlayers;
     }
 
@@ -24,11 +24,11 @@ public enum MapEnum {
         return name;
     }
 
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 

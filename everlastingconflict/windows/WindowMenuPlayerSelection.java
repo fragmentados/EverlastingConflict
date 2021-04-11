@@ -4,15 +4,13 @@ import everlastingconflict.ai.AI;
 import everlastingconflict.elementosvisuales.BotonSimple;
 import everlastingconflict.elementosvisuales.ComboBox;
 import everlastingconflict.elementosvisuales.ComboBoxOption;
+import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.victory.GameModeEnum;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.TextField;
 
 import java.util.ArrayList;
@@ -27,6 +25,9 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
     public List<PlayerSelection> playerSelections = new ArrayList<>();
     private ComboBox mapCombo;
     public TextField userTextField;
+    private final float mapPreviewSize = 200f;
+    private final float playerStartPreviewSize = 200f;
+    private final float resourcePreviewSize = 150f;
 
     public static boolean isLeaderGame() {
         return GameModeEnum.LEADER.label.equals(WindowMenuPlayerSelection.gameModeCombo.optionSelected.text);
@@ -76,6 +77,13 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
         playerSelections.add(new PlayerSelection(WindowCombat.responsiveX(20), WindowCombat.responsiveY(55),
                 false));
         playerSelections.get(1).teamCombo.optionSelected = playerSelections.get(1).teamCombo.options.get(1);
+        playerSelections.get(1).raceCombo.optionSelected = playerSelections.get(1).raceCombo.options.get(1);
+        playerSelections.get(1).subRaceCombo.options =
+                SubRaceEnum.findByRace(RaceEnum.ETERNIUM.getName()).stream().map(sr -> new ComboBoxOption(sr.getName(),
+                        sr.getDescription(),
+                        sr.getImagePath())).collect(Collectors.toList());
+        playerSelections.get(1).subRaceCombo.initProportionsBasedOnOptions();
+        playerSelections.get(1).subRaceCombo.optionSelected = playerSelections.get(1).subRaceCombo.options.get(0);
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - "Salir".length() * 10, 0);
         volver = new BotonSimple("Volver", WindowCombat.responsiveX(40), WindowCombat.responsiveY(85));
         aceptar = new BotonSimple("Aceptar", WindowCombat.responsiveX(45), WindowCombat.responsiveY(85));
@@ -133,6 +141,7 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
         Input input = container.getInput();
         mapCombo.render(g);
         gameModeCombo.render(g);
+        userTextField.render(container, g);
         for (int i = (playerSelections.size() - 1); i >= 0; i--) {
             playerSelections.get(i).render(input, g);
         }
@@ -144,28 +153,119 @@ public class WindowMenuPlayerSelection extends WindowMenuBasic {
                     WindowCombat.responsiveY(50 + 5 * i));
         }
         mapCombo.renderHoveredDescription(input, g);
+        renderMapPreview(g);
         gameModeCombo.renderHoveredDescription(input, g);
         playerSelections.stream().forEach(ps -> ps.renderHoveredDescription(input, g));
     }
 
-    private void test() {
-        /*String previousRacePlayer1 = raceTutorial.checkOptionSelected(input.getMouseX(), input.getMouseY());
-        if (previousRacePlayer1 != null) {
-            racePlayer2.opciones.remove(raceTutorial.opcion_seleccionada);
-            if (racePlayer2.opcion_seleccionada.equals(raceTutorial.opcion_seleccionada)) {
-                racePlayer2.opcion_seleccionada = racePlayer2.opciones.get(0);
-            }
-            racePlayer2.opciones.add(previousRacePlayer1);
-            racePlayer2.opciones = RaceNameEnum.sortRaceNames(racePlayer2.opciones);
+    public MapEnum getCurrentMap() {
+        return MapEnum.findByName(this.mapCombo.optionSelected.text);
+    }
+
+    public boolean existsPlayerWithRace(RaceEnum race) {
+        return this.playerSelections.stream().anyMatch(ps -> RaceEnum.findByName(ps.raceCombo.optionSelected.text).equals(race));
+    }
+
+    public void renderMapPreview(Graphics g) {
+        g.setColor(ElementosComunes.UI_COLOR);
+        g.fillRect(WindowCombat.responsiveX(25), WindowCombat.responsiveY(15), mapPreviewSize, mapPreviewSize);
+        g.setColor(Color.white);
+        g.drawRect(WindowCombat.responsiveX(25), WindowCombat.responsiveY(15), mapPreviewSize, mapPreviewSize);
+        MapEnum map = getCurrentMap();
+        float playerPreviewSizeScaled = mapPreviewSize * (playerStartPreviewSize / map.width);
+        renderElementPreview(g, Color.green, 200, 200, playerPreviewSizeScaled);
+        renderElementPreview(g, Color.green, (map.width - 200), (map.height - 200), playerPreviewSizeScaled);
+        if (map.maxPlayers >= 3) {
+            renderElementPreview(g, Color.green, (map.width - 200), 200, playerPreviewSizeScaled);
         }
-        String previousRacePlayer2 = racePlayer2.checkOptionSelected(input.getMouseX(), input.getMouseY());
-        if (previousRacePlayer2 != null) {
-            raceTutorial.opciones.remove(racePlayer2.opcion_seleccionada);
-            if (raceTutorial.opcion_seleccionada.equals(racePlayer2.opcion_seleccionada)) {
-                raceTutorial.opcion_seleccionada = raceTutorial.opciones.get(0);
-            }
-            raceTutorial.opciones.add(previousRacePlayer2);
-            raceTutorial.opciones = RaceNameEnum.sortRaceNames(raceTutorial.opciones);
-        }*/
+        if (map.maxPlayers >= 4) {
+            renderElementPreview(g, Color.green, 200, (map.height - 200), playerPreviewSizeScaled);
+        }
+        if (map.maxPlayers >= 5) {
+            renderElementPreview(g, Color.green, 200, map.height / 2, playerPreviewSizeScaled);
+        }
+        if (map.maxPlayers >= 6) {
+            renderElementPreview(g, Color.green, (map.width - 200), map.height / 2, playerPreviewSizeScaled);
+        }
+        float resourcePreviewSizeScaled = mapPreviewSize * (resourcePreviewSize / map.width);
+        renderResourcePreviews(g, resourcePreviewSizeScaled);
+    }
+
+    private void renderResourcePreviews(Graphics g, float playerPreviewSizeScaled) {
+        float sextox = getCurrentMap().width / 6;
+        float sextoy = getCurrentMap().height / 6;
+        float visionTowerOffset = 120;
+        // Torres de vigilancia
+        renderElementPreview(g, Color.gray, sextox, sextoy * 2,
+                playerPreviewSizeScaled);
+        renderElementPreview(g, Color.gray, sextox, sextoy * 4,
+                playerPreviewSizeScaled);
+        renderElementPreview(g, Color.gray, sextox * 5, sextoy * 2,
+                playerPreviewSizeScaled);
+        renderElementPreview(g, Color.gray, sextox * 5, sextoy * 4,
+                playerPreviewSizeScaled);
+        renderElementPreview(g, Color.gray, sextox * 3, sextoy * 3,
+                playerPreviewSizeScaled);
+        if (existsPlayerWithRace(RaceEnum.CLARK) || existsPlayerWithRace(RaceEnum.MAESTROS)) {
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 2, sextoy, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 4, sextoy, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 2, sextoy * 5, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 4, sextoy * 5, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 2, sextoy * 2, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 4, sextoy * 2, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 2, sextoy * 4, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 4, sextoy * 4, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 3, sextoy * 2, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 3, sextoy * 4, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 2, sextoy * 3, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.CLARK.getColor(), sextox * 4, sextoy * 3, playerPreviewSizeScaled);
+        }
+        if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox - visionTowerOffset, sextoy * 2,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 5 + visionTowerOffset, sextoy * 2,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox - visionTowerOffset, sextoy * 4,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 5 + visionTowerOffset, sextoy * 4,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 2, sextoy * 2, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 4, sextoy * 2, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 2, sextoy * 4, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 4, sextoy * 4, playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.ETERNIUM.getColor(), sextox * 3, sextoy * 3 - visionTowerOffset,
+                    playerPreviewSizeScaled);
+        }
+        if (existsPlayerWithRace(RaceEnum.FENIX)) {
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox, sextoy,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 3, sextoy,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 5, sextoy,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox, sextoy * 3,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 3, sextoy * 3 + visionTowerOffset,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 5, sextoy * 3,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox, sextoy * 5,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 3, sextoy * 5,
+                    playerPreviewSizeScaled);
+            renderElementPreview(g, RaceEnum.FENIX.getColor(), sextox * 5, sextoy * 5,
+                    playerPreviewSizeScaled);
+        }
+    }
+
+    public void renderElementPreview(Graphics g, Color color, float playerStartX, float playerStartY,
+                                     float playerPreviewSizeScaled) {
+        MapEnum map = getCurrentMap();
+        g.setColor(color);
+        float x =
+                WindowCombat.responsiveX(25) + ((playerStartX - playerPreviewSizeScaled / 2) / map.width) * (mapPreviewSize - playerPreviewSizeScaled);
+        float y =
+                WindowCombat.responsiveY(15) + ((playerStartY - playerPreviewSizeScaled / 2) / map.height) * (mapPreviewSize - playerPreviewSizeScaled);
+        g.fillRect(x, y, playerPreviewSizeScaled, playerPreviewSizeScaled);
     }
 }
