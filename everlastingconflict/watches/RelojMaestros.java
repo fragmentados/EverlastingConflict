@@ -99,8 +99,6 @@ public class RelojMaestros extends Reloj {
 
     @Override
     public void dibujar(Input input, Graphics g) {
-        this.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 - 100;
-        this.y = WindowCombat.playerY + 5;
         g.setColor(new Color(1f, 1f, 1f, 0.7f));
         g.fillOval(this.x, this.y, this.anchura, this.altura);
         if (detener > 0) {

@@ -50,7 +50,6 @@ public class Bestia extends Unidad {
             animation = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
             sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
-            miniatura = new Image("media/Miniaturas/Prueba.png");
         } catch (SlickException e) {
 
         }
@@ -97,7 +96,7 @@ public class Bestia extends Unidad {
                 WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + this.recompensa, Color.green, x, y - altura / 2 - 20, 2f));
                 aliado.addResources(this.recompensa);
             }
-            if (this.seleccionada()) {
+            if (this.isSelected()) {
                 this.deseleccionar();
             }
             for (Bestias b : p.bestias) {

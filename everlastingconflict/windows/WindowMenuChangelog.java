@@ -26,6 +26,9 @@ public class WindowMenuChangelog extends WindowMenuBasic {
         siguiente = new BotonSimple("Siguiente", WindowCombat.responsiveX(50), WindowCombat.responsiveY(90));
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - "Salir".length() * 10, 0);
         changelogList = new ArrayList();
+        changelogList.add("0.7\n\n- Sonidos de movimiento de unidades\n" +
+                "- Diferente miniatura por raza\n" +
+                "- No mostrar barra de vida salvo que estén dañados o seleciicionados\n");
         changelogList.add("0.6\n\n- Versión inicial de la Sexta Raza: Alianza Estelar!\n" +
                 "- Implementado desembarco de tropas de la Alianza Estelar y sus dos primeras unidades\n" +
                 "- Mejorada gestión de las unidades cuerpo a cuerpo para no disparar proyectiles\n" +

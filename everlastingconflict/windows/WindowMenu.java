@@ -14,15 +14,18 @@ import org.newdawn.slick.SlickException;
 
 public class WindowMenu extends WindowMenuBasic {
 
-    public BotonSimple combate, tutorial, salir, changelog, challenge;
+    public BotonSimple combate, tutorial, salir, changelog, challenge, story;
 
     @Override
     public void init(GameContainer container) throws SlickException {
         super.init(container);
+        story = new BotonSimple("Historia", WindowCombat.middleScreenX("Historia"), WindowCombat.responsiveY(20));
         tutorial = new BotonSimple("Tutorial", WindowCombat.middleScreenX("Tutorial"), WindowCombat.responsiveY(30));
         combate = new BotonSimple("Combate", WindowCombat.middleScreenX("Combate"), WindowCombat.responsiveY(40));
-        challenge = new BotonSimple("Desafios", "Nuevo!", WindowCombat.middleScreenX("Desafios"), WindowCombat.responsiveY(50));
-        changelog = new BotonSimple("Changelog", "Nuevo!", WindowCombat.middleScreenX("Changelog"), WindowCombat.responsiveY(60));
+        challenge = new BotonSimple("Desafios", "Nuevo!", WindowCombat.middleScreenX("Desafios"),
+                WindowCombat.responsiveY(50));
+        changelog = new BotonSimple("Changelog", "Nuevo!", WindowCombat.middleScreenX("Changelog"),
+                WindowCombat.responsiveY(60));
         salir = new BotonSimple("Salir", WindowCombat.VIEWPORT_SIZE_WIDTH - "Salir".length() * 10, 0);
         WindowMenuBasic.subTitle = null;
     }
@@ -35,7 +38,9 @@ public class WindowMenu extends WindowMenuBasic {
         }
         //Boton izquierdo
         if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-            if (combate.isHovered(input.getMouseX(), input.getMouseY())) {
+            if (story.isHovered(input.getMouseX(), input.getMouseY())) {
+                WindowMain.windowSwitch(container, "Story");
+            } else if (combate.isHovered(input.getMouseX(), input.getMouseY())) {
                 WindowMain.windowSwitch(container, "PlayerSelection");
             } else if (tutorial.isHovered(input.getMouseX(), input.getMouseY())) {
                 WindowMain.windowSwitch(container, "Tutorial");
@@ -52,6 +57,7 @@ public class WindowMenu extends WindowMenuBasic {
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         super.render(container, g);
+        story.render(g);
         combate.render(g);
         tutorial.render(g);
         challenge.render(g);

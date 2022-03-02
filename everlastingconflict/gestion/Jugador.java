@@ -176,6 +176,10 @@ public class Jugador {
         }
     }
 
+    public boolean comprobacion_recursos(int cost) {
+        return recursos >= cost;
+    }
+
     public void initElements(Game p) {
         this.raza.initElements(this);
         for (Unidad u : unidades) {

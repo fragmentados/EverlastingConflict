@@ -20,10 +20,7 @@ import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.status.Status;
 import everlastingconflict.status.StatusNameEnum;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import org.newdawn.slick.*;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -34,7 +31,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static everlastingconflict.elements.util.ElementosComunes.MINIATURE_IMAGE;
 import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
 import static everlastingconflict.windows.WindowCombat.*;
 
@@ -52,8 +48,9 @@ public class UI {
     public static final float UI_HEIGHT = 200;
     public static final int ELEMENTS_PER_PAGE = 32;
     private Comparator<ElementoComplejo> elementSorter = Comparator.comparing(e -> e.nombre);
+    private Image miniature;
 
-    public UI() {
+    public UI(Game game) throws SlickException {
         this.elements = new ArrayList<>();
         this.currentSelectionPage = new ArrayList<>();
         this.sig = new BotonSimple("sig");
@@ -63,6 +60,7 @@ public class UI {
         anchura_miniatura = 200;
         anchura_seleccion = 730;
         anchura_botones = WindowCombat.VIEWPORT_SIZE_WIDTH - 1180;
+        miniature = new Image("media/Miniaturas/" + game.getMainPlayer().raza.getName() + ".png");
     }
 
     public void previousPage() {
@@ -584,7 +582,7 @@ public class UI {
         g.drawRect(playerX + 230, initialY + 50, ed.cola_construccion.get(0).icono.getWidth(),
                 ed.cola_construccion.get(0).icono.getHeight());
         g.setColor(Color.white);
-        if (ed.cantidad_produccion != null) {
+        if (ed.cantidad_produccion != null && !ed.cantidad_produccion.isEmpty()) {
             g.setColor(Color.green);
             g.drawString(ed.cantidad_produccion.get(0).toString(), playerX + 230, initialY + 50);
             g.setColor(Color.white);
@@ -602,7 +600,7 @@ public class UI {
             g.drawRect(playerX + 230 + (i - 1) * 50, initialY + 100, ed.cola_construccion.get(i).icono.getWidth(),
                     ed.cola_construccion.get(i).icono.getHeight());
             g.setColor(Color.white);
-            if (ed.cantidad_produccion != null) {
+            if (ed.cantidad_produccion != null && ed.cantidad_produccion.size() > i) {
                 g.setColor(Color.green);
                 g.drawString(ed.cantidad_produccion.get(i).toString(), playerX + 230 + (i - 1) * 50, initialY + 100);
                 g.setColor(Color.white);
@@ -687,16 +685,13 @@ public class UI {
         return null;
     }
 
-    public void render(Game game, Graphics g, List<ControlGroup> controlGroupGroups) {
+    public void render(Game game, Graphics g, List<ControlGroup> controlGroups) {
         float initialY = WindowCombat.playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI_HEIGHT - 1;
         g.setColor(UI_COLOR);
         g.fillRect(WindowCombat.playerX, initialY, WindowCombat.VIEWPORT_SIZE_WIDTH - 1, UI_HEIGHT);
         //Primer Rectángulo: Miniatura.        
         if (!elements.isEmpty()) {
-            // TODO HAVE SEVERAL MINIATURE IMAGES PER RACE
-            //Image miniatura = currentSelectionPage.get(0).miniatura;
-            //miniatura.draw(WindowCombat.playerX, initialY);
-            MINIATURE_IMAGE.draw(WindowCombat.playerX, initialY);
+            miniature.draw(WindowCombat.playerX, initialY);
         }
         g.setColor(Color.white);
         g.drawRect(WindowCombat.playerX, initialY, anchura_miniatura, UI_HEIGHT);
@@ -731,7 +726,7 @@ public class UI {
         //Tercer Rectángulo: Botones
         renderButtons(g, game, initialY);
         renderMinimap(game, g, initialY);
-        renderControlGroups(g, controlGroupGroups, initialY);
+        renderControlGroups(g, controlGroups, initialY);
     }
 
     public void renderButtons(Graphics g, Game p, float initialY) {
@@ -774,17 +769,17 @@ public class UI {
         float initialX = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH - anchura_mini - 12 * 22;
         //Grupos de control
         for (int i = Input.KEY_1; i <= Input.KEY_0; i++) {
-            int numero;
-            if (i == 11) {
-                numero = 0;
-            } else {
-                numero = i - 1;
-            }
-            g.drawRect(initialX + i * 22, initialY - 40, 20, 20);
-            g.drawString(Integer.toString(numero), initialX + i * 22, initialY - 40);
-            g.drawRect(initialX + i * 22, initialY - 20, 20, 20);
             for (ControlGroup c : controlGroups) {
-                if (c.tecla == i) {
+                if (c.tecla == i && !c.contenido.isEmpty()) {
+                    int numero;
+                    if (i == 11) {
+                        numero = 0;
+                    } else {
+                        numero = i - 1;
+                    }
+                    g.drawRect(initialX + i * 22, initialY - 40, 20, 20);
+                    g.drawString(Integer.toString(numero), initialX + i * 22, initialY - 40);
+                    g.drawRect(initialX + i * 22, initialY - 20, 20, 20);
                     g.drawString(Integer.toString(c.contenido.size()), initialX + i * 22, initialY - 20);
                     break;
                 }

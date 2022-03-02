@@ -12,7 +12,10 @@ import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Raza;
 import everlastingconflict.windows.WindowCombat;
-import org.newdawn.slick.*;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +23,7 @@ import java.util.List;
 
 
 public abstract class ElementoComplejo extends ElementoVulnerable {
-    
-    public Image miniatura;    
+
     public int vision;
     public List<BotonComplejo> botones = new ArrayList<>();
 
@@ -37,7 +39,11 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
         WindowCombat.ui.deseleccionar(this);
     }
 
-    public boolean seleccionada() {
+    public void removeFromControlGroups() {
+        WindowCombat.controlGroups.forEach(cg -> cg.contenido.removeIf(e -> e.equals(this)));
+    }
+
+    public boolean isSelected() {
         return (WindowCombat.ui.elements.indexOf(this) != -1);
     }
 
@@ -80,13 +86,17 @@ public abstract class ElementoComplejo extends ElementoVulnerable {
     @Override
     public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
         super.render(sprite, p, c, input, g);
+        if (this.isSelected()) {
+            WindowCombat.controlGroups.stream().filter(cg -> cg.contenido.contains(this)).findFirst()
+                    .ifPresent(cg -> g.drawString(String.valueOf(cg.tecla - 1), this.x - anchura / 2 - 10, this.y + this.altura / 2));
+        }
     }
 
     @Override
     public void render(Game p, Color c, Input input, Graphics g) {
         this.render(this.animation, p, c, input, g);
-    }        
-    
+    }
+
     @Override
     public abstract void destruir(Game p, ElementoAtacante atacante);
 

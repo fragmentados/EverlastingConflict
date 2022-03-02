@@ -1,9 +1,6 @@
 package everlastingconflict.races.enums;
 
-import everlastingconflict.elements.impl.Edificio;
-import everlastingconflict.elements.impl.Manipulador;
-import everlastingconflict.elements.impl.Taller;
-import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.elements.impl.*;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.Alianza;
 import org.newdawn.slick.Color;
@@ -93,10 +90,6 @@ public enum RaceEnum {
                         ally.verticalOffset(ally.y_inicial, 150)));
                 ally.unidades.add(new Unidad(ally, "Recolector", ally.horizontalOffset(ally.x_inicial, 50),
                         ally.verticalOffset(ally.y_inicial, 150)));
-                ally.unidades.add(new Unidad(ally, "Halcón", ally.x_inicial,
-                        ally.verticalOffset(ally.y_inicial, 200)));
-                ally.unidades.add(new Unidad(ally, "Fénix", ally.horizontalOffset(ally.x_inicial, 50),
-                        ally.verticalOffset(ally.y_inicial, 200)));
                 break;
             case ETERNIUM:
                 ally.edificios.add(new Edificio(ally, "Mando Central", ally.x_inicial, ally.y_inicial));
@@ -133,7 +126,9 @@ public enum RaceEnum {
                         ally.horizontalOffset(ally.x_inicial, 700), ally.y_inicial));
                 break;
             case ALIANZA:
-                ally.edificios.add(new Edificio(ally, "Nave", ally.x_inicial, ally.y_inicial));
+                ally.edificios.add(new Nave(ally, "Nave", ally.x_inicial, ally.y_inicial));
+                ally.edificios.add(new Nave(ally, "Nave Combate", ally.x_inicial,
+                        ally.verticalOffset(ally.y_inicial, 200)));
                 Alianza.initElements();
                 break;
         }

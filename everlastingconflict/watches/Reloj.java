@@ -30,6 +30,8 @@ public abstract class Reloj extends ElementoCoordenadas {
         detener_contador = detener = d;
     }
 
+    public static final String NO_TIME_REMAINING = "00:00";
+
     public static String tiempo_a_string(float n) {
         String minutos = Integer.toString((int) n / 60);
         String segundos = Integer.toString((int) n % 60);

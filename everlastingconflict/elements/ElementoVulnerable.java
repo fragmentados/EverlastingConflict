@@ -122,7 +122,8 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
                 g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y,
                         anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
+                g.fillRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado,
+                        altura_barra_vida);
             }
         }
         g.setColor(Color.black);
@@ -135,7 +136,8 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
                 g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y,
                         anchura_contador - anchura_hasta_el_momento, altura_barra_vida);
             } else {
-                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado, altura_barra_vida);
+                g.drawRect(x - anchura / 2 + i * anchura_mini_cuadrado, y, anchura_mini_cuadrado,
+                        altura_barra_vida);
             }
         }
         g.setColor(Color.white);
@@ -144,10 +146,12 @@ public abstract class ElementoVulnerable extends ElementoCoordenadas {
     @Override
     public void render(Animation sprite, Game p, Color c, Input input, Graphics g) {
         super.render(sprite, p, c, input, g);
-        drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
-        if (escudo > 0) {
-            drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial,
-                    this.y + this.altura / 2 + this.altura_barra_vida);
+        if (WindowCombat.ui.elements.indexOf(this) != -1 || this.vida != this.vida_max) {
+            drawLifeBar(g, c, this.vida, this.vida_max, this.y + this.altura / 2);
+            if (escudo > 0) {
+                drawLifeBar(g, Color.blue, this.escudo, this.escudoInicial,
+                        this.y + this.altura / 2 + this.altura_barra_vida);
+            }
         }
     }
 

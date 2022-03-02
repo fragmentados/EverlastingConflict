@@ -68,7 +68,6 @@ public class ElementosComunes {
     public static Image LIDER_IMAGE;
     // Eternium DETENTION image
     public static Animation ETERNIUM_DETENTION;
-    public static Image MINIATURE_IMAGE;
     // Main Element Icon
     public static Image FENIX_MAIN_ELEMENT;
     public static Image CLARK_MAIN_ELEMENT;
@@ -123,7 +122,6 @@ public class ElementosComunes {
         ETERNIUM_DETENTION = new Animation(new Image[]{new Image("media/Unidades/Detención.png")}, new int[]{300},
                 false);
         BEAST_DEATH_IMAGE = new Image("media/Unidades/Muerte.png");
-        MINIATURE_IMAGE = new Image("media/Miniaturas/Prueba.png");
         FENIX_MAIN_ELEMENT = new Image("media/Iconos/Sede.png");
         CLARK_MAIN_ELEMENT = new Image("media/Iconos/Primarca.png");
         ETERNIUM_MAIN_ELEMENT = new Image("media/Iconos/Mando Central.png");

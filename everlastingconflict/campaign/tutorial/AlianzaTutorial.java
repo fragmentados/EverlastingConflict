@@ -1,8 +1,8 @@
 package everlastingconflict.campaign.tutorial;
 
 import everlastingconflict.gestion.Game;
+import everlastingconflict.races.Alianza;
 import everlastingconflict.races.enums.RaceEnum;
-import everlastingconflict.watches.RelojAlianza;
 import everlastingconflict.windows.WindowCombat;
 
 public class AlianzaTutorial extends GuidedGame {
@@ -31,7 +31,7 @@ public class AlianzaTutorial extends GuidedGame {
                 " consiga los refuerzos, prueba a hacerlo.", false) {
             @Override
             public boolean check(Game p) {
-                return WindowCombat.alianceWatch().ndivision == 2;
+                return WindowCombat.alianceWatch(getMainPlayer().edificios.get(0)).ndivision == 2;
             }
         });
         steps.add(new GameStep("La nave desaparecerá del mapa durante unos instantes y volverá al punto indicado con " +
@@ -47,6 +47,6 @@ public class AlianzaTutorial extends GuidedGame {
     @Override
     public void initElements() {
         super.initElements();
-        WindowCombat.createWatch(new RelojAlianza(this.getMainPlayer()));
+        Alianza.initAlianceWatches(this.getPlayerByRace(RaceEnum.ALIANZA));
     }
 }

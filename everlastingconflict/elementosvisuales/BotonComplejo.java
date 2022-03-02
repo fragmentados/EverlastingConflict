@@ -478,7 +478,7 @@ public class BotonComplejo extends BotonSimple {
                         case Alianza.RESOURCES:
                             Alianza.unitToDesembarc = texto;
                             try {
-                                WindowCombat.alianceWatch().updateSprite();
+                                WindowCombat.alianceWatch(aliado.edificios.get(0)).updateSprite();
                             } catch (SlickException ex) {
                             }
                             break;

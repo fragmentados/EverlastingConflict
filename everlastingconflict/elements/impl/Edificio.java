@@ -40,8 +40,6 @@
  import java.util.logging.Level;
  import java.util.logging.Logger;
 
- import static everlastingconflict.behaviour.BehaviourEnum.DESPEGANDO;
-
 
  public class Edificio extends ElementoAtacante {
 
@@ -89,7 +87,6 @@
              imageList.toArray(images);
              animation = new Animation(images, 450, false);
              icono = new Image("media/Iconos/" + nombre + ".png");
-             miniatura = new Image("media/Miniaturas/Prueba.png");
              if (!activo) {
                  spriteDisabled = new Image("media/Edificios/" + nombre + "Desactivado.png");
              }
@@ -368,9 +365,10 @@
          if (!BehaviourEnum.DESTRUIDO.equals(this.behaviour)
                  && aliado.edificios.indexOf(this) != -1) {
              this.behaviour = BehaviourEnum.DESTRUIDO;
-             if (this.seleccionada()) {
+             if (this.isSelected()) {
                  this.deseleccionar();
              }
+             this.removeFromControlGroups();
              aliado.edificios.remove(this);
              if (aliado.raza.equals(RaceEnum.ETERNIUM)) {
                  aliado.perforationCheck();
@@ -477,17 +475,6 @@
                      this.destruir(p, null);
                  }
                  break;
-         }
-         if (DESPEGANDO.equals(behaviour)) {
-             behaviourTimer -= Reloj.TIME_REGULAR_SPEED * delta;
-             if (behaviourTimer <= 0) {
-                 behaviourTimer = 0;
-                 if (WindowCombat.alianceWatch().ndivision == 2) {
-                     Alianza.shipTakeOff(aliado, this);
-                 } else {
-                     Alianza.shipLanding(aliado, this);
-                 }
-             }
          }
          for (BotonComplejo b : botones) {
              b.comportamiento(delta);

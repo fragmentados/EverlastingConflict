@@ -65,7 +65,6 @@ public class Unidad extends ElementoMovil {
         this.vida = b.vida;
         this.vida_max = b.vida_max;
         this.animation = b.animation;
-        this.miniatura = b.miniatura;
         this.icono = b.icono;
         anchura_barra_vida = anchura = animation.getWidth();
         altura = animation.getHeight();
@@ -133,7 +132,6 @@ public class Unidad extends ElementoMovil {
             imageList.toArray(images);
             animation = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
-            miniatura = new Image("media/Miniaturas/Prueba.png");
             //miniatura = new Image("media/Miniaturas/" + nombre + ".png");
         } catch (SlickException e) {
 
@@ -309,10 +307,11 @@ public class Unidad extends ElementoMovil {
         if (!BehaviourEnum.DESTRUIDO.equals(this.behaviour)
                 && p.getPlayerFromElement(this).unidades.indexOf(this) != -1) {
             this.behaviour = BehaviourEnum.DESTRUIDO;
-            if (this.seleccionada()) {
+            if (this.isSelected()) {
                 this.deseleccionar();
             }
             p.getPlayerFromElement(this).unidades.remove(this);
+            this.removeFromControlGroups();
             Manipulador.checkToGainExperience(p, atacante, experiencia_al_morir, x, y, altura);
             if (shouldPlaySound) {
                 ElementosComunes.UNIT_DEATH_SOUND.playAt(1f, 1f, x, y, 0f);

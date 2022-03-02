@@ -16,7 +16,6 @@ import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Evento;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
-import everlastingconflict.races.Alianza;
 import everlastingconflict.races.Clark;
 import everlastingconflict.races.Fusion;
 import everlastingconflict.races.enums.RaceEnum;
@@ -76,7 +75,7 @@ public class WindowCombat extends Window {
     public static boolean click;
     public int x_click, y_click;
     //Grupos de control
-    public List<ControlGroup> controlGroupGroups = new ArrayList<>();
+    public static List<ControlGroup> controlGroups = new ArrayList<>();
     //Mensajes
     private List<Mensaje> mensajes;
     //RTS.Relojes
@@ -118,10 +117,11 @@ public class WindowCombat extends Window {
         return null;
     }
 
-    public static RelojAlianza alianceWatch() {
-        Reloj relojEncontrado = relojes.stream().filter(r -> r instanceof RelojAlianza).findFirst().orElse(null);
-        if (relojEncontrado != null) {
-            return (RelojAlianza) relojEncontrado;
+    public static RelojAlianza alianceWatch(Edificio ship) {
+        Reloj watchFound =
+                relojes.stream().filter(r -> r instanceof RelojAlianza && ((RelojAlianza) r).shipAssociated.equals(ship)).findFirst().orElse(null);
+        if (watchFound != null) {
+            return (RelojAlianza) watchFound;
         }
         return null;
     }
@@ -186,7 +186,7 @@ public class WindowCombat extends Window {
         atacar = new Image("media/Cursores/atacar.png");
         construccion = new Image("media/Edificios/construccion.png");
         mensajes = new ArrayList<>();
-        ui = new UI();
+        ui = new UI(game);
         pauseMenuButtons = new ArrayList<>();
         pauseMenuButtons.add(new BotonSimple("Volver") {
             @Override
@@ -491,6 +491,10 @@ public class WindowCombat extends Window {
                 }
             }
         } else {
+            WindowCombat.relojes.forEach(r -> {
+                r.x = WindowCombat.playerX + WindowCombat.VIEWPORT_SIZE_WIDTH / 2 - 200 + 100 * WindowCombat.relojes.indexOf(r);
+                r.y = WindowCombat.playerY + 5;
+            });
             selectMainElementButton.x = playerX;
             selectMainElementButton.y =
                     playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT - selectMainElementButton.altura;
@@ -578,13 +582,11 @@ public class WindowCombat extends Window {
                 if (input.isKeyPressed(numberKey)) {
                     if (input.isKeyDown(Input.KEY_LCONTROL)) {
                         //Asignar grupo de control
-                        for (ControlGroup c : controlGroupGroups) {
-                            if (c.tecla == numberKey) {
-                                controlGroupGroups.remove(c);
-                                break;
-                            }
-                        }
-                        controlGroupGroups.add(new ControlGroup(ui.elements, numberKey));
+                        final int numberKeyUsed = numberKey;
+                        controlGroups.removeIf(cg -> cg.tecla == numberKeyUsed);
+                        controlGroups.forEach(cg -> cg.contenido.removeAll(ui.elements));
+                        controlGroups.removeIf(cg -> cg.contenido.isEmpty());
+                        controlGroups.add(new ControlGroup(ui.elements, numberKey));
                     } else {
                         handleControlGroupSelection(numberKey);
                     }
@@ -642,9 +644,9 @@ public class WindowCombat extends Window {
                     ui.handleLeftClick(input, game, x_click, y_click);
                     click = false;
                 } else if ((edificio != null)) {
-                    if (edificio.nombre.equals("Nave")) {
+                    if (edificio instanceof Nave) {
                         // Decidimos el punto de aterrizaje de la nave
-                        Alianza.selectLandingCoordinates(game.getPlayerFromElement(edificio), x_click, y_click);
+                        ((Nave) edificio).selectLandingCoordinates(x_click, y_click);
                         edificio = null;
                         click = false;
                     } else if (!constructor.nombre.equals("No hay")) {
@@ -804,7 +806,7 @@ public class WindowCombat extends Window {
 
     private void handleControlGroupSelection(Integer numberKey) {
         //Seleccionar grupo de control
-        for (ControlGroup c : controlGroupGroups) {
+        for (ControlGroup c : controlGroups) {
             if (c.tecla == numberKey) {
                 boolean cambiar_perspectiva = true;
                 if (ui.elements.isEmpty()) {
@@ -883,7 +885,6 @@ public class WindowCombat extends Window {
         }
         Jugador mainPlayer = game.getMainPlayer();
         Input input = container.getInput();
-        //invertir.dibujar(g);
         if (game.isShadowOfWarEnabled) {
             //Negro
             g.setBackground(new Color(0.1f, 0.1f, 0.05f, 1f));
@@ -897,6 +898,7 @@ public class WindowCombat extends Window {
                 derrota.draw(VIEWPORT_SIZE_WIDTH / 2 - 400, VIEWPORT_SIZE_HEIGHT / 2 - 50);
             }
         } else {
+            selectMainElementButton.render(g);
             if (game.isShadowOfWarEnabled) {
                 //Gris
                 renderVisibility(g, HALF_VISIBLE_COLOR, 100);
@@ -957,7 +959,7 @@ public class WindowCombat extends Window {
                 }
                 g.setColor(Color.white);
             }
-            ui.render(game, g, controlGroupGroups);
+            ui.render(game, g, controlGroups);
             if (attackMoveModeEnabled) {
                 g.setColor(Color.red);
                 if (ui.currentSelectionPage.get(0) instanceof Unidad) {
@@ -1015,7 +1017,6 @@ public class WindowCombat extends Window {
                     elementHighlighted.y - (elementHighlighted.altura + highlightRadius) / 2,
                     elementHighlighted.anchura + highlightRadius, elementHighlighted.altura + highlightRadius);
         }
-        selectMainElementButton.render(g);
         if (pauseMenuEnabled) {
             renderPauseMenu(g);
         }

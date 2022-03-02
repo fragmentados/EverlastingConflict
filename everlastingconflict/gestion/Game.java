@@ -9,9 +9,9 @@ import everlastingconflict.elements.ElementoComplejo;
 import everlastingconflict.elements.ElementoCoordenadas;
 import everlastingconflict.elements.ElementoVulnerable;
 import everlastingconflict.elements.impl.*;
+import everlastingconflict.races.Alianza;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.victory.GameModeEnum;
-import everlastingconflict.watches.RelojAlianza;
 import everlastingconflict.watches.RelojEternium;
 import everlastingconflict.watches.RelojMaestros;
 import everlastingconflict.windows.MapEnum;
@@ -166,9 +166,6 @@ public class Game {
         if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
             WindowCombat.createWatch(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
         }
-        if (existsPlayerWithRace(RaceEnum.ALIANZA)) {
-            WindowCombat.createWatch(new RelojAlianza(this.getPlayerByRace(RaceEnum.ALIANZA)));
-        }
         initPlayerColors();
         /*getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
@@ -177,6 +174,9 @@ public class Game {
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));*/
         players.forEach(p -> p.initElements(this));
+        if (existsPlayerWithRace(RaceEnum.ALIANZA)) {
+            Alianza.initAlianceWatches(this.getPlayerByRace(RaceEnum.ALIANZA));
+        }
     }
 
     private void initResources(float width, float height) {
@@ -401,7 +401,7 @@ public class Game {
         //Seleccionar un Elemento
         List<ElementoComplejo> selectableElements = getSelectableElements();
         selectableElements.stream()
-                .filter(e -> e.seleccionada())
+                .filter(e -> e.isSelected())
                 .forEach(e -> e.deseleccionar());
     }
 

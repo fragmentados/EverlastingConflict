@@ -32,7 +32,6 @@ public class Recurso extends ElementoComplejo {
         List<Image> imageList = new ArrayList<>();
         try {
             icono = new Image("media/Iconos/" + nombre + ".png");
-            miniatura = new Image("media/Miniaturas/Prueba.png");
             do {
                 imageList.add(new Image("media/Recursos/" + nombre + contador + ".png"));
                 contador++;
@@ -104,7 +103,6 @@ public class Recurso extends ElementoComplejo {
 
     @Override
     public void render(Game p, Color c, Input input, Graphics g) {
-        //super.dibujar(p, c, input, g);
         animation.draw(x - anchura / 2, y - altura / 2);
         if (DEBUG_MODE) {
             g.setColor(Color.black);

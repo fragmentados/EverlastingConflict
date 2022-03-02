@@ -22,6 +22,7 @@ public class WindowMain extends BasicGame {
     public static WindowMenuPlayerSelection playerSelectionWindow = new WindowMenuPlayerSelection();
     public static WindowMenuChangelog changelogWindow = new WindowMenuChangelog();
     public static WindowMenuTutorial tutorialWindow = new WindowMenuTutorial();
+    public static WindowMenuStory storyWindow = new WindowMenuStory();
     public static Window currentWindow;
     public static String previousWindow;
 
@@ -50,6 +51,9 @@ public class WindowMain extends BasicGame {
                 break;
             case "Tutorial":
                 contador = tutorialWindow;
+                break;
+            case "Story":
+                contador = storyWindow;
                 break;
         }
         if (contador != null) {

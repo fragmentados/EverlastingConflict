@@ -276,7 +276,6 @@ public class Manipulador extends Unidad {
             animation = new Animation(new Image[]{new Image("media/Manipulador/" + nombre + nivel + ".png")},
                     new int[]{300}, false);
             icono = new Image("media/Manipulador/" + nombre + nivel + "_icono.png");
-            miniatura = new Image("media/Miniaturas/Prueba.png");
             anchura = animation.getWidth();
             altura = animation.getHeight();
             anchura_barra_vida = anchura;
