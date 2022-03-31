@@ -23,7 +23,7 @@ public class MaestrosChallenge extends Challenge {
         Jugador opposingPlayer = this.players.get(1);
         mainPlayer.unidades = new ArrayList<>();
         mainPlayer.edificios = new ArrayList<>();
-        RelojMaestros reloj = new RelojMaestros(this.players.get(0));
+        RelojMaestros reloj = new RelojMaestros();
         reloj.cambio_temporal(RelojMaestros.nombre_noche);
         WindowCombat.createWatch(reloj);
         Manipulador manipulador = new Manipulador(this.players.get(0), 200, 200);

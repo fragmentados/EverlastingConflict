@@ -27,7 +27,7 @@ public class ClarkChallenge extends Challenge {
         jugador.unidades.add(new Unidad(jugador, "Devorador", 300, 200));
         jugador.unidades.add(new Unidad(jugador, "Devorador", 380, 200));
         this.players.get(1).unidades.add(new Unidad(this.players.get(1), "Ancestro", 600, 600));
-        RelojEternium reloj = new RelojEternium(this.players.get(1));
+        RelojEternium reloj = new RelojEternium();
         reloj.contador_reloj = reloj.fin_segundo_cuarto;
         reloj.ndivision = 3;
         WindowCombat.createWatch(reloj);

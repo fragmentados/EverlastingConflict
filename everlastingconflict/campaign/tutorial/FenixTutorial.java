@@ -36,7 +36,7 @@ public class FenixTutorial extends GuidedGame {
             }
         });
         steps.add(new GameStep("Prueba a hacerlo ahora haciendo click derecho sobre la ciudad con el recolector " +
-                "seleccionado") {
+                "seleccionado", true, false) {
             @Override
             public boolean check(Game p) {
                 Input input = RTS.canvas.getContainer().getInput();

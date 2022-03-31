@@ -40,7 +40,7 @@ public class EterniumChallenge extends Challenge {
         for (Unidad unidad : jugador.unidades) {
             unidad.iniciarbotones(this);
         }
-        RelojEternium reloj = new RelojEternium(this.players.get(0), 0.2f);
+        RelojEternium reloj = new RelojEternium(0.2f);
         reloj.contador_reloj = reloj.fin_segundo_cuarto;
         WindowCombat.createWatch(reloj);
     }

@@ -16,13 +16,15 @@ import org.newdawn.slick.Graphics;
 
 import java.util.List;
 
+import static everlastingconflict.gestion.Game.NUM_AI_PLAYERS;
+
 
 public abstract class AI extends Jugador {
 
     public int npushear;
 
     public AI(String n, RaceEnum r, SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
-        super(n, r, subRaceEnum, t, isLeader, isJuggernaut);
+        super(n + NUM_AI_PLAYERS++, r, subRaceEnum, t, isLeader, isJuggernaut);
     }
 
     public static AI crearAI(RaceEnum r, SubRaceEnum subRaceEnum, Integer t, String dificultad, boolean isLeader,
@@ -37,9 +39,10 @@ public abstract class AI extends Jugador {
         } else if (RaceEnum.ETERNIUM.equals(r)) {
             switch (dificultad) {
                 case "Fácil":
+                    return new AIEterniumFacil(subRaceEnum, t, isLeader, isJuggernaut);
                 case "Normal":
                 case "Difícil":
-                    return new AIEterniumFacil(subRaceEnum, t, isLeader, isJuggernaut);
+                    return new AIEterniumNormal(subRaceEnum, t, isLeader, isJuggernaut);
             }
         } else if (RaceEnum.FENIX.equals(r)) {
             switch (dificultad) {

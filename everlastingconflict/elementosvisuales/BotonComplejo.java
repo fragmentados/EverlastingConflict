@@ -38,7 +38,7 @@ import static everlastingconflict.windows.WindowCombat.playerY;
 
 public class BotonComplejo extends BotonSimple {
 
-    public String elemento_nombre, elemento_tipo;
+    public String elemento_nombre = "", elemento_tipo;
     public float elemento_coste;
     public int elementThreatLevelNeeded;
     public String descripcion;
@@ -394,7 +394,7 @@ public class BotonComplejo extends BotonSimple {
         }
     }
 
-    public void resolucion(List<ElementoComplejo> el, ElementoComplejo e, Game game) {
+    public void resolucion(List<ElementoComplejo> elementsSelected, ElementoComplejo e, Game game) {
         //e representa el elemento desde el cual se activa el botón          
         Jugador aliado = game.getPlayerFromElement(e);
         this.resolucion_contador = BotonComplejo.resolucion;
@@ -497,7 +497,7 @@ public class BotonComplejo extends BotonSimple {
                     } else {
                         if (this.elemento_tipo.equals("Edificio")) {
                             //Construir Edificio                                    
-                            for (ElementoSimple e2 : el) {
+                            for (ElementoSimple e2 : elementsSelected) {
                                 if (e2 instanceof Unidad) {
                                     Unidad contador = (Unidad) e2;
                                     if (contador.constructor) {
@@ -532,13 +532,17 @@ public class BotonComplejo extends BotonSimple {
                 } else {
                     switch (texto) {
                         case "Fusion":
-                            List<Unidad> contador = new ArrayList<>();
-                            for (ElementoSimple e2 : el) {
+                            int fusionLimit = 2;
+                            List<Unidad> unitsToBeFused = new ArrayList<>();
+                            for (ElementoSimple e2 : elementsSelected) {
                                 if (e2.nombre.equals("Depredador") || e2.nombre.equals("Devorador") || e2.nombre.equals("Cazador")) {
-                                    contador.add((Unidad) e2);
+                                    unitsToBeFused.add((Unidad) e2);
+                                    if (unitsToBeFused.size() == fusionLimit) {
+                                        break;
+                                    }
                                 }
                             }
-                            Clark.iniciarFusion(game, new Fusion(contador));
+                            Clark.iniciarFusion(game, new Fusion(unitsToBeFused));
                             break;
                         case "Detener":
                             unidad.parar();

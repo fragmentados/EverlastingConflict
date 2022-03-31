@@ -211,14 +211,6 @@ public class Unidad extends ElementoMovil {
                             e.printStackTrace();
                         }
                         this.movil = false;
-                        if (edificio_construccion.nombre.equals("Refinería")) {
-                            for (Recurso r : p.recursos) {
-                                if (r.x == edificio_construccion.x && edificio_construccion.y == r.y) {
-                                    r.capturador = aliado.nombre;
-                                    break;
-                                }
-                            }
-                        }
                         aliado.edificios.add(edificio_construccion);
                     }
                     if (edificio_construccion.vida < edificio_construccion.vida_max) {

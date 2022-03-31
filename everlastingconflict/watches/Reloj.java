@@ -7,7 +7,6 @@ package everlastingconflict.watches;
 
 import everlastingconflict.elements.ElementoCoordenadas;
 import everlastingconflict.gestion.Game;
-import everlastingconflict.gestion.Jugador;
 import org.newdawn.slick.*;
 
 import static everlastingconflict.elements.util.ElementosComunes.UI_COLOR;
@@ -21,7 +20,6 @@ public abstract class Reloj extends ElementoCoordenadas {
     public float detener, detener_contador;
     public static final float TIME_REGULAR_SPEED = 0.001f;
     public Image sprite;
-    public Jugador jugadorAsociado;
     float hintBoxWidth = 565;
     float hintBoxHeight = 200;
     protected String hintBoxText;

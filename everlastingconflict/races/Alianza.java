@@ -103,7 +103,7 @@ public class Alianza {
 
     public static void initAlianceWatches(Jugador jugador) {
         for (Edificio edificio : jugador.edificios) {
-            WindowCombat.createWatch(new RelojAlianza(jugador, (Nave) edificio));
+            WindowCombat.createWatch(new RelojAlianza((Nave) edificio));
         }
     }
 

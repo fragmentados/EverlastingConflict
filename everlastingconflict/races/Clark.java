@@ -22,6 +22,8 @@ import java.util.List;
 
 public class Clark {
 
+    public static final int tiempo_mineria = 15;
+    public static final int recursos_primarca = 100;
     public static int ataque_depredador = Unidad.ataque_estandar + 5;
     public static int ataque_destructor = Unidad.ataque_estandar + 40;
     public static int defensa_defensor = Unidad.defensa_estandar + 4;

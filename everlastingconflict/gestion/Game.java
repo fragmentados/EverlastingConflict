@@ -28,7 +28,8 @@ import static everlastingconflict.windows.WindowCombat.*;
 
 public class Game {
 
-    public List<Jugador> players = new ArrayList<>();
+    public static int NUM_AI_PLAYERS = 0;
+    public static List<Jugador> players = new ArrayList<>();
     public List<Recurso> recursos;
     public List<Bestias> bestias;
     public List<Proyectil> proyectiles;
@@ -64,7 +65,9 @@ public class Game {
         //Todos los argumentos salvo x e y son opcionales
         Recurso resultado = null;
         float distancia = -1;
-        for (Recurso r : recursos) {
+        List<Recurso> availableResources =
+                this.recursos.stream().filter(r -> !"Hierro".equals(nombre) || !existsRefineryOnResource(r)).collect(Collectors.toList());
+        for (Recurso r : availableResources) {
             if ((recurso == null) || (r != recurso)) {
                 if ((nombre == null) || ((r.nombre.equals(nombre) && (!r.nombre.equals("Civiles") || r.vida == 0)))) {
                     if ((nombre_jugador == null) || (!nombre_jugador.equals(r.capturador))) {
@@ -82,6 +85,10 @@ public class Game {
         return resultado;
     }
 
+    public boolean existsRefineryOnResource(Recurso resource) {
+        return players.stream().flatMap(p -> p.edificios.stream()).filter(e -> e.nombre.equals("Refinería")).anyMatch(r -> r.x == resource.x && r.y == resource.y);
+    }
+
     public List<Jugador> enemyPlayers(Jugador player) {
         return players.stream().filter(p -> !player.team.equals(p.team)).collect(Collectors.toList());
     }
@@ -95,7 +102,7 @@ public class Game {
         return this.players.stream().filter(p -> !mainTeam.contains(p)).collect(Collectors.toList());
     }
 
-    public Jugador getMainPlayer() {
+    public static Jugador getMainPlayer() {
         return players.stream().filter(p -> p.isMainPlayer).findFirst().get();
     }
 
@@ -136,8 +143,8 @@ public class Game {
         }
     }
 
-    public Jugador getPlayerByRace(RaceEnum race) {
-        return this.players.stream().filter(p -> p.raza.equals(race)).findFirst().orElse(null);
+    public static List<Jugador> getPlayersByRace(RaceEnum race) {
+        return players.stream().filter(p -> p.raza.equals(race)).collect(Collectors.toList());
     }
 
     public Jugador getPlayerByName(String name) {
@@ -152,19 +159,19 @@ public class Game {
         //Representan la altura y anchura del mapa
         float width = map.getWidth();
         float height = map.getHeight();
-        WindowCombat.WORLD_SIZE_X = width;
-        WindowCombat.WORLD_SIZE_Y = height;
-        WindowCombat.offsetMaxX = WORLD_SIZE_X - VIEWPORT_SIZE_WIDTH;
-        WindowCombat.offsetMaxY = WORLD_SIZE_Y - VIEWPORT_SIZE_HEIGHT;
+        WindowCombat.WORLD_SIZE_WIDTH = width;
+        WindowCombat.WORLD_SIZE_HEIGHT = height;
+        WindowCombat.offsetMaxX = WORLD_SIZE_WIDTH - VIEWPORT_SIZE_WIDTH;
+        WindowCombat.offsetMaxY = WORLD_SIZE_HEIGHT - VIEWPORT_SIZE_HEIGHT;
         initPlayerCoordinates(width, height);
         initResources(width, height);
         // Inicializar relojes
         WindowCombat.initWatches();
         if (existsPlayerWithRace(RaceEnum.MAESTROS)) {
-            WindowCombat.createWatch(new RelojMaestros(this.getPlayerByRace(RaceEnum.MAESTROS)));
+            WindowCombat.createWatch(new RelojMaestros());
         }
         if (existsPlayerWithRace(RaceEnum.ETERNIUM)) {
-            WindowCombat.createWatch(new RelojEternium(this.getPlayerByRace(RaceEnum.ETERNIUM)));
+            WindowCombat.createWatch(new RelojEternium());
         }
         initPlayerColors();
         /*getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));
@@ -175,7 +182,7 @@ public class Game {
         getMainPlayer().unidades.add(new Unidad(getMainPlayer(), "Despedazador", 400, 400));*/
         players.forEach(p -> p.initElements(this));
         if (existsPlayerWithRace(RaceEnum.ALIANZA)) {
-            Alianza.initAlianceWatches(this.getPlayerByRace(RaceEnum.ALIANZA));
+            this.getPlayersByRace(RaceEnum.ALIANZA).forEach(p -> Alianza.initAlianceWatches(p));
         }
     }
 
@@ -266,11 +273,12 @@ public class Game {
     }
 
     private void initPlayerColors() {
+        List<Color> alliedColors = new ArrayList<>(Arrays.asList(Color.yellow, Color.blue, Color.white, Color.magenta));
         Jugador mainPlayer = getMainPlayer();
         mainPlayer.color = Color.green;
         // Allies
         players.stream().filter(p -> !mainPlayer.equals(p) && p.team.equals(mainPlayer.team)).forEach(p -> p.color =
-                Color.yellow);
+                alliedColors.remove(0));
         // Enemies
         players.stream().filter(p -> !p.team.equals(mainPlayer.team)).forEach(p -> p.color = Color.red);
     }
@@ -384,6 +392,15 @@ public class Game {
         return null;
     }
 
+    private List<ElementoComplejo> getMainPlayerSelectableElements() {
+        //Seleccionar un Elemento
+        List<ElementoComplejo> selectableElements = new ArrayList<>();
+        Jugador p = this.getMainPlayer();
+        selectableElements.addAll(p.unidades);
+        selectableElements.addAll(p.edificios);
+        return selectableElements;
+    }
+
     private List<ElementoComplejo> getSelectableElements() {
         //Seleccionar un Elemento
         List<ElementoComplejo> selectableElements = new ArrayList<>();
@@ -405,12 +422,27 @@ public class Game {
                 .forEach(e -> e.deseleccionar());
     }
 
-    public void checkSelections(Input input) {
-        //Seleccionar un Elemento
+    public ElementoComplejo obtainMainPlayerSelectedElement(float mouseX, float mouseY) {
+        // Seleccionar un Elemento
+        List<ElementoComplejo> selectableElements = getMainPlayerSelectableElements();
+        return selectableElements.stream()
+                .filter(e -> e.hitbox((int) playerX + mouseX, (int) playerY + mouseY))
+                .findFirst().orElse(null);
+    }
+
+    public List<ElementoComplejo> obtainAllSameElements(ElementoComplejo e) {
+        List<ElementoComplejo> selectableElements = getMainPlayerSelectableElements();
+        return selectableElements.stream().filter(selectableElement -> e.nombre.equals(selectableElement.nombre)).collect(Collectors.toList());
+    }
+
+    public void checkSingleElementSelection(float mouseX, float mouseY) {
         List<ElementoComplejo> selectableElements = getSelectableElements();
-        selectableElements.stream()
-                .filter(e -> e.hitbox((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY()))
-                .findFirst().ifPresent(e -> handleSelection(e));
+        Optional<ElementoComplejo> elementOnMouse = selectableElements.stream()
+                .filter(e -> e.hitbox((int) playerX + mouseX, (int) playerY + mouseY))
+                .findFirst();
+        if (elementOnMouse.isPresent()) {
+            handleSelection(elementOnMouse.get());
+        }
     }
 
     private void handleSelection(ElementoComplejo e) {

@@ -7,7 +7,6 @@ package everlastingconflict.status;
 
 import everlastingconflict.watches.Reloj;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 
 public class Status {
@@ -23,7 +22,7 @@ public class Status {
         this.name = name;
         try {
             this.icon = new Image("media/Stats/" + name.getName() + ".png");
-        } catch (SlickException e) {
+        } catch (Exception e) {
         }
     }
 

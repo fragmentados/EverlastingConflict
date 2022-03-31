@@ -61,7 +61,7 @@ public class MaestrosTutorial extends GuidedGame {
         steps.add(new GameStep("Como puedes ver, la barra de experiencia en la parte superior de la pantalla ha " +
                 "aumentado. Cuando llegue al final, tu Manipulador subirá de nivel y sus capacidades aumentarán."));
         steps.add(new GameStep("Generalmente, sólo obtienes experiencia destruyendo unidades y edificios. Sin " +
-                "embargo, en el nivel uno es especial el Manipulador puede utilizar la habilidad Meditación para " +
+                "embargo, en el nivel uno el Manipulador puede utilizar la habilidad Meditación para " +
                 "obtener experiencia."));
         steps.add(new GameStep("Prueba a utilizar la habilidad Meditación ahora.", false) {
             @Override
@@ -89,7 +89,7 @@ public class MaestrosTutorial extends GuidedGame {
                 ((Manipulador) p.getMainPlayer().unidades.get(0)).enhancementButtons.removeIf(b -> "Deflagración".equals(b.elemento_nombre));
             }
         });
-        steps.add(new GameStep("Ahora podrás elegir hasta dos habildiades para que tu Manipulador las aprenda. Prueba" +
+        steps.add(new GameStep("Ahora podrás elegir hasta dos habilidades para que tu Manipulador las aprenda. Prueba" +
                 " a hacerlo ahora.", false) {
             @Override
             public boolean check(Game p) {
@@ -137,7 +137,7 @@ public class MaestrosTutorial extends GuidedGame {
         getMainPlayer().unidades.get(0).initButtonKeys();
         bestias = new ArrayList<>();
         bestias.add(new Bestias("Alphas", 500, 200));
-        WindowCombat.createWatch(new RelojMaestros(getMainPlayer()));
+        WindowCombat.createWatch(new RelojMaestros());
     }
 
     public MaestrosTutorial() {

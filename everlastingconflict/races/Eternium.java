@@ -11,11 +11,15 @@ import everlastingconflict.elements.impl.Habilidad;
 import everlastingconflict.elements.impl.Tecnologia;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
+
+import static everlastingconflict.gestion.Game.getPlayersByRace;
 
 
 public class Eternium {
 
+    public static final int tiempo_mineria = 10;
     public static int ataque_guerrero = Unidad.ataque_estandar + 14;
     public static int ataque_ancestro = Unidad.ataque_estandar + 34;
     public static final int MAX_UNIT_PER_QUEUE = 5;
@@ -218,5 +222,14 @@ public class Eternium {
                 Eternium.Teletransportador(e);
                 break;
         }
+    }
+
+    public static void temporalRelease() {
+        getPlayersByRace(RaceEnum.ETERNIUM).forEach(p -> p.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(u -> u.isProyectileAttraction = false));
+    }
+
+    public static void temporalStop() {
+        getPlayersByRace(RaceEnum.ETERNIUM).forEach(p -> p.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(u -> u.isProyectileAttraction = true));
+        getPlayersByRace(RaceEnum.ETERNIUM).forEach(p -> p.unidades.stream().filter(u -> !"Protector".equals(u.nombre)).forEach(u -> u.parar()));
     }
 }

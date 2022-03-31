@@ -50,7 +50,7 @@ public class Bestia extends Unidad {
             animation = new Animation(images, 450, false);
             icono = new Image("media/Iconos/" + nombre + ".png");
             sonido_combate = new Sound("media/Sonidos/" + nombre + "Ataque.ogg");
-        } catch (SlickException e) {
+        } catch (Exception e) {
 
         }
     }
@@ -114,12 +114,13 @@ public class Bestia extends Unidad {
 
     @Override
     public void comportamiento(Game p, Graphics g, int delta) {
-        Jugador mastersPlayer = p.getPlayerByRace(RaceEnum.MAESTROS);
-        if (mastersPlayer != null) {
-            for (ElementoEspecial e : mastersPlayer.elementos_especiales) {
+        List<Jugador> mastersPlayers = p.getPlayersByRace(RaceEnum.MAESTROS);
+        for (Jugador masterPlayer : mastersPlayers) {
+            for (ElementoEspecial e : masterPlayer.elementos_especiales) {
                 if (e.nombre.equals("Agujero negro")) {
                     if (this.alcance(e.x, e.y, e.anchura / 2)) {
-                        this.destruir(p, mastersPlayer.unidades.stream().filter(m -> m.nombre.equals("Manipulador")).findFirst().orElse(null));
+                        this.destruir(p,
+                                masterPlayer.unidades.stream().filter(m -> m.nombre.equals("Manipulador")).findFirst().orElse(null));
                     }
                 }
             }
@@ -161,8 +162,8 @@ public class Bestia extends Unidad {
                 }
                 break;
             case PARADO:
-                if (mastersPlayer != null) {
-                    for (ElementoEspecial e : p.getPlayerByRace(RaceEnum.MAESTROS).elementos_especiales) {
+                for (Jugador masterPlayer : mastersPlayers) {
+                    for (ElementoEspecial e : masterPlayer.elementos_especiales) {
                         if (e.nombre.equals("Agujero negro")) {
                             if (this.alcance(300, e)) {
                                 this.mover(p, e.x, e.y);

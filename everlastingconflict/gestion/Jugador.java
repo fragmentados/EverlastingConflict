@@ -19,6 +19,7 @@ import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.status.StatusNameEnum;
 import everlastingconflict.watches.Reloj;
 import everlastingconflict.windows.Mensaje;
+import everlastingconflict.windows.UI;
 import everlastingconflict.windows.WindowCombat;
 import everlastingconflict.windows.WindowMain;
 import org.newdawn.slick.Color;
@@ -28,10 +29,7 @@ import org.newdawn.slick.Input;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 
@@ -301,10 +299,10 @@ public class Jugador {
                     ElementosComunes.LIDER_IMAGE.draw(x - 40, y, 20, 20);
                 }
                 g.setColor(this.color);
-                g.fillRect(x - 20, y, 20, 20);
+                g.fillRect(x - 140, y, 20, 20);
                 g.setColor(Color.white);
-                this.resourceImage.draw(x, y, 20, 20);
-                g.drawString(Integer.toString((int) recursos), x + 20, y);
+                this.resourceImage.draw(x - 120, y, 20, 20);
+                g.drawString(Integer.toString((int) recursos), x - 100, y);
                 break;
             case GUARDIANES:
                 if (isLeader) {
@@ -531,7 +529,11 @@ public class Jugador {
                 break;
         }
         if (mainElement != null) {
-            WindowCombat.ui.resetAndSelect(mainElement);
+            if (UI.isSelected(mainElement)) {
+                WindowCombat.changePlayerPerspectiveToElements(Arrays.asList(mainElement));
+            } else {
+                WindowCombat.ui.resetAndSelect(mainElement);
+            }
         }
     }
 }

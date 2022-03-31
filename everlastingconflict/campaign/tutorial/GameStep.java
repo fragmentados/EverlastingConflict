@@ -14,6 +14,7 @@ public class GameStep {
 
     public String text;
     public boolean requiresClick;
+    public boolean requiresContinueClick;
 
     public GameStep() {
         requiresClick = false;
@@ -22,12 +23,17 @@ public class GameStep {
     public GameStep(String t) {
         text = t;
         this.text = Game.formatTextToFitWidth(this.text, WindowCombat.VIEWPORT_SIZE_WIDTH);
-        requiresClick = true;
+        this.requiresContinueClick = requiresClick = true;
     }
 
     public GameStep(String t, boolean requiresClick) {
         this(t);
-        this.requiresClick = requiresClick;
+        this.requiresContinueClick = this.requiresClick = requiresClick;
+    }
+
+    public GameStep(String t, boolean requiresClick, boolean requiresContinueClick) {
+        this(t, requiresClick);
+        this.requiresContinueClick = requiresContinueClick;
     }
 
     public boolean check(Game p) {

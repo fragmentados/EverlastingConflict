@@ -5,12 +5,17 @@
  */
 package everlastingconflict.races;
 
+import everlastingconflict.elementosvisuales.BotonComplejo;
+import everlastingconflict.elementosvisuales.BotonManipulador;
 import everlastingconflict.elements.ElementoAtacante;
 import everlastingconflict.elements.impl.Manipulador;
 import everlastingconflict.elements.impl.Unidad;
+import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
+
+import java.util.List;
 
 
 public class Maestros {
@@ -149,4 +154,22 @@ public class Maestros {
         return attackAmount;
     }
 
+    public static void checkManipulatorButtonsBasedOnDayChange(String newTime) {
+        List<Jugador> mastersPlayers = Game.getPlayersByRace(RaceEnum.MAESTROS);
+        for (Jugador j : mastersPlayers) {
+            for (Unidad u : j.unidades) {
+                if (u.nombre.equals("Manipulador")) {
+                    for (BotonComplejo b : u.botones) {
+                        if (b instanceof BotonManipulador) {
+                            BotonManipulador bm = (BotonManipulador) b;
+                            if (bm.requisito != null) {
+                                bm.canBeUsed = bm.requisito.equals(newTime);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }

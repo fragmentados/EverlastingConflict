@@ -36,7 +36,7 @@ import static everlastingconflict.windows.WindowCombat.*;
 
 public class UI {
 
-    public List<ElementoComplejo> elements;
+    public static List<ElementoComplejo> elements;
     public List<ElementoComplejo> currentSelectionPage;
     public BotonSimple sig, ant;
     public int inicio, fin, npagina;
@@ -88,6 +88,14 @@ public class UI {
     public void resetAndSelect(ElementoComplejo e) {
         this.elements = new ArrayList<>();
         seleccionar(e);
+    }
+
+    public static boolean isSelected(ElementoComplejo e) {
+        return elements != null && elements.size() == 1 && elements.get(0).equals(e);
+    }
+
+    public boolean isSingleBuildingSelected() {
+        return this.elements != null && this.elements.size() == 1 && this.elements.get(0) instanceof Edificio;
     }
 
     public void selectAll(List<ElementoComplejo> elements) {
@@ -183,19 +191,19 @@ public class UI {
     }
 
     public void renderElementOnMinimap(Graphics g, ElementoComplejo e) {
-        float anchura = anchura_mini * (e.anchura / WindowCombat.WORLD_SIZE_X);
-        float altura = altura_mini * (e.altura / WindowCombat.WORLD_SIZE_Y);
-        float x = x_mini + (anchura_mini - anchura) * ((e.x - anchura / 2) / WindowCombat.WORLD_SIZE_X);
-        float y = y_mini + (altura_mini - altura) * ((e.y - altura / 2) / WindowCombat.WORLD_SIZE_Y);
+        float anchura = anchura_mini * (e.anchura / WindowCombat.WORLD_SIZE_WIDTH);
+        float altura = altura_mini * (e.altura / WindowCombat.WORLD_SIZE_HEIGHT);
+        float x = x_mini + (anchura_mini - anchura) * ((e.x - anchura / 2) / WindowCombat.WORLD_SIZE_WIDTH);
+        float y = y_mini + (altura_mini - altura) * ((e.y - altura / 2) / WindowCombat.WORLD_SIZE_HEIGHT);
         g.fillRect(x, y, anchura, altura);
     }
 
     public void renderElementVisibilityOnMinimap(Graphics g, ElementoComplejo e) {
-        float anchura = anchura_mini * (e.anchura / WindowCombat.WORLD_SIZE_X);
-        float altura = altura_mini * (e.altura / WindowCombat.WORLD_SIZE_Y);
-        float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / WindowCombat.WORLD_SIZE_X);
-        float y = y_mini + (altura_mini - altura) * ((e.y - e.altura / 2) / WindowCombat.WORLD_SIZE_Y);
-        float visibilityRadius = anchura_mini * (e.vision / WindowCombat.WORLD_SIZE_X);
+        float anchura = anchura_mini * (e.anchura / WindowCombat.WORLD_SIZE_WIDTH);
+        float altura = altura_mini * (e.altura / WindowCombat.WORLD_SIZE_HEIGHT);
+        float x = x_mini + (anchura_mini - anchura) * ((e.x - e.anchura / 2) / WindowCombat.WORLD_SIZE_WIDTH);
+        float y = y_mini + (altura_mini - altura) * ((e.y - e.altura / 2) / WindowCombat.WORLD_SIZE_HEIGHT);
+        float visibilityRadius = anchura_mini * (e.vision / WindowCombat.WORLD_SIZE_WIDTH);
         g.fillRoundRect(x - visibilityRadius / 2, y - visibilityRadius / 2, visibilityRadius, visibilityRadius,
                 (int) visibilityRadius);
         //g.fillArc(x - visibilityRadius / 2, y - visibilityRadius / 2, visibilityRadius, visibilityRadius, x_minim,
@@ -208,20 +216,20 @@ public class UI {
         player.lista_recursos.forEach(r -> renderElementVisibilityOnMinimap(g, r));
     }
 
-    public void renderPlayerElementsOnMinimap(Game p, Graphics g, Jugador player, boolean isMainTeam) {
+    public void renderPlayerElementsOnMinimap(Game game, Graphics g, Jugador player, boolean isMainTeam) {
         g.setColor(player.color);
         for (Unidad u : player.unidades) {
-            if (isMainTeam || u.isVisibleByEnemy(p)) {
+            if (isMainTeam || u.isVisibleByEnemy(game)) {
                 renderElementOnMinimap(g, u);
             }
         }
         for (Edificio u : player.edificios) {
-            if (isMainTeam || u.isVisibleByEnemy(p)) {
+            if (isMainTeam || u.isVisibleByEnemy(game)) {
                 renderElementOnMinimap(g, u);
             }
         }
         for (Recurso r : player.lista_recursos) {
-            if (isMainTeam || r.isVisibleByEnemy(p)) {
+            if (isMainTeam || r.isVisibleByEnemy(game)) {
                 renderElementOnMinimap(g, r);
             }
         }
@@ -248,29 +256,31 @@ public class UI {
         p.getMainTeam().forEach(player -> renderPlayerElementsVisibilityOnMinimap(p, g, player));
     }
 
-    public void renderElementsOnMinimap(Game p, Graphics g) {
-        p.getMainTeam().forEach(player -> renderPlayerElementsOnMinimap(p, g, player, true));
-        for (Jugador player : p.getNonMainTeam()) {
-            renderPlayerElementsOnMinimap(p, g, player, false);
+    public void renderElementsOnMinimap(Game game, Graphics g) {
+        renderResourceOnMinimap(game, g);
+        game.getMainTeam().forEach(player -> renderPlayerElementsOnMinimap(game, g, player, true));
+        for (Jugador player : game.getNonMainTeam()) {
+            renderPlayerElementsOnMinimap(game, g, player, false);
         }
         g.setColor(Color.gray);
         float anchura, altura, x, y;
-        for (Bestias be : p.bestias) {
+        for (Bestias be : game.bestias) {
             if (be.muerte) {
-                anchura = anchura_mini * (ElementosComunes.BEAST_DEATH_IMAGE.getWidth() / WindowCombat.WORLD_SIZE_X);
-                altura = altura_mini * (ElementosComunes.BEAST_DEATH_IMAGE.getHeight() / WindowCombat.WORLD_SIZE_Y);
-                x = x_mini + (200 - anchura) * (be.x / WindowCombat.WORLD_SIZE_X);
-                y = y_mini + (200 - altura) * (be.y / WindowCombat.WORLD_SIZE_Y);
+                anchura =
+                        anchura_mini * (ElementosComunes.BEAST_DEATH_IMAGE.getWidth() / WindowCombat.WORLD_SIZE_WIDTH);
+                altura =
+                        altura_mini * (ElementosComunes.BEAST_DEATH_IMAGE.getHeight() / WindowCombat.WORLD_SIZE_HEIGHT);
+                x = x_mini + (200 - anchura) * (be.x / WindowCombat.WORLD_SIZE_WIDTH);
+                y = y_mini + (200 - altura) * (be.y / WindowCombat.WORLD_SIZE_HEIGHT);
                 ElementosComunes.BEAST_DEATH_IMAGE.draw(x, y, anchura, altura);
             } else {
                 for (Bestia b : be.contenido) {
-                    if (b.isVisibleByEnemy(p)) {
+                    if (b.isVisibleByEnemy(game)) {
                         renderElementOnMinimap(g, b);
                     }
                 }
             }
         }
-        renderResourceOnMinimap(p, g);
         g.setColor(Color.white);
     }
 
@@ -286,8 +296,8 @@ public class UI {
         //renderElementsVisibilityOnMinimap(p, g);
         renderElementsOnMinimap(p, g);
         //Rectángulo pequeño                
-        anchura_minim = anchura_mini * (WindowCombat.VIEWPORT_SIZE_WIDTH / WindowCombat.WORLD_SIZE_X);
-        altura_minim = altura_mini * (WindowCombat.VIEWPORT_SIZE_HEIGHT / WindowCombat.WORLD_SIZE_Y);
+        anchura_minim = anchura_mini * (WindowCombat.VIEWPORT_SIZE_WIDTH / WindowCombat.WORLD_SIZE_WIDTH);
+        altura_minim = altura_mini * (WindowCombat.VIEWPORT_SIZE_HEIGHT / WindowCombat.WORLD_SIZE_HEIGHT);
         x_minim = x_mini + (anchura_mini - anchura_minim) * (WindowCombat.playerX / WindowCombat.offsetMaxX);
         y_minim = y_mini + (altura_mini - altura_minim) * (WindowCombat.playerY / WindowCombat.offsetMaxY);
         g.drawRect(x_minim, y_minim, anchura_minim, altura_minim);
@@ -342,32 +352,32 @@ public class UI {
 
     private void renderUnitDetailedInfo(Graphics g, Game game, Unidad unidad, float x, float y) {
         Jugador aliado = game.getPlayerFromElement(unidad);
-        DecimalFormat d = new DecimalFormat();
-        //Estadísticas
-        int ataque, defensa;
-        if (unidad.escudo > 0) {
-            g.setColor(Color.cyan);
-            g.drawString(Integer.toString((int) unidad.escudo),
-                    x + 10 + Integer.toString((int) unidad.vida).length() * 10 + 10 + Integer.toString((int) unidad.vida_max).length() * 10 + 10, y + 50 + unidad.icono.getHeight() + 10);
-            g.setColor(Color.white);
-        }
-        if (!(unidad instanceof Bestia) && (RaceEnum.ETERNIUM.equals(aliado.raza))) {
-            ataque = unidad.getAttackBasedOnEterniumWatch(aliado);
-            defensa = unidad.getDefenseBasedOnEterniumWatch(aliado);
-        } else {
-            ataque = unidad.ataque;
-            defensa = unidad.defensa;
-        }
-        if (unidad.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
-            ataque += unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
-        }
-        if (unidad.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
-            ataque -= unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
-            if (ataque < 0) {
-                ataque = 0;
-            }
-        }
         if (aliado != null) {
+            DecimalFormat d = new DecimalFormat();
+            //Estadísticas
+            int ataque, defensa;
+            if (unidad.escudo > 0) {
+                g.setColor(Color.cyan);
+                g.drawString(Integer.toString((int) unidad.escudo),
+                        x + 10 + Integer.toString((int) unidad.vida).length() * 10 + 10 + Integer.toString((int) unidad.vida_max).length() * 10 + 10, y + 50 + unidad.icono.getHeight() + 10);
+                g.setColor(Color.white);
+            }
+            if (!(unidad instanceof Bestia) && (RaceEnum.ETERNIUM.equals(aliado.raza))) {
+                ataque = unidad.getAttackBasedOnEterniumWatch(aliado);
+                defensa = unidad.getDefenseBasedOnEterniumWatch(aliado);
+            } else {
+                ataque = unidad.ataque;
+                defensa = unidad.defensa;
+            }
+            if (unidad.statusCollection.containsStatus(StatusNameEnum.ATAQUE_POTENCIADO)) {
+                ataque += unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_POTENCIADO).value;
+            }
+            if (unidad.statusCollection.containsStatus(StatusNameEnum.ATAQUE_DISMINUIDO)) {
+                ataque -= unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.ATAQUE_DISMINUIDO).value;
+                if (ataque < 0) {
+                    ataque = 0;
+                }
+            }
             if (RaceEnum.MAESTROS.equals(aliado.raza)) {
                 if (Manipulador.alentar) {
                     Manipulador m = null;
@@ -383,105 +393,105 @@ public class UI {
                     }
                 }
             }
-        }
-        float ataquetx = x + 20 + unidad.icono.getWidth() + 150;
-        float ataquex = ataquetx + 70;
-        float defensatx = ataquex + Integer.toString(ataque).length() * 10 + 60;
-        float defensax = defensatx + 80;
-        float velocidadtx = ataquetx;
-        float velocidadx = velocidadtx + 100;
-        float alcancetx = velocidadx + Float.toString(unidad.velocidad).length() * 10 + 60;
-        float alcancex = alcancetx + 80;
-        float cadenciatx = ataquetx;
-        float cadenciax = cadenciatx + 90;
-        float linea1y = y + 50;
-        float linea2y = linea1y + 30;
-        float linea3y = linea2y + 30;
-        float linea4y = linea3y + 30;
-        if (ataquex < velocidadx) {
-            ataquex = velocidadx;
-            defensatx = ataquex + Integer.toString(ataque).length() * 10 + 10;
-            defensax = defensatx + 80;
-        } else {
-            if (ataquex > velocidadx) {
-                velocidadx = ataquex;
-                alcancetx = velocidadx + Float.toString(unidad.velocidad).length() * 10 + 10;
-                alcancex = alcancetx + 80;
+            float ataquetx = x + 20 + unidad.icono.getWidth() + 150;
+            float ataquex = ataquetx + 70;
+            float defensatx = ataquex + Integer.toString(ataque).length() * 10 + 60;
+            float defensax = defensatx + 80;
+            float velocidadtx = ataquetx;
+            float velocidadx = velocidadtx + 100;
+            float alcancetx = velocidadx + Float.toString(unidad.velocidad).length() * 10 + 60;
+            float alcancex = alcancetx + 80;
+            float cadenciatx = ataquetx;
+            float cadenciax = cadenciatx + 90;
+            float linea1y = y + 50;
+            float linea2y = linea1y + 30;
+            float linea3y = linea2y + 30;
+            float linea4y = linea3y + 30;
+            if (ataquex < velocidadx) {
+                ataquex = velocidadx;
+                defensatx = ataquex + Integer.toString(ataque).length() * 10 + 10;
+                defensax = defensatx + 80;
+            } else {
+                if (ataquex > velocidadx) {
+                    velocidadx = ataquex;
+                    alcancetx = velocidadx + Float.toString(unidad.velocidad).length() * 10 + 10;
+                    alcancex = alcancetx + 80;
+                }
             }
-        }
-        if (ataquex < cadenciax) {
-            ataquex = cadenciax;
-        } else {
-            if (ataquex > cadenciax) {
-                cadenciax = ataquex;
+            if (ataquex < cadenciax) {
+                ataquex = cadenciax;
+            } else {
+                if (ataquex > cadenciax) {
+                    cadenciax = ataquex;
+                }
             }
-        }
-        if (defensatx < alcancetx) {
-            defensatx = alcancetx;
-            defensax = defensatx + 80;
-        } else {
-            if (defensatx > alcancetx) {
-                alcancetx = defensatx;
-                alcancex = alcancetx + 80;
+            if (defensatx < alcancetx) {
+                defensatx = alcancetx;
+                defensax = defensatx + 80;
+            } else {
+                if (defensatx > alcancetx) {
+                    alcancetx = defensatx;
+                    alcancex = alcancetx + 80;
+                }
             }
-        }
-        g.drawString("Ataque:", ataquetx, linea1y);
-        g.drawString(Integer.toString(ataque), ataquex, linea1y);
-        g.drawString("Defensa:", defensatx, linea1y);
-        g.drawString(Integer.toString(defensa), defensax, linea1y);
-        float velocidad;
-        if (unidad.statusCollection.containsStatus(StatusNameEnum.RALENTIZACION)) {
-            velocidad =
-                    unidad.velocidad * (100 - unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.RALENTIZACION).value) / 100;
-        } else {
-            velocidad = unidad.velocidad;
-        }
-        g.drawString("Velocidad:", velocidadtx, linea2y);
-        g.drawString(d.format(velocidad), velocidadx, linea2y);
-        g.drawString("Alcance:", alcancetx, linea2y);
-        g.drawString(Integer.toString(unidad.alcance), alcancex, linea2y);
-        g.drawString("Cadencia:", cadenciatx, linea3y);
-        g.drawString(d.format(unidad.cadencia), cadenciax, linea3y);
-        if (unidad instanceof Manipulador) {
-            Manipulador m = (Manipulador) unidad;
-            float cdrtx = ataquetx;
-            float cdrx = cdrtx + "Enfriamiento:".length() * 10;
-            float podertx = cdrx + (Float.toString(m.reduccion_enfriamiento) + "%").length() * 10;
-            float poderx = podertx + "Poder mágico".length() * 10;
-            if (podertx < defensatx) {
-                podertx = defensatx;
-                poderx = podertx + "Poder mágico".length() * 10;
+            g.drawString("Ataque:", ataquetx, linea1y);
+            g.drawString(Integer.toString(ataque), ataquex, linea1y);
+            g.drawString("Defensa:", defensatx, linea1y);
+            g.drawString(Integer.toString(defensa), defensax, linea1y);
+            float velocidad;
+            if (unidad.statusCollection.containsStatus(StatusNameEnum.RALENTIZACION)) {
+                velocidad =
+                        unidad.velocidad * (100 - unidad.statusCollection.getStatusByBasicInfo(StatusNameEnum.RALENTIZACION).value) / 100;
+            } else {
+                velocidad = unidad.velocidad;
             }
-            g.drawString("Enfriamiento:", cdrtx, linea4y);
-            g.drawString(Float.toString(m.reduccion_enfriamiento) + "%", cdrx, linea4y);
-            g.drawString("Poder mágico:", podertx, linea3y);
-            g.drawString(Float.toString(m.poder_magico), poderx, linea3y);
-            g.setColor(Color.cyan);
-            g.drawString(Integer.toString((int) m.mana), x + 10, y + 50 + unidad.icono.getHeight() + 25);
-            g.drawString("/", x + 10 + Integer.toString((int) m.mana).length() * 10,
-                    y + 50 + unidad.icono.getHeight() + 25);
-            g.drawString(Integer.toString((int) m.mana_max),
-                    x + 10 + Integer.toString((int) m.mana).length() * 10 + 10,
-                    y + 50 + unidad.icono.getHeight() + 25);
-            g.drawString("(+" + d.format(m.regeneracion_mana) + ")",
-                    x + 10 + Integer.toString((int) m.mana).length() * 10 + 10 + Integer.toString((int) m.mana_max).length() * 10, y + 50 + unidad.icono.getHeight() + 25);
-            g.setColor(Color.orange);
-            g.drawString(Integer.toString((int) m.experiencia), x + 10, y + 50 + unidad.icono.getHeight() + 40);
-            g.drawString("/", x + 10 + Integer.toString((int) m.experiencia).length() * 10,
-                    y + 50 + unidad.icono.getHeight() + 40);
-            g.drawString(Integer.toString((int) m.experiencia_max),
-                    x + 10 + Integer.toString((int) m.experiencia).length() * 10 + 10,
-                    y + 50 + unidad.icono.getHeight() + 40);
-            g.setColor(Color.white);
+            g.drawString("Velocidad:", velocidadtx, linea2y);
+            g.drawString(d.format(velocidad), velocidadx, linea2y);
+            g.drawString("Alcance:", alcancetx, linea2y);
+            g.drawString(Integer.toString(unidad.alcance), alcancex, linea2y);
+            g.drawString("Cadencia:", cadenciatx, linea3y);
+            g.drawString(d.format(unidad.cadencia), cadenciax, linea3y);
+            if (unidad instanceof Manipulador) {
+                Manipulador m = (Manipulador) unidad;
+                float cdrtx = ataquetx;
+                float cdrx = cdrtx + "Enfriamiento:".length() * 10;
+                float podertx = cdrx + (Float.toString(m.reduccion_enfriamiento) + "%").length() * 10;
+                float poderx = podertx + "Poder mágico".length() * 10;
+                if (podertx < defensatx) {
+                    podertx = defensatx;
+                    poderx = podertx + "Poder mágico".length() * 10;
+                }
+                g.drawString("Enfriamiento:", cdrtx, linea4y);
+                g.drawString(Float.toString(m.reduccion_enfriamiento) + "%", cdrx, linea4y);
+                g.drawString("Poder mágico:", podertx, linea3y);
+                g.drawString(Float.toString(m.poder_magico), poderx, linea3y);
+                g.setColor(Color.cyan);
+                g.drawString(Integer.toString((int) m.mana), x + 10, y + 50 + unidad.icono.getHeight() + 25);
+                g.drawString("/", x + 10 + Integer.toString((int) m.mana).length() * 10,
+                        y + 50 + unidad.icono.getHeight() + 25);
+                g.drawString(Integer.toString((int) m.mana_max),
+                        x + 10 + Integer.toString((int) m.mana).length() * 10 + 10,
+                        y + 50 + unidad.icono.getHeight() + 25);
+                g.drawString("(+" + d.format(m.regeneracion_mana) + ")",
+                        x + 10 + Integer.toString((int) m.mana).length() * 10 + 10 + Integer.toString((int) m.mana_max).length() * 10, y + 50 + unidad.icono.getHeight() + 25);
+                g.setColor(Color.orange);
+                g.drawString(Integer.toString((int) m.experiencia), x + 10, y + 50 + unidad.icono.getHeight() + 40);
+                g.drawString("/", x + 10 + Integer.toString((int) m.experiencia).length() * 10,
+                        y + 50 + unidad.icono.getHeight() + 40);
+                g.drawString(Integer.toString((int) m.experiencia_max),
+                        x + 10 + Integer.toString((int) m.experiencia).length() * 10 + 10,
+                        y + 50 + unidad.icono.getHeight() + 40);
+                g.setColor(Color.white);
+            }
+            if (unidad instanceof Bestia) {
+                Bestia b = (Bestia) unidad;
+                float recompensatx = defensatx;
+                float recompensax = recompensatx + 110;
+                g.drawString("Recompensa:", recompensatx, linea3y);
+                g.drawString(Integer.toString(b.recompensa), recompensax, linea3y);
+            }
+            dibujarEstadosUnidad(unidad, g, x, y);
         }
-        if (unidad instanceof Bestia) {
-            Bestia b = (Bestia) unidad;
-            float recompensatx = defensatx;
-            float recompensax = recompensatx + 110;
-            g.drawString("Recompensa:", recompensatx, linea3y);
-            g.drawString(Integer.toString(b.recompensa), recompensax, linea3y);
-        }
-        dibujarEstadosUnidad(unidad, g, x, y);
     }
 
     private void renderPilotHelp(Graphics g, float x, float y) {
@@ -708,17 +718,19 @@ public class UI {
                 g.drawString(Integer.toString(npagina), WindowCombat.playerX + anchura_miniatura + 15, initialY + 30);
                 sig.render(g);
                 for (int i = inicio; i < fin; i++) {
-                    ElementoComplejo e = elements.get(i);
-                    if (currentSelectionPage.indexOf(e) != -1) {
-                        g.setColor(Color.green);
-                        g.drawRect(WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5) - 1, initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) - 1, 41, 41);
+                    if (elements.size() > i) {
+                        ElementoComplejo e = elements.get(i);
+                        if (currentSelectionPage.indexOf(e) != -1) {
+                            g.setColor(Color.green);
+                            g.drawRect(WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5) - 1, initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) - 1, 41, 41);
+                        }
+                        e.icono.draw(WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5)
+                                , initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5));
+                        e.dibujar_mini_barra(g,
+                                WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5),
+                                initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) + e.icono.getHeight() + 5,
+                                Color.green);
                     }
-                    e.icono.draw(WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5)
-                            , initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5));
-                    e.dibujar_mini_barra(g,
-                            WindowCombat.playerX + anchura_miniatura + 40 + (i % 8) * (e.icono.getWidth() + 5),
-                            initialY + 5 + ((i % 32) / 8) * (e.icono.getHeight() + 5) + e.icono.getHeight() + 5,
-                            Color.green);
                 }
                 g.setColor(Color.white);
             }
@@ -789,9 +801,9 @@ public class UI {
 
     public Point2D obtener_coordenadas_minimapa(float x_click, float y_click) {
         float x = x_click - (WindowCombat.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
-        float y = y_click - ((int) playerY + VIEWPORT_SIZE_HEIGHT);
-        float resultado_x = (x / anchura_mini) * WindowCombat.WORLD_SIZE_X;
-        float resultado_y = (y / altura_mini) * WindowCombat.WORLD_SIZE_Y;
+        float y = y_click - ((int) playerY + VIEWPORT_SIZE_HEIGHT - UI_HEIGHT);
+        float resultado_x = (x / anchura_mini) * WindowCombat.WORLD_SIZE_WIDTH;
+        float resultado_y = (y / altura_mini) * WindowCombat.WORLD_SIZE_HEIGHT;
         return new Point2D.Float(resultado_x, resultado_y);
     }
 
@@ -800,11 +812,11 @@ public class UI {
         float x = x_click - (WindowCombat.playerX + anchura_miniatura + anchura_seleccion + anchura_botones);
         float y = y_click - (WindowCombat.playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT);
         //Transformación a las coordenadas del mapa
-        x *= (WindowCombat.WORLD_SIZE_X / anchura_mini);
-        y *= (WindowCombat.WORLD_SIZE_Y / altura_mini);
+        x *= (WindowCombat.WORLD_SIZE_WIDTH / anchura_mini);
+        y *= (WindowCombat.WORLD_SIZE_HEIGHT / altura_mini);
         //Centramos las coordenadas en el minimapa
-        x -= (anchura_minim * (WindowCombat.WORLD_SIZE_X / anchura_mini)) / 2;
-        y -= (altura_minim * (WindowCombat.WORLD_SIZE_Y / altura_mini)) / 2;
+        x -= (anchura_minim * (WindowCombat.WORLD_SIZE_WIDTH / anchura_mini)) / 2;
+        y -= (altura_minim * (WindowCombat.WORLD_SIZE_HEIGHT / altura_mini)) / 2;
         if (x < WindowCombat.offsetMinX) {
             x = WindowCombat.offsetMinX;
         }
@@ -821,7 +833,7 @@ public class UI {
         WindowCombat.playerY = y;
     }
 
-    public void handleLeftClick(Input input, Game p, int x_click, int y_click) {
+    public void handleLeftClick(Game p, int x_click, int y_click) {
         if ((x_click >= (WindowCombat.playerX + anchura_miniatura)) && (x_click <= (WindowCombat.playerX + anchura_seleccion + anchura_miniatura))) {
             float initialY = WindowCombat.playerY + WindowCombat.VIEWPORT_SIZE_HEIGHT - UI.UI_HEIGHT;
             //Segundo cuadrado: Selección actual de unidades
@@ -867,7 +879,7 @@ public class UI {
                         botones = ((Manipulador) e).enhancementButtons;
                     }
                     for (BotonComplejo b : botones) {
-                        if (b.isHovered((int) playerX + input.getMouseX(), (int) playerY + input.getMouseY())) {
+                        if (b.isHovered(x_click, y_click)) {
                             b.resolucion(elements, e, p);
                         }
                     }

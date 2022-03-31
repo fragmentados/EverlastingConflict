@@ -5,12 +5,9 @@
  */
 package everlastingconflict.watches;
 
-import everlastingconflict.elementosvisuales.BotonComplejo;
-import everlastingconflict.elementosvisuales.BotonManipulador;
-import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.elements.util.ElementosComunes;
 import everlastingconflict.gestion.Game;
-import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Maestros;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -26,8 +23,7 @@ public class RelojMaestros extends Reloj {
     public static final String nombre_noche = "Noche";
     public static String tiempo = nombre_dia;
 
-    public RelojMaestros(Jugador jugadorAsociado) {
-        this.jugadorAsociado = jugadorAsociado;
+    public RelojMaestros() {
         contador_reloj = inicio_primera_mitad;
         ndivision = 1;
         detener = detener_contador = 0;
@@ -47,19 +43,7 @@ public class RelojMaestros extends Reloj {
         } else {
             sprite = ElementosComunes.NIGHT_IMAGE;
         }
-        for (Unidad u : this.jugadorAsociado.unidades) {
-            if (u.nombre.equals("Manipulador")) {
-                for (BotonComplejo b : u.botones) {
-                    if (b instanceof BotonManipulador) {
-                        BotonManipulador bm = (BotonManipulador) b;
-                        if (bm.requisito != null) {
-                            bm.canBeUsed = bm.requisito.equals(t);
-                        }
-                    }
-                }
-                break;
-            }
-        }
+        Maestros.checkManipulatorButtonsBasedOnDayChange(t);
     }
 
     @Override

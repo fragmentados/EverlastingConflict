@@ -14,6 +14,7 @@ import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
+import everlastingconflict.watches.Reloj;
 
 public class AIEterniumFacil extends AI {
 
@@ -23,6 +24,11 @@ public class AIEterniumFacil extends AI {
 
     public AIEterniumFacil(SubRaceEnum subRaceEnum, Integer t, boolean isLeader, boolean isJuggernaut) {
         super("AIEternium", RaceEnum.ETERNIUM, subRaceEnum, t, isLeader, isJuggernaut);
+    }
+
+    @Override
+    public float getDelay() {
+        return 10f;
     }
 
     @Override
@@ -43,10 +49,14 @@ public class AIEterniumFacil extends AI {
     @Override
     public void decisiones_unidades(Game p, int delta) {
         for (Unidad u : unidades) {
-            switch (u.nombre) {
-                case "Adepto":
-                    comportamiento_adepto(p, u);
-                    break;
+            if (u.delay > 0) {
+                u.delay -= delta * Reloj.TIME_REGULAR_SPEED;
+            } else {
+                switch (u.nombre) {
+                    case "Adepto":
+                        comportamiento_adepto(p, u);
+                        break;
+                }
             }
         }
     }
@@ -54,14 +64,18 @@ public class AIEterniumFacil extends AI {
     @Override
     public void decisiones_edificios(Game p, int delta) {
         for (Edificio e : edificios) {
-            if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
-                switch (e.nombre) {
-                    case "Mando Central":
-                        comportamiento_mando(p, e);
-                        break;
-                    case "Altar de los ancestros":
-                        comportamiento_altar(p, e);
-                        break;
+            if (e.delay > 0) {
+                e.delay -= delta * Reloj.TIME_REGULAR_SPEED;
+            } else {
+                if (!BehaviourEnum.CONSTRUYENDOSE.equals(e.behaviour)) {
+                    switch (e.nombre) {
+                        case "Mando Central":
+                            comportamiento_mando(p, e);
+                            break;
+                        case "Altar de los ancestros":
+                            comportamiento_altar(p, e);
+                            break;
+                    }
                 }
             }
         }

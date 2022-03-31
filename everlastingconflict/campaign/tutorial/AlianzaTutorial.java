@@ -47,6 +47,6 @@ public class AlianzaTutorial extends GuidedGame {
     @Override
     public void initElements() {
         super.initElements();
-        Alianza.initAlianceWatches(this.getPlayerByRace(RaceEnum.ALIANZA));
+        Alianza.initAlianceWatches(this.getMainPlayer());
     }
 }

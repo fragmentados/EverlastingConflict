@@ -10,6 +10,7 @@ import everlastingconflict.elements.impl.Recurso;
 import everlastingconflict.elements.impl.Unidad;
 import everlastingconflict.gestion.Game;
 import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Eternium;
 import everlastingconflict.races.enums.RaceEnum;
 import everlastingconflict.races.enums.SubRaceEnum;
 import everlastingconflict.watches.RelojEternium;
@@ -47,7 +48,7 @@ public class EterniumTutorial extends GuidedGame {
             @Override
             public void effect(Game p) {
                 WindowCombat.eterniumWatch().ndivision = 4;
-                WindowCombat.eterniumWatch().temporalStop();
+                Eternium.temporalStop();
             }
         });
         steps.add(new GameStep("La cuarta fase es la más peligrosa ya que, en ella, las unidades Eternium son " +
@@ -57,7 +58,7 @@ public class EterniumTutorial extends GuidedGame {
             @Override
             public void effect(Game p) {
                 WindowCombat.eterniumWatch().ndivision = 1;
-                WindowCombat.eterniumWatch().temporalRelease();
+                Eternium.temporalRelease();
             }
         });
         steps.add(new GameStep("El sistema de recolección de recursos Eternium sigue el mismo patrón de alta " +
@@ -149,7 +150,7 @@ public class EterniumTutorial extends GuidedGame {
         Jugador jugador = getMainPlayer();
         jugador.subRace = SubRaceEnum.ERUDITOS;
         recursos.add(new Recurso("Hierro", 600, 200));
-        WindowCombat.createWatch(new RelojEternium(getMainPlayer()));
+        WindowCombat.createWatch(new RelojEternium());
         jugador.unidades.add(new Unidad(jugador, "Erradicador", 800, 600));
         jugador.unidades.add(new Unidad(jugador, "Protector", 900, 600));
         jugador.edificios.add(new Edificio(jugador, "Altar de los ancestros", 1000, 600));

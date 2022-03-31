@@ -6,7 +6,7 @@
 package everlastingconflict.watches;
 
 import everlastingconflict.gestion.Game;
-import everlastingconflict.gestion.Jugador;
+import everlastingconflict.races.Eternium;
 import everlastingconflict.windows.WindowCombat;
 import org.newdawn.slick.*;
 
@@ -26,8 +26,7 @@ public class RelojEternium extends Reloj {
     public float fin_segundo_cuarto = 2 * minsPerQuarter * 60;
     public float fin_tercer_cuarto = 1 * minsPerQuarter * 60;
 
-    public RelojEternium(Jugador jugadorAsociado) {
-        this.jugadorAsociado = jugadorAsociado;
+    public RelojEternium() {
         contador_reloj = inicio_primer_cuarto;
         ndivision = 1;
         detener = detener_contador = 0;
@@ -46,8 +45,8 @@ public class RelojEternium extends Reloj {
         altura = 80;
     }
 
-    public RelojEternium(Jugador jugadorAsociado, float minsPerQuarter) {
-        this(jugadorAsociado);
+    public RelojEternium(float minsPerQuarter) {
+        this();
         this.minsPerQuarter = minsPerQuarter;
         inicio_primer_cuarto = 4 * minsPerQuarter * 60;
         fin_primer_cuarto = 3 * minsPerQuarter * 60;
@@ -86,11 +85,11 @@ public class RelojEternium extends Reloj {
             if ((ndivision == 4) && (contador_reloj <= 0)) {
                 contador_reloj = inicio_primer_cuarto;
                 ndivision = 1;
-                temporalRelease();
+                Eternium.temporalRelease();
             } else if ((ndivision == 3) && (contador_reloj <= fin_tercer_cuarto)) {
                 contador_reloj = fin_tercer_cuarto;
                 ndivision = 4;
-                temporalStop();
+                Eternium.temporalStop();
             } else if ((ndivision == 2) && (contador_reloj <= fin_segundo_cuarto)) {
                 contador_reloj = fin_segundo_cuarto;
                 ndivision = 3;
@@ -181,13 +180,6 @@ public class RelojEternium extends Reloj {
 
     }
 
-    public void temporalRelease() {
-        this.jugadorAsociado.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(p -> p.isProyectileAttraction = false);
-    }
 
-    public void temporalStop() {
-        this.jugadorAsociado.unidades.stream().filter(u -> "Protector".equals(u.nombre)).forEach(p -> p.isProyectileAttraction = true);
-        this.jugadorAsociado.unidades.stream().filter(u -> !"Protector".equals(u.nombre)).forEach(u -> u.parar());
-    }
 
 }

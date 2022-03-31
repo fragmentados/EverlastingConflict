@@ -381,35 +381,35 @@ public class Habilidad extends ElementoSimple {
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad(aliado, "Pugnator"));
                     }
-                    WindowMain.combatWindow.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    WindowMain.combatWindow.moveUnitsSelected(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar sagittarius":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad(aliado, "Sagittarius"));
                     }
-                    WindowMain.combatWindow.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    WindowMain.combatWindow.moveUnitsSelected(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar medicum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad(aliado, "Medicum"));
                     }
-                    WindowMain.combatWindow.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    WindowMain.combatWindow.moveUnitsSelected(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar magum":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad(aliado, "Magum"));
                     }
-                    WindowMain.combatWindow.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    WindowMain.combatWindow.moveUnitsSelected(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Invocar exterminatore":
                     for (int i = 0; i < Manipulador.cantidad_invocacion; i++) {
                         unidades.add(new Unidad(aliado, "Exterminatore"));
                     }
-                    WindowMain.combatWindow.pathing_prueba(false, unidades, objetivo.x, objetivo.y);
+                    WindowMain.combatWindow.moveUnitsSelected(false, unidades, objetivo.x, objetivo.y);
                     aliado.unidades.addAll(unidades);
                     break;
                 case "Deflagración":

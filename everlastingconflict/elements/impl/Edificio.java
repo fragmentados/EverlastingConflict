@@ -14,10 +14,7 @@
  import everlastingconflict.gestion.Game;
  import everlastingconflict.gestion.Jugador;
  import everlastingconflict.gestion.ProgressBar;
- import everlastingconflict.races.Alianza;
- import everlastingconflict.races.Eternium;
- import everlastingconflict.races.Fenix;
- import everlastingconflict.races.Raza;
+ import everlastingconflict.races.*;
  import everlastingconflict.races.enums.RaceEnum;
  import everlastingconflict.status.Status;
  import everlastingconflict.status.StatusCollection;
@@ -39,6 +36,8 @@
  import java.util.List;
  import java.util.logging.Level;
  import java.util.logging.Logger;
+
+ import static everlastingconflict.races.Eternium.MAX_UNIT_PER_QUEUE;
 
 
  public class Edificio extends ElementoAtacante {
@@ -63,7 +62,6 @@
      public boolean isVisible = true;
 
      //Valores estáticos
-     public static final int tiempo_mineria = 10;
      public static final int tiempo_centro = 1000;
      public static final int recursos_centro = 50;
      //Valores estándares
@@ -109,7 +107,7 @@
          this.altura = this.animation.getHeight();
          this.anchura_barra_vida = this.anchura;
          this.altura_barra_vida = 5;
-         recurso_int = Edificio.tiempo_mineria;
+         recurso_int = Eternium.tiempo_mineria;
          barra = new ProgressBar(this);
          this.reunion_x = this.x;
          this.reunion_y = this.y + this.altura + this.altura_barra_vida + barra.altura;
@@ -155,7 +153,7 @@
      public int obtener_indice_elemento(String n) {
          //n representa el nombre de la unidad cuyo indice se quiere obtener
          for (int i = 0; i < cola_construccion.size(); i++) {
-             if (cola_construccion.get(i).nombre.equals(n) && cantidad_produccion.get(i) < Eternium.MAX_UNIT_PER_QUEUE) {
+             if (cola_construccion.get(i).nombre.equals(n)) {
                  return i;
              }
          }
@@ -185,10 +183,17 @@
          return new Point2D.Float(x_contador, y_contador);
      }
 
+     public void cancelLastElementBeingProduced(Game g) {
+         if (cola_construccion != null && !cola_construccion.isEmpty()) {
+             cancelProduction(g, cola_construccion.get(cola_construccion.size() - 1));
+         }
+     }
+
      public void cancelProduction(Game p, ElementoSimple elementProduced) {
-         if (elementProduced instanceof Unidad && cantidad_produccion != null && cantidad_produccion.get(obtener_indice_elemento(elementProduced.nombre)) > 1) {
+         int elementProducedIndex = obtener_indice_elemento(elementProduced.nombre);
+         if (elementProduced instanceof Unidad && cantidad_produccion != null && !cantidad_produccion.isEmpty() && cantidad_produccion.get(elementProducedIndex) > 1) {
              //El edificio puede crear varias unidades de vez
-             int indice = obtener_indice_elemento(elementProduced.nombre);
+             int indice = elementProducedIndex;
              int contador = cantidad_produccion.get(indice).intValue();
              contador--;
              cantidad_produccion.set(indice, new Integer(contador));
@@ -210,7 +215,7 @@
      }
 
      public void createUnit(Game game, Jugador jugador, Unidad unidadACrear) {
-         if (jugador.comprobacion_recursos(unidadACrear)) {
+         if (jugador.comprobacion_recursos(unidadACrear) && cola_construccion != null && cola_construccion.size() < MAX_UNIT_PER_QUEUE) {
              if (!jugador.raza.equals(RaceEnum.FENIX)) {
                  jugador.removeResources(unidadACrear.coste);
              }
@@ -436,6 +441,17 @@
              }
          }
          switch (nombre) {
+             case "Primarca":
+                 if (recurso_int > 0) {
+                     if (recurso_int - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
+                         recurso_int = Clark.tiempo_mineria;
+                         aliado.addResources(Clark.recursos_primarca);
+                         WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + Clark.recursos_primarca, Color.green, x, y - altura / 2 - 20, 2f));
+                     } else {
+                         recurso_int -= Reloj.TIME_REGULAR_SPEED * delta;
+                     }
+                 }
+                 break;
              case "Cuartel Fénix":
                  if (behaviour.equals(BehaviourEnum.CONSTRUYENDO)) {
                      if (unidad_actual != null) {
@@ -449,7 +465,7 @@
                  if (aliado.perforacion && !behaviour.equals(BehaviourEnum.CONSTRUYENDOSE)) {
                      if (recurso_int > 0) {
                          if (recurso_int - Reloj.TIME_REGULAR_SPEED * delta <= 0) {
-                             recurso_int = Edificio.tiempo_mineria;
+                             recurso_int = Eternium.tiempo_mineria;
                              aliado.addResources(Eternium.recursos_refineria);
                              WindowMain.combatWindow.anadir_mensaje(new Mensaje("+" + Eternium.recursos_refineria,
                                      Color.green, x, y - altura / 2 - 20, 2f));
@@ -481,13 +497,13 @@
          }
      }
 
-     public List<Rectangle2D> obtener_intersecciones(Game game, Input input) {
+     public List<Rectangle2D> obtener_intersecciones(Game game, float x, float y) {
          List<Rectangle2D> intersecciones = new ArrayList<>();
          int anchura_contador = this.animation.getWidth();
          int altura_contador = this.animation.getHeight();
          float posx, posy;
-         posx = WindowCombat.playerX + input.getMouseX() - anchura_contador / 2;
-         posy = WindowCombat.playerY + input.getMouseY() - altura_contador / 2;
+         posx = x - anchura_contador / 2;
+         posy = y - altura_contador / 2;
          Rectangle re = new Rectangle((int) posx, (int) posy, anchura_contador, altura_contador);
          if ((nombre.equals("Refinería")) || (nombre.equals("Centro de restauración"))) {
              for (int i = 0; i < game.recursos.size(); i++) {
@@ -538,21 +554,21 @@
          return intersecciones;
      }
 
-     public boolean construible(ElementoComplejo constructor, Game p, Input input, int x, int y) {
+     public boolean construible(ElementoComplejo constructor, Game p, int x, int y) {
          if (constructor instanceof Edificio) {
              Ellipse2D circulo = new Ellipse2D.Float(constructor.x - ((Edificio) constructor).radio_construccion / 2,
                      constructor.y - ((Edificio) constructor).radio_construccion / 2,
                      ((Edificio) constructor).radio_construccion, ((Edificio) constructor).radio_construccion);
              int anchura_contador = this.animation.getWidth();
              int altura_contador = this.animation.getHeight();
-             float posx = WindowCombat.playerX + input.getMouseX() - anchura_contador / 2;
-             float posy = WindowCombat.playerY + input.getMouseY() - altura_contador / 2;
+             float posx = x - anchura_contador / 2;
+             float posy = y - altura_contador / 2;
              Rectangle re = new Rectangle((int) posx, (int) posy, anchura_contador, altura_contador);
              if (!circulo.contains(re)) {
                  return false;
              }
          }
-         List<Rectangle2D> intersecciones = obtener_intersecciones(p, input);
+         List<Rectangle2D> intersecciones = obtener_intersecciones(p, x, y);
          if ((nombre.equals("Refinería")) || (nombre.equals("Centro de restauración"))) {
              return !intersecciones.isEmpty();
          } else {

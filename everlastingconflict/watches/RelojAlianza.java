@@ -15,6 +15,7 @@ import org.newdawn.slick.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static everlastingconflict.gestion.Game.getMainPlayer;
 import static everlastingconflict.races.Alianza.numberOfUnitsToDesembarc;
 import static everlastingconflict.races.Alianza.unitToDesembarc;
 import static everlastingconflict.windows.UI.anchura_miniatura;
@@ -26,8 +27,7 @@ public class RelojAlianza extends Reloj {
     public float endFirstHalf = 10f;
     public Nave shipAssociated;
 
-    public RelojAlianza(Jugador jugadorAsociado, Nave shipAssociated) {
-        this.jugadorAsociado = jugadorAsociado;
+    public RelojAlianza(Nave shipAssociated) {
         this.shipAssociated = shipAssociated;
         contador_reloj = beginingFirstHalf;
         ndivision = 1;
@@ -140,8 +140,9 @@ public class RelojAlianza extends Reloj {
     @Override
     public void handleLeftClick() {
         if (ndivision == 1 && contador_reloj == endFirstHalf) {
-            int costToDesembarc = new Unidad(jugadorAsociado, unitToDesembarc).coste * numberOfUnitsToDesembarc;
-            if (jugadorAsociado.comprobacion_recursos(costToDesembarc)) {
+            Jugador player = getMainPlayer();
+            int costToDesembarc = new Unidad(player, unitToDesembarc).coste * numberOfUnitsToDesembarc;
+            if (player.comprobacion_recursos(costToDesembarc)) {
                 // Seleccionamos la nave como edificio a construir
                 WindowCombat.edificio = shipAssociated;
             } else {
